@@ -7,8 +7,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f7f2eb;color:#2c2c2c;padding:16px;display:flex;justify-content:center}
-.app{max-width:900px;width:100%;background:#fff;border-radius:32px;box-shadow:0 12px 40px rgba(0,0,0,0.08);padding:24px 20px}
-h1{font-size:26px;color:#3d2a1e;border-bottom:2px solid #e5d9cf;padding-bottom:14px;margin-bottom:20px}
+.app{max-width:950px;width:100%;background:#fff;border-radius:32px;box-shadow:0 12px 40px rgba(0,0,0,0.08);padding:24px 20px}
+h1{font-size:28px;color:#3d2a1e;border-bottom:2px solid #e5d9cf;padding-bottom:14px;margin-bottom:20px;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+h1 small{font-size:28px;font-weight:400;color:#3d2a1e}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
 .menu-btn{background:#f0eae4;border:none;border-radius:14px;padding:14px 12px;font-size:15px;font-weight:500;cursor:pointer;transition:0.15s;text-align:center}
 .menu-btn:hover{background:#e0d5cb;transform:translateY(-2px)}
@@ -60,6 +61,15 @@ h1{font-size:26px;color:#3d2a1e;border-bottom:2px solid #e5d9cf;padding-bottom:1
 .flashcard-buttons .know{background:#8fbc8f;color:#fff}
 .flashcard-buttons .dontknow{background:#d4a0a0;color:#fff}
 @media(max-width:600px){.app{padding:16px 12px}.menu-grid{grid-template-columns:1fr}.options{flex-direction:column}.option-btn{width:100%}}
+.lesson-badge{background:#3d2a1e;color:#fff;padding:2px 14px;border-radius:30px;font-size:14px;display:inline-block;margin-bottom:10px}
+.stat-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee5dd}
+.stat-row:last-child{border-bottom:none}
+.error-item{background:#fcf1f1;padding:8px 14px;border-radius:12px;margin:4px 0;border-left:4px solid #d4a0a0}
+.clear-btn{background:none;border:1px solid #d4a0a0;border-radius:30px;padding:6px 18px;color:#7a2e2e;cursor:pointer;font-size:14px;margin-top:8px}
+.clear-btn:hover{background:#d4a0a0;color:#fff}
+.vocab-section{margin-bottom:16px}
+.vocab-section h4{background:#ede7e0;padding:6px 12px;border-radius:8px;margin-bottom:6px;color:#3d2a1e}
+.vocab-section .word-item{margin-left:8px}
 </style>
 </head>
 <body>
@@ -72,18 +82,25 @@ h1{font-size:26px;color:#3d2a1e;border-bottom:2px solid #e5d9cf;padding-bottom:1
     <p style="margin-bottom:14px;color:#4a3728;">Выберите урок:</p>
     <div class="menu-grid" id="lessonGrid"></div>
     <hr style="margin:20px 0;border:1px solid #eee5dd;">
-    <div class="menu-grid" style="grid-template-columns:1fr 1fr;">
+    <div class="menu-grid" style="grid-template-columns:1fr 1fr 1fr;">
+        <button class="menu-btn" onclick="showAllVocab()">📚 Словарь всех слов</button>
         <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
         <button class="menu-btn" onclick="showErrors()">🔄 Ошибки</button>
         <button class="menu-btn danger" onclick="clearAllProgress()">🗑️ Сброс прогресса</button>
     </div>
 </div>
 
+<!-- СЛОВАРЬ ВСЕХ СЛОВ -->
+<div id="allVocabSection" class="section">
+    <button class="back-btn" onclick="goToMain()">← Назад</button>
+    <div class="card"><h3>📚 Словарь всех слов (уроки 1–10)</h3><div id="allVocabContent"></div></div>
+</div>
+
 <!-- УРОК -->
 <div id="lessonSection" class="section">
     <button class="back-btn" onclick="goToMain()">← Назад</button>
     <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
-    <div class="lesson-badge" id="lessonBadge" style="background:#3d2a1e;color:#fff;padding:2px 14px;border-radius:30px;font-size:14px;display:inline-block;margin-bottom:10px;">Урок 1</div>
+    <div class="lesson-badge" id="lessonBadge">Урок 1</div>
     <div class="tab-bar">
         <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')">📚 Грамматика</button>
         <button data-part="vocab" onclick="switchLessonPart('vocab')">📖 Словарь</button>
@@ -116,33 +133,362 @@ h1{font-size:26px;color:#3d2a1e;border-bottom:2px solid #e5d9cf;padding-bottom:1
 
 <script>
 // ======================================================================
-// ДАННЫЕ УРОКОВ 1–10 (краткая версия)
+// ДАННЫЕ УРОКОВ 1–10 (ПОЛНАЯ ВЕРСИЯ ПО УЧЕБНИКУ МЕЙЧЕНА)
 // ======================================================================
+
 const LESSONS_DATA = {
-1:{title:"Алфавит и фонетика",grammar:"Греческий алфавит (24 буквы): Α α, Β β, Γ γ, Δ δ, Ε ε, Ζ ζ, Η η, Θ θ, Ι ι, Κ κ, Λ λ, Μ μ, Ν ν, Ξ ξ, Ο ο, Π π, Ρ ρ, Σ σ/ς, Τ τ, Υ υ, Φ φ, Χ χ, Ψ ψ, Ω ω.",vocabulary:[{greek:"Α α",translation:"альфа [а]"},{greek:"Β β",translation:"бета [б]"},{greek:"Γ γ",translation:"гамма [г]"},{greek:"Δ δ",translation:"дельта [д]"},{greek:"Ε ε",translation:"эпсилон [э]"},{greek:"Ζ ζ",translation:"дзета [дз]"},{greek:"Η η",translation:"эта [э]"},{greek:"Θ θ",translation:"тета [т/ф]"},{greek:"Ι ι",translation:"йота [и]"},{greek:"Κ κ",translation:"каппа [к]"},{greek:"Λ λ",translation:"лямбда [л]"},{greek:"Μ μ",translation:"мю [м]"},{greek:"Ν ν",translation:"ню [н]"},{greek:"Ξ ξ",translation:"кси [кс]"},{greek:"Ο ο",translation:"омикрон [о]"},{greek:"Π π",translation:"пи [п]"},{greek:"Ρ ρ",translation:"ро [р]"},{greek:"Σ σ/ς",translation:"сигма [с]"},{greek:"Τ τ",translation:"тау [т]"},{greek:"Υ υ",translation:"юпсилон [ю/и]"},{greek:"Φ φ",translation:"фи [ф]"},{greek:"Χ χ",translation:"хи [х]"},{greek:"Ψ ψ",translation:"пси [пс]"},{greek:"Ω ω",translation:"омега [о]"}],exercises:{}},
-2:{title:"Правила ударения",grammar:"Острое (´), облечённое (῀), тупое (`). Ударение на одном из трёх последних слогов.",vocabulary:[{greek:"λόγος",translation:"слово"},{greek:"ἄνθρωπος",translation:"человек"},{greek:"λύω",translation:"развязываю"}],exercises:{}},
-3:{title:"Глаголы на -ω",grammar:"Окончания: -ω, -εις, -ει, -ομεν, -ετε, -ουσι(ν).<br>Спряжение λύω: λύω, λύεις, λύει, λύομεν, λύετε, λύουσι(ν).",vocabulary:[{greek:"βλέπω",translation:"вижу"},{greek:"γινώσκω",translation:"знаю"},{greek:"γράφω",translation:"пишу"},{greek:"διδάσκω",translation:"учу"},{greek:"ἔχω",translation:"имею"},{greek:"λαμβάνω",translation:"беру"},{greek:"λέγω",translation:"говорю"},{greek:"λύω",translation:"развязываю"}],exercises:{declension_fill:[{case:"1sg",correct:"λύω",distractors:["λύεις","λύει","λύομεν"]},{case:"2sg",correct:"λύεις",distractors:["λύω","λύει","λύετε"]},{case:"3sg",correct:"λύει",distractors:["λύω","λύεις","λύουσι"]},{case:"1pl",correct:"λύομεν",distractors:["λύω","λύετε","λύουσι"]},{case:"2pl",correct:"λύετε",distractors:["λύομεν","λύει","λύουσι"]},{case:"3pl",correct:"λύουσι(ν)",distractors:["λύομεν","λύετε","λύει"]}],translate_greek_to_russian:[{greek:"βλέπω",keywords:["вижу"]},{greek:"γινώσκεις",keywords:["знаешь"]},{greek:"γράφει",keywords:["пишет"]},{greek:"διδάσκομεν",keywords:["учим"]},{greek:"ἔχετε",keywords:["имеете"]},{greek:"λαμβάνουσι",keywords:["берут"]},{greek:"λέγομεν",keywords:["говорим"]},{greek:"λύει",keywords:["развязывает"]}],translate_russian_to_greek:[{russian:"я вижу",correct_sequence:["βλέπω"],all_words:["βλέπω","γινώσκω","γράφω"]},{russian:"ты знаешь",correct_sequence:["γινώσκεις"],all_words:["γινώσκεις","γράφεις","βλέπεις"]},{russian:"он пишет",correct_sequence:["γράφει"],all_words:["γράφει","λέγει","λύει"]},{russian:"мы учим",correct_sequence:["διδάσκομεν"],all_words:["διδάσκομεν","γράφομεν","βλέπομεν"]},{russian:"вы имеете",correct_sequence:["ἔχετε"],all_words:["ἔχετε","λύετε","λέγετε"]}],case_number:[{form:"λύεις",correct:"2-е л. ед.ч.",distractors:["1-е л. ед.ч.","3-е л. ед.ч.","2-е л. мн.ч."]},{form:"λύομεν",correct:"1-е л. мн.ч.",distractors:["1-е л. ед.ч.","2-е л. мн.ч.","3-е л. мн.ч."]}]}},
-4:{title:"2-е склонение",grammar:"Муж.род -ος, ср.род -ον.<br>ἄνθρωπος: Nom. ἄνθρωπος, Gen. ἀνθρώπου, Dat. ἀνθρώπῳ, Acc. ἄνθρωπον, Voc. ἄνθρωπε.",vocabulary:[{greek:"ἄνθρωπος",article:"ὁ",translation:"человек"},{greek:"υἱός",article:"ὁ",translation:"сын"},{greek:"δῶρον",article:"τό",translation:"дар"},{greek:"λόγος",article:"ὁ",translation:"слово"},{greek:"οἶκος",article:"ὁ",translation:"дом"},{greek:"ἱερόν",article:"τό",translation:"храм"},{greek:"ἀπόστολος",article:"ὁ",translation:"апостол"},{greek:"δοῦλος",article:"ὁ",translation:"раб"},{greek:"τέκνον",article:"τό",translation:"дитя"},{greek:"οὐρανός",article:"ὁ",translation:"небо"}],exercises:{declension_fill:[{case:"gen_sg",correct:"ἀνθρώπου",distractors:["ἀνθρώπων","ἀνθρώπῳ","ἄνθρωπον"]},{case:"dat_sg",correct:"ἀνθρώπῳ",distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωπον"]},{case:"acc_sg",correct:"ἄνθρωπον",distractors:["ἀνθρώπου","ἀνθρώπων","ἀνθρώποις"]},{case:"nom_pl",correct:"ἄνθρωποι",distractors:["ἀνθρώπους","ἀνθρώπων","ἀνθρώποις"]},{case:"gen_pl",correct:"ἀνθρώπων",distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωποι"]},{case:"dat_pl",correct:"ἀνθρώποις",distractors:["ἀνθρώπων","ἀνθρώπῳ","ἀνθρώπους"]},{case:"acc_pl",correct:"ἀνθρώπους",distractors:["ἀνθρώποις","ἀνθρώπων","ἄνθρωποι"]}],translate_greek_to_russian:[{greek:"ὁ λόγος",keywords:["слово"]},{greek:"τοῦ ἀνθρώπου",keywords:["человека"]},{greek:"τῷ υἱῷ",keywords:["сыну"]},{greek:"τὸν οἶκον",keywords:["дом"]}],translate_russian_to_greek:[{russian:"слово",correct_sequence:["λόγος"],all_words:["λόγος","οἶκος","υἱός"]},{russian:"человека (Gen.)",correct_sequence:["ἀνθρώπου"],all_words:["ἀνθρώπου","ἄνθρωπον","ἀνθρώπῳ"]}]}},
-5:{title:"1-е склонение",grammar:"Жен.род -α, -η.<br>ὥρα: Nom. ὥρα, Gen. ὥρας, Dat. ὥρᾳ, Acc. ὥραν.",vocabulary:[{greek:"ὥρα",article:"ἡ",translation:"час"},{greek:"ἀλήθεια",article:"ἡ",translation:"истина"},{greek:"δόξα",article:"ἡ",translation:"слава"},{greek:"γραφή",article:"ἡ",translation:"писание"},{greek:"ψυχή",article:"ἡ",translation:"душа"},{greek:"ζωή",article:"ἡ",translation:"жизнь"},{greek:"βασιλεία",article:"ἡ",translation:"царство"},{greek:"ἡμέρα",article:"ἡ",translation:"день"},{greek:"παραβολή",article:"ἡ",translation:"притча"},{greek:"ἐκκλησία",article:"ἡ",translation:"церковь"}],exercises:{declension_fill:[{case:"gen_sg",correct:"ὥρας",distractors:["ὡρῶν","ὥρᾳ","ὥραν"]},{case:"dat_sg",correct:"ὥρᾳ",distractors:["ὥρας","ὥραν","ὥραις"]},{case:"acc_sg",correct:"ὥραν",distractors:["ὥρας","ὥρᾳ","ὡρῶν"]},{case:"nom_pl",correct:"ὥραι",distractors:["ὥρας","ὥραις","ὡρῶν"]}]}},
-6:{title:"Прилагательные, артикль",grammar:"Прилагательные: муж. -ος, жен. -α/-η, ср. -ον.<br>ἀγαθός, -ή, -όν. Артикль: ὁ, ἡ, τό.",vocabulary:[{greek:"ἀγαθός, ή, όν",translation:"хороший"},{greek:"κακός, ή, όν",translation:"плохой"},{greek:"καλός, ή, όν",translation:"красивый"},{greek:"δίκαιος, α, ον",translation:"праведный"},{greek:"πιστός, ή, όν",translation:"верный"},{greek:"μικρός, ά, όν",translation:"маленький"},{greek:"ἔσχατος, η, ον",translation:"последний"},{greek:"νεκρός, ά, όν",translation:"мёртвый"},{greek:"πρῶτος, η, ον",translation:"первый"},{greek:"ἅγιος, α, ον",translation:"святой"},{greek:"πονηρός, ά, όν",translation:"злой"}],exercises:{agreement:[{noun:"λόγος",article:"ὁ",adjective:"ἀγαθός",correct:"ἀγαθός",distractors:["ἀγαθόν","ἀγαθοῦ","ἀγαθῷ"]}],attribute_vs_predicate:[{phrase:"ὁ ἀγαθὸς ἄνθρωπος",correct:"атрибутив",distractors:["предикатив"]},{phrase:"ὁ ἄνθρωπος ἀγαθός",correct:"предикатив",distractors:["атрибутив"]}],article_fill:[{noun:"ἀγαθῷ ἀνθρώπῳ",correct_article:"τῷ",distractors:["τόν","τοῦ","τήν"]}]}},
-7:{title:"Муж.род 1-го скл., предлоги",grammar:"Окончания -ης, -ας. Предлоги: ἀπό +Gen., εἰς +Acc., ἐκ +Gen., ἐν +Dat., πρός +Acc.",vocabulary:[{greek:"προφήτης",article:"ὁ",translation:"пророк"},{greek:"μαθητής",article:"ὁ",translation:"ученик"},{greek:"ἄγγελος",article:"ὁ",translation:"ангел"},{greek:"θεός",article:"ὁ",translation:"Бог"}],exercises:{declension_fill:[{case:"gen_sg",correct:"προφήτου",distractors:["προφητῶν","προφήτῃ","προφήτην"]}]}},
-8:{title:"Личные местоимения, εἰμί",grammar:"εἰμί: εἰμί, εἶ, ἐστί(ν), ἐσμέν, ἐστέ, εἰσί(ν).<br>ἐγώ, σύ, αὐτός, ἡμεῖς, ὑμεῖς.",vocabulary:[{greek:"εἰμί",translation:"быть"},{greek:"ἐγώ",translation:"я"},{greek:"σύ",translation:"ты"},{greek:"αὐτός",translation:"он, сам"}],exercises:{declension_fill:[{case:"1sg",correct:"εἰμί",distractors:["εἶ","ἐστί","ἐσμέν"]},{case:"2sg",correct:"εἶ",distractors:["εἰμί","ἐστί","ἐστέ"]}]}},
-9:{title:"Указательные местоимения",grammar:"οὗτος, αὕτη, τοῦτο — этот, эта, это.<br>ἐκεῖνος, ἐκείνη, ἐκεῖνο — тот, та, то.",vocabulary:[{greek:"οὗτος",translation:"этот"},{greek:"αὕτη",translation:"эта"},{greek:"τοῦτο",translation:"это"},{greek:"ἐκεῖνος",translation:"тот"}],exercises:{declension_fill:[{case:"gen_sg_m",correct:"τούτου",distractors:["ταύτης","τούτῳ","τοῦτον"]}]}},
-10:{title:"Медио-пассивный залог",grammar:"Окончания: -μαι, -σαι, -ται, -μεθα, -σθε, -νται.<br>λύομαι, λύῃ, λύεται, λυόμεθα, λύεσθε, λύονται.",vocabulary:[{greek:"λύομαι",translation:"развязываюсь"},{greek:"γίνομαι",translation:"становлюсь"},{greek:"ἔρχομαι",translation:"прихожу"},{greek:"πορεύομαι",translation:"иду"}],exercises:{declension_fill:[{case:"1sg",correct:"λύομαι",distractors:["λύῃ","λύεται","λυόμεθα"]},{case:"3sg",correct:"λύεται",distractors:["λύομαι","λύῃ","λύονται"]}]}}
+1: {
+    title: "Алфавит и фонетика",
+    grammar: `<b>Греческий алфавит (24 буквы):</b><br>
+    Α α, Β β, Γ γ, Δ δ, Ε ε, Ζ ζ, Η η, Θ θ, Ι ι, Κ κ, Λ λ, Μ μ, Ν ν, Ξ ξ, Ο ο, Π π, Ρ ρ, Σ σ/ς, Τ τ, Υ υ, Φ φ, Χ χ, Ψ ψ, Ω ω.<br><br>
+    <b>Дифтонги:</b> αι, ει, οι, υι, αυ, ευ, ου, ηυ.<br>
+    <b>Придыхания:</b> тонкое (') и густое (') — для слов, начинающихся с гласной.<br>
+    <b>Ударение:</b> острое (´), тупое (`), облечённое (῀) — ставится над гласными.`,
+    vocabulary: [
+        {greek:"Α α",translation:"альфа [а]"},{greek:"Β β",translation:"бета [б]"},{greek:"Γ γ",translation:"гамма [г]"},{greek:"Δ δ",translation:"дельта [д]"},{greek:"Ε ε",translation:"эпсилон [э]"},{greek:"Ζ ζ",translation:"дзета [дз]"},{greek:"Η η",translation:"эта [э]"},{greek:"Θ θ",translation:"тета [т/ф]"},{greek:"Ι ι",translation:"йота [и]"},{greek:"Κ κ",translation:"каппа [к]"},{greek:"Λ λ",translation:"лямбда [л]"},{greek:"Μ μ",translation:"мю [м]"},{greek:"Ν ν",translation:"ню [н]"},{greek:"Ξ ξ",translation:"кси [кс]"},{greek:"Ο ο",translation:"омикрон [о]"},{greek:"Π π",translation:"пи [п]"},{greek:"Ρ ρ",translation:"ро [р]"},{greek:"Σ σ/ς",translation:"сигма [с]"},{greek:"Τ τ",translation:"тау [т]"},{greek:"Υ υ",translation:"юпсилон [ю/и]"},{greek:"Φ φ",translation:"фи [ф]"},{greek:"Χ χ",translation:"хи [х]"},{greek:"Ψ ψ",translation:"пси [пс]"},{greek:"Ω ω",translation:"омега [о]"}
+    ],
+    exercises: {}
+},
+2: {
+    title: "Правила ударения",
+    grammar: `<b>Общие правила:</b><br>
+    Ударение может стоять только на одном из трёх последних слогов.<br>
+    Острое (´) — может быть на любом из трёх слогов.<br>
+    Облечённое (῀) — только на первом или втором слоге от конца.<br>
+    Тупое (`) — только на последнем слоге.<br><br>
+    <b>Специальные правила:</b><br>
+    Для глаголов: ударение ставится как можно дальше от конца.<br>
+    Для существительных и прилагательных: ударение сохраняется в косвенных падежах, если позволяют общие правила.`,
+    vocabulary: [
+        {greek:"λόγος",translation:"слово"},{greek:"ἄνθρωπος",translation:"человек"},{greek:"λύω",translation:"развязываю"}
+    ],
+    exercises: {}
+},
+3: {
+    title: "Глаголы на -ω (настоящее время)",
+    grammar: `<b>Окончания глаголов в настоящем времени:</b><br>
+    <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>1-е</td><td>-ω</td><td>-ομεν</td></tr>
+    <tr><td>2-е</td><td>-εις</td><td>-ετε</td></tr>
+    <tr><td>3-е</td><td>-ει</td><td>-ουσι(ν)</td></tr></table><br>
+    <b>Спряжение λύω (развязываю):</b><br>
+    <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>1-е</td><td>λύω</td><td>λύομεν</td></tr>
+    <tr><td>2-е</td><td>λύεις</td><td>λύετε</td></tr>
+    <tr><td>3-е</td><td>λύει</td><td>λύουσι(ν)</td></tr></table>
+    <br>Соединительный гласный: перед μ и ν — ο, перед другими буквами — ε.`,
+    vocabulary: [
+        {greek:"βλέπω",translation:"вижу"},{greek:"γινώσκω",translation:"знаю"},{greek:"γράφω",translation:"пишу"},{greek:"διδάσκω",translation:"учу"},{greek:"ἔχω",translation:"имею"},{greek:"λαμβάνω",translation:"беру, получаю"},{greek:"λέγω",translation:"говорю"},{greek:"λύω",translation:"развязываю, освобождаю"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"1sg", correct:"λύω", distractors:["λύεις","λύει","λύομεν"]},
+            {case:"2sg", correct:"λύεις", distractors:["λύω","λύει","λύετε"]},
+            {case:"3sg", correct:"λύει", distractors:["λύω","λύεις","λύουσι"]},
+            {case:"1pl", correct:"λύομεν", distractors:["λύω","λύετε","λύουσι"]},
+            {case:"2pl", correct:"λύετε", distractors:["λύομεν","λύει","λύουσι"]},
+            {case:"3pl", correct:"λύουσι(ν)", distractors:["λύομεν","λύετε","λύει"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"βλέπω",keywords:["вижу"]},{greek:"γινώσκεις",keywords:["знаешь"]},{greek:"γράφει",keywords:["пишет"]},{greek:"διδάσκομεν",keywords:["учим"]},{greek:"ἔχετε",keywords:["имеете"]},{greek:"λαμβάνουσι",keywords:["берут"]},{greek:"λέγομεν",keywords:["говорим"]},{greek:"λύει",keywords:["развязывает"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"я вижу",correct_sequence:["βλέπω"],all_words:["βλέπω","γινώσκω","γράφω"]},
+            {russian:"ты знаешь",correct_sequence:["γινώσκεις"],all_words:["γινώσκεις","γράφεις","βλέπεις"]},
+            {russian:"он пишет",correct_sequence:["γράφει"],all_words:["γράφει","λέγει","λύει"]},
+            {russian:"мы учим",correct_sequence:["διδάσκομεν"],all_words:["διδάσκομεν","γράφομεν","βλέπομεν"]},
+            {russian:"вы имеете",correct_sequence:["ἔχετε"],all_words:["ἔχετε","λύετε","λέγετε"]}
+        ],
+        case_number: [
+            {form:"λύεις",correct:"2-е л. ед.ч.",distractors:["1-е л. ед.ч.","3-е л. ед.ч.","2-е л. мн.ч."]},
+            {form:"λύομεν",correct:"1-е л. мн.ч.",distractors:["1-е л. ед.ч.","2-е л. мн.ч.","3-е л. мн.ч."]},
+            {form:"λύουσι",correct:"3-е л. мн.ч.",distractors:["3-е л. ед.ч.","1-е л. мн.ч.","2-е л. мн.ч."]}
+        ]
+    }
+},
+4: {
+    title: "2-е склонение (мужской и средний род)",
+    grammar: `<b>2-е склонение (муж.род -ος, ср.род -ον)</b><br><br>
+    <b>Склонение ἄνθρωπος (человек):</b><br>
+    <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>Nominativus (Им. п.)</td><td>ἄνθρωπος</td><td>ἄνθρωποι</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>ἀνθρώπου</td><td>ἀνθρώπων</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>ἀνθρώπῳ</td><td>ἀνθρώποις</td></tr>
+    <tr><td>Accusativus (Вин. п.)</td><td>ἄνθρωπον</td><td>ἀνθρώπους</td></tr>
+    <tr><td>Vocativus (Зв. п.)</td><td>ἄνθρωπε</td><td>ἄνθρωποι</td></tr></table><br>
+    <b>Средний род (δῶρον, дар):</b><br>
+    <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>Nominativus / Accusativus / Vocativus</td><td>δῶρον</td><td>δῶρα</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>δώρου</td><td>δώρων</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>δώρῳ</td><td>δώροις</td></tr></table>`,
+    vocabulary: [
+        {greek:"ἄνθρωπος",article:"ὁ",translation:"человек"},{greek:"υἱός",article:"ὁ",translation:"сын"},{greek:"δῶρον",article:"τό",translation:"дар"},{greek:"λόγος",article:"ὁ",translation:"слово"},{greek:"οἶκος",article:"ὁ",translation:"дом"},{greek:"ἱερόν",article:"τό",translation:"храм"},{greek:"ἀπόστολος",article:"ὁ",translation:"апостол"},{greek:"δοῦλος",article:"ὁ",translation:"раб, слуга"},{greek:"τέκνον",article:"τό",translation:"дитя, ребенок"},{greek:"οὐρανός",article:"ὁ",translation:"небо"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"gen_sg", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπου", distractors:["ἀνθρώπων","ἀνθρώπῳ","ἄνθρωπον"]},
+            {case:"dat_sg", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπῳ", distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωπον"]},
+            {case:"acc_sg", word:"ἄνθρωπος", translation:"человек", correct:"ἄνθρωπον", distractors:["ἀνθρώπου","ἀνθρώπων","ἀνθρώποις"]},
+            {case:"nom_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἄνθρωποι", distractors:["ἀνθρώπους","ἀνθρώπων","ἀνθρώποις"]},
+            {case:"gen_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπων", distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωποι"]},
+            {case:"dat_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώποις", distractors:["ἀνθρώπων","ἀνθρώπῳ","ἀνθρώπους"]},
+            {case:"acc_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπους", distractors:["ἀνθρώποις","ἀνθρώπων","ἄνθρωποι"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"ὁ λόγος",keywords:["слово"]},{greek:"τοῦ ἀνθρώπου",keywords:["человека"]},{greek:"τῷ υἱῷ",keywords:["сыну"]},{greek:"τὸν οἶκον",keywords:["дом"]},{greek:"οἱ ἀπόστολοι",keywords:["апостолы"]},{greek:"τῶν δούλων",keywords:["рабов"]},{greek:"τοῖς τέκνοις",keywords:["детям"]},{greek:"τοὺς οὐρανούς",keywords:["небеса"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"слово",correct_sequence:["λόγος"],all_words:["λόγος","οἶκος","υἱός"]},
+            {russian:"человека (Gen.)",correct_sequence:["ἀνθρώπου"],all_words:["ἀνθρώπου","ἄνθρωπον","ἀνθρώπῳ"]},
+            {russian:"сыну",correct_sequence:["υἱῷ"],all_words:["υἱῷ","υἱόν","υἱοῦ"]},
+            {russian:"дом (Acc.)",correct_sequence:["οἶκον"],all_words:["οἶκον","οἶκου","οἴκῳ"]}
+        ],
+        case_number: [
+            {form:"ἀνθρώπων",correct:"Genitivus (Род. п.) мн.ч.",distractors:["Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+            {form:"δῶρα",correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.",distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
+            {form:"υἱόν",correct:"Accusativus (Вин. п.) ед.ч.",distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
+            {form:"οἴκοις",correct:"Dativus (Дат. п.) мн.ч.",distractors:["Dativus (Дат. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]}
+        ]
+    }
+},
+5: {
+    title: "1-е склонение (женский род)",
+    grammar: `<b>1-е склонение (жен.род на -α, -η)</b><br><br>
+    <b>Склонение ὥρα (час):</b><br>
+    <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>Nominativus (Им. п.)</td><td>ὥρα</td><td>ὥραι</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>ὥρας</td><td>ὡρῶν</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>ὥρᾳ</td><td>ὥραις</td></tr>
+    <tr><td>Accusativus (Вин. п.)</td><td>ὥραν</td><td>ὥρας</td></tr>
+    <tr><td>Vocativus (Зв. п.)</td><td>ὥρα</td><td>ὥραι</td></tr></table><br>
+    <b>Особенности:</b> в Genitivus и Dativus ед.ч. альфа переходит в эта (для нечистой альфы).<br>
+    Чистая альфа (после ε, ι, ρ) сохраняется.`,
+    vocabulary: [
+        {greek:"ὥρα",article:"ἡ",translation:"час"},{greek:"ἀλήθεια",article:"ἡ",translation:"истина"},{greek:"δόξα",article:"ἡ",translation:"слава"},{greek:"γραφή",article:"ἡ",translation:"писание"},{greek:"ψυχή",article:"ἡ",translation:"душа"},{greek:"ζωή",article:"ἡ",translation:"жизнь"},{greek:"βασιλεία",article:"ἡ",translation:"царство"},{greek:"ἡμέρα",article:"ἡ",translation:"день"},{greek:"παραβολή",article:"ἡ",translation:"притча"},{greek:"ἐκκλησία",article:"ἡ",translation:"церковь"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"gen_sg", word:"ὥρα", translation:"час", correct:"ὥρας", distractors:["ὡρῶν","ὥρᾳ","ὥραν"]},
+            {case:"dat_sg", word:"ὥρα", translation:"час", correct:"ὥρᾳ", distractors:["ὥρας","ὥραν","ὥραις"]},
+            {case:"acc_sg", word:"ὥρα", translation:"час", correct:"ὥραν", distractors:["ὥρας","ὥρᾳ","ὡρῶν"]},
+            {case:"nom_pl", word:"ὥρα", translation:"час", correct:"ὥραι", distractors:["ὥρας","ὥραις","ὡρῶν"]},
+            {case:"gen_pl", word:"ὥρα", translation:"час", correct:"ὡρῶν", distractors:["ὥρας","ὥρᾳ","ὥραις"]},
+            {case:"dat_pl", word:"ὥρα", translation:"час", correct:"ὥραις", distractors:["ὡρῶν","ὥραι","ὥραν"]},
+            {case:"acc_pl", word:"ὥρα", translation:"час", correct:"ὥρας", distractors:["ὥραις","ὡρῶν","ὥραι"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"ἡ ἀλήθεια",keywords:["истина"]},{greek:"τῆς δόξης",keywords:["славы"]},{greek:"τῇ ψυχῇ",keywords:["душе"]},{greek:"τὴν ζωήν",keywords:["жизнь"]},{greek:"αἱ βασιλεῖαι",keywords:["царства"]},{greek:"τῶν ἡμερῶν",keywords:["дней"]},{greek:"ταῖς παραβολαῖς",keywords:["притчам"]},{greek:"τὰς ἐκκλησίας",keywords:["церкви"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"истина",correct_sequence:["ἀλήθεια"],all_words:["ἀλήθεια","δόξα","ὥρα","ζωή"]},
+            {russian:"славы (Gen.)",correct_sequence:["δόξης"],all_words:["δόξης","δόξαν","δόξαις","δόξαι"]},
+            {russian:"жизнь (Acc.)",correct_sequence:["ζωήν"],all_words:["ζωήν","ζωή","ζωῆς","ζωαί"]},
+            {russian:"церквам (Dat.)",correct_sequence:["ἐκκλησίαις"],all_words:["ἐκκλησίαις","ἐκκλησίας","ἐκκλησιῶν","ἐκκλησίαι"]}
+        ],
+        case_number: [
+            {form:"ὡρῶν",correct:"Genitivus (Род. п.) мн.ч.",distractors:["Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+            {form:"δόξαις",correct:"Dativus (Дат. п.) мн.ч.",distractors:["Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+            {form:"βασιλείαν",correct:"Accusativus (Вин. п.) ед.ч.",distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
+            {form:"ἡμέραι",correct:"Nominativus (Им. п.) мн.ч.",distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]}
+        ]
+    }
+},
+6: {
+    title: "Прилагательные 1-2 склонения, артикль",
+    grammar: `<b>Прилагательные 1-2 склонения:</b> муж. -ος, жен. -α/-η, ср. -ον.<br><br>
+    <b>Склонение ἀγαθός, -ή, -όν (хороший):</b><br>
+    <table><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr>
+    <tr><td>Nominativus (Им. п.)</td><td>ἀγαθός</td><td>ἀγαθή</td><td>ἀγαθόν</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>ἀγαθοῦ</td><td>ἀγαθῆς</td><td>ἀγαθοῦ</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>ἀγαθῷ</td><td>ἀγαθῇ</td><td>ἀγαθῷ</td></tr>
+    <tr><td>Accusativus (Вин. п.)</td><td>ἀγαθόν</td><td>ἀγαθήν</td><td>ἀγαθόν</td></tr>
+    <tr><td>Vocativus (Зв. п.)</td><td>ἀγαθέ</td><td>ἀγαθή</td><td>ἀγαθόν</td></tr></table><br>
+    <b>Артикль: ὁ, ἡ, τό</b><br>
+    <table><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr>
+    <tr><td>Nominativus (Им. п.)</td><td>ὁ</td><td>ἡ</td><td>τό</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>τοῦ</td><td>τῆς</td><td>τοῦ</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>τῷ</td><td>τῇ</td><td>τῷ</td></tr>
+    <tr><td>Accusativus (Вин. п.)</td><td>τόν</td><td>τήν</td><td>τό</td></tr></table><br>
+    <b>Атрибутив:</b> ὁ ἀγαθὸς ἄνθρωπος — хороший человек<br>
+    <b>Предикатив:</b> ὁ ἄνθρωπος ἀγαθός — человек хорош<br>
+    <b>Субстантивация:</b> οἱ ἀγαθοί — хорошие (люди)`,
+    vocabulary: [
+        {greek:"ἀγαθός, ή, όν",translation:"хороший, добрый"},{greek:"κακός, ή, όν",translation:"плохой, злой"},{greek:"καλός, ή, όν",translation:"красивый"},{greek:"δίκαιος, α, ον",translation:"праведный"},{greek:"πιστός, ή, όν",translation:"верный"},{greek:"μικρός, ά, όν",translation:"маленький"},{greek:"ἔσχατος, η, ον",translation:"последний"},{greek:"νεκρός, ά, όν",translation:"мёртвый"},{greek:"πρῶτος, η, ον",translation:"первый"},{greek:"ἅγιος, α, ον",translation:"святой"},{greek:"πονηρός, ά, όν",translation:"злой, порочный"}
+    ],
+    exercises: {
+        agreement: [
+            {noun:"λόγος", article:"ὁ", adjective:"ἀγαθός", correct:"ἀγαθός", distractors:["ἀγαθόν","ἀγαθοῦ","ἀγαθῷ"]},
+            {noun:"ψυχή", article:"ἡ", adjective:"πιστός", correct:"πιστή", distractors:["πιστός","πιστόν","πιστῆς"]},
+            {noun:"δῶρον", article:"τό", adjective:"καλός", correct:"καλόν", distractors:["καλός","καλή","καλοῦ"]},
+            {noun:"ἄνθρωπος", article:"ὁ", adjective:"δίκαιος", correct:"δίκαιος", distractors:["δικαίου","δίκαιον","δικαίῳ"]}
+        ],
+        attribute_vs_predicate: [
+            {phrase:"ὁ ἀγαθὸς ἄνθρωπος", correct:"атрибутив", distractors:["предикатив"]},
+            {phrase:"ὁ ἄνθρωπος ἀγαθός", correct:"предикатив", distractors:["атрибутив"]},
+            {phrase:"τὸ καλὸν δῶρον", correct:"атрибутив", distractors:["предикатив"]},
+            {phrase:"τὸ δῶρον καλόν", correct:"предикатив", distractors:["атрибутив"]}
+        ],
+        substantivation: [
+            {phrase:"οἱ ἀγαθοί", correct:"хорошие (люди)", distractors:["хорошие (вещи)","хорошие (женщины)","добро"]},
+            {phrase:"τὸ καλόν", correct:"красивое (дело/вещь)", distractors:["красивый (человек)","красивая (женщина)","красота"]},
+            {phrase:"αἱ πισταί", correct:"верные (женщины)", distractors:["верные (мужчины)","вера","верные (вещи)"]}
+        ],
+        article_fill: [
+            {noun:"ἀγαθῷ ἀνθρώπῳ", correct_article:"τῷ", distractors:["τόν","τοῦ","τήν"]},
+            {noun:"καλῆς ψυχῆς", correct_article:"τῆς", distractors:["τήν","τῇ","τοῦ"]},
+            {noun:"δίκαιον λόγον", correct_article:"τόν", distractors:["τοῦ","τῷ","τήν"]}
+        ],
+        declension_fill: [],
+        translate_greek_to_russian: [],
+        translate_russian_to_greek: [],
+        case_number: []
+    }
+},
+7: {
+    title: "Мужской род 1-го склонения, предлоги",
+    grammar: `<b>Мужской род 1-го склонения:</b> окончания -ης, -ας (Nominativus ед.ч.)<br><br>
+    <b>Склонение προφήτης (пророк):</b><br>
+    <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>Nominativus (Им. п.)</td><td>προφήτης</td><td>προφῆται</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>προφήτου</td><td>προφητῶν</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>προφήτῃ</td><td>προφήταις</td></tr>
+    <tr><td>Accusativus (Вин. п.)</td><td>προφήτην</td><td>προφήτας</td></tr>
+    <tr><td>Vocativus (Зв. п.)</td><td>προφῆτα</td><td>προφῆται</td></tr></table><br>
+    <b>Предлоги:</b> ἀπό + Gen. (от), εἰς + Acc. (в), ἐκ + Gen. (из), ἐν + Dat. (в), μετά + Gen. (с) / + Acc. (после), πρός + Acc. (к).`,
+    vocabulary: [
+        {greek:"προφήτης",article:"ὁ",translation:"пророк"},{greek:"νεανίας",article:"ὁ",translation:"юноша"},{greek:"μαθητής",article:"ὁ",translation:"ученик"},{greek:"βαπτιστής",article:"ὁ",translation:"креститель"},{greek:"ἄγγελος",article:"ὁ",translation:"ангел, вестник"},{greek:"θεός",article:"ὁ",translation:"Бог"},{greek:"κόσμος",article:"ὁ",translation:"мир"},{greek:"οὐρανός",article:"ὁ",translation:"небо"},{greek:"λίθος",article:"ὁ",translation:"камень"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"gen_sg", word:"προφήτης", translation:"пророк", correct:"προφήτου", distractors:["προφητῶν","προφήτῃ","προφήτην"]},
+            {case:"dat_sg", word:"προφήτης", translation:"пророк", correct:"προφήτῃ", distractors:["προφήτου","προφήταις","προφήτην"]},
+            {case:"acc_sg", word:"προφήτης", translation:"пророк", correct:"προφήτην", distractors:["προφήτου","προφήτῃ","προφῆτα"]},
+            {case:"nom_pl", word:"προφήτης", translation:"пророк", correct:"προφῆται", distractors:["προφήτας","προφητῶν","προφήταις"]},
+            {case:"gen_pl", word:"προφήτης", translation:"пророк", correct:"προφητῶν", distractors:["προφήτου","προφήταις","προφῆται"]},
+            {case:"dat_pl", word:"προφήτης", translation:"пророк", correct:"προφήταις", distractors:["προφητῶν","προφήτῃ","προφήτας"]},
+            {case:"acc_pl", word:"προφήτης", translation:"пророк", correct:"προφήτας", distractors:["προφήταις","προφητῶν","προφῆται"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"ὁ προφήτης",keywords:["пророк"]},{greek:"τοῦ ἀγγέλου",keywords:["ангела"]},{greek:"τῷ θεῷ",keywords:["Богу"]},{greek:"τὸν κόσμον",keywords:["мир"]},{greek:"οἱ μαθηταί",keywords:["ученики"]},{greek:"τῶν οὐρανῶν",keywords:["небес"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"пророк",correct_sequence:["προφήτης"],all_words:["προφήτης","μαθητής","ἄγγελος"]},
+            {russian:"юноши (Gen.)",correct_sequence:["νεανίου"],all_words:["νεανίου","νεανίαν","νεανίαις"]}
+        ],
+        case_number: [
+            {form:"προφήτῃ",correct:"Dativus (Дат. п.) ед.ч.",distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч."]},
+            {form:"ἀγγέλων",correct:"Genitivus (Род. п.) мн.ч.",distractors:["Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч.","Nominativus (Им. п.) мн.ч."]}
+        ]
+    }
+},
+8: {
+    title: "Личные местоимения, глагол εἰμί",
+    grammar: `<b>Глагол εἰμί (быть) — настоящее время:</b><br>
+    <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>1-е</td><td>εἰμί</td><td>ἐσμέν</td></tr>
+    <tr><td>2-е</td><td>εἶ</td><td>ἐστέ</td></tr>
+    <tr><td>3-е</td><td>ἐστί(ν)</td><td>εἰσί(ν)</td></tr></table><br>
+    <b>Личные местоимения:</b><br>
+    ἐγώ (я), σύ (ты), αὐτός (он, сам), ἡμεῖς (мы), ὑμεῖς (вы).<br>
+    <b>Энклитики:</b> μου, μοι, με (меня, мне); σου, σοι, σε (тебя, тебе).`,
+    vocabulary: [
+        {greek:"εἰμί",translation:"быть, являться"},{greek:"ἐγώ",translation:"я"},{greek:"σύ",translation:"ты"},{greek:"αὐτός",translation:"он, сам"},{greek:"ἡμεῖς",translation:"мы"},{greek:"ὑμεῖς",translation:"вы"},{greek:"κριτής",article:"ὁ",translation:"судья"},{greek:"δεσπότης",article:"ὁ",translation:"господин"},{greek:"τελώνης",article:"ὁ",translation:"мытарь, сборщик податей"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"1sg", word:"εἰμί", translation:"быть", correct:"εἰμί", distractors:["εἶ","ἐστί","ἐσμέν"]},
+            {case:"2sg", word:"εἰμί", translation:"быть", correct:"εἶ", distractors:["εἰμί","ἐστί","ἐστέ"]},
+            {case:"3sg", word:"εἰμί", translation:"быть", correct:"ἐστί(ν)", distractors:["εἰμί","εἶ","εἰσί"]},
+            {case:"1pl", word:"εἰμί", translation:"быть", correct:"ἐσμέν", distractors:["ἐστέ","εἰσί","εἰμί"]},
+            {case:"2pl", word:"εἰμί", translation:"быть", correct:"ἐστέ", distractors:["ἐσμέν","εἰσί","εἶ"]},
+            {case:"3pl", word:"εἰμί", translation:"быть", correct:"εἰσί(ν)", distractors:["ἐσμέν","ἐστέ","ἐστί"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"ἐγώ εἰμι",keywords:["я","есмь"]},{greek:"σὺ εἶ",keywords:["ты","еси"]},{greek:"αὐτός ἐστι",keywords:["он","есть"]},{greek:"ἡμεῖς ἐσμέν",keywords:["мы","есмы"]},{greek:"ὑμεῖς ἐστέ",keywords:["вы","есте"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"я есмь",correct_sequence:["ἐγώ","εἰμι"],all_words:["ἐγώ","εἰμι","σύ","εἶ"]},
+            {russian:"ты еси",correct_sequence:["σύ","εἶ"],all_words:["σύ","εἶ","ἐγώ","εἰμι"]}
+        ],
+        case_number: []
+    }
+},
+9: {
+    title: "Указательные местоимения, αὐτός",
+    grammar: `<b>Указательные местоимения:</b><br>
+    οὗτος, αὕτη, τοῦτο — этот, эта, это<br>
+    ἐκεῖνος, ἐκείνη, ἐκεῖνο — тот, та, то<br><br>
+    <b>Склонение οὗτος:</b><br>
+    <table><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr>
+    <tr><td>Nominativus (Им. п.)</td><td>οὗτος</td><td>αὕτη</td><td>τοῦτο</td></tr>
+    <tr><td>Genitivus (Род. п.)</td><td>τούτου</td><td>ταύτης</td><td>τούτου</td></tr>
+    <tr><td>Dativus (Дат. п.)</td><td>τούτῳ</td><td>ταύτῃ</td><td>τούτῳ</td></tr>
+    <tr><td>Accusativus (Вин. п.)</td><td>τοῦτον</td><td>ταύτην</td><td>τοῦτο</td></tr></table><br>
+    <b>αὐτός</b> — в косвенных падежах = «он, она, оно»; в Nominativus = «сам»; с артиклем = «тот же».`,
+    vocabulary: [
+        {greek:"οὗτος",translation:"этот"},{greek:"αὕτη",translation:"эта"},{greek:"τοῦτο",translation:"это"},{greek:"ἐκεῖνος",translation:"тот"},{greek:"ἐκείνη",translation:"та"},{greek:"ἐκεῖνο",translation:"то"},{greek:"αὐτός",translation:"он, сам"},{greek:"αὐτή",translation:"она, сама"},{greek:"αὐτό",translation:"оно, само"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"gen_sg_m", word:"οὗτος", translation:"этот", correct:"τούτου", distractors:["ταύτης","τούτῳ","τοῦτον"]},
+            {case:"dat_sg_f", word:"αὕτη", translation:"эта", correct:"ταύτῃ", distractors:["ταύτης","τούτῳ","ταύτην"]},
+            {case:"acc_sg_n", word:"τοῦτο", translation:"это", correct:"τοῦτο", distractors:["τούτου","τούτῳ","τοῦτον"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"οὗτος ὁ λόγος",keywords:["этот","слово"]},{greek:"αὕτη ἡ ἀλήθεια",keywords:["эта","истина"]},{greek:"ἐκεῖνο τὸ δῶρον",keywords:["тот","дар"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"этот человек",correct_sequence:["οὗτος","ἄνθρωπος"],all_words:["οὗτος","ἄνθρωπος","αὕτη","γυνή"]}
+        ]
+    }
+},
+10: {
+    title: "Медио-пассивный залог",
+    grammar: `<b>Медио-пассивный залог (настоящее время):</b><br>
+    Окончания: -μαι, -σαι, -ται, -μεθα, -σθε, -νται<br><br>
+    <b>Спряжение λύομαι (я развязываюсь / меня развязывают):</b><br>
+    <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
+    <tr><td>1-е</td><td>λύομαι</td><td>λυόμεθα</td></tr>
+    <tr><td>2-е</td><td>λύῃ</td><td>λύεσθε</td></tr>
+    <tr><td>3-е</td><td>λύεται</td><td>λύονται</td></tr></table><br>
+    <b>Отложительные глаголы:</b> имеют медио-пассивные формы с активным значением (например, ἔρχομαι — прихожу).`,
+    vocabulary: [
+        {greek:"λύομαι",translation:"развязываюсь / меня развязывают"},{greek:"γίνομαι",translation:"становлюсь"},{greek:"ἔρχομαι",translation:"прихожу"},{greek:"πορεύομαι",translation:"иду"},{greek:"ἀποκρίνομαι",translation:"отвечаю"},{greek:"ἀκούω",translation:"слышу"},{greek:"σώζω",translation:"спасаю"},{greek:"βαπτίζω",translation:"крещу"}
+    ],
+    exercises: {
+        declension_fill: [
+            {case:"1sg", word:"λύομαι", translation:"развязываюсь", correct:"λύομαι", distractors:["λύῃ","λύεται","λυόμεθα"]},
+            {case:"2sg", word:"λύομαι", translation:"развязываюсь", correct:"λύῃ", distractors:["λύομαι","λύεται","λύεσθε"]},
+            {case:"3sg", word:"λύομαι", translation:"развязываюсь", correct:"λύεται", distractors:["λύομαι","λύῃ","λύονται"]},
+            {case:"1pl", word:"λύομαι", translation:"развязываюсь", correct:"λυόμεθα", distractors:["λύεσθε","λύονται","λύομαι"]},
+            {case:"2pl", word:"λύομαι", translation:"развязываюсь", correct:"λύεσθε", distractors:["λυόμεθα","λύονται","λύῃ"]},
+            {case:"3pl", word:"λύομαι", translation:"развязываюсь", correct:"λύονται", distractors:["λυόμεθα","λύεσθε","λύεται"]}
+        ],
+        translate_greek_to_russian: [
+            {greek:"γίνομαι",keywords:["становлюсь"]},{greek:"ἔρχεται",keywords:["приходит"]},{greek:"πορεύονται",keywords:["идут"]},{greek:"ἀποκρίνομαι",keywords:["отвечаю"]},{greek:"σώζεται",keywords:["спасается"]}
+        ],
+        translate_russian_to_greek: [
+            {russian:"я становлюсь",correct_sequence:["γίνομαι"],all_words:["γίνομαι","ἔρχομαι","λύομαι"]},
+            {russian:"он спасается",correct_sequence:["σώζεται"],all_words:["σώζεται","σώζω","σώζονται"]}
+        ],
+        case_number: [
+            {form:"λύεται",correct:"3-е л. ед.ч.",distractors:["2-е л. ед.ч.","1-е л. мн.ч.","3-е л. мн.ч."]},
+            {form:"πορεύονται",correct:"3-е л. мн.ч.",distractors:["3-е л. ед.ч.","2-е л. мн.ч.","1-е л. мн.ч."]}
+        ]
+    }
+}
 };
 
 // ======================================================================
-// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+// ОСНОВНАЯ ЛОГИКА
 // ======================================================================
+
 let currentLesson = 1;
 let stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
 let testState = { questions: [], index: 0, correct: 0, total: 0, answered: false };
 let flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
 let exerciseState = { type: null, questions: [], index: 0, correct: 0, total: 0 };
 
-// ======================================================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ======================================================================
 function shuffle(arr){const c=arr.slice();for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}return c;}
 function getLessonData(l){return LESSONS_DATA[l];}
 function getExercises(l,t){const d=getLessonData(l);if(!d)return[];return d.exercises[t]||[];}
@@ -151,9 +497,6 @@ function saveStats(){localStorage.setItem('greek_stats',JSON.stringify(stats));}
 function showSection(id){document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));const t=document.getElementById(id);if(t)t.classList.add('active');}
 function goToMain(){showSection('mainMenu');renderMainMenu();}
 
-// ======================================================================
-// ГЛАВНОЕ МЕНЮ
-// ======================================================================
 function renderMainMenu(){
     const grid=document.getElementById('lessonGrid');
     if(!grid)return;
@@ -170,8 +513,56 @@ function renderMainMenu(){
 }
 
 // ======================================================================
+// ОБЩИЙ СЛОВАРЬ ВСЕХ СЛОВ
+// ======================================================================
+
+function showAllVocab(){
+    showSection('allVocabSection');
+    const container=document.getElementById('allVocabContent');
+    const nouns=[], verbs=[], adj=[], pron=[], other=[];
+    for(let l=1;l<=10;l++){
+        const data=getLessonData(l);
+        if(!data||!data.vocabulary)continue;
+        for(const item of data.vocabulary){
+            const g=item.greek;
+            const t=item.translation;
+            const a=item.article||'';
+            // простое определение части речи по наличию артикля и окончанию
+            if(a && (g.includes('ος')||g.includes('α')||g.includes('η')||g.includes('ον')||g.includes('ης')||g.includes('ας'))){
+                if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
+                    if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
+                        if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
+                            // попытка классификации
+                            if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
+                                nouns.push({greek:g,article:a,translation:t});
+                            }
+                        }
+                    }
+                }
+            } else if(g.includes('ω')||g.includes('μι')||g.includes('ομαι')||g.includes('ίζω')||g.includes('εύω')){
+                verbs.push({greek:g,translation:t});
+            } else if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')){
+                adj.push({greek:g,translation:t});
+            } else if(g.includes('οὗτος')||g.includes('αὕτη')||g.includes('τοῦτο')||g.includes('ἐκεῖνος')||g.includes('αὐτός')||g.includes('ἐγώ')||g.includes('σύ')||g.includes('ἡμεῖς')||g.includes('ὑμεῖς')){
+                pron.push({greek:g,translation:t});
+            } else {
+                other.push({greek:g,translation:t});
+            }
+        }
+    }
+    let html='';
+    if(nouns.length){html+='<div class="vocab-section"><h4>Существительные</h4>';for(const item of nouns){html+='<div class="word-item"><strong>'+item.article+' '+item.greek+'</strong> — '+item.translation+'</div>';}html+='</div>';}
+    if(verbs.length){html+='<div class="vocab-section"><h4>Глаголы</h4>';for(const item of verbs){html+='<div class="word-item"><strong>'+item.greek+'</strong> — '+item.translation+'</div>';}html+='</div>';}
+    if(adj.length){html+='<div class="vocab-section"><h4>Прилагательные</h4>';for(const item of adj){html+='<div class="word-item"><strong>'+item.greek+'</strong> — '+item.translation+'</div>';}html+='</div>';}
+    if(pron.length){html+='<div class="vocab-section"><h4>Местоимения</h4>';for(const item of pron){html+='<div class="word-item"><strong>'+item.greek+'</strong> — '+item.translation+'</div>';}html+='</div>';}
+    if(other.length){html+='<div class="vocab-section"><h4>Прочее</h4>';for(const item of other){html+='<div class="word-item"><strong>'+item.greek+'</strong> — '+item.translation+'</div>';}html+='</div>';}
+    container.innerHTML=html;
+}
+
+// ======================================================================
 // УРОК
 // ======================================================================
+
 function openLesson(lesson){
     currentLesson=lesson;
     const data=getLessonData(lesson);
@@ -179,10 +570,8 @@ function openLesson(lesson){
     document.getElementById('lessonTitle').textContent=data.title;
     document.getElementById('lessonBadge').textContent='Урок '+lesson;
     showSection('lessonSection');
-    // Сброс вкладок
     document.querySelectorAll('.tab-bar button').forEach(b=>b.classList.remove('active'));
     document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
-    // Грамматика и словарь
     document.getElementById('grammarContent').innerHTML=data.grammar||'Нет данных.';
     const container=document.getElementById('vocabList');
     container.innerHTML='';
@@ -195,7 +584,6 @@ function openLesson(lesson){
             container.appendChild(div);
         }
     }
-    // Упражнения
     const hasExercises=data.exercises&&Object.values(data.exercises).some(a=>a&&a.length>0);
     const btnContainer=document.getElementById('exerciseButtons');
     btnContainer.innerHTML='';
@@ -225,7 +613,6 @@ function openLesson(lesson){
         btnContainer.innerHTML='<p>Для этого урока упражнений нет.</p>';
     }
     document.getElementById('exerciseQuestion').innerHTML='';
-    // Сброс карточек
     document.getElementById('flashcardContainer').innerHTML='<p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button>';
     flashcardState={words:[],index:0,revealed:false,correct:0,total:0};
     switchLessonPart('grammar');
@@ -241,8 +628,9 @@ function switchLessonPart(part){
 }
 
 // ======================================================================
-// УПРАЖНЕНИЯ (упрощённая версия)
+// УПРАЖНЕНИЯ (полная версия)
 // ======================================================================
+
 function startExercise(type){
     const questions=getExercises(currentLesson,type);
     if(!questions||questions.length===0){
@@ -251,6 +639,17 @@ function startExercise(type){
     }
     exerciseState={type,questions:shuffle(questions),index:0,correct:0,total:questions.length};
     showExercise();
+}
+
+function getCaseName(caseKey){
+    const map={
+        '1sg':'1-е лицо ед.ч.','2sg':'2-е лицо ед.ч.','3sg':'3-е лицо ед.ч.',
+        '1pl':'1-е лицо мн.ч.','2pl':'2-е лицо мн.ч.','3pl':'3-е лицо мн.ч.',
+        'gen_sg':'Genitivus (Род. п.)','dat_sg':'Dativus (Дат. п.)','acc_sg':'Accusativus (Вин. п.)',
+        'nom_pl':'Nominativus (Им. п.) мн.ч.','gen_pl':'Genitivus (Род. п.) мн.ч.','dat_pl':'Dativus (Дат. п.) мн.ч.','acc_pl':'Accusativus (Вин. п.) мн.ч.',
+        'gen_sg_m':'Genitivus (Род. п.) муж.р.','dat_sg_f':'Dativus (Дат. п.) жен.р.','acc_sg_n':'Accusativus (Вин. п.) ср.р.'
+    };
+    return map[caseKey]||caseKey;
 }
 
 function showExercise(){
@@ -262,27 +661,63 @@ function showExercise(){
     }
     const q=s.questions[s.index];
     const container=document.getElementById('exerciseQuestion');
-    let html='';
+    let html='<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок '+currentLesson+', упражнение '+(s.index+1)+' из '+s.total+'</div>';
     if(s.type==='declension_fill'){
-        const cn={'1sg':'1-е л. ед.ч.','2sg':'2-е л. ед.ч.','3sg':'3-е л. ед.ч.','1pl':'1-е л. мн.ч.','2pl':'2-е л. мн.ч.','3pl':'3-е л. мн.ч.','gen_sg':'Gen. ед.ч.','dat_sg':'Dat. ед.ч.','acc_sg':'Acc. ед.ч.','nom_pl':'Nom. мн.ч.','gen_pl':'Gen. мн.ч.','dat_pl':'Dat. мн.ч.','acc_pl':'Acc. мн.ч.'};
-        html='<div class="question">Вставьте форму для <b>'+(cn[q.case]||q.case)+'</b></div><div class="options">';
+        const caseName=getCaseName(q.case);
+        const wordDisplay=q.word?q.word+' ('+q.translation+')':'';
+        html+='<div class="question">Вставьте форму для <b>'+caseName+'</b> для слова <b>'+wordDisplay+'</b></div><div class="options">';
         const opts=shuffle([q.correct,...q.distractors]);
         for(const o of opts){
             html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct+'\')">'+o+'</button>';
         }
         html+='</div>';
     }else if(s.type==='translate_greek_to_russian'){
-        html='<div class="question">Переведите:</div><div style="font-size:24px;text-align:center;margin:12px 0;">'+q.greek+'</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..."><button onclick="checkTrans()">✅ Проверить</button></div>';
+        html+='<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">'+q.greek+'</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..."><button onclick="checkTrans()">✅ Проверить</button></div>';
         window._trans_q=q;
     }else if(s.type==='translate_russian_to_greek'){
         const words=shuffle(q.all_words);
-        html='<div class="question">Переведите на греческий:</div><div style="font-size:20px;text-align:center;margin:12px 0;">'+q.russian+'</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
+        html+='<div class="question">Переведите на греческий (выберите слова по порядку):</div><div style="font-size:20px;text-align:center;margin:12px 0;">'+q.russian+'</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
         for(const w of words)html+='<span class="chip" onclick="pickW(\''+w+'\')">'+w+'</span>';
         html+='</div><button class="menu-btn primary" onclick="checkTransRu()">✅ Готово</button> <button class="menu-btn" onclick="clearW()">↩️ Очистить</button>';
         window._trans_ru=q;
         window._chosen=[];
+    }else if(s.type==='case_number'){
+        html+='<div class="question">Определите падеж и число для формы: <b>'+q.form+'</b></div><div class="options">';
+        const opts=shuffle([q.correct,...q.distractors]);
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct+'\')">'+o+'</button>';
+        }
+        html+='</div>';
+    }else if(s.type==='agreement'){
+        html+='<div class="question">Вставьте прилагательное <b>'+q.adjective+'</b> в правильной форме:<br>'+q.article+' ____ '+q.noun+'</div><div class="options">';
+        const opts=shuffle([q.correct,...q.distractors]);
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct+'\')">'+o+'</button>';
+        }
+        html+='</div>';
+    }else if(s.type==='attribute_vs_predicate'){
+        html+='<div class="question">Определите, атрибутив или предикатив:<br><b>'+q.phrase+'</b></div><div class="options">';
+        const opts=shuffle([q.correct,...q.distractors]);
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct+'\')">'+o+'</button>';
+        }
+        html+='</div>';
+    }else if(s.type==='substantivation'){
+        html+='<div class="question">Что означает:<br><b>'+q.phrase+'</b> ?</div><div class="options">';
+        const opts=shuffle([q.correct,...q.distractors]);
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct+'\')">'+o+'</button>';
+        }
+        html+='</div>';
+    }else if(s.type==='article_fill'){
+        html+='<div class="question">Вставьте правильную форму артикля:<br>____ '+q.noun+'</div><div class="options">';
+        const opts=shuffle([q.correct_article,...q.distractors]);
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct_article+'\')">'+o+'</button>';
+        }
+        html+='</div>';
     }else{
-        html='<p>Тип упражнения не поддерживается.</p>';
+        html+='<p>Тип упражнения не поддерживается.</p>';
     }
     container.innerHTML=html;
 }
@@ -292,7 +727,7 @@ function answerOpt(sel,corr){
     const btns=container.querySelectorAll('.option-btn');
     const ok=sel===corr;
     btns.forEach(b=>{b.disabled=true;if(b.textContent===corr)b.classList.add('correct');if(b.textContent===sel&&!ok)b.classList.add('wrong');});
-    if(ok){stats.totalCorrect++;exerciseState.correct++;}else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:'вопрос',correct:corr,your:sel});}
+    if(ok){stats.totalCorrect++;exerciseState.correct++;}else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];const q=exerciseState.questions[exerciseState.index];stats.errors[lesson].push({word:q.word||q.greek||'вопрос',correct:corr,your:sel});}
     saveStats();
     exerciseState.index++;
     setTimeout(showExercise,1200);
@@ -325,6 +760,7 @@ function checkTransRu(){
 // ======================================================================
 // КАРТОЧКИ
 // ======================================================================
+
 function startFlashcards(){
     const data=getLessonData(currentLesson);
     if(!data||!data.vocabulary||data.vocabulary.length===0){
@@ -341,11 +777,12 @@ function showFlashcard(){
     const container=document.getElementById('flashcardContainer');
     if(s.index>=s.total){
         const p=Math.round((s.correct/s.total)*100);
-        container.innerHTML='<div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Карточки завершены!<br>Знаю: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>';
+        container.innerHTML='<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок '+currentLesson+'</div><div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Карточки завершены!<br>Знаю: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>';
         return;
     }
     const w=s.words[s.index];
-    let html='<div class="flashcard-word">'+(w.article?w.article+' ':'')+w.greek+'</div>';
+    let html='<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок '+currentLesson+', карточка '+(s.index+1)+' из '+s.total+'</div>';
+    html+='<div class="flashcard-word">'+(w.article?w.article+' ':'')+w.greek+'</div>';
     if(s.revealed){
         html+='<div class="flashcard-translation">'+w.translation+'</div><div class="flashcard-buttons"><button class="know" onclick="flashAns(true)">✅ Знаю</button><button class="dontknow" onclick="flashAns(false)">❌ Не знаю</button></div>';
     }else{
@@ -364,6 +801,7 @@ function flashAns(know){
 // ======================================================================
 // ТЕСТ
 // ======================================================================
+
 function startTest(){
     const data=getLessonData(currentLesson);
     if(!data)return;
@@ -385,25 +823,36 @@ function showTest(){
     const s=testState;
     if(s.index>=s.total){
         const p=Math.round((s.correct/s.total)*100);
-        document.getElementById('testContainer').innerHTML='<div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Тест завершён!<br>Правильно: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startTest()">🔄 Повторить</button><button class="menu-btn" onclick="cancelTest()">🔙 Назад</button>';
+        document.getElementById('testContainer').innerHTML='<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок '+currentLesson+'</div><div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Тест завершён!<br>Правильно: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startTest()">🔄 Повторить</button><button class="menu-btn" onclick="cancelTest()">🔙 Назад</button>';
         return;
     }
     const q=s.questions[s.index];
     const container=document.getElementById('testContainer');
-    let html='<div>Вопрос '+(s.index+1)+' из '+s.total+'</div>';
+    let html='<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок '+currentLesson+', вопрос '+(s.index+1)+' из '+s.total+'</div>';
     const t=q._type;
     if(t==='declension_fill'||t==='case_number'||t==='agreement'||t==='attribute_vs_predicate'||t==='substantivation'||t==='article_fill'){
         let text='';
-        if(t==='declension_fill'){const cn={'1sg':'1-е л. ед.ч.','2sg':'2-е л. ед.ч.','3sg':'3-е л. ед.ч.','1pl':'1-е л. мн.ч.','2pl':'2-е л. мн.ч.','3pl':'3-е л. мн.ч.','gen_sg':'Gen. ед.ч.','dat_sg':'Dat. ед.ч.','acc_sg':'Acc. ед.ч.','nom_pl':'Nom. мн.ч.','gen_pl':'Gen. мн.ч.','dat_pl':'Dat. мн.ч.','acc_pl':'Acc. мн.ч.'};text='Вставьте форму для <b>'+(cn[q.case]||q.case)+'</b>';}
-        else if(t==='case_number')text='Определите падеж и число: <b>'+q.form+'</b>';
-        else if(t==='agreement')text='Вставьте прилагательное <b>'+q.adjective+'</b>: '+q.article+' ____ '+q.noun;
-        else if(t==='attribute_vs_predicate')text='Атрибутив или предикатив? <b>'+q.phrase+'</b>';
-        else if(t==='substantivation')text='Что означает? <b>'+q.phrase+'</b>';
-        else if(t==='article_fill')text='Вставьте артикль: ____ '+q.noun;
+        if(t==='declension_fill'){
+            const caseName=getCaseName(q.case);
+            const wordDisplay=q.word?q.word+' ('+q.translation+')':'';
+            text='Вставьте форму для <b>'+caseName+'</b> для слова <b>'+wordDisplay+'</b>';
+        }else if(t==='case_number'){
+            text='Определите падеж и число: <b>'+q.form+'</b>';
+        }else if(t==='agreement'){
+            text='Вставьте прилагательное <b>'+q.adjective+'</b>: '+q.article+' ____ '+q.noun;
+        }else if(t==='attribute_vs_predicate'){
+            text='Атрибутив или предикатив? <b>'+q.phrase+'</b>';
+        }else if(t==='substantivation'){
+            text='Что означает? <b>'+q.phrase+'</b>';
+        }else if(t==='article_fill'){
+            text='Вставьте артикль: ____ '+q.noun;
+        }
         const corr=q.correct||q.correct_article;
         const opts=shuffle([corr,...q.distractors]);
         html+='<div class="question">'+text+'</div><div class="options">';
-        for(const o of opts)html+='<button class="option-btn" onclick="testAns(\''+o+'\',\''+corr+'\')">'+o+'</button>';
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="testAns(\''+o+'\',\''+corr+'\')">'+o+'</button>';
+        }
         html+='</div>';
     }else if(t==='translate_greek_to_russian'){
         html+='<div class="question">Переведите: <b>'+q.greek+'</b></div><div class="input-group"><input type="text" id="testTransInput" placeholder="Введите перевод..."><button onclick="testTrans()">✅ Проверить</button></div>';
@@ -420,11 +869,16 @@ function testAns(sel,corr){
     testState.answered=true;
     const ok=sel===corr;
     if(ok)testState.correct++;
-    else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];const q=testState.questions[testState.index];stats.errors[lesson].push({word:q.greek||q.form||'вопрос',correct:corr,your:sel});}
+    else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];const q=testState.questions[testState.index];stats.errors[lesson].push({word:q.word||q.greek||'вопрос',correct:corr,your:sel});}
     stats.totalCorrect+=ok?1:0;
     saveStats();
-    testState.index++;
-    setTimeout(showTest,1000);
+    const container=document.getElementById('testContainer');
+    if(ok){
+        container.innerHTML='<div class="feedback ok">✅ Верно!</div>';
+    }else{
+        container.innerHTML='<div class="feedback fail">❌ Неверно. Правильный ответ: <strong>'+corr+'</strong></div>';
+    }
+    setTimeout(()=>{testState.index++;showTest();},1500);
 }
 
 function testTrans(){
@@ -436,12 +890,14 @@ function testTrans(){
     const container=document.getElementById('testContainer');
     if(ok){testState.correct++;stats.totalCorrect++;container.innerHTML='<div class="feedback ok">✅ Верно!</div>';}
     else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:q.greek,correct:q.keywords.join(', '),your:ans});container.innerHTML='<div class="feedback fail">❌ Неверно. Ключевые слова: '+q.keywords.join(', ')+'</div>';}
-    saveStats();testState.answered=true;testState.index++;setTimeout(showTest,1500);
+    saveStats();testState.answered=true;
+    setTimeout(()=>{testState.index++;showTest();},1500);
 }
 
 // ======================================================================
 // СТАТИСТИКА И ОШИБКИ
 // ======================================================================
+
 function showStats(){
     showSection('statsSection');
     document.getElementById('statsContent').innerHTML='<div class="stat-row"><span>✅ Правильных:</span><span>'+stats.totalCorrect+'</span></div><div class="stat-row"><span>❌ Неправильных:</span><span>'+stats.totalWrong+'</span></div><div class="stat-row"><span>📚 Уроков с ошибками:</span><span>'+Object.keys(stats.errors).length+'</span></div>';
@@ -467,6 +923,7 @@ function clearAllProgress(){if(confirm('Сбросить всю статисти
 // ======================================================================
 // ЗАПУСК
 // ======================================================================
+
 loadStats();
 renderMainMenu();
 </script>
