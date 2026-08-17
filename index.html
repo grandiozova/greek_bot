@@ -1,1362 +1,474 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏛️ Древнегреческий тренажёр (уроки 1–10)</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f7f2eb; color: #2c2c2c; padding: 16px; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
-        .app { max-width: 900px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); padding: 24px 20px; }
-        h1 { font-size: 26px; color: #3d2a1e; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e5d9cf; padding-bottom: 14px; margin-bottom: 20px; flex-wrap: wrap; }
-        h1 small { font-size: 16px; font-weight: 400; color: #7a5f4b; margin-left: auto; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
-        .menu-btn { background: #f0eae4; border: none; border-radius: 14px; padding: 14px 12px; font-size: 15px; font-weight: 500; color: #2c2c2c; cursor: pointer; transition: 0.15s; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-        .menu-btn:hover { background: #e0d5cb; transform: translateY(-2px); }
-        .menu-btn.primary { background: #b7a48b; color: white; }
-        .menu-btn.primary:hover { background: #9e8a73; }
-        .menu-btn.danger { background: #d4b8b8; color: #4a2e2e; }
-        .back-btn { background: none; border: none; color: #7a5f4b; font-size: 15px; cursor: pointer; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 0; }
-        .back-btn:hover { text-decoration: underline; }
-        .section { display: none; animation: fade 0.25s ease; }
-        .section.active { display: block; }
-        @keyframes fade { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-        .card { background: #fcf9f6; border-radius: 18px; padding: 20px 18px; margin-bottom: 18px; border: 1px solid #eee5dd; }
-        .card h3 { margin-bottom: 10px; color: #4a3728; font-size: 18px; }
-        .word-list { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-        .word-item { background: #ede7e0; padding: 5px 14px; border-radius: 8px; font-size: 15px; }
-        .word-item strong { font-weight: 600; color: #3d2a1e; }
-        .grammar-text { font-size: 15px; line-height: 1.7; background: #f4eee8; padding: 16px 18px; border-radius: 14px; border-left: 4px solid #b7a48b; }
-        .grammar-text table { border-collapse: collapse; margin: 10px 0; width: 100%; font-size: 14px; }
-        .grammar-text td, .grammar-text th { border: 1px solid #c9b9ab; padding: 6px 10px; text-align: center; }
-        .question { font-size: 19px; font-weight: 500; margin-bottom: 16px; }
-        .options { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
-        .option-btn { background: #f0eae4; border: 2px solid transparent; border-radius: 40px; padding: 10px 22px; font-size: 17px; cursor: pointer; transition: 0.1s; flex: 1 0 auto; text-align: center; }
-        .option-btn:hover { background: #e2d5c9; border-color: #b7a48b; }
-        .option-btn.selected { background: #b7a48b; color: white; border-color: #b7a48b; }
-        .option-btn.correct { background: #8fbc8f; color: white; border-color: #5f8b5f; }
-        .option-btn.wrong { background: #d4a0a0; color: white; border-color: #b06a6a; }
-        .feedback { padding: 14px 18px; border-radius: 14px; margin: 14px 0; font-weight: 500; }
-        .feedback.ok { background: #e0f0e0; color: #1f5f2f; }
-        .feedback.fail { background: #f0e0e0; color: #7a2e2e; }
-        .input-group { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
-        .input-group input { flex: 1; padding: 10px 16px; border-radius: 40px; border: 2px solid #d9cec2; font-size: 17px; background: white; min-width: 180px; }
-        .input-group button { padding: 10px 24px; border: none; border-radius: 40px; background: #b7a48b; color: white; font-size: 17px; cursor: pointer; transition: 0.15s; }
-        .input-group button:hover { background: #9e8a73; }
-        .word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-        .word-bank .chip { background: #ede7e0; padding: 8px 18px; border-radius: 40px; font-size: 17px; cursor: pointer; transition: 0.1s; border: 2px solid transparent; user-select: none; }
-        .word-bank .chip:hover { background: #d9cec2; transform: scale(1.02); }
-        .word-bank .chip.picked { background: #b7a48b; color: white; cursor: default; opacity: 0.5; transform: scale(0.95); }
-        .build-area { background: #f4eee8; padding: 10px 16px; border-radius: 30px; min-height: 44px; margin: 10px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; border: 2px dashed #c9b9ab; }
-        .build-area .token { background: #b7a48b; color: white; padding: 4px 14px; border-radius: 30px; font-size: 17px; }
-        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee5dd; }
-        .stat-row:last-child { border-bottom: none; }
-        .lesson-badge { background: #3d2a1e; color: white; padding: 2px 14px; border-radius: 30px; font-size: 14px; display: inline-block; margin-bottom: 10px; }
-        .center { text-align: center; }
-        .mt-12 { margin-top: 12px; }
-        .mb-12 { margin-bottom: 12px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .progress-text { font-size: 14px; color: #7a5f4b; }
-        .tab-bar { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-        .tab-bar button { flex: 1; min-width: 80px; padding: 10px 8px; border: none; border-radius: 40px; background: #f0eae4; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.15s; }
-        .tab-bar button.active { background: #b7a48b; color: white; }
-        .tab-bar button:hover { background: #e0d5cb; }
-        .tab-bar button.active:hover { background: #9e8a73; }
-        .hidden { display: none !important; }
-        .error-item { background: #fcf1f1; padding: 8px 14px; border-radius: 12px; margin: 4px 0; border-left: 4px solid #d4a0a0; }
-        .clear-btn { background: none; border: 1px solid #d4a0a0; border-radius: 30px; padding: 6px 18px; color: #7a2e2e; cursor: pointer; font-size: 14px; margin-top: 8px; }
-        .clear-btn:hover { background: #d4a0a0; color: white; }
-        .flashcard-area { text-align: center; padding: 20px 0; }
-        .flashcard-word { font-size: 40px; font-weight: 600; color: #3d2a1e; margin: 20px 0; }
-        .flashcard-translation { font-size: 28px; color: #5f4a38; margin: 16px 0; }
-        .flashcard-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .flashcard-buttons button { padding: 12px 32px; border: none; border-radius: 40px; font-size: 18px; cursor: pointer; transition: 0.15s; }
-        .flashcard-buttons .show { background: #b7a48b; color: white; }
-        .flashcard-buttons .show:hover { background: #9e8a73; }
-        .flashcard-buttons .know { background: #8fbc8f; color: white; }
-        .flashcard-buttons .know:hover { background: #6f9f6f; }
-        .flashcard-buttons .dontknow { background: #d4a0a0; color: white; }
-        .flashcard-buttons .dontknow:hover { background: #b06a6a; }
-        @media (max-width: 600px) {
-            .app { padding: 16px 12px; }
-            .menu-grid { grid-template-columns: 1fr; }
-            .options { flex-direction: column; }
-            .option-btn { width: 100%; }
-            .input-group input { min-width: 140px; }
-            .tab-bar button { min-width: 60px; font-size: 13px; padding: 8px 6px; }
-            .flashcard-word { font-size: 30px; }
-            .flashcard-translation { font-size: 22px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏛️ Древнегреческий тренажёр</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f7f2eb;color:#2c2c2c;padding:16px;display:flex;justify-content:center}
+.app{max-width:900px;width:100%;background:#fff;border-radius:32px;box-shadow:0 12px 40px rgba(0,0,0,0.08);padding:24px 20px}
+h1{font-size:26px;color:#3d2a1e;border-bottom:2px solid #e5d9cf;padding-bottom:14px;margin-bottom:20px}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.menu-btn{background:#f0eae4;border:none;border-radius:14px;padding:14px 12px;font-size:15px;font-weight:500;cursor:pointer;transition:0.15s;text-align:center}
+.menu-btn:hover{background:#e0d5cb;transform:translateY(-2px)}
+.menu-btn.primary{background:#b7a48b;color:#fff}
+.menu-btn.primary:hover{background:#9e8a73}
+.menu-btn.danger{background:#d4b8b8;color:#4a2e2e}
+.back-btn{background:0;border:0;color:#7a5f4b;font-size:15px;cursor:pointer;margin-bottom:14px}
+.back-btn:hover{text-decoration:underline}
+.section{display:none}
+.section.active{display:block}
+.card{background:#fcf9f6;border-radius:18px;padding:20px 18px;margin-bottom:18px;border:1px solid #eee5dd}
+.card h3{margin-bottom:10px;color:#4a3728;font-size:18px}
+.word-list{display:flex;flex-direction:column;gap:4px}
+.word-item{background:#ede7e0;padding:5px 14px;border-radius:8px;font-size:15px}
+.word-item strong{font-weight:600;color:#3d2a1e}
+.grammar-text{font-size:15px;line-height:1.7;background:#f4eee8;padding:16px 18px;border-radius:14px;border-left:4px solid #b7a48b}
+.grammar-text table{border-collapse:collapse;margin:10px 0;width:100%;font-size:14px}
+.grammar-text td,.grammar-text th{border:1px solid #c9b9ab;padding:6px 10px;text-align:center}
+.question{font-size:19px;font-weight:500;margin-bottom:16px}
+.options{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.option-btn{background:#f0eae4;border:2px solid transparent;border-radius:40px;padding:10px 22px;font-size:17px;cursor:pointer;transition:0.1s;flex:1;text-align:center}
+.option-btn:hover{background:#e2d5c9;border-color:#b7a48b}
+.option-btn.correct{background:#8fbc8f;color:#fff;border-color:#5f8b5f}
+.option-btn.wrong{background:#d4a0a0;color:#fff;border-color:#b06a6a}
+.feedback{padding:14px 18px;border-radius:14px;margin:14px 0;font-weight:500}
+.feedback.ok{background:#e0f0e0;color:#1f5f2f}
+.feedback.fail{background:#f0e0e0;color:#7a2e2e}
+.input-group{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.input-group input{flex:1;padding:10px 16px;border-radius:40px;border:2px solid #d9cec2;font-size:17px;min-width:180px}
+.input-group button{padding:10px 24px;border:0;border-radius:40px;background:#b7a48b;color:#fff;font-size:17px;cursor:pointer}
+.input-group button:hover{background:#9e8a73}
+.build-area{background:#f4eee8;padding:10px 16px;border-radius:30px;min-height:44px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px;border:2px dashed #c9b9ab}
+.build-area .token{background:#b7a48b;color:#fff;padding:4px 14px;border-radius:30px;font-size:17px}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.word-bank .chip{background:#ede7e0;padding:8px 18px;border-radius:40px;font-size:17px;cursor:pointer;border:2px solid transparent;user-select:none}
+.word-bank .chip:hover{background:#d9cec2;transform:scale(1.02)}
+.word-bank .chip.picked{background:#b7a48b;color:#fff;opacity:0.5;transform:scale(0.95)}
+.tab-bar{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tab-bar button{flex:1;min-width:80px;padding:10px 8px;border:0;border-radius:40px;background:#f0eae4;font-size:14px;font-weight:500;cursor:pointer}
+.tab-bar button.active{background:#b7a48b;color:#fff}
+.tab-bar button:hover{background:#e0d5cb}
+.hidden{display:none!important}
+.flashcard-area{text-align:center;padding:20px 0}
+.flashcard-word{font-size:40px;font-weight:600;color:#3d2a1e;margin:20px 0}
+.flashcard-translation{font-size:28px;color:#5f4a38;margin:16px 0}
+.flashcard-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.flashcard-buttons button{padding:12px 32px;border:0;border-radius:40px;font-size:18px;cursor:pointer}
+.flashcard-buttons .show{background:#b7a48b;color:#fff}
+.flashcard-buttons .know{background:#8fbc8f;color:#fff}
+.flashcard-buttons .dontknow{background:#d4a0a0;color:#fff}
+@media(max-width:600px){.app{padding:16px 12px}.menu-grid{grid-template-columns:1fr}.options{flex-direction:column}.option-btn{width:100%}}
+</style>
 </head>
 <body>
 <div class="app" id="app">
-    <h1>🏛️ Древнегреческий <small>тренажёр (уроки 1–10)</small></h1>
 
-    <!-- ГЛАВНОЕ МЕНЮ -->
-    <div id="mainMenu" class="section active">
-        <p style="margin-bottom:14px; color:#4a3728;">Выберите урок:</p>
-        <div class="menu-grid" id="lessonGrid"></div>
-        <hr style="margin:20px 0; border:1px solid #eee5dd;">
-        <div class="menu-grid" style="grid-template-columns:1fr 1fr;">
-            <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
-            <button class="menu-btn" onclick="showErrors()">🔄 Ошибки</button>
-            <button class="menu-btn danger" onclick="clearAllProgress()">🗑️ Сброс прогресса</button>
+<h1>🏛️ Древнегреческий <small>тренажёр (уроки 1–10)</small></h1>
+
+<!-- ГЛАВНОЕ МЕНЮ -->
+<div id="mainMenu" class="section active">
+    <p style="margin-bottom:14px;color:#4a3728;">Выберите урок:</p>
+    <div class="menu-grid" id="lessonGrid"></div>
+    <hr style="margin:20px 0;border:1px solid #eee5dd;">
+    <div class="menu-grid" style="grid-template-columns:1fr 1fr;">
+        <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
+        <button class="menu-btn" onclick="showErrors()">🔄 Ошибки</button>
+        <button class="menu-btn danger" onclick="clearAllProgress()">🗑️ Сброс прогресса</button>
+    </div>
+</div>
+
+<!-- УРОК -->
+<div id="lessonSection" class="section">
+    <button class="back-btn" onclick="goToMain()">← Назад</button>
+    <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
+    <div class="lesson-badge" id="lessonBadge" style="background:#3d2a1e;color:#fff;padding:2px 14px;border-radius:30px;font-size:14px;display:inline-block;margin-bottom:10px;">Урок 1</div>
+    <div class="tab-bar">
+        <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')">📚 Грамматика</button>
+        <button data-part="vocab" onclick="switchLessonPart('vocab')">📖 Словарь</button>
+        <button data-part="exercise" onclick="switchLessonPart('exercise')">🔤 Упражнения</button>
+        <button data-part="flashcards" onclick="switchLessonPart('flashcards')">📇 Карточки</button>
+        <button data-part="test" onclick="startTest()">📝 Тест (7)</button>
+    </div>
+    <div id="partGrammar" class="section active"><div class="card"><h3>Грамматика</h3><div class="grammar-text" id="grammarContent"></div></div></div>
+    <div id="partVocab" class="section"><div class="card"><h3>Словарь урока</h3><div class="word-list" id="vocabList"></div></div></div>
+    <div id="partExercise" class="section">
+        <div class="card">
+            <h3>Упражнения</h3>
+            <div id="exerciseContainer"><div id="exerciseButtons"></div></div>
+            <div id="exerciseQuestion" style="margin-top:16px;"></div>
         </div>
     </div>
+    <div id="partFlashcards" class="section"><div class="card"><h3>📇 Карточки</h3><div id="flashcardContainer" class="flashcard-area"><p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button></div></div></div>
+</div>
 
-    <!-- УРОК -->
-    <div id="lessonSection" class="section">
-        <button class="back-btn" onclick="goToMain()">← Назад</button>
-        <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
-        <div class="lesson-badge" id="lessonBadge">Урок 1</div>
+<!-- СТАТИСТИКА -->
+<div id="statsSection" class="section"><button class="back-btn" onclick="goToMain()">← Назад</button><div class="card"><h3>📊 Статистика</h3><div id="statsContent"></div></div></div>
 
-        <div class="tab-bar">
-            <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')">📚 Грамматика</button>
-            <button data-part="vocab" onclick="switchLessonPart('vocab')">📖 Словарь</button>
-            <button data-part="exercise" onclick="switchLessonPart('exercise')">🔤 Упражнения</button>
-            <button data-part="flashcards" onclick="switchLessonPart('flashcards')">📇 Карточки</button>
-            <button data-part="test" onclick="startTest()">📝 Тест (7)</button>
-        </div>
+<!-- ОШИБКИ -->
+<div id="errorsSection" class="section"><button class="back-btn" onclick="goToMain()">← Назад</button><div class="card"><h3>🔄 Ошибки</h3><div id="errorsContent"></div></div></div>
 
-        <!-- Грамматика -->
-        <div id="partGrammar" class="section active">
-            <div class="card"><h3>Грамматика</h3><div class="grammar-text" id="grammarContent"></div></div>
-        </div>
+<!-- ТЕСТ -->
+<div id="testSection" class="section"><button class="back-btn" onclick="cancelTest()">← Выйти</button><div class="card"><h3>📝 Тест</h3><div id="testContainer"></div></div></div>
 
-        <!-- Словарь -->
-        <div id="partVocab" class="section">
-            <div class="card"><h3>Словарь урока</h3><div class="word-list" id="vocabList"></div></div>
-        </div>
-
-        <!-- Упражнения -->
-        <div id="partExercise" class="section">
-            <div class="card">
-                <div class="flex-between">
-                    <h3>Упражнения</h3>
-                    <span class="progress-text" id="exerciseProgress"></span>
-                </div>
-                <div id="exerciseContainer">
-                    <p style="margin-bottom:8px;">Выберите тип упражнения:</p>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px;" id="exerciseButtons">
-                        <!-- Кнопки добавляются динамически -->
-                    </div>
-                </div>
-                <div id="exerciseQuestion" style="margin-top:16px;"></div>
-            </div>
-        </div>
-
-        <!-- Карточки -->
-        <div id="partFlashcards" class="section">
-            <div class="card">
-                <div class="flex-between">
-                    <h3>📇 Карточки для запоминания</h3>
-                    <span class="progress-text" id="flashcardProgress"></span>
-                </div>
-                <div id="flashcardContainer" class="flashcard-area">
-                    <p>Нажмите «Начать карточки» для тренировки.</p>
-                    <button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- СТАТИСТИКА -->
-    <div id="statsSection" class="section">
-        <button class="back-btn" onclick="goToMain()">← Назад</button>
-        <div class="card"><h3>📊 Ваша статистика</h3><div id="statsContent"></div></div>
-    </div>
-
-    <!-- ОШИБКИ -->
-    <div id="errorsSection" class="section">
-        <button class="back-btn" onclick="goToMain()">← Назад</button>
-        <div class="card"><h3>🔄 Ошибки для повторения</h3><div id="errorsContent"></div></div>
-    </div>
-
-    <!-- ТЕСТ -->
-    <div id="testSection" class="section">
-        <button class="back-btn" onclick="cancelTest()">← Выйти из теста</button>
-        <div class="card"><h3>📝 Тест</h3><div id="testContainer"></div></div>
-    </div>
 </div>
 
 <script>
 // ======================================================================
-// ДАННЫЕ УРОКОВ 1–10 (ПО УЧЕБНИКУ МЕЙЧЕНА)
+// ДАННЫЕ УРОКОВ 1–10 (краткая версия)
 // ======================================================================
 const LESSONS_DATA = {
-    1: {
-        title: "Алфавит и фонетика",
-        grammar: `<b>Греческий алфавит (24 буквы):</b><br>
-        Α α, Β β, Γ γ, Δ δ, Ε ε, Ζ ζ, Η η, Θ θ, Ι ι, Κ κ, Λ λ, Μ μ, Ν ν, Ξ ξ, Ο ο, Π π, Ρ ρ, Σ σ/ς, Τ τ, Υ υ, Φ φ, Χ χ, Ψ ψ, Ω ω.<br><br>
-        <b>Дифтонги:</b> αι, ει, οι, υι, αυ, ευ, ου, ηυ.<br>
-        <b>Придыхания:</b> тонкое (') и густое (') — для слов, начинающихся с гласной.<br>
-        <b>Ударение:</b> острое (´), тупое (`), облечённое (῀) — ставится над гласными.`,
-        vocabulary: [
-            { greek: "Α α", translation: "альфа [а]" },
-            { greek: "Β β", translation: "бета [б]" },
-            { greek: "Γ γ", translation: "гамма [г]" },
-            { greek: "Δ δ", translation: "дельта [д]" },
-            { greek: "Ε ε", translation: "эпсилон [э]" },
-            { greek: "Ζ ζ", translation: "дзета [дз]" },
-            { greek: "Η η", translation: "эта [э]" },
-            { greek: "Θ θ", translation: "тета [т/ф]" },
-            { greek: "Ι ι", translation: "йота [и]" },
-            { greek: "Κ κ", translation: "каппа [к]" },
-            { greek: "Λ λ", translation: "лямбда [л]" },
-            { greek: "Μ μ", translation: "мю [м]" },
-            { greek: "Ν ν", translation: "ню [н]" },
-            { greek: "Ξ ξ", translation: "кси [кс]" },
-            { greek: "Ο ο", translation: "омикрон [о]" },
-            { greek: "Π π", translation: "пи [п]" },
-            { greek: "Ρ ρ", translation: "ро [р]" },
-            { greek: "Σ σ/ς", translation: "сигма [с]" },
-            { greek: "Τ τ", translation: "тау [т]" },
-            { greek: "Υ υ", translation: "юпсилон [ю/и]" },
-            { greek: "Φ φ", translation: "фи [ф]" },
-            { greek: "Χ χ", translation: "хи [х]" },
-            { greek: "Ψ ψ", translation: "пси [пс]" },
-            { greek: "Ω ω", translation: "омега [о]" }
-        ],
-        exercises: {}
-    },
-    2: {
-        title: "Правила ударения",
-        grammar: `<b>Общие правила:</b><br>
-        Ударение может стоять только на одном из трёх последних слогов.<br>
-        Острое (´) — может быть на любом из трёх слогов.<br>
-        Облечённое (῀) — только на первом или втором слоге от конца.<br>
-        Тупое (`) — только на последнем слоге.<br>
-        <b>Специальные правила:</b><br>
-        Для глаголов: ударение ставится как можно дальше от конца.<br>
-        Для существительных и прилагательных: ударение сохраняется в косвенных падежах, если позволяют общие правила.`,
-        vocabulary: [
-            { greek: "λόγος", translation: "слово" },
-            { greek: "ἄνθρωπος", translation: "человек" },
-            { greek: "λύω", translation: "развязываю" }
-        ],
-        exercises: {}
-    },
-    3: {
-        title: "Глаголы на -ω (настоящее время)",
-        grammar: `Глаголы в настоящем времени имеют окончания:<br>
-        <b>Ед.ч.:</b> -ω, -εις, -ει<br>
-        <b>Мн.ч.:</b> -ομεν, -ετε, -ουσι(ν)<br><br>
-        <b>Спряжение λύω:</b><br>
-        <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>1-е</td><td>λύω</td><td>λύομεν</td></tr>
-        <tr><td>2-е</td><td>λύεις</td><td>λύετε</td></tr>
-        <tr><td>3-е</td><td>λύει</td><td>λύουσι(ν)</td></tr></table>`,
-        vocabulary: [
-            { greek: "βλέπω", translation: "вижу" },
-            { greek: "γινώσκω", translation: "знаю" },
-            { greek: "γράφω", translation: "пишу" },
-            { greek: "διδάσκω", translation: "учу" },
-            { greek: "ἔχω", translation: "имею" },
-            { greek: "λαμβάνω", translation: "беру, получаю" },
-            { greek: "λέγω", translation: "говорю" },
-            { greek: "λύω", translation: "развязываю, освобождаю" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "1sg", correct: "λύω", distractors: ["λύεις", "λύει", "λύομεν"] },
-                { case: "2sg", correct: "λύεις", distractors: ["λύω", "λύει", "λύετε"] },
-                { case: "3sg", correct: "λύει", distractors: ["λύω", "λύεις", "λύουσι"] },
-                { case: "1pl", correct: "λύομεν", distractors: ["λύω", "λύετε", "λύουσι"] },
-                { case: "2pl", correct: "λύετε", distractors: ["λύομεν", "λύει", "λύουσι"] },
-                { case: "3pl", correct: "λύουσι(ν)", distractors: ["λύομεν", "λύετε", "λύει"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "βλέπω", keywords: ["вижу"] },
-                { greek: "γινώσκεις", keywords: ["знаешь"] },
-                { greek: "γράφει", keywords: ["пишет"] },
-                { greek: "διδάσκομεν", keywords: ["учим"] },
-                { greek: "ἔχετε", keywords: ["имеете"] },
-                { greek: "λαμβάνουσι", keywords: ["берут"] },
-                { greek: "λέγομεν", keywords: ["говорим"] },
-                { greek: "λύει", keywords: ["развязывает"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "я вижу", correct_sequence: ["βλέπω"], all_words: ["βλέπω", "γινώσκω", "γράφω"] },
-                { russian: "ты знаешь", correct_sequence: ["γινώσκεις"], all_words: ["γινώσκεις", "γράφεις", "βλέπεις"] },
-                { russian: "он пишет", correct_sequence: ["γράφει"], all_words: ["γράφει", "λέγει", "λύει"] },
-                { russian: "мы учим", correct_sequence: ["διδάσκομεν"], all_words: ["διδάσκομεν", "γράφομεν", "βλέπομεν"] },
-                { russian: "вы имеете", correct_sequence: ["ἔχετε"], all_words: ["ἔχετε", "λύετε", "λέγετε"] }
-            ],
-            case_number: [
-                { form: "λύεις", correct: "2-е л. ед.ч.", distractors: ["1-е л. ед.ч.", "3-е л. ед.ч.", "2-е л. мн.ч."] },
-                { form: "λύομεν", correct: "1-е л. мн.ч.", distractors: ["1-е л. ед.ч.", "2-е л. мн.ч.", "3-е л. мн.ч."] },
-                { form: "λύουσι", correct: "3-е л. мн.ч.", distractors: ["3-е л. ед.ч.", "1-е л. мн.ч.", "2-е л. мн.ч."] }
-            ]
-        }
-    },
-    4: {
-        title: "2-е склонение (мужской и средний род)",
-        grammar: `<b>2-е склонение (муж.род -ος, ср.род -ον)</b><br><br>
-        <b>Склонение ἄνθρωπος (человек):</b><br>
-        <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>Nom.</td><td>ἄνθρωπος</td><td>ἄνθρωποι</td></tr>
-        <tr><td>Gen.</td><td>ἀνθρώπου</td><td>ἀνθρώπων</td></tr>
-        <tr><td>Dat.</td><td>ἀνθρώπῳ</td><td>ἀνθρώποις</td></tr>
-        <tr><td>Acc.</td><td>ἄνθρωπον</td><td>ἀνθρώπους</td></tr>
-        <tr><td>Voc.</td><td>ἄνθρωπε</td><td>ἄνθρωποι</td></tr></table><br>
-        <b>Средний род (δῶρον, дар):</b><br>
-        <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>Nom./Acc./Voc.</td><td>δῶρον</td><td>δῶρα</td></tr>
-        <tr><td>Gen.</td><td>δώρου</td><td>δώρων</td></tr>
-        <tr><td>Dat.</td><td>δώρῳ</td><td>δώροις</td></tr></table>`,
-        vocabulary: [
-            { greek: "ἄνθρωπος", article: "ὁ", translation: "человек" },
-            { greek: "υἱός", article: "ὁ", translation: "сын" },
-            { greek: "δῶρον", article: "τό", translation: "дар" },
-            { greek: "λόγος", article: "ὁ", translation: "слово" },
-            { greek: "οἶκος", article: "ὁ", translation: "дом" },
-            { greek: "ἱερόν", article: "τό", translation: "храм" },
-            { greek: "ἀπόστολος", article: "ὁ", translation: "апостол" },
-            { greek: "δοῦλος", article: "ὁ", translation: "раб, слуга" },
-            { greek: "τέκνον", article: "τό", translation: "дитя, ребенок" },
-            { greek: "οὐρανός", article: "ὁ", translation: "небо" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "gen_sg", correct: "ἀνθρώπου", distractors: ["ἀνθρώπων", "ἀνθρώπῳ", "ἄνθρωπον"] },
-                { case: "dat_sg", correct: "ἀνθρώπῳ", distractors: ["ἀνθρώπου", "ἀνθρώποις", "ἄνθρωπον"] },
-                { case: "acc_sg", correct: "ἄνθρωπον", distractors: ["ἀνθρώπου", "ἀνθρώπων", "ἀνθρώποις"] },
-                { case: "nom_pl", correct: "ἄνθρωποι", distractors: ["ἀνθρώπους", "ἀνθρώπων", "ἀνθρώποις"] },
-                { case: "gen_pl", correct: "ἀνθρώπων", distractors: ["ἀνθρώπου", "ἀνθρώποις", "ἄνθρωποι"] },
-                { case: "dat_pl", correct: "ἀνθρώποις", distractors: ["ἀνθρώπων", "ἀνθρώπῳ", "ἀνθρώπους"] },
-                { case: "acc_pl", correct: "ἀνθρώπους", distractors: ["ἀνθρώποις", "ἀνθρώπων", "ἄνθρωποι"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "ὁ λόγος", keywords: ["слово"] },
-                { greek: "τοῦ ἀνθρώπου", keywords: ["человека"] },
-                { greek: "τῷ υἱῷ", keywords: ["сыну"] },
-                { greek: "τὸν οἶκον", keywords: ["дом"] },
-                { greek: "οἱ ἀπόστολοι", keywords: ["апостолы"] },
-                { greek: "τῶν δούλων", keywords: ["рабов"] },
-                { greek: "τοῖς τέκνοις", keywords: ["детям"] },
-                { greek: "τοὺς οὐρανούς", keywords: ["небеса"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "слово", correct_sequence: ["λόγος"], all_words: ["λόγος", "οἶκος", "υἱός"] },
-                { russian: "человека (Gen.)", correct_sequence: ["ἀνθρώπου"], all_words: ["ἀνθρώπου", "ἄνθρωπον", "ἀνθρώπῳ"] },
-                { russian: "сыну", correct_sequence: ["υἱῷ"], all_words: ["υἱῷ", "υἱόν", "υἱοῦ"] },
-                { russian: "дом (Acc.)", correct_sequence: ["οἶκον"], all_words: ["οἶκον", "οἶκου", "οἴκῳ"] }
-            ],
-            case_number: [
-                { form: "ἀνθρώπων", correct: "Gen. мн.ч.", distractors: ["Gen. ед.ч.", "Dat. мн.ч.", "Acc. мн.ч."] },
-                { form: "δῶρα", correct: "Nom./Acc. мн.ч.", distractors: ["Nom. ед.ч.", "Gen. мн.ч.", "Dat. мн.ч."] },
-                { form: "υἱόν", correct: "Acc. ед.ч.", distractors: ["Nom. ед.ч.", "Gen. ед.ч.", "Dat. ед.ч."] },
-                { form: "οἴκοις", correct: "Dat. мн.ч.", distractors: ["Dat. ед.ч.", "Gen. мн.ч.", "Acc. мн.ч."] }
-            ]
-        }
-    },
-    5: {
-        title: "1-е склонение (женский род)",
-        grammar: `<b>1-е склонение (жен.род на -α, -η)</b><br><br>
-        <b>Склонение ὥρα (час):</b><br>
-        <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>Nom.</td><td>ὥρα</td><td>ὥραι</td></tr>
-        <tr><td>Gen.</td><td>ὥρας</td><td>ὡρῶν</td></tr>
-        <tr><td>Dat.</td><td>ὥρᾳ</td><td>ὥραις</td></tr>
-        <tr><td>Acc.</td><td>ὥραν</td><td>ὥρας</td></tr>
-        <tr><td>Voc.</td><td>ὥρα</td><td>ὥραι</td></tr></table><br>
-        <b>Особенности:</b> в Gen. и Dat. ед.ч. альфа переходит в эта (для нечистой альфы).<br>
-        Чистая альфа (после ε, ι, ρ) сохраняется.`,
-        vocabulary: [
-            { greek: "ὥρα", article: "ἡ", translation: "час" },
-            { greek: "ἀλήθεια", article: "ἡ", translation: "истина" },
-            { greek: "δόξα", article: "ἡ", translation: "слава" },
-            { greek: "γραφή", article: "ἡ", translation: "писание" },
-            { greek: "ψυχή", article: "ἡ", translation: "душа" },
-            { greek: "ζωή", article: "ἡ", translation: "жизнь" },
-            { greek: "βασιλεία", article: "ἡ", translation: "царство" },
-            { greek: "ἡμέρα", article: "ἡ", translation: "день" },
-            { greek: "παραβολή", article: "ἡ", translation: "притча" },
-            { greek: "ἐκκλησία", article: "ἡ", translation: "церковь" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "gen_sg", correct: "ὥρας", distractors: ["ὡρῶν", "ὥρᾳ", "ὥραν"] },
-                { case: "dat_sg", correct: "ὥρᾳ", distractors: ["ὥρας", "ὥραν", "ὥραις"] },
-                { case: "acc_sg", correct: "ὥραν", distractors: ["ὥρας", "ὥρᾳ", "ὡρῶν"] },
-                { case: "nom_pl", correct: "ὥραι", distractors: ["ὥρας", "ὥραις", "ὡρῶν"] },
-                { case: "gen_pl", correct: "ὡρῶν", distractors: ["ὥρας", "ὥρᾳ", "ὥραις"] },
-                { case: "dat_pl", correct: "ὥραις", distractors: ["ὡρῶν", "ὥραι", "ὥραν"] },
-                { case: "acc_pl", correct: "ὥρας", distractors: ["ὥραις", "ὡρῶν", "ὥραι"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "ἡ ἀλήθεια", keywords: ["истина"] },
-                { greek: "τῆς δόξης", keywords: ["славы"] },
-                { greek: "τῇ ψυχῇ", keywords: ["душе"] },
-                { greek: "τὴν ζωήν", keywords: ["жизнь"] },
-                { greek: "αἱ βασιλεῖαι", keywords: ["царства"] },
-                { greek: "τῶν ἡμερῶν", keywords: ["дней"] },
-                { greek: "ταῖς παραβολαῖς", keywords: ["притчам"] },
-                { greek: "τὰς ἐκκλησίας", keywords: ["церкви"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "истина", correct_sequence: ["ἀλήθεια"], all_words: ["ἀλήθεια", "δόξα", "ὥρα", "ζωή"] },
-                { russian: "славы (Gen.)", correct_sequence: ["δόξης"], all_words: ["δόξης", "δόξαν", "δόξαις", "δόξαι"] },
-                { russian: "жизнь (Acc.)", correct_sequence: ["ζωήν"], all_words: ["ζωήν", "ζωή", "ζωῆς", "ζωαί"] },
-                { russian: "церквам (Dat.)", correct_sequence: ["ἐκκλησίαις"], all_words: ["ἐκκλησίαις", "ἐκκλησίας", "ἐκκλησιῶν", "ἐκκλησίαι"] }
-            ],
-            case_number: [
-                { form: "ὡρῶν", correct: "Gen. мн.ч.", distractors: ["Gen. ед.ч.", "Dat. мн.ч.", "Acc. мн.ч."] },
-                { form: "δόξαις", correct: "Dat. мн.ч.", distractors: ["Dat. ед.ч.", "Nom. мн.ч.", "Acc. мн.ч."] },
-                { form: "βασιλείαν", correct: "Acc. ед.ч.", distractors: ["Nom. ед.ч.", "Gen. ед.ч.", "Dat. ед.ч."] },
-                { form: "ἡμέραι", correct: "Nom. мн.ч.", distractors: ["Nom. ед.ч.", "Gen. мн.ч.", "Acc. мн.ч."] }
-            ]
-        }
-    },
-    6: {
-        title: "Прилагательные 1-2 склонения, артикль",
-        grammar: `<b>Прилагательные 1-2 склонения:</b> муж. -ος, жен. -α/-η, ср. -ον.<br><br>
-        <b>Пример: ἀγαθός, -ή, -όν (хороший)</b><br>
-        <table><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr>
-        <tr><td>Nom.</td><td>ἀγαθός</td><td>ἀγαθή</td><td>ἀγαθόν</td></tr>
-        <tr><td>Gen.</td><td>ἀγαθοῦ</td><td>ἀγαθῆς</td><td>ἀγαθοῦ</td></tr>
-        <tr><td>Dat.</td><td>ἀγαθῷ</td><td>ἀγαθῇ</td><td>ἀγαθῷ</td></tr>
-        <tr><td>Acc.</td><td>ἀγαθόν</td><td>ἀγαθήν</td><td>ἀγαθόν</td></tr>
-        <tr><td>Voc.</td><td>ἀγαθέ</td><td>ἀγαθή</td><td>ἀγαθόν</td></tr></table><br>
-        <b>Артикль:</b> ὁ, ἡ, τό (определённый)<br>
-        <b>Атрибутив:</b> ὁ ἀγαθὸς ἄνθρωπος — хороший человек<br>
-        <b>Предикатив:</b> ὁ ἄνθρωπος ἀγαθός — человек хорош<br>
-        <b>Субстантивация:</b> οἱ ἀγαθοί — хорошие (люди)`,
-        vocabulary: [
-            { greek: "ἀγαθός, ή, όν", translation: "хороший, добрый" },
-            { greek: "κακός, ή, όν", translation: "плохой, злой" },
-            { greek: "καλός, ή, όν", translation: "красивый" },
-            { greek: "δίκαιος, α, ον", translation: "праведный" },
-            { greek: "πιστός, ή, όν", translation: "верный" },
-            { greek: "μικρός, ά, όν", translation: "маленький" },
-            { greek: "ἔσχατος, η, ον", translation: "последний" },
-            { greek: "νεκρός, ά, όν", translation: "мёртвый" },
-            { greek: "πρῶτος, η, ον", translation: "первый" },
-            { greek: "ἅγιος, α, ον", translation: "святой" },
-            { greek: "πονηρός, ά, όν", translation: "злой" }
-        ],
-        exercises: {
-            agreement: [
-                { noun: "λόγος", article: "ὁ", adjective: "ἀγαθός", correct: "ἀγαθός", distractors: ["ἀγαθόν", "ἀγαθοῦ", "ἀγαθῷ"] },
-                { noun: "ψυχή", article: "ἡ", adjective: "πιστός", correct: "πιστή", distractors: ["πιστός", "πιστόν", "πιστῆς"] },
-                { noun: "δῶρον", article: "τό", adjective: "καλός", correct: "καλόν", distractors: ["καλός", "καλή", "καλοῦ"] },
-                { noun: "ἄνθρωπος", article: "ὁ", adjective: "δίκαιος", correct: "δίκαιος", distractors: ["δικαίου", "δίκαιον", "δικαίῳ"] }
-            ],
-            attribute_vs_predicate: [
-                { phrase: "ὁ ἀγαθὸς ἄνθρωπος", correct: "атрибутив", distractors: ["предикатив"] },
-                { phrase: "ὁ ἄνθρωπος ἀγαθός", correct: "предикатив", distractors: ["атрибутив"] },
-                { phrase: "τὸ καλὸν δῶρον", correct: "атрибутив", distractors: ["предикатив"] },
-                { phrase: "τὸ δῶρον καλόν", correct: "предикатив", distractors: ["атрибутив"] }
-            ],
-            substantivation: [
-                { phrase: "οἱ ἀγαθοί", correct: "хорошие (люди)", distractors: ["хорошие (вещи)", "хорошие (женщины)", "добро"] },
-                { phrase: "τὸ καλόν", correct: "красивое (дело/вещь)", distractors: ["красивый (человек)", "красивая (женщина)", "красота"] },
-                { phrase: "αἱ πισταί", correct: "верные (женщины)", distractors: ["верные (мужчины)", "вера", "верные (вещи)"] }
-            ],
-            article_fill: [
-                { noun: "ἀγαθῷ ἀνθρώπῳ", correct_article: "τῷ", distractors: ["τόν", "τοῦ", "τήν"] },
-                { noun: "καλῆς ψυχῆς", correct_article: "τῆς", distractors: ["τήν", "τῇ", "τοῦ"] },
-                { noun: "δίκαιον λόγον", correct_article: "τόν", distractors: ["τοῦ", "τῷ", "τήν"] }
-            ],
-            declension_fill: [],
-            translate_greek_to_russian: [],
-            translate_russian_to_greek: [],
-            case_number: []
-        }
-    },
-    7: {
-        title: "Существительные муж. рода 1-го скл., предлоги",
-        grammar: `<b>Мужской род 1-го склонения:</b> окончания -ης, -ας (Nom.Sing.)<br><br>
-        <b>Пример: προφήτης (пророк)</b><br>
-        <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>Nom.</td><td>προφήτης</td><td>προφῆται</td></tr>
-        <tr><td>Gen.</td><td>προφήτου</td><td>προφητῶν</td></tr>
-        <tr><td>Dat.</td><td>προφήτῃ</td><td>προφήταις</td></tr>
-        <tr><td>Acc.</td><td>προφήτην</td><td>προφήτας</td></tr>
-        <tr><td>Voc.</td><td>προφῆτα</td><td>προφῆται</td></tr></table><br>
-        <b>Предлоги:</b> ἀπό + Gen. (от), εἰς + Acc. (в), ἐκ + Gen. (из), ἐν + Dat. (в), μετά + Gen. (с) / + Acc. (после), πρός + Acc. (к).`,
-        vocabulary: [
-            { greek: "προφήτης", article: "ὁ", translation: "пророк" },
-            { greek: "νεανίας", article: "ὁ", translation: "юноша" },
-            { greek: "μαθητής", article: "ὁ", translation: "ученик" },
-            { greek: "βαπτιστής", article: "ὁ", translation: "креститель" },
-            { greek: "ἄγγελος", article: "ὁ", translation: "ангел, вестник" },
-            { greek: "θεός", article: "ὁ", translation: "Бог" },
-            { greek: "κόσμος", article: "ὁ", translation: "мир" },
-            { greek: "οὐρανός", article: "ὁ", translation: "небо" },
-            { greek: "λίθος", article: "ὁ", translation: "камень" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "gen_sg", correct: "προφήτου", distractors: ["προφητῶν", "προφήτῃ", "προφήτην"] },
-                { case: "dat_sg", correct: "προφήτῃ", distractors: ["προφήτου", "προφήταις", "προφήτην"] },
-                { case: "acc_sg", correct: "προφήτην", distractors: ["προφήτου", "προφήτῃ", "προφῆτα"] },
-                { case: "nom_pl", correct: "προφῆται", distractors: ["προφήτας", "προφητῶν", "προφήταις"] },
-                { case: "gen_pl", correct: "προφητῶν", distractors: ["προφήτου", "προφήταις", "προφῆται"] },
-                { case: "dat_pl", correct: "προφήταις", distractors: ["προφητῶν", "προφήτῃ", "προφήτας"] },
-                { case: "acc_pl", correct: "προφήτας", distractors: ["προφήταις", "προφητῶν", "προφῆται"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "ὁ προφήτης", keywords: ["пророк"] },
-                { greek: "τοῦ ἀγγέλου", keywords: ["ангела"] },
-                { greek: "τῷ θεῷ", keywords: ["Богу"] },
-                { greek: "τὸν κόσμον", keywords: ["мир"] },
-                { greek: "οἱ μαθηταί", keywords: ["ученики"] },
-                { greek: "τῶν οὐρανῶν", keywords: ["небес"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "пророк", correct_sequence: ["προφήτης"], all_words: ["προφήτης", "μαθητής", "ἄγγελος"] },
-                { russian: "юноши (Gen.)", correct_sequence: ["νεανίου"], all_words: ["νεανίου", "νεανίαν", "νεανίαις"] }
-            ],
-            case_number: [
-                { form: "προφήτῃ", correct: "Dat. ед.ч.", distractors: ["Nom. ед.ч.", "Gen. ед.ч.", "Acc. ед.ч."] },
-                { form: "ἀγγέλων", correct: "Gen. мн.ч.", distractors: ["Dat. мн.ч.", "Acc. мн.ч.", "Nom. мн.ч."] }
-            ]
-        }
-    },
-    8: {
-        title: "Личные местоимения, глагол εἰμί",
-        grammar: `<b>Глагол εἰμί (быть) — настоящее время:</b><br>
-        <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>1-е</td><td>εἰμί</td><td>ἐσμέν</td></tr>
-        <tr><td>2-е</td><td>εἶ</td><td>ἐστέ</td></tr>
-        <tr><td>3-е</td><td>ἐστί(ν)</td><td>εἰσί(ν)</td></tr></table><br>
-        <b>Личные местоимения:</b><br>
-        ἐγώ (я), σύ (ты), αὐτός (он, сам), ἡμεῖς (мы), ὑμεῖς (вы).<br>
-        <b>Энклитики:</b> μου, μοι, με (меня, мне); σου, σοι, σε (тебя, тебе).`,
-        vocabulary: [
-            { greek: "εἰμί", translation: "я есмь, быть" },
-            { greek: "ἐγώ", translation: "я" },
-            { greek: "σύ", translation: "ты" },
-            { greek: "αὐτός", translation: "он, сам" },
-            { greek: "ἡμεῖς", translation: "мы" },
-            { greek: "ὑμεῖς", translation: "вы" },
-            { greek: "κριτής", article: "ὁ", translation: "судья" },
-            { greek: "δεσπότης", article: "ὁ", translation: "господин" },
-            { greek: "τελώνης", article: "ὁ", translation: "мытарь" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "1sg", correct: "εἰμί", distractors: ["εἶ", "ἐστί", "ἐσμέν"] },
-                { case: "2sg", correct: "εἶ", distractors: ["εἰμί", "ἐστί", "ἐστέ"] },
-                { case: "3sg", correct: "ἐστί(ν)", distractors: ["εἰμί", "εἶ", "εἰσί"] },
-                { case: "1pl", correct: "ἐσμέν", distractors: ["ἐστέ", "εἰσί", "εἰμί"] },
-                { case: "2pl", correct: "ἐστέ", distractors: ["ἐσμέν", "εἰσί", "εἶ"] },
-                { case: "3pl", correct: "εἰσί(ν)", distractors: ["ἐσμέν", "ἐστέ", "ἐστί"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "ἐγώ εἰμι", keywords: ["я", "есмь"] },
-                { greek: "σὺ εἶ", keywords: ["ты", "еси"] },
-                { greek: "αὐτός ἐστι", keywords: ["он", "есть"] },
-                { greek: "ἡμεῖς ἐσμέν", keywords: ["мы", "есмы"] },
-                { greek: "ὑμεῖς ἐστέ", keywords: ["вы", "есте"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "я есмь", correct_sequence: ["ἐγώ", "εἰμι"], all_words: ["ἐγώ", "εἰμι", "σύ", "εἶ"] },
-                { russian: "ты еси", correct_sequence: ["σύ", "εἶ"], all_words: ["σύ", "εἶ", "ἐγώ", "εἰμι"] }
-            ],
-            case_number: []
-        }
-    },
-    9: {
-        title: "Указательные местоимения, αὐτός",
-        grammar: `<b>Указательные местоимения:</b><br>
-        οὗτος, αὕτη, τοῦτο — этот, эта, это<br>
-        ἐκεῖνος, ἐκείνη, ἐκεῖνο — тот, та, то<br><br>
-        <b>Склонение οὗτος:</b><br>
-        <table><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr>
-        <tr><td>Nom.</td><td>οὗτος</td><td>αὕτη</td><td>τοῦτο</td></tr>
-        <tr><td>Gen.</td><td>τούτου</td><td>ταύτης</td><td>τούτου</td></tr>
-        <tr><td>Dat.</td><td>τούτῳ</td><td>ταύτῃ</td><td>τούτῳ</td></tr>
-        <tr><td>Acc.</td><td>τοῦτον</td><td>ταύτην</td><td>τοῦτο</td></tr></table><br>
-        <b>αὐτός</b> — в косвенных падежах = «он, она, оно»; в Nom. = «сам»; с артиклем = «тот же».`,
-        vocabulary: [
-            { greek: "οὗτος", translation: "этот" },
-            { greek: "αὕτη", translation: "эта" },
-            { greek: "τοῦτο", translation: "это" },
-            { greek: "ἐκεῖνος", translation: "тот" },
-            { greek: "ἐκείνη", translation: "та" },
-            { greek: "ἐκεῖνο", translation: "то" },
-            { greek: "αὐτός", translation: "он, сам" },
-            { greek: "αὐτή", translation: "она, сама" },
-            { greek: "αὐτό", translation: "оно, само" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "gen_sg_m", correct: "τούτου", distractors: ["ταύτης", "τούτῳ", "τοῦτον"] },
-                { case: "dat_sg_f", correct: "ταύτῃ", distractors: ["ταύτης", "τούτῳ", "ταύτην"] },
-                { case: "acc_sg_n", correct: "τοῦτο", distractors: ["τούτου", "τούτῳ", "τοῦτον"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "οὗτος ὁ λόγος", keywords: ["этот", "слово"] },
-                { greek: "αὕτη ἡ ἀλήθεια", keywords: ["эта", "истина"] },
-                { greek: "ἐκεῖνο τὸ δῶρον", keywords: ["тот", "дар"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "этот человек", correct_sequence: ["οὗτος", "ἄνθρωπος"], all_words: ["οὗτος", "ἄνθρωπος", "αὕτη", "γυνή"] }
-            ]
-        }
-    },
-    10: {
-        title: "Медио-пассивный залог",
-        grammar: `<b>Медио-пассивный залог (настоящее время):</b><br>
-        Окончания: -μαι, -σαι, -ται, -μεθα, -σθε, -νται<br>
-        <b>Пример: λύομαι (я развязываюсь / меня развязывают)</b><br>
-        <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
-        <tr><td>1-е</td><td>λύομαι</td><td>λυόμεθα</td></tr>
-        <tr><td>2-е</td><td>λύῃ</td><td>λύεσθε</td></tr>
-        <tr><td>3-е</td><td>λύεται</td><td>λύονται</td></tr></table><br>
-        <b>Отложительные глаголы:</b> имеют медио-пассивные формы с активным значением (например, ἔρχομαι — прихожу).`,
-        vocabulary: [
-            { greek: "λύομαι", translation: "я развязываюсь" },
-            { greek: "γίνομαι", translation: "становлюсь" },
-            { greek: "ἔρχομαι", translation: "прихожу" },
-            { greek: "πορεύομαι", translation: "иду" },
-            { greek: "ἀποκρίνομαι", translation: "отвечаю" },
-            { greek: "ἀκούω", translation: "слышу" },
-            { greek: "σώζω", translation: "спасаю" },
-            { greek: "βαπτίζω", translation: "крещу" }
-        ],
-        exercises: {
-            declension_fill: [
-                { case: "1sg", correct: "λύομαι", distractors: ["λύῃ", "λύεται", "λυόμεθα"] },
-                { case: "2sg", correct: "λύῃ", distractors: ["λύομαι", "λύεται", "λύεσθε"] },
-                { case: "3sg", correct: "λύεται", distractors: ["λύομαι", "λύῃ", "λύονται"] },
-                { case: "1pl", correct: "λυόμεθα", distractors: ["λύεσθε", "λύονται", "λύομαι"] },
-                { case: "2pl", correct: "λύεσθε", distractors: ["λυόμεθα", "λύονται", "λύῃ"] },
-                { case: "3pl", correct: "λύονται", distractors: ["λυόμεθα", "λύεσθε", "λύεται"] }
-            ],
-            translate_greek_to_russian: [
-                { greek: "γίνομαι", keywords: ["становлюсь"] },
-                { greek: "ἔρχεται", keywords: ["приходит"] },
-                { greek: "πορεύονται", keywords: ["идут"] },
-                { greek: "ἀποκρίνομαι", keywords: ["отвечаю"] },
-                { greek: "σώζεται", keywords: ["спасается"] }
-            ],
-            translate_russian_to_greek: [
-                { russian: "я становлюсь", correct_sequence: ["γίνομαι"], all_words: ["γίνομαι", "ἔρχομαι", "λύομαι"] },
-                { russian: "он спасается", correct_sequence: ["σώζεται"], all_words: ["σώζεται", "σώζω", "σώζονται"] }
-            ],
-            case_number: [
-                { form: "λύεται", correct: "3-е л. ед.ч.", distractors: ["2-е л. ед.ч.", "1-е л. мн.ч.", "3-е л. мн.ч."] },
-                { form: "πορεύονται", correct: "3-е л. мн.ч.", distractors: ["3-е л. ед.ч.", "2-е л. мн.ч.", "1-е л. мн.ч."] }
-            ]
-        }
-    }
+1:{title:"Алфавит и фонетика",grammar:"Греческий алфавит (24 буквы): Α α, Β β, Γ γ, Δ δ, Ε ε, Ζ ζ, Η η, Θ θ, Ι ι, Κ κ, Λ λ, Μ μ, Ν ν, Ξ ξ, Ο ο, Π π, Ρ ρ, Σ σ/ς, Τ τ, Υ υ, Φ φ, Χ χ, Ψ ψ, Ω ω.",vocabulary:[{greek:"Α α",translation:"альфа [а]"},{greek:"Β β",translation:"бета [б]"},{greek:"Γ γ",translation:"гамма [г]"},{greek:"Δ δ",translation:"дельта [д]"},{greek:"Ε ε",translation:"эпсилон [э]"},{greek:"Ζ ζ",translation:"дзета [дз]"},{greek:"Η η",translation:"эта [э]"},{greek:"Θ θ",translation:"тета [т/ф]"},{greek:"Ι ι",translation:"йота [и]"},{greek:"Κ κ",translation:"каппа [к]"},{greek:"Λ λ",translation:"лямбда [л]"},{greek:"Μ μ",translation:"мю [м]"},{greek:"Ν ν",translation:"ню [н]"},{greek:"Ξ ξ",translation:"кси [кс]"},{greek:"Ο ο",translation:"омикрон [о]"},{greek:"Π π",translation:"пи [п]"},{greek:"Ρ ρ",translation:"ро [р]"},{greek:"Σ σ/ς",translation:"сигма [с]"},{greek:"Τ τ",translation:"тау [т]"},{greek:"Υ υ",translation:"юпсилон [ю/и]"},{greek:"Φ φ",translation:"фи [ф]"},{greek:"Χ χ",translation:"хи [х]"},{greek:"Ψ ψ",translation:"пси [пс]"},{greek:"Ω ω",translation:"омега [о]"}],exercises:{}},
+2:{title:"Правила ударения",grammar:"Острое (´), облечённое (῀), тупое (`). Ударение на одном из трёх последних слогов.",vocabulary:[{greek:"λόγος",translation:"слово"},{greek:"ἄνθρωπος",translation:"человек"},{greek:"λύω",translation:"развязываю"}],exercises:{}},
+3:{title:"Глаголы на -ω",grammar:"Окончания: -ω, -εις, -ει, -ομεν, -ετε, -ουσι(ν).<br>Спряжение λύω: λύω, λύεις, λύει, λύομεν, λύετε, λύουσι(ν).",vocabulary:[{greek:"βλέπω",translation:"вижу"},{greek:"γινώσκω",translation:"знаю"},{greek:"γράφω",translation:"пишу"},{greek:"διδάσκω",translation:"учу"},{greek:"ἔχω",translation:"имею"},{greek:"λαμβάνω",translation:"беру"},{greek:"λέγω",translation:"говорю"},{greek:"λύω",translation:"развязываю"}],exercises:{declension_fill:[{case:"1sg",correct:"λύω",distractors:["λύεις","λύει","λύομεν"]},{case:"2sg",correct:"λύεις",distractors:["λύω","λύει","λύετε"]},{case:"3sg",correct:"λύει",distractors:["λύω","λύεις","λύουσι"]},{case:"1pl",correct:"λύομεν",distractors:["λύω","λύετε","λύουσι"]},{case:"2pl",correct:"λύετε",distractors:["λύομεν","λύει","λύουσι"]},{case:"3pl",correct:"λύουσι(ν)",distractors:["λύομεν","λύετε","λύει"]}],translate_greek_to_russian:[{greek:"βλέπω",keywords:["вижу"]},{greek:"γινώσκεις",keywords:["знаешь"]},{greek:"γράφει",keywords:["пишет"]},{greek:"διδάσκομεν",keywords:["учим"]},{greek:"ἔχετε",keywords:["имеете"]},{greek:"λαμβάνουσι",keywords:["берут"]},{greek:"λέγομεν",keywords:["говорим"]},{greek:"λύει",keywords:["развязывает"]}],translate_russian_to_greek:[{russian:"я вижу",correct_sequence:["βλέπω"],all_words:["βλέπω","γινώσκω","γράφω"]},{russian:"ты знаешь",correct_sequence:["γινώσκεις"],all_words:["γινώσκεις","γράφεις","βλέπεις"]},{russian:"он пишет",correct_sequence:["γράφει"],all_words:["γράφει","λέγει","λύει"]},{russian:"мы учим",correct_sequence:["διδάσκομεν"],all_words:["διδάσκομεν","γράφομεν","βλέπομεν"]},{russian:"вы имеете",correct_sequence:["ἔχετε"],all_words:["ἔχετε","λύετε","λέγετε"]}],case_number:[{form:"λύεις",correct:"2-е л. ед.ч.",distractors:["1-е л. ед.ч.","3-е л. ед.ч.","2-е л. мн.ч."]},{form:"λύομεν",correct:"1-е л. мн.ч.",distractors:["1-е л. ед.ч.","2-е л. мн.ч.","3-е л. мн.ч."]}]}},
+4:{title:"2-е склонение",grammar:"Муж.род -ος, ср.род -ον.<br>ἄνθρωπος: Nom. ἄνθρωπος, Gen. ἀνθρώπου, Dat. ἀνθρώπῳ, Acc. ἄνθρωπον, Voc. ἄνθρωπε.",vocabulary:[{greek:"ἄνθρωπος",article:"ὁ",translation:"человек"},{greek:"υἱός",article:"ὁ",translation:"сын"},{greek:"δῶρον",article:"τό",translation:"дар"},{greek:"λόγος",article:"ὁ",translation:"слово"},{greek:"οἶκος",article:"ὁ",translation:"дом"},{greek:"ἱερόν",article:"τό",translation:"храм"},{greek:"ἀπόστολος",article:"ὁ",translation:"апостол"},{greek:"δοῦλος",article:"ὁ",translation:"раб"},{greek:"τέκνον",article:"τό",translation:"дитя"},{greek:"οὐρανός",article:"ὁ",translation:"небо"}],exercises:{declension_fill:[{case:"gen_sg",correct:"ἀνθρώπου",distractors:["ἀνθρώπων","ἀνθρώπῳ","ἄνθρωπον"]},{case:"dat_sg",correct:"ἀνθρώπῳ",distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωπον"]},{case:"acc_sg",correct:"ἄνθρωπον",distractors:["ἀνθρώπου","ἀνθρώπων","ἀνθρώποις"]},{case:"nom_pl",correct:"ἄνθρωποι",distractors:["ἀνθρώπους","ἀνθρώπων","ἀνθρώποις"]},{case:"gen_pl",correct:"ἀνθρώπων",distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωποι"]},{case:"dat_pl",correct:"ἀνθρώποις",distractors:["ἀνθρώπων","ἀνθρώπῳ","ἀνθρώπους"]},{case:"acc_pl",correct:"ἀνθρώπους",distractors:["ἀνθρώποις","ἀνθρώπων","ἄνθρωποι"]}],translate_greek_to_russian:[{greek:"ὁ λόγος",keywords:["слово"]},{greek:"τοῦ ἀνθρώπου",keywords:["человека"]},{greek:"τῷ υἱῷ",keywords:["сыну"]},{greek:"τὸν οἶκον",keywords:["дом"]}],translate_russian_to_greek:[{russian:"слово",correct_sequence:["λόγος"],all_words:["λόγος","οἶκος","υἱός"]},{russian:"человека (Gen.)",correct_sequence:["ἀνθρώπου"],all_words:["ἀνθρώπου","ἄνθρωπον","ἀνθρώπῳ"]}]}},
+5:{title:"1-е склонение",grammar:"Жен.род -α, -η.<br>ὥρα: Nom. ὥρα, Gen. ὥρας, Dat. ὥρᾳ, Acc. ὥραν.",vocabulary:[{greek:"ὥρα",article:"ἡ",translation:"час"},{greek:"ἀλήθεια",article:"ἡ",translation:"истина"},{greek:"δόξα",article:"ἡ",translation:"слава"},{greek:"γραφή",article:"ἡ",translation:"писание"},{greek:"ψυχή",article:"ἡ",translation:"душа"},{greek:"ζωή",article:"ἡ",translation:"жизнь"},{greek:"βασιλεία",article:"ἡ",translation:"царство"},{greek:"ἡμέρα",article:"ἡ",translation:"день"},{greek:"παραβολή",article:"ἡ",translation:"притча"},{greek:"ἐκκλησία",article:"ἡ",translation:"церковь"}],exercises:{declension_fill:[{case:"gen_sg",correct:"ὥρας",distractors:["ὡρῶν","ὥρᾳ","ὥραν"]},{case:"dat_sg",correct:"ὥρᾳ",distractors:["ὥρας","ὥραν","ὥραις"]},{case:"acc_sg",correct:"ὥραν",distractors:["ὥρας","ὥρᾳ","ὡρῶν"]},{case:"nom_pl",correct:"ὥραι",distractors:["ὥρας","ὥραις","ὡρῶν"]}]}},
+6:{title:"Прилагательные, артикль",grammar:"Прилагательные: муж. -ος, жен. -α/-η, ср. -ον.<br>ἀγαθός, -ή, -όν. Артикль: ὁ, ἡ, τό.",vocabulary:[{greek:"ἀγαθός, ή, όν",translation:"хороший"},{greek:"κακός, ή, όν",translation:"плохой"},{greek:"καλός, ή, όν",translation:"красивый"},{greek:"δίκαιος, α, ον",translation:"праведный"},{greek:"πιστός, ή, όν",translation:"верный"},{greek:"μικρός, ά, όν",translation:"маленький"},{greek:"ἔσχατος, η, ον",translation:"последний"},{greek:"νεκρός, ά, όν",translation:"мёртвый"},{greek:"πρῶτος, η, ον",translation:"первый"},{greek:"ἅγιος, α, ον",translation:"святой"},{greek:"πονηρός, ά, όν",translation:"злой"}],exercises:{agreement:[{noun:"λόγος",article:"ὁ",adjective:"ἀγαθός",correct:"ἀγαθός",distractors:["ἀγαθόν","ἀγαθοῦ","ἀγαθῷ"]}],attribute_vs_predicate:[{phrase:"ὁ ἀγαθὸς ἄνθρωπος",correct:"атрибутив",distractors:["предикатив"]},{phrase:"ὁ ἄνθρωπος ἀγαθός",correct:"предикатив",distractors:["атрибутив"]}],article_fill:[{noun:"ἀγαθῷ ἀνθρώπῳ",correct_article:"τῷ",distractors:["τόν","τοῦ","τήν"]}]}},
+7:{title:"Муж.род 1-го скл., предлоги",grammar:"Окончания -ης, -ας. Предлоги: ἀπό +Gen., εἰς +Acc., ἐκ +Gen., ἐν +Dat., πρός +Acc.",vocabulary:[{greek:"προφήτης",article:"ὁ",translation:"пророк"},{greek:"μαθητής",article:"ὁ",translation:"ученик"},{greek:"ἄγγελος",article:"ὁ",translation:"ангел"},{greek:"θεός",article:"ὁ",translation:"Бог"}],exercises:{declension_fill:[{case:"gen_sg",correct:"προφήτου",distractors:["προφητῶν","προφήτῃ","προφήτην"]}]}},
+8:{title:"Личные местоимения, εἰμί",grammar:"εἰμί: εἰμί, εἶ, ἐστί(ν), ἐσμέν, ἐστέ, εἰσί(ν).<br>ἐγώ, σύ, αὐτός, ἡμεῖς, ὑμεῖς.",vocabulary:[{greek:"εἰμί",translation:"быть"},{greek:"ἐγώ",translation:"я"},{greek:"σύ",translation:"ты"},{greek:"αὐτός",translation:"он, сам"}],exercises:{declension_fill:[{case:"1sg",correct:"εἰμί",distractors:["εἶ","ἐστί","ἐσμέν"]},{case:"2sg",correct:"εἶ",distractors:["εἰμί","ἐστί","ἐστέ"]}]}},
+9:{title:"Указательные местоимения",grammar:"οὗτος, αὕτη, τοῦτο — этот, эта, это.<br>ἐκεῖνος, ἐκείνη, ἐκεῖνο — тот, та, то.",vocabulary:[{greek:"οὗτος",translation:"этот"},{greek:"αὕτη",translation:"эта"},{greek:"τοῦτο",translation:"это"},{greek:"ἐκεῖνος",translation:"тот"}],exercises:{declension_fill:[{case:"gen_sg_m",correct:"τούτου",distractors:["ταύτης","τούτῳ","τοῦτον"]}]}},
+10:{title:"Медио-пассивный залог",grammar:"Окончания: -μαι, -σαι, -ται, -μεθα, -σθε, -νται.<br>λύομαι, λύῃ, λύεται, λυόμεθα, λύεσθε, λύονται.",vocabulary:[{greek:"λύομαι",translation:"развязываюсь"},{greek:"γίνομαι",translation:"становлюсь"},{greek:"ἔρχομαι",translation:"прихожу"},{greek:"πορεύομαι",translation:"иду"}],exercises:{declension_fill:[{case:"1sg",correct:"λύομαι",distractors:["λύῃ","λύεται","λυόμεθα"]},{case:"3sg",correct:"λύεται",distractors:["λύομαι","λύῃ","λύονται"]}]}}
 };
 
 // ======================================================================
-// ОСНОВНАЯ ЛОГИКА
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
 // ======================================================================
-
 let currentLesson = 1;
-let currentPart = 'grammar';
-let exerciseState = { type: null, questions: [], index: 0, correct: 0, total: 0, answers: [], chosen: [] };
-let flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
 let stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
 let testState = { questions: [], index: 0, correct: 0, total: 0, answered: false };
+let flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
+let exerciseState = { type: null, questions: [], index: 0, correct: 0, total: 0 };
 
-function loadStats() {
-    try {
-        const data = localStorage.getItem('greek_stats');
-        if (data) {
-            const parsed = JSON.parse(data);
-            stats.totalCorrect = parsed.totalCorrect || 0;
-            stats.totalWrong = parsed.totalWrong || 0;
-            stats.errors = parsed.errors || {};
-        }
-    } catch(e) {}
-}
-function saveStats() {
-    localStorage.setItem('greek_stats', JSON.stringify(stats));
-}
-function getLessonData(lesson) { return LESSONS_DATA[lesson]; }
-function getExercises(lesson, type) {
-    const data = getLessonData(lesson);
-    if (!data) return [];
-    return data.exercises[type] || [];
-}
-function shuffle(arr) {
-    const copy = arr.slice();
-    for (let i=copy.length-1; i>0; i--) {
-        const j = Math.floor(Math.random()*(i+1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy;
-}
+// ======================================================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ======================================================================
+function shuffle(arr){const c=arr.slice();for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}return c;}
+function getLessonData(l){return LESSONS_DATA[l];}
+function getExercises(l,t){const d=getLessonData(l);if(!d)return[];return d.exercises[t]||[];}
+function loadStats(){try{const d=localStorage.getItem('greek_stats');if(d){const p=JSON.parse(d);stats.totalCorrect=p.totalCorrect||0;stats.totalWrong=p.totalWrong||0;stats.errors=p.errors||{};}}catch(e){}}
+function saveStats(){localStorage.setItem('greek_stats',JSON.stringify(stats));}
+function showSection(id){document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));const t=document.getElementById(id);if(t)t.classList.add('active');}
+function goToMain(){showSection('mainMenu');renderMainMenu();}
 
-function renderMainMenu() {
-    const grid = document.getElementById('lessonGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    for (let l=1; l<=10; l++) {
-        const data = getLessonData(l);
-        if (!data) continue;
-        const btn = document.createElement('button');
-        btn.className = 'menu-btn';
-        btn.textContent = `📖 Урок ${l}: ${data.title}`;
-        btn.onclick = () => openLesson(l);
+// ======================================================================
+// ГЛАВНОЕ МЕНЮ
+// ======================================================================
+function renderMainMenu(){
+    const grid=document.getElementById('lessonGrid');
+    if(!grid)return;
+    grid.innerHTML='';
+    for(let l=1;l<=10;l++){
+        const data=getLessonData(l);
+        if(!data)continue;
+        const btn=document.createElement('button');
+        btn.className='menu-btn';
+        btn.textContent='📖 Урок '+l+': '+data.title;
+        btn.onclick=function(){openLesson(l);};
         grid.appendChild(btn);
     }
 }
 
-function showSection(id) {
-    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-    const target = document.getElementById(id);
-    if (target) target.classList.add('active');
-}
-
-function goToMain() {
-    showSection('mainMenu');
-    renderMainMenu();
-}
-
-function openLesson(lesson) {
-    currentLesson = lesson;
-    const data = getLessonData(lesson);
-    if (!data) return;
-    document.getElementById('lessonTitle').textContent = data.title;
-    document.getElementById('lessonBadge').textContent = `Урок ${lesson}`;
+// ======================================================================
+// УРОК
+// ======================================================================
+function openLesson(lesson){
+    currentLesson=lesson;
+    const data=getLessonData(lesson);
+    if(!data)return;
+    document.getElementById('lessonTitle').textContent=data.title;
+    document.getElementById('lessonBadge').textContent='Урок '+lesson;
     showSection('lessonSection');
     // Сброс вкладок
-    document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-bar button').forEach(b=>b.classList.remove('active'));
     document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
-    // Показываем/скрываем кнопки упражнений в зависимости от наличия данных
-    const hasExercises = data.exercises && Object.values(data.exercises).some(arr => arr && arr.length > 0);
-    const exerciseContainer = document.getElementById('exerciseContainer');
-    if (hasExercises) {
-        exerciseContainer.style.display = 'block';
-        // заполняем кнопки
-        const btnContainer = document.getElementById('exerciseButtons');
-        btnContainer.innerHTML = '';
-        const types = [
-            { key: 'declension_fill', label: '📐 Склонение' },
-            { key: 'translate_greek_to_russian', label: '🇬🇷→🇷🇺 Перевод' },
-            { key: 'translate_russian_to_greek', label: '🇷🇺→🇬🇷 Перевод' },
-            { key: 'case_number', label: '🎯 Падеж/число' },
-            { key: 'agreement', label: '🔗 Согласование' },
-            { key: 'attribute_vs_predicate', label: '⚖️ Атрибут/предикатив' },
-            { key: 'substantivation', label: '📌 Субстантивация' },
-            { key: 'article_fill', label: '🔤 Артикль' }
+    // Грамматика и словарь
+    document.getElementById('grammarContent').innerHTML=data.grammar||'Нет данных.';
+    const container=document.getElementById('vocabList');
+    container.innerHTML='';
+    if(data.vocabulary){
+        for(const item of data.vocabulary){
+            const div=document.createElement('div');
+            div.className='word-item';
+            const article=item.article?item.article+' ':'';
+            div.innerHTML='<strong>'+article+item.greek+'</strong> — '+item.translation;
+            container.appendChild(div);
+        }
+    }
+    // Упражнения
+    const hasExercises=data.exercises&&Object.values(data.exercises).some(a=>a&&a.length>0);
+    const btnContainer=document.getElementById('exerciseButtons');
+    btnContainer.innerHTML='';
+    if(hasExercises){
+        const types=[
+            {key:'declension_fill',label:'📐 Склонение'},
+            {key:'translate_greek_to_russian',label:'🇬🇷→🇷🇺 Перевод'},
+            {key:'translate_russian_to_greek',label:'🇷🇺→🇬🇷 Перевод'},
+            {key:'case_number',label:'🎯 Падеж/число'},
+            {key:'agreement',label:'🔗 Согласование'},
+            {key:'attribute_vs_predicate',label:'⚖️ Атрибут/предикатив'},
+            {key:'substantivation',label:'📌 Субстантивация'},
+            {key:'article_fill',label:'🔤 Артикль'}
         ];
-        for (const t of types) {
-            const qs = getExercises(lesson, t.key);
-            if (qs && qs.length > 0) {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.textContent = t.label;
-                btn.onclick = () => startExercise(t.key);
-                btnContainer.appendChild(btn);
+        for(const t of types){
+            const qs=getExercises(lesson,t.key);
+            if(qs&&qs.length>0){
+                const b=document.createElement('button');
+                b.className='menu-btn';
+                b.textContent=t.label;
+                b.onclick=function(){startExercise(t.key);};
+                btnContainer.appendChild(b);
             }
         }
-        if (btnContainer.children.length === 0) {
-            btnContainer.innerHTML = '<p>Нет доступных упражнений для этого урока.</p>';
-        }
-    } else {
-        exerciseContainer.style.display = 'none';
+        if(btnContainer.children.length===0)btnContainer.innerHTML='<p>Нет упражнений.</p>';
+    }else{
+        btnContainer.innerHTML='<p>Для этого урока упражнений нет.</p>';
     }
-    renderGrammar(lesson);
-    renderVocabulary(lesson);
-    // Сброс состояния упражнений и карточек
-    exerciseState = { type: null, questions: [], index: 0, correct: 0, total: 0, answers: [], chosen: [] };
-    document.getElementById('exerciseQuestion').innerHTML = '';
-    document.getElementById('exerciseProgress').textContent = '';
-    document.getElementById('flashcardContainer').innerHTML = `<p>Нажмите «Начать карточки» для тренировки.</p>
-                                                               <button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button>`;
-    flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
-    document.getElementById('flashcardProgress').textContent = '';
+    document.getElementById('exerciseQuestion').innerHTML='';
+    // Сброс карточек
+    document.getElementById('flashcardContainer').innerHTML='<p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button>';
+    flashcardState={words:[],index:0,revealed:false,correct:0,total:0};
     switchLessonPart('grammar');
 }
 
-function switchLessonPart(part) {
-    currentPart = part;
-    document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
-    document.querySelector(`.tab-bar button[data-part="${part}"]`)?.classList.add('active');
-    document.querySelectorAll('#lessonSection .section').forEach(el => el.classList.remove('active'));
-    const target = document.getElementById(`part${part.charAt(0).toUpperCase() + part.slice(1)}`);
-    if (target) target.classList.add('active');
-    if (part === 'flashcards' && flashcardState.words.length === 0) {
-        // инициализируем карточки при открытии вкладки
-        startFlashcards();
-    }
+function switchLessonPart(part){
+    document.querySelectorAll('.tab-bar button').forEach(b=>b.classList.remove('active'));
+    document.querySelector('.tab-bar button[data-part="'+part+'"]')?.classList.add('active');
+    document.querySelectorAll('#lessonSection .section').forEach(el=>el.classList.remove('active'));
+    const target=document.getElementById('part'+part.charAt(0).toUpperCase()+part.slice(1));
+    if(target)target.classList.add('active');
+    if(part==='flashcards'&&flashcardState.words.length===0)startFlashcards();
 }
 
-function renderGrammar(lesson) {
-    const data = getLessonData(lesson);
-    document.getElementById('grammarContent').innerHTML = data.grammar || 'Нет данных.';
-}
-
-function renderVocabulary(lesson) {
-    const data = getLessonData(lesson);
-    const vocab = data.vocabulary || [];
-    const container = document.getElementById('vocabList');
-    container.innerHTML = '';
-    for (const item of vocab) {
-        const div = document.createElement('div');
-        div.className = 'word-item';
-        const article = item.article ? item.article + ' ' : '';
-        div.innerHTML = `<strong>${article}${item.greek}</strong> — ${item.translation}`;
-        container.appendChild(div);
-    }
-}
-
-// УПРАЖНЕНИЯ (сокращённо, но рабочая версия)
-function startExercise(type) {
-    const lesson = currentLesson;
-    let questions = getExercises(lesson, type);
-    if (!questions || questions.length === 0) {
-        document.getElementById('exerciseQuestion').innerHTML = '<p>Нет вопросов по этой теме.</p>';
+// ======================================================================
+// УПРАЖНЕНИЯ (упрощённая версия)
+// ======================================================================
+function startExercise(type){
+    const questions=getExercises(currentLesson,type);
+    if(!questions||questions.length===0){
+        document.getElementById('exerciseQuestion').innerHTML='<p>Нет вопросов.</p>';
         return;
     }
-    const shuffled = shuffle(questions);
-    exerciseState = { type, questions: shuffled, index: 0, correct: 0, total: shuffled.length, answers: [], chosen: [] };
-    document.getElementById('exerciseContainer').style.display = 'none';
-    showExerciseQuestion();
+    exerciseState={type,questions:shuffle(questions),index:0,correct:0,total:questions.length};
+    showExercise();
 }
 
-function showExerciseQuestion() {
-    const state = exerciseState;
-    if (state.index >= state.total) {
-        const percent = Math.round((state.correct / state.total) * 100);
-        const feedback = document.getElementById('exerciseQuestion');
-        feedback.innerHTML = `
-            <div class="feedback ${percent >= 70 ? 'ok' : 'fail'}">
-                🏁 Упражнение завершено!<br>
-                Правильно: ${state.correct} из ${state.total} (${percent}%)
-            </div>
-            <button class="menu-btn primary" onclick="startExercise('${state.type}')">🔄 Ещё раз</button>
-            <button class="menu-btn" onclick="location.reload()">🔙 К выбору</button>
-        `;
-        document.getElementById('exerciseProgress').textContent = `${state.correct}/${state.total}`;
+function showExercise(){
+    const s=exerciseState;
+    if(s.index>=s.total){
+        const p=Math.round((s.correct/s.total)*100);
+        document.getElementById('exerciseQuestion').innerHTML='<div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Упражнение завершено!<br>Правильно: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startExercise(\''+s.type+'\')">🔄 Ещё раз</button>';
         return;
     }
-
-    const q = state.questions[state.index];
-    const container = document.getElementById('exerciseQuestion');
-    let html = '';
-    document.getElementById('exerciseProgress').textContent = `${state.correct}/${state.total}`;
-
-    if (state.type === 'declension_fill' || state.type === 'case_number' || state.type === 'agreement' ||
-        state.type === 'attribute_vs_predicate' || state.type === 'substantivation' || state.type === 'article_fill') {
-        let questionText = '';
-        if (state.type === 'declension_fill') {
-            const caseNames = {
-                '1sg':'1-е л. ед.ч.', '2sg':'2-е л. ед.ч.', '3sg':'3-е л. ед.ч.',
-                '1pl':'1-е л. мн.ч.', '2pl':'2-е л. мн.ч.', '3pl':'3-е л. мн.ч.',
-                'gen_sg':'Gen. ед.ч.', 'dat_sg':'Dat. ед.ч.', 'acc_sg':'Acc. ед.ч.',
-                'nom_pl':'Nom. мн.ч.', 'gen_pl':'Gen. мн.ч.', 'dat_pl':'Dat. мн.ч.',
-                'acc_pl':'Acc. мн.ч.'
-            };
-            questionText = `Вставьте правильную форму для **${caseNames[q.case] || q.case}**`;
-        } else if (state.type === 'case_number') {
-            questionText = `Определите падеж и число для формы:\n\n**${q.form}**`;
-        } else if (state.type === 'agreement') {
-            questionText = `Вставьте прилагательное **${q.adjective}** в правильной форме:\n\n${q.article} ____ ${q.noun}`;
-        } else if (state.type === 'attribute_vs_predicate') {
-            questionText = `Определите, атрибутив или предикатив:\n\n**${q.phrase}**`;
-        } else if (state.type === 'substantivation') {
-            questionText = `Что означает:\n\n**${q.phrase}** ?`;
-        } else if (state.type === 'article_fill') {
-            questionText = `Вставьте правильную форму артикля:\n\n____ ${q.noun}`;
+    const q=s.questions[s.index];
+    const container=document.getElementById('exerciseQuestion');
+    let html='';
+    if(s.type==='declension_fill'){
+        const cn={'1sg':'1-е л. ед.ч.','2sg':'2-е л. ед.ч.','3sg':'3-е л. ед.ч.','1pl':'1-е л. мн.ч.','2pl':'2-е л. мн.ч.','3pl':'3-е л. мн.ч.','gen_sg':'Gen. ед.ч.','dat_sg':'Dat. ед.ч.','acc_sg':'Acc. ед.ч.','nom_pl':'Nom. мн.ч.','gen_pl':'Gen. мн.ч.','dat_pl':'Dat. мн.ч.','acc_pl':'Acc. мн.ч.'};
+        html='<div class="question">Вставьте форму для <b>'+(cn[q.case]||q.case)+'</b></div><div class="options">';
+        const opts=shuffle([q.correct,...q.distractors]);
+        for(const o of opts){
+            html+='<button class="option-btn" onclick="answerOpt(\''+o+'\',\''+q.correct+'\')">'+o+'</button>';
         }
-        const options = shuffle([q.correct, ...q.distractors]);
-        html = `<div class="question">${questionText}</div><div class="options">`;
-        for (const opt of options) {
-            html += `<button class="option-btn" onclick="answerOption('${opt}', '${q.correct}')">${opt}</button>`;
-        }
-        html += `</div>`;
-    } else if (state.type === 'translate_greek_to_russian') {
-        html = `<div class="question">Переведите на русский:</div>
-                <div style="font-size:24px; text-align:center; margin:12px 0;">${q.greek}</div>
-                <div class="input-group">
-                    <input type="text" id="transInput" placeholder="Введите перевод...">
-                    <button onclick="checkTranslationGr()">✅ Проверить</button>
-                </div>`;
-        window._currentTransGr = q;
-    } else if (state.type === 'translate_russian_to_greek') {
-        const words = shuffle(q.all_words);
-        html = `<div class="question">Переведите на греческий (выберите слова по порядку):</div>
-                <div style="font-size:20px; text-align:center; margin:12px 0;">${q.russian}</div>
-                <div class="build-area" id="buildArea"></div>
-                <div class="word-bank" id="wordBank">`;
-        for (const w of words) {
-            html += `<span class="chip" onclick="pickWord('${w}')">${w}</span>`;
-        }
-        html += `</div>
-                <div style="margin-top:8px;">
-                    <button class="menu-btn primary" onclick="checkTranslationRu()">✅ Готово</button>
-                    <button class="menu-btn" onclick="clearChosen()">↩️ Очистить</button>
-                </div>`;
-        window._currentTransRu = q;
-        window._chosenWords = [];
+        html+='</div>';
+    }else if(s.type==='translate_greek_to_russian'){
+        html='<div class="question">Переведите:</div><div style="font-size:24px;text-align:center;margin:12px 0;">'+q.greek+'</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..."><button onclick="checkTrans()">✅ Проверить</button></div>';
+        window._trans_q=q;
+    }else if(s.type==='translate_russian_to_greek'){
+        const words=shuffle(q.all_words);
+        html='<div class="question">Переведите на греческий:</div><div style="font-size:20px;text-align:center;margin:12px 0;">'+q.russian+'</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
+        for(const w of words)html+='<span class="chip" onclick="pickW(\''+w+'\')">'+w+'</span>';
+        html+='</div><button class="menu-btn primary" onclick="checkTransRu()">✅ Готово</button> <button class="menu-btn" onclick="clearW()">↩️ Очистить</button>';
+        window._trans_ru=q;
+        window._chosen=[];
+    }else{
+        html='<p>Тип упражнения не поддерживается.</p>';
     }
-
-    container.innerHTML = html;
+    container.innerHTML=html;
 }
 
-function answerOption(selected, correct) {
-    const container = document.getElementById('exerciseQuestion');
-    const buttons = container.querySelectorAll('.option-btn');
-    const isCorrect = (selected === correct);
-    buttons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.textContent === correct) btn.classList.add('correct');
-        if (btn.textContent === selected && !isCorrect) btn.classList.add('wrong');
-        if (btn.textContent === selected && isCorrect) btn.classList.add('selected');
-    });
-    if (isCorrect) { stats.totalCorrect++; exerciseState.correct++; }
-    else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        const q = exerciseState.questions[exerciseState.index];
-        const word = q.greek || q.form || q.phrase || q.noun || q.correct;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word, correct, your: selected });
-    }
+function answerOpt(sel,corr){
+    const container=document.getElementById('exerciseQuestion');
+    const btns=container.querySelectorAll('.option-btn');
+    const ok=sel===corr;
+    btns.forEach(b=>{b.disabled=true;if(b.textContent===corr)b.classList.add('correct');if(b.textContent===sel&&!ok)b.classList.add('wrong');});
+    if(ok){stats.totalCorrect++;exerciseState.correct++;}else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:'вопрос',correct:corr,your:sel});}
     saveStats();
     exerciseState.index++;
-    setTimeout(() => showExerciseQuestion(), 1200);
+    setTimeout(showExercise,1200);
 }
 
-function checkTranslationGr() {
-    const input = document.getElementById('transInput');
-    if (!input) return;
-    const userAnswer = input.value.trim().toLowerCase();
-    const q = window._currentTransGr;
-    if (!q) return;
-    const keywords = q.keywords.map(k => k.toLowerCase());
-    const match = keywords.every(kw => userAnswer.includes(kw));
-    const container = document.getElementById('exerciseQuestion');
-    if (match) {
-        stats.totalCorrect++;
-        exerciseState.correct++;
-        container.innerHTML = `<div class="feedback ok">✅ Верно!</div>`;
-    } else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: userAnswer });
-        container.innerHTML = `<div class="feedback fail">❌ Неверно. Ключевые слова: ${q.keywords.join(', ')}</div>`;
-    }
-    saveStats();
-    exerciseState.index++;
-    setTimeout(() => showExerciseQuestion(), 1500);
+function checkTrans(){
+    const inp=document.getElementById('transInput');if(!inp)return;
+    const ans=inp.value.trim().toLowerCase();
+    const q=window._trans_q;if(!q)return;
+    const ok=q.keywords.every(k=>ans.includes(k.toLowerCase()));
+    const container=document.getElementById('exerciseQuestion');
+    if(ok){stats.totalCorrect++;exerciseState.correct++;container.innerHTML='<div class="feedback ok">✅ Верно!</div>';}
+    else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:q.greek,correct:q.keywords.join(', '),your:ans});container.innerHTML='<div class="feedback fail">❌ Неверно. Ключевые слова: '+q.keywords.join(', ')+'</div>';}
+    saveStats();exerciseState.index++;setTimeout(showExercise,1500);
 }
 
-function pickWord(word) {
-    window._chosenWords.push(word);
-    const bank = document.getElementById('wordBank');
-    const chips = bank.querySelectorAll('.chip');
-    chips.forEach(chip => {
-        if (chip.textContent === word && !chip.classList.contains('picked')) chip.classList.add('picked');
-    });
-    const area = document.getElementById('buildArea');
-    const token = document.createElement('span');
-    token.className = 'token';
-    token.textContent = word;
-    area.appendChild(token);
+function pickW(w){window._chosen.push(w);const bank=document.getElementById('wordBank');bank.querySelectorAll('.chip').forEach(c=>{if(c.textContent===w&&!c.classList.contains('picked'))c.classList.add('picked');});const area=document.getElementById('buildArea');const t=document.createElement('span');t.className='token';t.textContent=w;area.appendChild(t);}
+function clearW(){window._chosen=[];document.getElementById('buildArea').innerHTML='';document.getElementById('wordBank').querySelectorAll('.chip').forEach(c=>c.classList.remove('picked'));}
+function checkTransRu(){
+    const chosen=window._chosen||[];
+    const q=window._trans_ru;if(!q)return;
+    const corr=q.correct_sequence;
+    const ok=chosen.length===corr.length&&chosen.every((w,i)=>w===corr[i]);
+    const container=document.getElementById('exerciseQuestion');
+    if(ok){stats.totalCorrect++;exerciseState.correct++;container.innerHTML='<div class="feedback ok">✅ Верно!</div>';}
+    else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:q.russian,correct:corr.join(' '),your:chosen.join(' ')});container.innerHTML='<div class="feedback fail">❌ Неверно. Правильно: '+corr.join(' ')+'</div>';}
+    saveStats();exerciseState.index++;setTimeout(showExercise,1500);
 }
 
-function clearChosen() {
-    window._chosenWords = [];
-    const area = document.getElementById('buildArea');
-    area.innerHTML = '';
-    const bank = document.getElementById('wordBank');
-    bank.querySelectorAll('.chip').forEach(chip => chip.classList.remove('picked'));
-}
-
-function checkTranslationRu() {
-    const chosen = window._chosenWords || [];
-    const q = window._currentTransRu;
-    if (!q) return;
-    const correct = q.correct_sequence;
-    const isCorrect = (chosen.length === correct.length && chosen.every((w,i) => w === correct[i]));
-    const container = document.getElementById('exerciseQuestion');
-    if (isCorrect) {
-        stats.totalCorrect++;
-        exerciseState.correct++;
-        container.innerHTML = `<div class="feedback ok">✅ Верно!</div>`;
-    } else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.russian, correct: correct.join(' '), your: chosen.join(' ') });
-        container.innerHTML = `<div class="feedback fail">❌ Неверно. Правильно: ${correct.join(' ')}</div>`;
-    }
-    saveStats();
-    exerciseState.index++;
-    setTimeout(() => showExerciseQuestion(), 1500);
-}
-
+// ======================================================================
 // КАРТОЧКИ
-function startFlashcards() {
-    const data = getLessonData(currentLesson);
-    if (!data || !data.vocabulary || data.vocabulary.length === 0) {
-        document.getElementById('flashcardContainer').innerHTML = '<p>Нет слов для карточек.</p>';
+// ======================================================================
+function startFlashcards(){
+    const data=getLessonData(currentLesson);
+    if(!data||!data.vocabulary||data.vocabulary.length===0){
+        document.getElementById('flashcardContainer').innerHTML='<p>Нет слов.</p>';
         return;
     }
-    const words = shuffle(data.vocabulary.map(item => ({
-        greek: item.greek,
-        article: item.article || '',
-        translation: item.translation
-    })));
-    flashcardState = {
-        words: words,
-        index: 0,
-        revealed: false,
-        correct: 0,
-        total: words.length
-    };
+    const words=shuffle(data.vocabulary.map(i=>({greek:i.greek,article:i.article||'',translation:i.translation})));
+    flashcardState={words,index:0,revealed:false,correct:0,total:words.length};
     showFlashcard();
 }
 
-function showFlashcard() {
-    const state = flashcardState;
-    const container = document.getElementById('flashcardContainer');
-    document.getElementById('flashcardProgress').textContent = `Карточка ${state.index+1} из ${state.total}`;
-
-    if (state.index >= state.total) {
-        const percent = Math.round((state.correct / state.total) * 100);
-        container.innerHTML = `
-            <div class="feedback ${percent >= 70 ? 'ok' : 'fail'}">
-                🏁 Карточки завершены!<br>
-                Знаю: ${state.correct} из ${state.total} (${percent}%)
-            </div>
-            <button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>
-        `;
-        document.getElementById('flashcardProgress').textContent = `${state.correct}/${state.total}`;
+function showFlashcard(){
+    const s=flashcardState;
+    const container=document.getElementById('flashcardContainer');
+    if(s.index>=s.total){
+        const p=Math.round((s.correct/s.total)*100);
+        container.innerHTML='<div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Карточки завершены!<br>Знаю: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>';
         return;
     }
-
-    const word = state.words[state.index];
-    let html = `<div class="flashcard-word">${word.article ? word.article + ' ' : ''}${word.greek}</div>`;
-    if (state.revealed) {
-        html += `<div class="flashcard-translation">${word.translation}</div>
-                 <div class="flashcard-buttons">
-                     <button class="know" onclick="flashcardAnswer(true)">✅ Знаю</button>
-                     <button class="dontknow" onclick="flashcardAnswer(false)">❌ Не знаю</button>
-                 </div>`;
-    } else {
-        html += `<div class="flashcard-buttons">
-                     <button class="show" onclick="flashcardReveal()">👁️ Показать перевод</button>
-                 </div>`;
+    const w=s.words[s.index];
+    let html='<div class="flashcard-word">'+(w.article?w.article+' ':'')+w.greek+'</div>';
+    if(s.revealed){
+        html+='<div class="flashcard-translation">'+w.translation+'</div><div class="flashcard-buttons"><button class="know" onclick="flashAns(true)">✅ Знаю</button><button class="dontknow" onclick="flashAns(false)">❌ Не знаю</button></div>';
+    }else{
+        html+='<div class="flashcard-buttons"><button class="show" onclick="flashReveal()">👁️ Показать перевод</button></div>';
     }
-    container.innerHTML = html;
+    container.innerHTML=html;
 }
 
-function flashcardReveal() {
-    flashcardState.revealed = true;
-    showFlashcard();
+function flashReveal(){flashcardState.revealed=true;showFlashcard();}
+function flashAns(know){
+    const s=flashcardState;
+    if(know){s.correct++;stats.totalCorrect++;}else{stats.totalWrong++;const lesson=currentLesson;const w=s.words[s.index];if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:w.greek,correct:w.translation,your:'не знал'});}
+    saveStats();s.index++;s.revealed=false;showFlashcard();
 }
 
-function flashcardAnswer(know) {
-    const state = flashcardState;
-    if (know) {
-        state.correct++;
-        stats.totalCorrect++;
-    } else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        const word = state.words[state.index];
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: word.greek, correct: word.translation, your: 'не знал' });
-    }
-    saveStats();
-    state.index++;
-    state.revealed = false;
-    showFlashcard();
-}
-
+// ======================================================================
 // ТЕСТ
-function startTest() {
-    const lesson = currentLesson;
-    const data = getLessonData(lesson);
-    if (!data) return;
-    const all = [];
-    const types = ['declension_fill', 'translate_greek_to_russian', 'translate_russian_to_greek', 'case_number',
-                   'agreement', 'attribute_vs_predicate', 'substantivation', 'article_fill'];
-    for (const t of types) {
-        const qs = data.exercises[t] || [];
-        for (const q of qs) {
-            q._type = t;
-            all.push(q);
-        }
+// ======================================================================
+function startTest(){
+    const data=getLessonData(currentLesson);
+    if(!data)return;
+    const all=[];
+    const types=['declension_fill','translate_greek_to_russian','translate_russian_to_greek','case_number','agreement','attribute_vs_predicate','substantivation','article_fill'];
+    for(const t of types){
+        const qs=data.exercises[t]||[];
+        for(const q of qs){q._type=t;all.push(q);}
     }
-    if (all.length === 0) {
-        alert('Нет вопросов для теста.');
-        return;
-    }
-    const selected = shuffle(all).slice(0, 7);
-    testState = { questions: selected, index: 0, correct: 0, total: selected.length, answered: false };
+    if(all.length===0){alert('Нет вопросов.');return;}
+    testState={questions:shuffle(all).slice(0,7),index:0,correct:0,total:7,answered:false};
     showSection('testSection');
-    showTestQuestion();
+    showTest();
 }
 
-function cancelTest() {
-    testState = { questions: [], index: 0, correct: 0, total: 0, answered: false };
-    showSection('lessonSection');
-    switchLessonPart('exercise');
-}
+function cancelTest(){testState={questions:[],index:0,correct:0,total:0,answered:false};showSection('lessonSection');switchLessonPart('exercise');}
 
-function showTestQuestion() {
-    const state = testState;
-    if (state.index >= state.total) {
-        const percent = Math.round((state.correct / state.total) * 100);
-        document.getElementById('testContainer').innerHTML = `
-            <div class="feedback ${percent >= 70 ? 'ok' : 'fail'}">
-                🏁 Тест завершён!<br>
-                Правильно: ${state.correct} из ${state.total} (${percent}%)
-            </div>
-            <button class="menu-btn primary" onclick="startTest()">🔄 Повторить тест</button>
-            <button class="menu-btn" onclick="cancelTest()">🔙 К упражнениям</button>
-        `;
+function showTest(){
+    const s=testState;
+    if(s.index>=s.total){
+        const p=Math.round((s.correct/s.total)*100);
+        document.getElementById('testContainer').innerHTML='<div class="feedback '+(p>=70?'ok':'fail')+'">🏁 Тест завершён!<br>Правильно: '+s.correct+' из '+s.total+' ('+p+'%)</div><button class="menu-btn primary" onclick="startTest()">🔄 Повторить</button><button class="menu-btn" onclick="cancelTest()">🔙 Назад</button>';
         return;
     }
-
-    const q = state.questions[state.index];
-    const container = document.getElementById('testContainer');
-    let html = `<div style="margin-bottom:8px;">Вопрос ${state.index+1} из ${state.total}</div>`;
-    const t = q._type;
-
-    if (t === 'declension_fill' || t === 'case_number' || t === 'agreement' ||
-        t === 'attribute_vs_predicate' || t === 'substantivation' || t === 'article_fill') {
-        let questionText = '';
-        if (t === 'declension_fill') {
-            const caseNames = {
-                '1sg':'1-е л. ед.ч.', '2sg':'2-е л. ед.ч.', '3sg':'3-е л. ед.ч.',
-                '1pl':'1-е л. мн.ч.', '2pl':'2-е л. мн.ч.', '3pl':'3-е л. мн.ч.',
-                'gen_sg':'Gen. ед.ч.', 'dat_sg':'Dat. ед.ч.', 'acc_sg':'Acc. ед.ч.',
-                'nom_pl':'Nom. мн.ч.', 'gen_pl':'Gen. мн.ч.', 'dat_pl':'Dat. мн.ч.',
-                'acc_pl':'Acc. мн.ч.'
-            };
-            questionText = `Вставьте правильную форму для **${caseNames[q.case] || q.case}**`;
-            const correct = q.correct;
-            const options = shuffle([correct, ...q.distractors]);
-            html += `<div class="question">${questionText}</div><div class="options">`;
-            for (const opt of options) {
-                html += `<button class="option-btn" onclick="testAnswer('${opt}', '${correct}')">${opt}</button>`;
-            }
-            html += `</div>`;
-        } else if (t === 'case_number') {
-            html += `<div class="question">Определите падеж и число для формы:\n\n**${q.form}**</div><div class="options">`;
-            const correct = q.correct;
-            const options = shuffle([correct, ...q.distractors]);
-            for (const opt of options) {
-                html += `<button class="option-btn" onclick="testAnswer('${opt}', '${correct}')">${opt}</button>`;
-            }
-            html += `</div>`;
-        } else if (t === 'agreement') {
-            html += `<div class="question">Вставьте прилагательное **${q.adjective}** в правильной форме:\n\n${q.article} ____ ${q.noun}</div><div class="options">`;
-            const correct = q.correct;
-            const options = shuffle([correct, ...q.distractors]);
-            for (const opt of options) {
-                html += `<button class="option-btn" onclick="testAnswer('${opt}', '${correct}')">${opt}</button>`;
-            }
-            html += `</div>`;
-        } else if (t === 'attribute_vs_predicate') {
-            html += `<div class="question">Определите, атрибутив или предикатив:\n\n**${q.phrase}**</div><div class="options">`;
-            const correct = q.correct;
-            const options = shuffle([correct, ...q.distractors]);
-            for (const opt of options) {
-                html += `<button class="option-btn" onclick="testAnswer('${opt}', '${correct}')">${opt}</button>`;
-            }
-            html += `</div>`;
-        } else if (t === 'substantivation') {
-            html += `<div class="question">Что означает:\n\n**${q.phrase}** ?</div><div class="options">`;
-            const correct = q.correct;
-            const options = shuffle([correct, ...q.distractors]);
-            for (const opt of options) {
-                html += `<button class="option-btn" onclick="testAnswer('${opt}', '${correct}')">${opt}</button>`;
-            }
-            html += `</div>`;
-        } else if (t === 'article_fill') {
-            html += `<div class="question">Вставьте правильную форму артикля:\n\n____ ${q.noun}</div><div class="options">`;
-            const correct = q.correct_article;
-            const options = shuffle([correct, ...q.distractors]);
-            for (const opt of options) {
-                html += `<button class="option-btn" onclick="testAnswer('${opt}', '${correct}')">${opt}</button>`;
-            }
-            html += `</div>`;
-        }
-    } else if (t === 'translate_greek_to_russian') {
-        html += `<div class="question">Переведите на русский:</div>
-                 <div style="font-size:24px; text-align:center; margin:12px 0;">${q.greek}</div>
-                 <div class="input-group">
-                     <input type="text" id="testTransInput" placeholder="Введите перевод...">
-                     <button onclick="testTranslationGr()">✅ Проверить</button>
-                 </div>`;
-        window._testTransGr = q;
-    } else if (t === 'translate_russian_to_greek') {
-        const words = shuffle(q.all_words);
-        html += `<div class="question">Переведите на греческий (выберите слова по порядку):</div>
-                 <div style="font-size:20px; text-align:center; margin:12px 0;">${q.russian}</div>
-                 <div class="build-area" id="testBuildArea"></div>
-                 <div class="word-bank" id="testWordBank">`;
-        for (const w of words) {
-            html += `<span class="chip" onclick="testPickWord('${w}')">${w}</span>`;
-        }
-        html += `</div>
-                 <div style="margin-top:8px;">
-                     <button class="menu-btn primary" onclick="testTranslationRu()">✅ Готово</button>
-                     <button class="menu-btn" onclick="testClearChosen()">↩️ Очистить</button>
-                 </div>`;
-        window._testTransRu = q;
-        window._testChosenWords = [];
+    const q=s.questions[s.index];
+    const container=document.getElementById('testContainer');
+    let html='<div>Вопрос '+(s.index+1)+' из '+s.total+'</div>';
+    const t=q._type;
+    if(t==='declension_fill'||t==='case_number'||t==='agreement'||t==='attribute_vs_predicate'||t==='substantivation'||t==='article_fill'){
+        let text='';
+        if(t==='declension_fill'){const cn={'1sg':'1-е л. ед.ч.','2sg':'2-е л. ед.ч.','3sg':'3-е л. ед.ч.','1pl':'1-е л. мн.ч.','2pl':'2-е л. мн.ч.','3pl':'3-е л. мн.ч.','gen_sg':'Gen. ед.ч.','dat_sg':'Dat. ед.ч.','acc_sg':'Acc. ед.ч.','nom_pl':'Nom. мн.ч.','gen_pl':'Gen. мн.ч.','dat_pl':'Dat. мн.ч.','acc_pl':'Acc. мн.ч.'};text='Вставьте форму для <b>'+(cn[q.case]||q.case)+'</b>';}
+        else if(t==='case_number')text='Определите падеж и число: <b>'+q.form+'</b>';
+        else if(t==='agreement')text='Вставьте прилагательное <b>'+q.adjective+'</b>: '+q.article+' ____ '+q.noun;
+        else if(t==='attribute_vs_predicate')text='Атрибутив или предикатив? <b>'+q.phrase+'</b>';
+        else if(t==='substantivation')text='Что означает? <b>'+q.phrase+'</b>';
+        else if(t==='article_fill')text='Вставьте артикль: ____ '+q.noun;
+        const corr=q.correct||q.correct_article;
+        const opts=shuffle([corr,...q.distractors]);
+        html+='<div class="question">'+text+'</div><div class="options">';
+        for(const o of opts)html+='<button class="option-btn" onclick="testAns(\''+o+'\',\''+corr+'\')">'+o+'</button>';
+        html+='</div>';
+    }else if(t==='translate_greek_to_russian'){
+        html+='<div class="question">Переведите: <b>'+q.greek+'</b></div><div class="input-group"><input type="text" id="testTransInput" placeholder="Введите перевод..."><button onclick="testTrans()">✅ Проверить</button></div>';
+        window._test_q=q;
+    }else{
+        html+='<p>Неизвестный тип вопроса.</p>';
     }
-
-    container.innerHTML = html;
-    testState.answered = false;
+    container.innerHTML=html;
+    s.answered=false;
 }
 
-function testAnswer(selected, correct) {
-    if (testState.answered) return;
-    testState.answered = true;
-    const isCorrect = (selected === correct);
-    if (isCorrect) testState.correct++;
-    else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        const q = testState.questions[testState.index];
-        const word = q.greek || q.form || q.phrase || q.noun || q.correct || q.correct_article;
-        stats.errors[lesson].push({ word, correct, your: selected });
-    }
-    stats.totalCorrect += isCorrect ? 1 : 0;
+function testAns(sel,corr){
+    if(testState.answered)return;
+    testState.answered=true;
+    const ok=sel===corr;
+    if(ok)testState.correct++;
+    else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];const q=testState.questions[testState.index];stats.errors[lesson].push({word:q.greek||q.form||'вопрос',correct:corr,your:sel});}
+    stats.totalCorrect+=ok?1:0;
     saveStats();
     testState.index++;
-    setTimeout(() => showTestQuestion(), 1000);
+    setTimeout(showTest,1000);
 }
 
-function testTranslationGr() {
-    if (testState.answered) return;
-    const input = document.getElementById('testTransInput');
-    if (!input) return;
-    const userAnswer = input.value.trim().toLowerCase();
-    const q = window._testTransGr;
-    if (!q) return;
-    const keywords = q.keywords.map(k => k.toLowerCase());
-    const match = keywords.every(kw => userAnswer.includes(kw));
-    const container = document.getElementById('testContainer');
-    if (match) {
-        testState.correct++;
-        stats.totalCorrect++;
-        container.innerHTML = `<div class="feedback ok">✅ Верно!</div>`;
-    } else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: userAnswer });
-        container.innerHTML = `<div class="feedback fail">❌ Неверно. Ключевые слова: ${q.keywords.join(', ')}</div>`;
-    }
-    saveStats();
-    testState.answered = true;
-    testState.index++;
-    setTimeout(() => showTestQuestion(), 1500);
+function testTrans(){
+    if(testState.answered)return;
+    const inp=document.getElementById('testTransInput');if(!inp)return;
+    const ans=inp.value.trim().toLowerCase();
+    const q=window._test_q;if(!q)return;
+    const ok=q.keywords.every(k=>ans.includes(k.toLowerCase()));
+    const container=document.getElementById('testContainer');
+    if(ok){testState.correct++;stats.totalCorrect++;container.innerHTML='<div class="feedback ok">✅ Верно!</div>';}
+    else{stats.totalWrong++;const lesson=currentLesson;if(!stats.errors[lesson])stats.errors[lesson]=[];stats.errors[lesson].push({word:q.greek,correct:q.keywords.join(', '),your:ans});container.innerHTML='<div class="feedback fail">❌ Неверно. Ключевые слова: '+q.keywords.join(', ')+'</div>';}
+    saveStats();testState.answered=true;testState.index++;setTimeout(showTest,1500);
 }
 
-function testPickWord(word) {
-    if (testState.answered) return;
-    window._testChosenWords.push(word);
-    const bank = document.getElementById('testWordBank');
-    const chips = bank.querySelectorAll('.chip');
-    chips.forEach(chip => {
-        if (chip.textContent === word && !chip.classList.contains('picked')) chip.classList.add('picked');
-    });
-    const area = document.getElementById('testBuildArea');
-    const token = document.createElement('span');
-    token.className = 'token';
-    token.textContent = word;
-    area.appendChild(token);
-}
-
-function testClearChosen() {
-    window._testChosenWords = [];
-    const area = document.getElementById('testBuildArea');
-    area.innerHTML = '';
-    const bank = document.getElementById('testWordBank');
-    bank.querySelectorAll('.chip').forEach(chip => chip.classList.remove('picked'));
-}
-
-function testTranslationRu() {
-    if (testState.answered) return;
-    const chosen = window._testChosenWords || [];
-    const q = window._testTransRu;
-    if (!q) return;
-    const correct = q.correct_sequence;
-    const isCorrect = (chosen.length === correct.length && chosen.every((w,i) => w === correct[i]));
-    const container = document.getElementById('testContainer');
-    if (isCorrect) {
-        testState.correct++;
-        stats.totalCorrect++;
-        container.innerHTML = `<div class="feedback ok">✅ Верно!</div>`;
-    } else {
-        stats.totalWrong++;
-        const lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.russian, correct: correct.join(' '), your: chosen.join(' ') });
-        container.innerHTML = `<div class="feedback fail">❌ Неверно. Правильно: ${correct.join(' ')}</div>`;
-    }
-    saveStats();
-    testState.answered = true;
-    testState.index++;
-    setTimeout(() => showTestQuestion(), 1500);
-}
-
+// ======================================================================
 // СТАТИСТИКА И ОШИБКИ
-function showStats() {
+// ======================================================================
+function showStats(){
     showSection('statsSection');
-    const content = document.getElementById('statsContent');
-    content.innerHTML = `
-        <div class="stat-row"><span>✅ Правильных ответов:</span><span>${stats.totalCorrect}</span></div>
-        <div class="stat-row"><span>❌ Неправильных:</span><span>${stats.totalWrong}</span></div>
-        <div class="stat-row"><span>📚 Пройдено уроков:</span><span>${Object.keys(stats.errors).length}</span></div>
-    `;
+    document.getElementById('statsContent').innerHTML='<div class="stat-row"><span>✅ Правильных:</span><span>'+stats.totalCorrect+'</span></div><div class="stat-row"><span>❌ Неправильных:</span><span>'+stats.totalWrong+'</span></div><div class="stat-row"><span>📚 Уроков с ошибками:</span><span>'+Object.keys(stats.errors).length+'</span></div>';
 }
 
-function showErrors() {
+function showErrors(){
     showSection('errorsSection');
-    const content = document.getElementById('errorsContent');
-    const err = stats.errors;
-    if (!err || Object.keys(err).length === 0) {
-        content.innerHTML = '<p>🎉 Ошибок нет! Вы молодец!</p>';
-        return;
+    const content=document.getElementById('errorsContent');
+    const err=stats.errors;
+    if(!err||Object.keys(err).length===0){content.innerHTML='<p>🎉 Ошибок нет!</p>';return;}
+    let html='';
+    for(const [lesson,items] of Object.entries(err)){
+        html+='<div style="margin-bottom:12px;"><strong>Урок '+lesson+'</strong></div>';
+        for(const item of items)html+='<div class="error-item">'+item.word+' → правильно: <strong>'+item.correct+'</strong>, вы: '+item.your+'</div>';
     }
-    let html = '';
-    for (const [lesson, items] of Object.entries(err)) {
-        html += `<div style="margin-bottom:12px;"><strong>Урок ${lesson}</strong></div>`;
-        for (const item of items) {
-            html += `<div class="error-item">${item.word || '—'} → правильно: <strong>${item.correct}</strong>, вы: ${item.your}</div>`;
-        }
-    }
-    html += `<button class="clear-btn" onclick="clearErrors()">🗑️ Очистить все ошибки</button>`;
-    content.innerHTML = html;
+    html+='<button class="clear-btn" onclick="clearErrors()">🗑️ Очистить ошибки</button>';
+    content.innerHTML=html;
 }
 
-function clearErrors() {
-    if (confirm('Удалить все ошибки?')) {
-        stats.errors = {};
-        saveStats();
-        showErrors();
-    }
-}
-
-function clearAllProgress() {
-    if (confirm('Сбросить всю статистику и ошибки?')) {
-        stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
-        saveStats();
-        goToMain();
-    }
-}
+function clearErrors(){if(confirm('Удалить ошибки?')){stats.errors={};saveStats();showErrors();}}
+function clearAllProgress(){if(confirm('Сбросить всю статистику?')){stats={totalCorrect:0,totalWrong:0,errors:{}};saveStats();goToMain();}}
 
 // ======================================================================
-// ИНИЦИАЛИЗАЦИЯ
+// ЗАПУСК
 // ======================================================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    loadStats();
-    renderMainMenu();
-});
+loadStats();
+renderMainMenu();
 </script>
 </body>
 </html>
