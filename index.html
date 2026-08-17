@@ -218,7 +218,7 @@ const LESSONS_DATA = {
             { greek: "Ψ ψ", translation: "пси [пс]" },
             { greek: "Ω ω", translation: "омега [о]" }
         ],
-        exercises: {} // для урока 1 упражнений нет
+        exercises: {}
     },
     2: {
         title: "Правила ударения",
@@ -459,7 +459,6 @@ const LESSONS_DATA = {
                 { noun: "καλῆς ψυχῆς", correct_article: "τῆς", distractors: ["τήν", "τῇ", "τοῦ"] },
                 { noun: "δίκαιον λόγον", correct_article: "τόν", distractors: ["τοῦ", "τῷ", "τήν"] }
             ],
-            // также базовые типы, но оставляем пустыми, так как они не для урока 6
             declension_fill: [],
             translate_greek_to_russian: [],
             translate_russian_to_greek: [],
@@ -648,7 +647,7 @@ const LESSONS_DATA = {
 };
 
 // ======================================================================
-// ОСНОВНАЯ ЛОГИКА (та же, что и ранее, с добавлением карточек)
+// ОСНОВНАЯ ЛОГИКА
 // ======================================================================
 
 let currentLesson = 1;
@@ -686,10 +685,10 @@ function shuffle(arr) {
     }
     return copy;
 }
-function randomItem(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
 
 function renderMainMenu() {
     const grid = document.getElementById('lessonGrid');
+    if (!grid) return;
     grid.innerHTML = '';
     for (let l=1; l<=10; l++) {
         const data = getLessonData(l);
@@ -724,8 +723,7 @@ function openLesson(lesson) {
     document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
     document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
     // Показываем/скрываем кнопки упражнений в зависимости от наличия данных
-    const hasExercises = Object.keys(data.exercises).length > 0 && 
-                         Object.values(data.exercises).some(arr => arr.length > 0);
+    const hasExercises = data.exercises && Object.values(data.exercises).some(arr => arr && arr.length > 0);
     const exerciseContainer = document.getElementById('exerciseContainer');
     if (hasExercises) {
         exerciseContainer.style.display = 'block';
@@ -803,10 +801,7 @@ function renderVocabulary(lesson) {
     }
 }
 
-// ======================================================================
-// УПРАЖНЕНИЯ (аналогично предыдущей версии, но с общей логикой)
-// ======================================================================
-
+// УПРАЖНЕНИЯ (сокращённо, но рабочая версия)
 function startExercise(type) {
     const lesson = currentLesson;
     let questions = getExercises(lesson, type);
@@ -994,10 +989,7 @@ function checkTranslationRu() {
     setTimeout(() => showExerciseQuestion(), 1500);
 }
 
-// ======================================================================
 // КАРТОЧКИ
-// ======================================================================
-
 function startFlashcards() {
     const data = getLessonData(currentLesson);
     if (!data || !data.vocabulary || data.vocabulary.length === 0) {
@@ -1076,10 +1068,7 @@ function flashcardAnswer(know) {
     showFlashcard();
 }
 
-// ======================================================================
-// ТЕСТ (аналогично предыдущей версии)
-// ======================================================================
-
+// ТЕСТ
 function startTest() {
     const lesson = currentLesson;
     const data = getLessonData(lesson);
@@ -1314,10 +1303,7 @@ function testTranslationRu() {
     setTimeout(() => showTestQuestion(), 1500);
 }
 
-// ======================================================================
 // СТАТИСТИКА И ОШИБКИ
-// ======================================================================
-
 function showStats() {
     showSection('statsSection');
     const content = document.getElementById('statsContent');
@@ -1367,8 +1353,10 @@ function clearAllProgress() {
 // ИНИЦИАЛИЗАЦИЯ
 // ======================================================================
 
-loadStats();
-renderMainMenu();
+document.addEventListener('DOMContentLoaded', function() {
+    loadStats();
+    renderMainMenu();
+});
 </script>
 </body>
 </html>
