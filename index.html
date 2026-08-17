@@ -133,7 +133,7 @@ h1 small{font-size:28px;font-weight:400;color:#3d2a1e}
 
 <script>
 // ======================================================================
-// ДАННЫЕ УРОКОВ 1–10 (ПОЛНАЯ ВЕРСИЯ ПО УЧЕБНИКУ МЕЙЧЕНА)
+// ДАННЫЕ УРОКОВ 1–10 (ПОЛНАЯ ВЕРСИЯ С НОВЫМИ НАЗВАНИЯМИ)
 // ======================================================================
 
 const LESSONS_DATA = {
@@ -150,7 +150,7 @@ const LESSONS_DATA = {
     exercises: {}
 },
 2: {
-    title: "Правила ударения",
+    title: "Ударение",
     grammar: `<b>Общие правила:</b><br>
     Ударение может стоять только на одном из трёх последних слогов.<br>
     Острое (´) — может быть на любом из трёх слогов.<br>
@@ -165,7 +165,7 @@ const LESSONS_DATA = {
     exercises: {}
 },
 3: {
-    title: "Глаголы на -ω (настоящее время)",
+    title: "Спряжение глаголов",
     grammar: `<b>Окончания глаголов в настоящем времени:</b><br>
     <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
     <tr><td>1-е</td><td>-ω</td><td>-ομεν</td></tr>
@@ -207,7 +207,7 @@ const LESSONS_DATA = {
     }
 },
 4: {
-    title: "2-е склонение (мужской и средний род)",
+    title: "Существительные 2-е склонение",
     grammar: `<b>2-е склонение (муж.род -ος, ср.род -ον)</b><br><br>
     <b>Склонение ἄνθρωπος (человек):</b><br>
     <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
@@ -252,7 +252,7 @@ const LESSONS_DATA = {
     }
 },
 5: {
-    title: "1-е склонение (женский род)",
+    title: "Существительные 1-е склонение",
     grammar: `<b>1-е склонение (жен.род на -α, -η)</b><br><br>
     <b>Склонение ὥρα (час):</b><br>
     <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
@@ -294,7 +294,7 @@ const LESSONS_DATA = {
     }
 },
 6: {
-    title: "Прилагательные 1-2 склонения, артикль",
+    title: "Прилагательные, артикли",
     grammar: `<b>Прилагательные 1-2 склонения:</b> муж. -ος, жен. -α/-η, ср. -ον.<br><br>
     <b>Склонение ἀγαθός, -ή, -όν (хороший):</b><br>
     <table><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr>
@@ -345,7 +345,7 @@ const LESSONS_DATA = {
     }
 },
 7: {
-    title: "Мужской род 1-го склонения, предлоги",
+    title: "Существительные мужской род, предлоги",
     grammar: `<b>Мужской род 1-го склонения:</b> окончания -ης, -ας (Nominativus ед.ч.)<br><br>
     <b>Склонение προφήτης (пророк):</b><br>
     <table><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
@@ -382,7 +382,7 @@ const LESSONS_DATA = {
     }
 },
 8: {
-    title: "Личные местоимения, глагол εἰμί",
+    title: "Энклитики и проклитики, местоимения",
     grammar: `<b>Глагол εἰμί (быть) — настоящее время:</b><br>
     <table><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr>
     <tr><td>1-е</td><td>εἰμί</td><td>ἐσμέν</td></tr>
@@ -390,7 +390,8 @@ const LESSONS_DATA = {
     <tr><td>3-е</td><td>ἐστί(ν)</td><td>εἰσί(ν)</td></tr></table><br>
     <b>Личные местоимения:</b><br>
     ἐγώ (я), σύ (ты), αὐτός (он, сам), ἡμεῖς (мы), ὑμεῖς (вы).<br>
-    <b>Энклитики:</b> μου, μοι, με (меня, мне); σου, σοι, σε (тебя, тебе).`,
+    <b>Энклитики:</b> μου, μοι, με (меня, мне); σου, σοι, σε (тебя, тебе).<br>
+    <b>Проклитики:</b> безударные слова (артикли, предлоги, союзы).`,
     vocabulary: [
         {greek:"εἰμί",translation:"быть, являться"},{greek:"ἐγώ",translation:"я"},{greek:"σύ",translation:"ты"},{greek:"αὐτός",translation:"он, сам"},{greek:"ἡμεῖς",translation:"мы"},{greek:"ὑμεῖς",translation:"вы"},{greek:"κριτής",article:"ὁ",translation:"судья"},{greek:"δεσπότης",article:"ὁ",translation:"господин"},{greek:"τελώνης",article:"ὁ",translation:"мытарь, сборщик податей"}
     ],
@@ -414,7 +415,7 @@ const LESSONS_DATA = {
     }
 },
 9: {
-    title: "Указательные местоимения, αὐτός",
+    title: "Указательные местоимения",
     grammar: `<b>Указательные местоимения:</b><br>
     οὗτος, αὕτη, τοῦτο — этот, эта, это<br>
     ἐκεῖνος, ἐκείνη, ἐκεῖνο — тот, та, то<br><br>
@@ -527,17 +528,10 @@ function showAllVocab(){
             const g=item.greek;
             const t=item.translation;
             const a=item.article||'';
-            // простое определение части речи по наличию артикля и окончанию
+            // классификация по частям речи
             if(a && (g.includes('ος')||g.includes('α')||g.includes('η')||g.includes('ον')||g.includes('ης')||g.includes('ας'))){
                 if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
-                    if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
-                        if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
-                            // попытка классификации
-                            if(g.includes('ός')||g.includes('ή')||g.includes('όν')||g.includes('ος')||g.includes('α')||g.includes('ον')||g.includes('ης')||g.includes('ας')){
-                                nouns.push({greek:g,article:a,translation:t});
-                            }
-                        }
-                    }
+                    nouns.push({greek:g,article:a,translation:t});
                 }
             } else if(g.includes('ω')||g.includes('μι')||g.includes('ομαι')||g.includes('ίζω')||g.includes('εύω')){
                 verbs.push({greek:g,translation:t});
