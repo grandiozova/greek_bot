@@ -119,16 +119,53 @@
         }
         .word-item {
             background: #ede7e0;
-            padding: 5px 14px;
             border-radius: 8px;
             font-size: 15px;
+            overflow: hidden;
+        }
+        .word-item .word-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 5px 14px;
+            cursor: pointer;
+            user-select: none;
         }
-        .word-item strong {
+        .word-item .word-row:hover {
+            background: #e2d5c9;
+        }
+        .word-item .word-row strong {
             font-weight: 600;
             color: #3d2a1e;
+        }
+        .word-details {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+            padding: 0 14px;
+            background: #f9f6f2;
+            border-radius: 0 0 8px 8px;
+            opacity: 0;
+        }
+        .word-details.open {
+            max-height: 400px;
+            padding: 8px 14px 12px;
+            opacity: 1;
+        }
+        .word-details table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin: 0;
+        }
+        .word-details td,
+        .word-details th {
+            border: 1px solid #c9b9ab;
+            padding: 4px 8px;
+            text-align: center;
+        }
+        .word-details th {
+            background: #ede7e0;
         }
         .grammar-text {
             font-size: 15px;
@@ -605,17 +642,17 @@
                     translate_russian_to_greek: [
                         { russian: "я вижу", correct_sequence: ["βλέπω"], all_words: ["βλέπω", "γινώσκω", "γράφω"] },
                         { russian: "ты знаешь", correct_sequence: ["γινώσκεις"], all_words: ["γινώσκεις", "γράφεις",
-                            "βλέπεις"
-                        ] },
+                                "βλέπεις"
+                            ] },
                         { russian: "он пишет", correct_sequence: ["γράφει"], all_words: ["γράφει", "λέγει", "λύει"] }
                     ],
                     case_number: [
                         { form: "λύεις", correct: "2-е л. ед.ч.", distractors: ["1-е л. ед.ч.", "3-е л. ед.ч.",
-                            "2-е л. мн.ч."
-                        ] },
+                                "2-е л. мн.ч."
+                            ] },
                         { form: "λύομεν", correct: "1-е л. мн.ч.", distractors: ["1-е л. ед.ч.", "2-е л. мн.ч.",
-                            "3-е л. мн.ч."
-                        ] }
+                                "3-е л. мн.ч."
+                            ] }
                     ]
                 }
             },
@@ -708,20 +745,48 @@
                 <b>Чистая альфа</b> (после ε, ι, ρ) сохраняется.<br>
                 Пример с нечистой альфой: δόξα (слава) — Gen. δόξης, Dat. δόξῃ.`,
                 vocabulary: [
-                    { greek: "ἀλήθεια", article: "ἡ", translation: "истина", type: "noun" },
-                    { greek: "ζωή", article: "ἡ", translation: "жизнь", type: "noun" },
-                    { greek: "βασιλεία", article: "ἡ", translation: "царство", type: "noun" },
-                    { greek: "ἡμέρα", article: "ἡ", translation: "день", type: "noun" },
-                    { greek: "γραφή", article: "ἡ", translation: "писание", type: "noun" },
-                    { greek: "καρδία", article: "ἡ", translation: "сердце", type: "noun" },
-                    { greek: "δόξα", article: "ἡ", translation: "слава", type: "noun" },
-                    { greek: "παραβολή", article: "ἡ", translation: "притча", type: "noun" },
-                    { greek: "εἰρήνη", article: "ἡ", translation: "мир", type: "noun" },
-                    { greek: "φωνή", article: "ἡ", translation: "голос, звук", type: "noun" },
-                    { greek: "ἐκκλησία", article: "ἡ", translation: "церковь", type: "noun" },
-                    { greek: "ψυχή", article: "ἡ", translation: "душа", type: "noun" },
-                    { greek: "ἐντολή", article: "ἡ", translation: "заповедь", type: "noun" },
-                    { greek: "ὥρα", article: "ἡ", translation: "час", type: "noun" }
+                    { greek: "ἀλήθεια", article: "ἡ", translation: "истина", type: "noun",
+                        declension_forms: { singular: { nom: "ἀλήθεια", gen: "ἀληθείας", dat: "ἀληθείᾳ", acc: "ἀλήθειαν", voc: "ἀλήθεια" },
+                        plural: { nom: "ἀλήθειαι", gen: "ἀληθειῶν", dat: "ἀληθείαις", acc: "ἀληθείας", voc: "ἀλήθειαι" } } },
+                    { greek: "ζωή", article: "ἡ", translation: "жизнь", type: "noun",
+                        declension_forms: { singular: { nom: "ζωή", gen: "ζωῆς", dat: "ζωῇ", acc: "ζωήν", voc: "ζωή" },
+                        plural: { nom: "ζωαί", gen: "ζωῶν", dat: "ζωαῖς", acc: "ζωάς", voc: "ζωαί" } } },
+                    { greek: "βασιλεία", article: "ἡ", translation: "царство", type: "noun",
+                        declension_forms: { singular: { nom: "βασιλεία", gen: "βασιλείας", dat: "βασιλείᾳ", acc: "βασιλείαν", voc: "βασιλεία" },
+                        plural: { nom: "βασιλεῖαι", gen: "βασιλειῶν", dat: "βασιλείαις", acc: "βασιλείας", voc: "βασιλεῖαι" } } },
+                    { greek: "ἡμέρα", article: "ἡ", translation: "день", type: "noun",
+                        declension_forms: { singular: { nom: "ἡμέρα", gen: "ἡμέρας", dat: "ἡμέρᾳ", acc: "ἡμέραν", voc: "ἡμέρα" },
+                        plural: { nom: "ἡμέραι", gen: "ἡμερῶν", dat: "ἡμέραις", acc: "ἡμέρας", voc: "ἡμέραι" } } },
+                    { greek: "γραφή", article: "ἡ", translation: "писание", type: "noun",
+                        declension_forms: { singular: { nom: "γραφή", gen: "γραφῆς", dat: "γραφῇ", acc: "γραφήν", voc: "γραφή" },
+                        plural: { nom: "γραφαί", gen: "γραφῶν", dat: "γραφαῖς", acc: "γραφάς", voc: "γραφαί" } } },
+                    { greek: "καρδία", article: "ἡ", translation: "сердце", type: "noun",
+                        declension_forms: { singular: { nom: "καρδία", gen: "καρδίας", dat: "καρδίᾳ", acc: "καρδίαν", voc: "καρδία" },
+                        plural: { nom: "καρδίαι", gen: "καρδιῶν", dat: "καρδίαις", acc: "καρδίας", voc: "καρδίαι" } } },
+                    { greek: "δόξα", article: "ἡ", translation: "слава", type: "noun",
+                        declension_forms: { singular: { nom: "δόξα", gen: "δόξης", dat: "δόξῃ", acc: "δόξαν", voc: "δόξα" },
+                        plural: { nom: "δόξαι", gen: "δοξῶν", dat: "δόξαις", acc: "δόξας", voc: "δόξαι" } } },
+                    { greek: "παραβολή", article: "ἡ", translation: "притча", type: "noun",
+                        declension_forms: { singular: { nom: "παραβολή", gen: "παραβολῆς", dat: "παραβολῇ", acc: "παραβολήν", voc: "παραβολή" },
+                        plural: { nom: "παραβολαί", gen: "παραβολῶν", dat: "παραβολαῖς", acc: "παραβολάς", voc: "παραβολαί" } } },
+                    { greek: "εἰρήνη", article: "ἡ", translation: "мир", type: "noun",
+                        declension_forms: { singular: { nom: "εἰρήνη", gen: "εἰρήνης", dat: "εἰρήνῃ", acc: "εἰρήνην", voc: "εἰρήνη" },
+                        plural: { nom: "εἰρῆναι", gen: "εἰρηνῶν", dat: "εἰρήναις", acc: "εἰρήνας", voc: "εἰρῆναι" } } },
+                    { greek: "φωνή", article: "ἡ", translation: "голос, звук", type: "noun",
+                        declension_forms: { singular: { nom: "φωνή", gen: "φωνῆς", dat: "φωνῇ", acc: "φωνήν", voc: "φωνή" },
+                        plural: { nom: "φωναί", gen: "φωνῶν", dat: "φωναῖς", acc: "φωνάς", voc: "φωναί" } } },
+                    { greek: "ἐκκλησία", article: "ἡ", translation: "церковь", type: "noun",
+                        declension_forms: { singular: { nom: "ἐκκλησία", gen: "ἐκκλησίας", dat: "ἐκκλησίᾳ", acc: "ἐκκλησίαν", voc: "ἐκκλησία" },
+                        plural: { nom: "ἐκκλησίαι", gen: "ἐκκλησιῶν", dat: "ἐκκλησίαις", acc: "ἐκκλησίας", voc: "ἐκκλησίαι" } } },
+                    { greek: "ψυχή", article: "ἡ", translation: "душа", type: "noun",
+                        declension_forms: { singular: { nom: "ψυχή", gen: "ψυχῆς", dat: "ψυχῇ", acc: "ψυχήν", voc: "ψυχή" },
+                        plural: { nom: "ψυχαί", gen: "ψυχῶν", dat: "ψυχαῖς", acc: "ψυχάς", voc: "ψυχαί" } } },
+                    { greek: "ἐντολή", article: "ἡ", translation: "заповедь", type: "noun",
+                        declension_forms: { singular: { nom: "ἐντολή", gen: "ἐντολῆς", dat: "ἐντολῇ", acc: "ἐντολήν", voc: "ἐντολή" },
+                        plural: { nom: "ἐντολαί", gen: "ἐντολῶν", dat: "ἐντολαῖς", acc: "ἐντολάς", voc: "ἐντολαί" } } },
+                    { greek: "ὥρα", article: "ἡ", translation: "час", type: "noun",
+                        declension_forms: { singular: { nom: "ὥρα", gen: "ὥρας", dat: "ὥρᾳ", acc: "ὥραν", voc: "ὥρα" },
+                        plural: { nom: "ὥραι", gen: "ὡρῶν", dat: "ὥραις", acc: "ὥρας", voc: "ὥραι" } } }
                 ],
                 exercises: {
                     declension_fill: [
@@ -1292,64 +1357,64 @@
                 html += '<div class="vocab-section"><h4>📌 Существительные</h4>';
                 for (var i = 0; i < nouns.length; i++) {
                     var art = nouns[i].article ? nouns[i].article + ' ' : '';
-                    html += '<div class="word-item"><strong>' + art + nouns[i].greek + '</strong><span>' + nouns[i]
-                        .translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + art + nouns[i].greek + '</strong><span>' + nouns[i]
+                        .translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (verbs.length) {
                 html += '<div class="vocab-section"><h4>📌 Глаголы</h4>';
                 for (var i = 0; i < verbs.length; i++) {
-                    html += '<div class="word-item"><strong>' + verbs[i].greek + '</strong><span>' + verbs[i]
-                        .translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + verbs[i].greek + '</strong><span>' + verbs[i]
+                        .translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (adjectives.length) {
                 html += '<div class="vocab-section"><h4>📌 Прилагательные</h4>';
                 for (var i = 0; i < adjectives.length; i++) {
-                    html += '<div class="word-item"><strong>' + adjectives[i].greek + '</strong><span>' + adjectives[i]
-                        .translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + adjectives[i].greek + '</strong><span>' + adjectives[i]
+                        .translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (prepositions.length) {
                 html += '<div class="vocab-section"><h4>📌 Предлоги</h4>';
                 for (var i = 0; i < prepositions.length; i++) {
-                    html += '<div class="word-item"><strong>' + prepositions[i].greek + '</strong><span>' +
-                        prepositions[i].translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + prepositions[i].greek + '</strong><span>' +
+                        prepositions[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (pronouns.length) {
                 html += '<div class="vocab-section"><h4>📌 Местоимения</h4>';
                 for (var i = 0; i < pronouns.length; i++) {
-                    html += '<div class="word-item"><strong>' + pronouns[i].greek + '</strong><span>' + pronouns[i]
-                        .translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + pronouns[i].greek + '</strong><span>' + pronouns[i]
+                        .translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (adverbs.length) {
                 html += '<div class="vocab-section"><h4>📌 Наречия</h4>';
                 for (var i = 0; i < adverbs.length; i++) {
-                    html += '<div class="word-item"><strong>' + adverbs[i].greek + '</strong><span>' + adverbs[i]
-                        .translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + adverbs[i].greek + '</strong><span>' + adverbs[i]
+                        .translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (conjunctions.length) {
                 html += '<div class="vocab-section"><h4>📌 Союзы</h4>';
                 for (var i = 0; i < conjunctions.length; i++) {
-                    html += '<div class="word-item"><strong>' + conjunctions[i].greek + '</strong><span>' +
-                        conjunctions[i].translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + conjunctions[i].greek + '</strong><span>' +
+                        conjunctions[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (others.length) {
                 html += '<div class="vocab-section"><h4>📌 Прочее</h4>';
                 for (var i = 0; i < others.length; i++) {
-                    html += '<div class="word-item"><strong>' + others[i].greek + '</strong><span>' + others[i]
-                        .translation + '</span></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + others[i].greek + '</strong><span>' + others[i]
+                        .translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
@@ -1442,18 +1507,30 @@
             for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
             document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
             document.getElementById('grammarContent').innerHTML = data.grammar || '';
+
+            // -- ОБНОВЛЁННАЯ ОТРИСОВКА СЛОВАРЯ С АККОРДЕОНОМ --
             var container = document.getElementById('vocabList');
             container.innerHTML = '';
             if (data.vocabulary) {
                 for (var i = 0; i < data.vocabulary.length; i++) {
+                    var item = data.vocabulary[i];
+                    var article = item.article ? item.article + ' ' : '';
                     var div = document.createElement('div');
                     div.className = 'word-item';
-                    var article = data.vocabulary[i].article ? data.vocabulary[i].article + ' ' : '';
-                    div.innerHTML = '<strong>' + article + data.vocabulary[i].greek + '</strong><span>' + data
-                        .vocabulary[i].translation + '</span>';
+                    if (item.declension_forms) {
+                        div.classList.add('clickable');
+                        div.onclick = function(el) { return function() { toggleDeclension(el); }; }(div);
+                    }
+                    var detailsHtml = '';
+                    if (item.declension_forms) {
+                        detailsHtml = '<div class="word-details">' + generateDeclensionTable(item.declension_forms) + '</div>';
+                    }
+                    div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
                     container.appendChild(div);
                 }
             }
+            // -- КОНЕЦ ОБНОВЛЕНИЯ --
+
             var hasExercises = false;
             if (data.exercises) {
                 var keys = Object.keys(data.exercises);
@@ -1493,6 +1570,29 @@
                 '<p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button>';
             flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
             switchLessonPart('grammar');
+        }
+
+        // ===== ФУНКЦИИ ДЛЯ АККОРДЕОНА =====
+        function generateDeclensionTable(forms) {
+            if (!forms) return '';
+            var cases = ['nom', 'gen', 'dat', 'acc', 'voc'];
+            var labels = { nom: 'Nom.', gen: 'Gen.', dat: 'Dat.', acc: 'Acc.', voc: 'Voc.' };
+            var html = '<table><thead><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
+            for (var i = 0; i < cases.length; i++) {
+                var c = cases[i];
+                var sg = (forms.singular && forms.singular[c]) || '';
+                var pl = (forms.plural && forms.plural[c]) || '';
+                html += '<tr><td>' + labels[c] + '</td><td>' + sg + '</td><td>' + pl + '</td></tr>';
+            }
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function toggleDeclension(el) {
+            var details = el.querySelector('.word-details');
+            if (details) {
+                details.classList.toggle('open');
+            }
         }
 
         function switchLessonPart(part) {
