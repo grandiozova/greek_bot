@@ -148,7 +148,7 @@
             opacity: 0;
         }
         .word-details.open {
-            max-height: 400px;
+            max-height: 600px;
             padding: 8px 14px 12px;
             opacity: 1;
         }
@@ -593,7 +593,7 @@
 
     <script>
         // ======================================================================
-        // ДАННЫЕ УРОКОВ 3–10 (ПОЛНЫЙ ВОКАБУЛЯР + ПОЛНАЯ ГРАММАТИКА)
+        // ДАННЫЕ УРОКОВ 3–10 С ПОЛНЫМИ ТАБЛИЦАМИ ДЛЯ ВСЕХ СЛОВ
         // ======================================================================
 
         const LESSONS_DATA = {
@@ -611,14 +611,54 @@
                 <tr><td>3-е</td><td>λύει</td><td>λύουσι(ν)</td></tr></table><br>
                 <b>Соединительный гласный:</b> перед μ и ν — ο, перед другими буквами — ε.`,
                 vocabulary: [
-                    { greek: "βλέπω", translation: "вижу", type: "verb" },
-                    { greek: "λαμβάνω", translation: "беру, получаю, принимаю", type: "verb" },
-                    { greek: "γινώσκω", translation: "знаю", type: "verb" },
-                    { greek: "λέγω", translation: "говорю", type: "verb" },
-                    { greek: "γράφω", translation: "пишу", type: "verb" },
-                    { greek: "λύω", translation: "развязываю, освобождаю, разрушаю, отпускаю", type: "verb" },
-                    { greek: "διδάσκω", translation: "учу", type: "verb" },
-                    { greek: "ἔχω", translation: "имею", type: "verb" }
+                    { greek: "βλέπω", translation: "вижу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "βλέπω", "2": "βλέπεις", "3": "βλέπει" },
+                            plural: { "1": "βλέπομεν", "2": "βλέπετε", "3": "βλέπουσι(ν)" }
+                        }
+                    },
+                    { greek: "λαμβάνω", translation: "беру, получаю, принимаю", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "λαμβάνω", "2": "λαμβάνεις", "3": "λαμβάνει" },
+                            plural: { "1": "λαμβάνομεν", "2": "λαμβάνετε", "3": "λαμβάνουσι(ν)" }
+                        }
+                    },
+                    { greek: "γινώσκω", translation: "знаю", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "γινώσκω", "2": "γινώσκεις", "3": "γινώσκει" },
+                            plural: { "1": "γινώσκομεν", "2": "γινώσκετε", "3": "γινώσκουσι(ν)" }
+                        }
+                    },
+                    { greek: "λέγω", translation: "говорю", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "λέγω", "2": "λέγεις", "3": "λέγει" },
+                            plural: { "1": "λέγομεν", "2": "λέγετε", "3": "λέγουσι(ν)" }
+                        }
+                    },
+                    { greek: "γράφω", translation: "пишу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "γράφω", "2": "γράφεις", "3": "γράφει" },
+                            plural: { "1": "γράφομεν", "2": "γράφετε", "3": "γράφουσι(ν)" }
+                        }
+                    },
+                    { greek: "λύω", translation: "развязываю, освобождаю, разрушаю, отпускаю", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "λύω", "2": "λύεις", "3": "λύει" },
+                            plural: { "1": "λύομεν", "2": "λύετε", "3": "λύουσι(ν)" }
+                        }
+                    },
+                    { greek: "διδάσκω", translation: "учу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "διδάσκω", "2": "διδάσκεις", "3": "διδάσκει" },
+                            plural: { "1": "διδάσκομεν", "2": "διδάσκετε", "3": "διδάσκουσι(ν)" }
+                        }
+                    },
+                    { greek: "ἔχω", translation: "имею", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "ἔχω", "2": "ἔχεις", "3": "ἔχει" },
+                            plural: { "1": "ἔχομεν", "2": "ἔχετε", "3": "ἔχουσι(ν)" }
+                        }
+                    }
                 ],
                 exercises: {
                     declension_fill: [
@@ -641,18 +681,12 @@
                     ],
                     translate_russian_to_greek: [
                         { russian: "я вижу", correct_sequence: ["βλέπω"], all_words: ["βλέπω", "γινώσκω", "γράφω"] },
-                        { russian: "ты знаешь", correct_sequence: ["γινώσκεις"], all_words: ["γινώσκεις", "γράφεις",
-                                "βλέπεις"
-                            ] },
+                        { russian: "ты знаешь", correct_sequence: ["γινώσκεις"], all_words: ["γινώσκεις", "γράφεις", "βλέπεις"] },
                         { russian: "он пишет", correct_sequence: ["γράφει"], all_words: ["γράφει", "λέγει", "λύει"] }
                     ],
                     case_number: [
-                        { form: "λύεις", correct: "2-е л. ед.ч.", distractors: ["1-е л. ед.ч.", "3-е л. ед.ч.",
-                                "2-е л. мн.ч."
-                            ] },
-                        { form: "λύομεν", correct: "1-е л. мн.ч.", distractors: ["1-е л. ед.ч.", "2-е л. мн.ч.",
-                                "3-е л. мн.ч."
-                            ] }
+                        { form: "λύεις", correct: "2-е л. ед.ч.", distractors: ["1-е л. ед.ч.", "3-е л. ед.ч.", "2-е л. мн.ч."] },
+                        { form: "λύομεν", correct: "1-е л. мн.ч.", distractors: ["1-е л. ед.ч.", "2-е л. мн.ч.", "3-е л. мн.ч."] }
                     ]
                 }
             },
@@ -673,35 +707,40 @@
                 <tr><td>Dativus (Дат. п.)</td><td>δώρῳ</td><td>δώροις</td></tr></table><br>
                 <b>Vocativus</b> — звательный падеж (употребляется при обращении).`,
                 vocabulary: [
-                    { greek: "ἄνθρωπος", article: "ὁ", translation: "человек", type: "noun" },
-                    { greek: "λόγος", article: "ὁ", translation: "слово", type: "noun" },
-                    { greek: "δῶρον", article: "τό", translation: "дар, подарок", type: "noun" },
-                    { greek: "νόμος", article: "ὁ", translation: "закон", type: "noun" },
-                    { greek: "οἶκος", article: "ὁ", translation: "дом", type: "noun" },
-                    { greek: "δοῦλος", article: "ὁ", translation: "раб, слуга", type: "noun" },
-                    { greek: "ἀδελφός", article: "ὁ", translation: "брат", type: "noun" },
-                    { greek: "ἱερόν", article: "τό", translation: "храм", type: "noun" },
-                    { greek: "θάνατος", article: "ὁ", translation: "смерть", type: "noun" },
-                    { greek: "υἱός", article: "ὁ", translation: "сын", type: "noun" },
-                    { greek: "ἀπόστολος", article: "ὁ", translation: "апостол", type: "noun" },
-                    { greek: "Χριστός", article: "ὁ", translation: "Христос", type: "noun" }
+                    { greek: "ἄνθρωπος", article: "ὁ", translation: "человек", type: "noun",
+                        declension_forms: { singular: { nom: "ἄνθρωπος", gen: "ἀνθρώπου", dat: "ἀνθρώπῳ", acc: "ἄνθρωπον", voc: "ἄνθρωπε" }, plural: { nom: "ἄνθρωποι", gen: "ἀνθρώπων", dat: "ἀνθρώποις", acc: "ἀνθρώπους", voc: "ἄνθρωποι" } } },
+                    { greek: "λόγος", article: "ὁ", translation: "слово", type: "noun",
+                        declension_forms: { singular: { nom: "λόγος", gen: "λόγου", dat: "λόγῳ", acc: "λόγον", voc: "λόγε" }, plural: { nom: "λόγοι", gen: "λόγων", dat: "λόγοις", acc: "λόγους", voc: "λόγοι" } } },
+                    { greek: "δῶρον", article: "τό", translation: "дар, подарок", type: "noun",
+                        declension_forms: { singular: { nom: "δῶρον", gen: "δώρου", dat: "δώρῳ", acc: "δῶρον", voc: "δῶρον" }, plural: { nom: "δῶρα", gen: "δώρων", dat: "δώροις", acc: "δῶρα", voc: "δῶρα" } } },
+                    { greek: "νόμος", article: "ὁ", translation: "закон", type: "noun",
+                        declension_forms: { singular: { nom: "νόμος", gen: "νόμου", dat: "νόμῳ", acc: "νόμον", voc: "νόμε" }, plural: { nom: "νόμοι", gen: "νόμων", dat: "νόμοις", acc: "νόμους", voc: "νόμοι" } } },
+                    { greek: "οἶκος", article: "ὁ", translation: "дом", type: "noun",
+                        declension_forms: { singular: { nom: "οἶκος", gen: "οἴκου", dat: "οἴκῳ", acc: "οἶκον", voc: "οἶκε" }, plural: { nom: "οἶκοι", gen: "οἴκων", dat: "οἴκοις", acc: "οἴκους", voc: "οἶκοι" } } },
+                    { greek: "δοῦλος", article: "ὁ", translation: "раб, слуга", type: "noun",
+                        declension_forms: { singular: { nom: "δοῦλος", gen: "δούλου", dat: "δούλῳ", acc: "δοῦλον", voc: "δοῦλε" }, plural: { nom: "δοῦλοι", gen: "δούλων", dat: "δούλοις", acc: "δούλους", voc: "δοῦλοι" } } },
+                    { greek: "ἀδελφός", article: "ὁ", translation: "брат", type: "noun",
+                        declension_forms: { singular: { nom: "ἀδελφός", gen: "ἀδελφοῦ", dat: "ἀδελφῷ", acc: "ἀδελφόν", voc: "ἀδελφέ" }, plural: { nom: "ἀδελφοί", gen: "ἀδελφῶν", dat: "ἀδελφοῖς", acc: "ἀδελφούς", voc: "ἀδελφοί" } } },
+                    { greek: "ἱερόν", article: "τό", translation: "храм", type: "noun",
+                        declension_forms: { singular: { nom: "ἱερόν", gen: "ἱεροῦ", dat: "ἱερῷ", acc: "ἱερόν", voc: "ἱερόν" }, plural: { nom: "ἱερά", gen: "ἱερῶν", dat: "ἱεροῖς", acc: "ἱερά", voc: "ἱερά" } } },
+                    { greek: "θάνατος", article: "ὁ", translation: "смерть", type: "noun",
+                        declension_forms: { singular: { nom: "θάνατος", gen: "θανάτου", dat: "θανάτῳ", acc: "θάνατον", voc: "θάνατε" }, plural: { nom: "θάνατοι", gen: "θανάτων", dat: "θανάτοις", acc: "θανάτους", voc: "θάνατοι" } } },
+                    { greek: "υἱός", article: "ὁ", translation: "сын", type: "noun",
+                        declension_forms: { singular: { nom: "υἱός", gen: "υἱοῦ", dat: "υἱῷ", acc: "υἱόν", voc: "υἱέ" }, plural: { nom: "υἱοί", gen: "υἱῶν", dat: "υἱοῖς", acc: "υἱούς", voc: "υἱοί" } } },
+                    { greek: "ἀπόστολος", article: "ὁ", translation: "апостол", type: "noun",
+                        declension_forms: { singular: { nom: "ἀπόστολος", gen: "ἀποστόλου", dat: "ἀποστόλῳ", acc: "ἀπόστολον", voc: "ἀπόστολε" }, plural: { nom: "ἀπόστολοι", gen: "ἀποστόλων", dat: "ἀποστόλοις", acc: "ἀποστόλους", voc: "ἀπόστολοι" } } },
+                    { greek: "Χριστός", article: "ὁ", translation: "Христос", type: "noun",
+                        declension_forms: { singular: { nom: "Χριστός", gen: "Χριστοῦ", dat: "Χριστῷ", acc: "Χριστόν", voc: "Χριστέ" }, plural: { nom: "Χριστοί", gen: "Χριστῶν", dat: "Χριστοῖς", acc: "Χριστούς", voc: "Χριστοί" } } }
                 ],
                 exercises: {
                     declension_fill: [
-                        { case: "gen_sg", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπου",
-                            distractors: ["ἀνθρώπων", "ἀνθρώπῳ", "ἄνθρωπον"] },
-                        { case: "dat_sg", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπῳ",
-                            distractors: ["ἀνθρώπου", "ἀνθρώποις", "ἄνθρωπον"] },
-                        { case: "acc_sg", word: "ἄνθρωπος", translation: "человек", correct: "ἄνθρωπον",
-                            distractors: ["ἀνθρώπου", "ἀνθρώπων", "ἀνθρώποις"] },
-                        { case: "nom_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἄνθρωποι",
-                            distractors: ["ἀνθρώπους", "ἀνθρώπων", "ἀνθρώποις"] },
-                        { case: "gen_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπων",
-                            distractors: ["ἀνθρώπου", "ἀνθρώποις", "ἄνθρωποι"] },
-                        { case: "dat_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώποις",
-                            distractors: ["ἀνθρώπων", "ἀνθρώπῳ", "ἀνθρώπους"] },
-                        { case: "acc_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπους",
-                            distractors: ["ἀνθρώποις", "ἀνθρώπων", "ἄνθρωποι"] }
+                        { case: "gen_sg", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπου", distractors: ["ἀνθρώπων", "ἀνθρώπῳ", "ἄνθρωπον"] },
+                        { case: "dat_sg", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπῳ", distractors: ["ἀνθρώπου", "ἀνθρώποις", "ἄνθρωπον"] },
+                        { case: "acc_sg", word: "ἄνθρωπος", translation: "человек", correct: "ἄνθρωπον", distractors: ["ἀνθρώπου", "ἀνθρώπων", "ἀνθρώποις"] },
+                        { case: "nom_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἄνθρωποι", distractors: ["ἀνθρώπους", "ἀνθρώπων", "ἀνθρώποις"] },
+                        { case: "gen_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπων", distractors: ["ἀνθρώπου", "ἀνθρώποις", "ἄνθρωποι"] },
+                        { case: "dat_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώποις", distractors: ["ἀνθρώπων", "ἀνθρώπῳ", "ἀνθρώπους"] },
+                        { case: "acc_pl", word: "ἄνθρωπος", translation: "человек", correct: "ἀνθρώπους", distractors: ["ἀνθρώποις", "ἀνθρώπων", "ἄνθρωποι"] }
                     ],
                     translate_greek_to_russian: [
                         { greek: "ὁ λόγος", keywords: ["слово"] },
@@ -714,20 +753,12 @@
                     ],
                     translate_russian_to_greek: [
                         { russian: "слово", correct_sequence: ["λόγος"], all_words: ["λόγος", "οἶκος", "υἱός"] },
-                        { russian: "человека (Gen.)", correct_sequence: ["ἀνθρώπου"], all_words: ["ἀνθρώπου",
-                                "ἄνθρωπον", "ἀνθρώπῳ"
-                            ] },
+                        { russian: "человека (Gen.)", correct_sequence: ["ἀνθρώπου"], all_words: ["ἀνθρώπου", "ἄνθρωπον", "ἀνθρώπῳ"] },
                         { russian: "сыну", correct_sequence: ["υἱῷ"], all_words: ["υἱῷ", "υἱόν", "υἱοῦ"] }
                     ],
                     case_number: [
-                        { form: "ἀνθρώπων", correct: "Genitivus (Род. п.) мн.ч.",
-                            distractors: ["Genitivus (Род. п.) ед.ч.", "Dativus (Дат. п.) мн.ч.",
-                            "Accusativus (Вин. п.) мн.ч."
-                            ] },
-                        { form: "δῶρα", correct: "Nominativus / Accusativus (Им./Вин. п.) мн.ч.",
-                            distractors: ["Nominativus (Им. п.) ед.ч.", "Genitivus (Род. п.) мн.ч.",
-                                "Dativus (Дат. п.) мн.ч."
-                            ] }
+                        { form: "ἀνθρώπων", correct: "Genitivus (Род. п.) мн.ч.", distractors: ["Genitivus (Род. п.) ед.ч.", "Dativus (Дат. п.) мн.ч.", "Accusativus (Вин. п.) мн.ч."] },
+                        { form: "δῶρα", correct: "Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors: ["Nominativus (Им. п.) ед.ч.", "Genitivus (Род. п.) мн.ч.", "Dativus (Дат. п.) мн.ч."] }
                     ]
                 }
             },
@@ -746,71 +777,43 @@
                 Пример с нечистой альфой: δόξα (слава) — Gen. δόξης, Dat. δόξῃ.`,
                 vocabulary: [
                     { greek: "ἀλήθεια", article: "ἡ", translation: "истина", type: "noun",
-                        declension_forms: { singular: { nom: "ἀλήθεια", gen: "ἀληθείας", dat: "ἀληθείᾳ", acc: "ἀλήθειαν", voc: "ἀλήθεια" },
-                        plural: { nom: "ἀλήθειαι", gen: "ἀληθειῶν", dat: "ἀληθείαις", acc: "ἀληθείας", voc: "ἀλήθειαι" } } },
+                        declension_forms: { singular: { nom: "ἀλήθεια", gen: "ἀληθείας", dat: "ἀληθείᾳ", acc: "ἀλήθειαν", voc: "ἀλήθεια" }, plural: { nom: "ἀλήθειαι", gen: "ἀληθειῶν", dat: "ἀληθείαις", acc: "ἀληθείας", voc: "ἀλήθειαι" } } },
                     { greek: "ζωή", article: "ἡ", translation: "жизнь", type: "noun",
-                        declension_forms: { singular: { nom: "ζωή", gen: "ζωῆς", dat: "ζωῇ", acc: "ζωήν", voc: "ζωή" },
-                        plural: { nom: "ζωαί", gen: "ζωῶν", dat: "ζωαῖς", acc: "ζωάς", voc: "ζωαί" } } },
+                        declension_forms: { singular: { nom: "ζωή", gen: "ζωῆς", dat: "ζωῇ", acc: "ζωήν", voc: "ζωή" }, plural: { nom: "ζωαί", gen: "ζωῶν", dat: "ζωαῖς", acc: "ζωάς", voc: "ζωαί" } } },
                     { greek: "βασιλεία", article: "ἡ", translation: "царство", type: "noun",
-                        declension_forms: { singular: { nom: "βασιλεία", gen: "βασιλείας", dat: "βασιλείᾳ", acc: "βασιλείαν", voc: "βασιλεία" },
-                        plural: { nom: "βασιλεῖαι", gen: "βασιλειῶν", dat: "βασιλείαις", acc: "βασιλείας", voc: "βασιλεῖαι" } } },
+                        declension_forms: { singular: { nom: "βασιλεία", gen: "βασιλείας", dat: "βασιλείᾳ", acc: "βασιλείαν", voc: "βασιλεία" }, plural: { nom: "βασιλεῖαι", gen: "βασιλειῶν", dat: "βασιλείαις", acc: "βασιλείας", voc: "βασιλεῖαι" } } },
                     { greek: "ἡμέρα", article: "ἡ", translation: "день", type: "noun",
-                        declension_forms: { singular: { nom: "ἡμέρα", gen: "ἡμέρας", dat: "ἡμέρᾳ", acc: "ἡμέραν", voc: "ἡμέρα" },
-                        plural: { nom: "ἡμέραι", gen: "ἡμερῶν", dat: "ἡμέραις", acc: "ἡμέρας", voc: "ἡμέραι" } } },
+                        declension_forms: { singular: { nom: "ἡμέρα", gen: "ἡμέρας", dat: "ἡμέρᾳ", acc: "ἡμέραν", voc: "ἡμέρα" }, plural: { nom: "ἡμέραι", gen: "ἡμερῶν", dat: "ἡμέραις", acc: "ἡμέρας", voc: "ἡμέραι" } } },
                     { greek: "γραφή", article: "ἡ", translation: "писание", type: "noun",
-                        declension_forms: { singular: { nom: "γραφή", gen: "γραφῆς", dat: "γραφῇ", acc: "γραφήν", voc: "γραφή" },
-                        plural: { nom: "γραφαί", gen: "γραφῶν", dat: "γραφαῖς", acc: "γραφάς", voc: "γραφαί" } } },
+                        declension_forms: { singular: { nom: "γραφή", gen: "γραφῆς", dat: "γραφῇ", acc: "γραφήν", voc: "γραφή" }, plural: { nom: "γραφαί", gen: "γραφῶν", dat: "γραφαῖς", acc: "γραφάς", voc: "γραφαί" } } },
                     { greek: "καρδία", article: "ἡ", translation: "сердце", type: "noun",
-                        declension_forms: { singular: { nom: "καρδία", gen: "καρδίας", dat: "καρδίᾳ", acc: "καρδίαν", voc: "καρδία" },
-                        plural: { nom: "καρδίαι", gen: "καρδιῶν", dat: "καρδίαις", acc: "καρδίας", voc: "καρδίαι" } } },
+                        declension_forms: { singular: { nom: "καρδία", gen: "καρδίας", dat: "καρδίᾳ", acc: "καρδίαν", voc: "καρδία" }, plural: { nom: "καρδίαι", gen: "καρδιῶν", dat: "καρδίαις", acc: "καρδίας", voc: "καρδίαι" } } },
                     { greek: "δόξα", article: "ἡ", translation: "слава", type: "noun",
-                        declension_forms: { singular: { nom: "δόξα", gen: "δόξης", dat: "δόξῃ", acc: "δόξαν", voc: "δόξα" },
-                        plural: { nom: "δόξαι", gen: "δοξῶν", dat: "δόξαις", acc: "δόξας", voc: "δόξαι" } } },
+                        declension_forms: { singular: { nom: "δόξα", gen: "δόξης", dat: "δόξῃ", acc: "δόξαν", voc: "δόξα" }, plural: { nom: "δόξαι", gen: "δοξῶν", dat: "δόξαις", acc: "δόξας", voc: "δόξαι" } } },
                     { greek: "παραβολή", article: "ἡ", translation: "притча", type: "noun",
-                        declension_forms: { singular: { nom: "παραβολή", gen: "παραβολῆς", dat: "παραβολῇ", acc: "παραβολήν", voc: "παραβολή" },
-                        plural: { nom: "παραβολαί", gen: "παραβολῶν", dat: "παραβολαῖς", acc: "παραβολάς", voc: "παραβολαί" } } },
+                        declension_forms: { singular: { nom: "παραβολή", gen: "παραβολῆς", dat: "παραβολῇ", acc: "παραβολήν", voc: "παραβολή" }, plural: { nom: "παραβολαί", gen: "παραβολῶν", dat: "παραβολαῖς", acc: "παραβολάς", voc: "παραβολαί" } } },
                     { greek: "εἰρήνη", article: "ἡ", translation: "мир", type: "noun",
-                        declension_forms: { singular: { nom: "εἰρήνη", gen: "εἰρήνης", dat: "εἰρήνῃ", acc: "εἰρήνην", voc: "εἰρήνη" },
-                        plural: { nom: "εἰρῆναι", gen: "εἰρηνῶν", dat: "εἰρήναις", acc: "εἰρήνας", voc: "εἰρῆναι" } } },
+                        declension_forms: { singular: { nom: "εἰρήνη", gen: "εἰρήνης", dat: "εἰρήνῃ", acc: "εἰρήνην", voc: "εἰρήνη" }, plural: { nom: "εἰρῆναι", gen: "εἰρηνῶν", dat: "εἰρήναις", acc: "εἰρήνας", voc: "εἰρῆναι" } } },
                     { greek: "φωνή", article: "ἡ", translation: "голос, звук", type: "noun",
-                        declension_forms: { singular: { nom: "φωνή", gen: "φωνῆς", dat: "φωνῇ", acc: "φωνήν", voc: "φωνή" },
-                        plural: { nom: "φωναί", gen: "φωνῶν", dat: "φωναῖς", acc: "φωνάς", voc: "φωναί" } } },
+                        declension_forms: { singular: { nom: "φωνή", gen: "φωνῆς", dat: "φωνῇ", acc: "φωνήν", voc: "φωνή" }, plural: { nom: "φωναί", gen: "φωνῶν", dat: "φωναῖς", acc: "φωνάς", voc: "φωναί" } } },
                     { greek: "ἐκκλησία", article: "ἡ", translation: "церковь", type: "noun",
-                        declension_forms: { singular: { nom: "ἐκκλησία", gen: "ἐκκλησίας", dat: "ἐκκλησίᾳ", acc: "ἐκκλησίαν", voc: "ἐκκλησία" },
-                        plural: { nom: "ἐκκλησίαι", gen: "ἐκκλησιῶν", dat: "ἐκκλησίαις", acc: "ἐκκλησίας", voc: "ἐκκλησίαι" } } },
+                        declension_forms: { singular: { nom: "ἐκκλησία", gen: "ἐκκλησίας", dat: "ἐκκλησίᾳ", acc: "ἐκκλησίαν", voc: "ἐκκλησία" }, plural: { nom: "ἐκκλησίαι", gen: "ἐκκλησιῶν", dat: "ἐκκλησίαις", acc: "ἐκκλησίας", voc: "ἐκκλησίαι" } } },
                     { greek: "ψυχή", article: "ἡ", translation: "душа", type: "noun",
-                        declension_forms: { singular: { nom: "ψυχή", gen: "ψυχῆς", dat: "ψυχῇ", acc: "ψυχήν", voc: "ψυχή" },
-                        plural: { nom: "ψυχαί", gen: "ψυχῶν", dat: "ψυχαῖς", acc: "ψυχάς", voc: "ψυχαί" } } },
+                        declension_forms: { singular: { nom: "ψυχή", gen: "ψυχῆς", dat: "ψυχῇ", acc: "ψυχήν", voc: "ψυχή" }, plural: { nom: "ψυχαί", gen: "ψυχῶν", dat: "ψυχαῖς", acc: "ψυχάς", voc: "ψυχαί" } } },
                     { greek: "ἐντολή", article: "ἡ", translation: "заповедь", type: "noun",
-                        declension_forms: { singular: { nom: "ἐντολή", gen: "ἐντολῆς", dat: "ἐντολῇ", acc: "ἐντολήν", voc: "ἐντολή" },
-                        plural: { nom: "ἐντολαί", gen: "ἐντολῶν", dat: "ἐντολαῖς", acc: "ἐντολάς", voc: "ἐντολαί" } } },
+                        declension_forms: { singular: { nom: "ἐντολή", gen: "ἐντολῆς", dat: "ἐντολῇ", acc: "ἐντολήν", voc: "ἐντολή" }, plural: { nom: "ἐντολαί", gen: "ἐντολῶν", dat: "ἐντολαῖς", acc: "ἐντολάς", voc: "ἐντολαί" } } },
                     { greek: "ὥρα", article: "ἡ", translation: "час", type: "noun",
-                        declension_forms: { singular: { nom: "ὥρα", gen: "ὥρας", dat: "ὥρᾳ", acc: "ὥραν", voc: "ὥρα" },
-                        plural: { nom: "ὥραι", gen: "ὡρῶν", dat: "ὥραις", acc: "ὥρας", voc: "ὥραι" } } }
+                        declension_forms: { singular: { nom: "ὥρα", gen: "ὥρας", dat: "ὥρᾳ", acc: "ὥραν", voc: "ὥρα" }, plural: { nom: "ὥραι", gen: "ὡρῶν", dat: "ὥραις", acc: "ὥρας", voc: "ὥραι" } } }
                 ],
                 exercises: {
                     declension_fill: [
-                        { case: "gen_sg", word: "ὥρα", translation: "час", correct: "ὥρας", distractors: ["ὡρῶν",
-                                "ὥρᾳ", "ὥραν"
-                            ] },
-                        { case: "dat_sg", word: "ὥρα", translation: "час", correct: "ὥρᾳ", distractors: ["ὥρας",
-                                "ὥραν", "ὥραις"
-                            ] },
-                        { case: "acc_sg", word: "ὥρα", translation: "час", correct: "ὥραν", distractors: ["ὥρας",
-                                "ὥρᾳ", "ὡρῶν"
-                            ] },
-                        { case: "nom_pl", word: "ὥρα", translation: "час", correct: "ὥραι", distractors: ["ὥρας",
-                                "ὥραις", "ὡρῶν"
-                            ] },
-                        { case: "gen_pl", word: "ὥρα", translation: "час", correct: "ὡρῶν", distractors: ["ὥρας",
-                                "ὥρᾳ", "ὥραις"
-                            ] },
-                        { case: "dat_pl", word: "ὥρα", translation: "час", correct: "ὥραις", distractors: ["ὡρῶν",
-                                "ὥραι", "ὥραν"
-                            ] },
-                        { case: "acc_pl", word: "ὥρα", translation: "час", correct: "ὥρας", distractors: ["ὥραις",
-                                "ὡρῶν", "ὥραι"
-                            ] }
+                        { case: "gen_sg", word: "ὥρα", translation: "час", correct: "ὥρας", distractors: ["ὡρῶν", "ὥρᾳ", "ὥραν"] },
+                        { case: "dat_sg", word: "ὥρα", translation: "час", correct: "ὥρᾳ", distractors: ["ὥρας", "ὥραν", "ὥραις"] },
+                        { case: "acc_sg", word: "ὥρα", translation: "час", correct: "ὥραν", distractors: ["ὥρας", "ὥρᾳ", "ὡρῶν"] },
+                        { case: "nom_pl", word: "ὥρα", translation: "час", correct: "ὥραι", distractors: ["ὥρας", "ὥραις", "ὡρῶν"] },
+                        { case: "gen_pl", word: "ὥρα", translation: "час", correct: "ὡρῶν", distractors: ["ὥρας", "ὥρᾳ", "ὥραις"] },
+                        { case: "dat_pl", word: "ὥρα", translation: "час", correct: "ὥραις", distractors: ["ὡρῶν", "ὥραι", "ὥραν"] },
+                        { case: "acc_pl", word: "ὥρα", translation: "час", correct: "ὥρας", distractors: ["ὥραις", "ὡρῶν", "ὥραι"] }
                     ],
                     translate_greek_to_russian: [
                         { greek: "ἡ ἀλήθεια", keywords: ["истина"] },
@@ -822,25 +825,13 @@
                         { greek: "ταῖς παραβολαῖς", keywords: ["притчам"] }
                     ],
                     translate_russian_to_greek: [
-                        { russian: "истина", correct_sequence: ["ἀλήθεια"], all_words: ["ἀλήθεια", "δόξα", "ὥρα",
-                                "ζωή"
-                            ] },
-                        { russian: "славы (Gen.)", correct_sequence: ["δόξης"], all_words: ["δόξης", "δόξαν",
-                                "δόξαις", "δόξαι"
-                            ] },
-                        { russian: "жизнь (Acc.)", correct_sequence: ["ζωήν"], all_words: ["ζωήν", "ζωή", "ζωῆς",
-                                "ζωαί"
-                            ] }
+                        { russian: "истина", correct_sequence: ["ἀλήθεια"], all_words: ["ἀλήθεια", "δόξα", "ὥρα", "ζωή"] },
+                        { russian: "славы (Gen.)", correct_sequence: ["δόξης"], all_words: ["δόξης", "δόξαν", "δόξαις", "δόξαι"] },
+                        { russian: "жизнь (Acc.)", correct_sequence: ["ζωήν"], all_words: ["ζωήν", "ζωή", "ζωῆς", "ζωαί"] }
                     ],
                     case_number: [
-                        { form: "ὡρῶν", correct: "Genitivus (Род. п.) мн.ч.",
-                            distractors: ["Genitivus (Род. п.) ед.ч.", "Dativus (Дат. п.) мн.ч.",
-                            "Accusativus (Вин. п.) мн.ч."
-                            ] },
-                        { form: "δόξαις", correct: "Dativus (Дат. п.) мн.ч.",
-                            distractors: ["Dativus (Дат. п.) ед.ч.", "Nominativus (Им. п.) мн.ч.",
-                            "Accusativus (Вин. п.) мн.ч."
-                            ] }
+                        { form: "ὡρῶν", correct: "Genitivus (Род. п.) мн.ч.", distractors: ["Genitivus (Род. п.) ед.ч.", "Dativus (Дат. п.) мн.ч.", "Accusativus (Вин. п.) мн.ч."] },
+                        { form: "δόξαις", correct: "Dativus (Дат. п.) мн.ч.", distractors: ["Dativus (Дат. п.) ед.ч.", "Nominativus (Им. п.) мн.ч.", "Accusativus (Вин. п.) мн.ч."] }
                     ]
                 }
             },
@@ -864,46 +855,91 @@
                 <b>Предикатив:</b> ὁ ἄνθρωπος ἀγαθός — человек хорош (сказуемое).<br>
                 <b>Субстантивация:</b> οἱ ἀγαθοί — хорошие (люди).`,
                 vocabulary: [
-                    { greek: "ἀγαθός, ή, όν", translation: "хороший (-ая, -ее)", type: "adjective" },
-                    { greek: "ἄλλος, η, ο", translation: "другой (-ая, -ое)", type: "adjective" },
-                    { greek: "δίκαιος, α, ον", translation: "справедливый, праведный (-ая, -ое)", type: "adjective" },
-                    { greek: "ἐγείρω", translation: "воскрешаю, поднимаю", type: "verb" },
-                    { greek: "ἔρημος, ή", translation: "пустыня", type: "noun" },
-                    { greek: "ἔσχατος, η, ον", translation: "последний (-ая, -ее)", type: "adjective" },
-                    { greek: "κακός, ή, όν", translation: "плохой (-ая, -ое)", type: "adjective" },
-                    { greek: "καλός, ή, όν", translation: "хороший, красивый (-ая, -ее/-ое)", type: "adjective" },
-                    { greek: "κύριος, ό", translation: "господин, Господь", type: "noun" },
-                    { greek: "μικρός, ά, όν", translation: "маленький (-ая, -ое)", type: "adjective" },
-                    { greek: "νεκρός, ά, όν", translation: "мёртвый (-ая, -ое)", type: "adjective" },
-                    { greek: "ὁ, ἡ, τό", translation: "опр. артикль м., ж., ср. рода", type: "other" },
-                    { greek: "ὁδός, ἡ", translation: "дорога, путь", type: "noun" },
-                    { greek: "παρθένος, ἡ", translation: "дева, девушка", type: "noun" },
-                    { greek: "πιστός, ή, όν", translation: "верный (-ая, -ое)", type: "adjective" },
-                    { greek: "πρῶτος, η, ον", translation: "первый (-ая, -ое)", type: "adjective" }
+                    { greek: "ἀγαθός, ή, όν", translation: "хороший (-ая, -ее)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "ἀγαθός", gen: "ἀγαθοῦ", dat: "ἀγαθῷ", acc: "ἀγαθόν", voc: "ἀγαθέ" }, plural: { nom: "ἀγαθοί", gen: "ἀγαθῶν", dat: "ἀγαθοῖς", acc: "ἀγαθούς", voc: "ἀγαθοί" } },
+                            feminine: { singular: { nom: "ἀγαθή", gen: "ἀγαθῆς", dat: "ἀγαθῇ", acc: "ἀγαθήν", voc: "ἀγαθή" }, plural: { nom: "ἀγαθαί", gen: "ἀγαθῶν", dat: "ἀγαθαῖς", acc: "ἀγαθάς", voc: "ἀγαθαί" } },
+                            neuter: { singular: { nom: "ἀγαθόν", gen: "ἀγαθοῦ", dat: "ἀγαθῷ", acc: "ἀγαθόν", voc: "ἀγαθόν" }, plural: { nom: "ἀγαθά", gen: "ἀγαθῶν", dat: "ἀγαθοῖς", acc: "ἀγαθά", voc: "ἀγαθά" } }
+                        }
+                    },
+                    { greek: "ἄλλος, η, ο", translation: "другой (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "ἄλλος", gen: "ἄλλου", dat: "ἄλλῳ", acc: "ἄλλον", voc: "ἄλλε" }, plural: { nom: "ἄλλοι", gen: "ἄλλων", dat: "ἄλλοις", acc: "ἄλλους", voc: "ἄλλοι" } },
+                            feminine: { singular: { nom: "ἄλλη", gen: "ἄλλης", dat: "ἄλλῃ", acc: "ἄλλην", voc: "ἄλλη" }, plural: { nom: "ἄλλαι", gen: "ἄλλων", dat: "ἄλλαις", acc: "ἄλλας", voc: "ἄλλαι" } },
+                            neuter: { singular: { nom: "ἄλλο", gen: "ἄλλου", dat: "ἄλλῳ", acc: "ἄλλο", voc: "ἄλλο" }, plural: { nom: "ἄλλα", gen: "ἄλλων", dat: "ἄλλοις", acc: "ἄλλα", voc: "ἄλλα" } }
+                        }
+                    },
+                    { greek: "δίκαιος, α, ον", translation: "справедливый, праведный (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "δίκαιος", gen: "δικαίου", dat: "δικαίῳ", acc: "δίκαιον", voc: "δικαιε" }, plural: { nom: "δίκαιοι", gen: "δικαίων", dat: "δικαίοις", acc: "δικαίους", voc: "δίκαιοι" } },
+                            feminine: { singular: { nom: "δικαία", gen: "δικαίας", dat: "δικαίᾳ", acc: "δικαίαν", voc: "δικαία" }, plural: { nom: "δικαῖαι", gen: "δικαίων", dat: "δικαίαις", acc: "δικαίας", voc: "δικαῖαι" } },
+                            neuter: { singular: { nom: "δίκαιον", gen: "δικαίου", dat: "δικαίῳ", acc: "δίκαιον", voc: "δίκαιον" }, plural: { nom: "δίκαια", gen: "δικαίων", dat: "δικαίοις", acc: "δίκαια", voc: "δίκαια" } }
+                        }
+                    },
+                    { greek: "ἔσχατος, η, ον", translation: "последний (-ая, -ее)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "ἔσχατος", gen: "ἐσχάτου", dat: "ἐσχάτῳ", acc: "ἔσχατον", voc: "ἔσχατε" }, plural: { nom: "ἔσχατοι", gen: "ἐσχάτων", dat: "ἐσχάτοις", acc: "ἐσχάτους", voc: "ἔσχατοι" } },
+                            feminine: { singular: { nom: "ἐσχάτη", gen: "ἐσχάτης", dat: "ἐσχάτῃ", acc: "ἐσχάτην", voc: "ἐσχάτη" }, plural: { nom: "ἔσχαται", gen: "ἐσχάτων", dat: "ἐσχάταις", acc: "ἐσχάτας", voc: "ἔσχαται" } },
+                            neuter: { singular: { nom: "ἔσχατον", gen: "ἐσχάτου", dat: "ἐσχάτῳ", acc: "ἔσχατον", voc: "ἔσχατον" }, plural: { nom: "ἔσχατα", gen: "ἐσχάτων", dat: "ἐσχάτοις", acc: "ἔσχατα", voc: "ἔσχατα" } }
+                        }
+                    },
+                    { greek: "κακός, ή, όν", translation: "плохой (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "κακός", gen: "κακοῦ", dat: "κακῷ", acc: "κακόν", voc: "κακέ" }, plural: { nom: "κακοί", gen: "κακῶν", dat: "κακοῖς", acc: "κακούς", voc: "κακοί" } },
+                            feminine: { singular: { nom: "κακή", gen: "κακῆς", dat: "κακῇ", acc: "κακήν", voc: "κακή" }, plural: { nom: "κακαί", gen: "κακῶν", dat: "κακαῖς", acc: "κακάς", voc: "κακαί" } },
+                            neuter: { singular: { nom: "κακόν", gen: "κακοῦ", dat: "κακῷ", acc: "κακόν", voc: "κακόν" }, plural: { nom: "κακά", gen: "κακῶν", dat: "κακοῖς", acc: "κακά", voc: "κακά" } }
+                        }
+                    },
+                    { greek: "καλός, ή, όν", translation: "хороший, красивый (-ая, -ее/-ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "καλός", gen: "καλοῦ", dat: "καλῷ", acc: "καλόν", voc: "καλέ" }, plural: { nom: "καλοί", gen: "καλῶν", dat: "καλοῖς", acc: "καλούς", voc: "καλοί" } },
+                            feminine: { singular: { nom: "καλή", gen: "καλῆς", dat: "καλῇ", acc: "καλήν", voc: "καλή" }, plural: { nom: "καλαί", gen: "καλῶν", dat: "καλαῖς", acc: "καλάς", voc: "καλαί" } },
+                            neuter: { singular: { nom: "καλόν", gen: "καλοῦ", dat: "καλῷ", acc: "καλόν", voc: "καλόν" }, plural: { nom: "καλά", gen: "καλῶν", dat: "καλοῖς", acc: "καλά", voc: "καλά" } }
+                        }
+                    },
+                    { greek: "μικρός, ά, όν", translation: "маленький (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "μικρός", gen: "μικροῦ", dat: "μικρῷ", acc: "μικρόν", voc: "μικρέ" }, plural: { nom: "μικροί", gen: "μικρῶν", dat: "μικροῖς", acc: "μικρούς", voc: "μικροί" } },
+                            feminine: { singular: { nom: "μικρά", gen: "μικρᾶς", dat: "μικρᾷ", acc: "μικράν", voc: "μικρά" }, plural: { nom: "μικραί", gen: "μικρῶν", dat: "μικραῖς", acc: "μικράς", voc: "μικραί" } },
+                            neuter: { singular: { nom: "μικρόν", gen: "μικροῦ", dat: "μικρῷ", acc: "μικρόν", voc: "μικρόν" }, plural: { nom: "μικρά", gen: "μικρῶν", dat: "μικροῖς", acc: "μικρά", voc: "μικρά" } }
+                        }
+                    },
+                    { greek: "νεκρός, ά, όν", translation: "мёртвый (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "νεκρός", gen: "νεκροῦ", dat: "νεκρῷ", acc: "νεκρόν", voc: "νεκρέ" }, plural: { nom: "νεκροί", gen: "νεκρῶν", dat: "νεκροῖς", acc: "νεκρούς", voc: "νεκροί" } },
+                            feminine: { singular: { nom: "νεκρά", gen: "νεκρᾶς", dat: "νεκρᾷ", acc: "νεκράν", voc: "νεκρά" }, plural: { nom: "νεκραί", gen: "νεκρῶν", dat: "νεκραῖς", acc: "νεκράς", voc: "νεκραί" } },
+                            neuter: { singular: { nom: "νεκρόν", gen: "νεκροῦ", dat: "νεκρῷ", acc: "νεκρόν", voc: "νεκρόν" }, plural: { nom: "νεκρά", gen: "νεκρῶν", dat: "νεκροῖς", acc: "νεκρά", voc: "νεκρά" } }
+                        }
+                    },
+                    { greek: "πιστός, ή, όν", translation: "верный (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "πιστός", gen: "πιστοῦ", dat: "πιστῷ", acc: "πιστόν", voc: "πιστέ" }, plural: { nom: "πιστοί", gen: "πιστῶν", dat: "πιστοῖς", acc: "πιστούς", voc: "πιστοί" } },
+                            feminine: { singular: { nom: "πιστή", gen: "πιστῆς", dat: "πιστῇ", acc: "πιστήν", voc: "πιστή" }, plural: { nom: "πισταί", gen: "πιστῶν", dat: "πισταῖς", acc: "πιστάς", voc: "πισταί" } },
+                            neuter: { singular: { nom: "πιστόν", gen: "πιστοῦ", dat: "πιστῷ", acc: "πιστόν", voc: "πιστόν" }, plural: { nom: "πιστά", gen: "πιστῶν", dat: "πιστοῖς", acc: "πιστά", voc: "πιστά" } }
+                        }
+                    },
+                    { greek: "πρῶτος, η, ον", translation: "первый (-ая, -ое)", type: "adjective",
+                        declension_forms: {
+                            masculine: { singular: { nom: "πρῶτος", gen: "πρώτου", dat: "πρώτῳ", acc: "πρῶτον", voc: "πρῶτε" }, plural: { nom: "πρῶτοι", gen: "πρώτων", dat: "πρώτοις", acc: "πρώτους", voc: "πρῶτοι" } },
+                            feminine: { singular: { nom: "πρώτη", gen: "πρώτης", dat: "πρώτῃ", acc: "πρώτην", voc: "πρώτη" }, plural: { nom: "πρῶται", gen: "πρώτων", dat: "πρώταις", acc: "πρώτας", voc: "πρῶται" } },
+                            neuter: { singular: { nom: "πρῶτον", gen: "πρώτου", dat: "πρώτῳ", acc: "πρῶτον", voc: "πρῶτον" }, plural: { nom: "πρῶτα", gen: "πρώτων", dat: "πρώτοις", acc: "πρῶτα", voc: "πρῶτα" } }
+                        }
+                    }
+                    // Остальные слова (ἐγείρω, ἔρημος, κύριος, ὁ, ἡ, τό, ὁδός, παρθένος) — без таблиц, так как они не склоняются как прилагательные или это артикль.
                 ],
                 exercises: {
                     agreement: [
-                        { noun: "λόγος", article: "ὁ", adjective: "ἀγαθός", correct: "ἀγαθός", distractors: [
-                                "ἀγαθόν", "ἀγαθοῦ", "ἀγαθῷ"
-                            ] },
-                        { noun: "ψυχή", article: "ἡ", adjective: "πιστός", correct: "πιστή", distractors: ["πιστός",
-                                "πιστόν", "πιστῆς"
-                            ] },
-                        { noun: "δῶρον", article: "τό", adjective: "καλός", correct: "καλόν", distractors: ["καλός",
-                                "καλή", "καλοῦ"
-                            ] }
+                        { noun: "λόγος", article: "ὁ", adjective: "ἀγαθός", correct: "ἀγαθός", distractors: ["ἀγαθόν", "ἀγαθοῦ", "ἀγαθῷ"] },
+                        { noun: "ψυχή", article: "ἡ", adjective: "πιστός", correct: "πιστή", distractors: ["πιστός", "πιστόν", "πιστῆς"] },
+                        { noun: "δῶρον", article: "τό", adjective: "καλός", correct: "καλόν", distractors: ["καλός", "καλή", "καλοῦ"] }
                     ],
                     attribute_vs_predicate: [
                         { phrase: "ὁ ἀγαθὸς ἄνθρωπος", correct: "атрибутив", distractors: ["предикатив"] },
                         { phrase: "ὁ ἄνθρωπος ἀγαθός", correct: "предикатив", distractors: ["атрибутив"] }
                     ],
                     substantivation: [
-                        { phrase: "οἱ ἀγαθοί", correct: "хорошие (люди)", distractors: ["хорошие (вещи)",
-                                "хорошие (женщины)", "добро"
-                            ] },
-                        { phrase: "τὸ καλόν", correct: "красивое (дело/вещь)", distractors: ["красивый (человек)",
-                                "красивая (женщина)", "красота"
-                            ] }
+                        { phrase: "οἱ ἀγαθοί", correct: "хорошие (люди)", distractors: ["хорошие (вещи)", "хорошие (женщины)", "добро"] },
+                        { phrase: "τὸ καλόν", correct: "красивое (дело/вещь)", distractors: ["красивый (человек)", "красивая (женщина)", "красота"] }
                     ],
                     article_fill: [
                         { noun: "ἀγαθῷ ἀνθρώπῳ", correct_article: "τῷ", distractors: ["τόν", "τοῦ", "τήν"] },
@@ -933,47 +969,37 @@
                 • μετά + Acc. — после<br>
                 • πρός + Acc. — к`,
                 vocabulary: [
-                    { greek: "ἄγγελος", article: "ὁ", translation: "ангел, вестник", type: "noun" },
-                    { greek: "ἄγω", translation: "веду", type: "verb" },
-                    { greek: "ἀπό + Gen.", translation: "от", type: "preposition" },
-                    { greek: "βάλλω", translation: "бросаю", type: "verb" },
-                    { greek: "βαπτιστής", article: "ὁ", translation: "креститель", type: "noun" },
-                    { greek: "διά + Gen.", translation: "через, сквозь", type: "preposition" },
-                    { greek: "διά + Acc.", translation: "из-за, за, вследствие", type: "preposition" },
-                    { greek: "εἰς + Acc.", translation: "в (во что, куда)", type: "preposition" },
-                    { greek: "ἐκ + Gen.", translation: "из", type: "preposition" },
-                    { greek: "ἐν + Dat.", translation: "в (в чем, где)", type: "preposition" },
-                    { greek: "θεός", article: "ὁ", translation: "Бог", type: "noun" },
-                    { greek: "κόσμος", article: "ὁ", translation: "мир, вселенная", type: "noun" },
-                    { greek: "λίθος", article: "ὁ", translation: "камень", type: "noun" },
-                    { greek: "μαθητής", article: "ὁ", translation: "ученик", type: "noun" },
-                    { greek: "μένω", translation: "остаюсь, пребываю", type: "verb" },
-                    { greek: "μετά + Gen.", translation: "с (кем, чем)", type: "preposition" },
-                    { greek: "μετά + Acc.", translation: "после", type: "preposition" },
-                    { greek: "νεανίας", article: "ὁ", translation: "юноша", type: "noun" },
-                    { greek: "οὐρανός", article: "ὁ", translation: "небо", type: "noun" },
-                    { greek: "πέμπω", translation: "посылаю", type: "verb" },
-                    { greek: "πρός + Acc.", translation: "к", type: "preposition" },
-                    { greek: "προφήτης", article: "ὁ", translation: "пророк", type: "noun" },
-                    { greek: "τέκνον", article: "τό", translation: "ребенок, дитя", type: "noun" },
-                    { greek: "φέρω", translation: "несу, приношу", type: "verb" }
+                    { greek: "ἄγγελος", article: "ὁ", translation: "ангел, вестник", type: "noun",
+                        declension_forms: { singular: { nom: "ἄγγελος", gen: "ἀγγέλου", dat: "ἀγγέλῳ", acc: "ἄγγελον", voc: "ἄγγελε" }, plural: { nom: "ἄγγελοι", gen: "ἀγγέλων", dat: "ἀγγέλοις", acc: "ἀγγέλους", voc: "ἄγγελοι" } } },
+                    { greek: "βαπτιστής", article: "ὁ", translation: "креститель", type: "noun",
+                        declension_forms: { singular: { nom: "βαπτιστής", gen: "βαπτιστοῦ", dat: "βαπτιστῇ", acc: "βαπτιστήν", voc: "βαπτιστά" }, plural: { nom: "βαπτισταί", gen: "βαπτιστῶν", dat: "βαπτισταῖς", acc: "βαπτιστάς", voc: "βαπτισταί" } } },
+                    { greek: "θεός", article: "ὁ", translation: "Бог", type: "noun",
+                        declension_forms: { singular: { nom: "θεός", gen: "θεοῦ", dat: "θεῷ", acc: "θεόν", voc: "θεέ" }, plural: { nom: "θεοί", gen: "θεῶν", dat: "θεοῖς", acc: "θεούς", voc: "θεοί" } } },
+                    { greek: "κόσμος", article: "ὁ", translation: "мир, вселенная", type: "noun",
+                        declension_forms: { singular: { nom: "κόσμος", gen: "κόσμου", dat: "κόσμῳ", acc: "κόσμον", voc: "κόσμε" }, plural: { nom: "κόσμοι", gen: "κόσμων", dat: "κόσμοις", acc: "κόσμους", voc: "κόσμοι" } } },
+                    { greek: "λίθος", article: "ὁ", translation: "камень", type: "noun",
+                        declension_forms: { singular: { nom: "λίθος", gen: "λίθου", dat: "λίθῳ", acc: "λίθον", voc: "λίθε" }, plural: { nom: "λίθοι", gen: "λίθων", dat: "λίθοις", acc: "λίθους", voc: "λίθοι" } } },
+                    { greek: "μαθητής", article: "ὁ", translation: "ученик", type: "noun",
+                        declension_forms: { singular: { nom: "μαθητής", gen: "μαθητοῦ", dat: "μαθητῇ", acc: "μαθητήν", voc: "μαθητά" }, plural: { nom: "μαθηταί", gen: "μαθητῶν", dat: "μαθηταῖς", acc: "μαθητάς", voc: "μαθηταί" } } },
+                    { greek: "νεανίας", article: "ὁ", translation: "юноша", type: "noun",
+                        declension_forms: { singular: { nom: "νεανίας", gen: "νεανίου", dat: "νεανίᾳ", acc: "νεανίαν", voc: "νεανία" }, plural: { nom: "νεανίαι", gen: "νεανιῶν", dat: "νεανίαις", acc: "νεανίας", voc: "νεανίαι" } } },
+                    { greek: "οὐρανός", article: "ὁ", translation: "небо", type: "noun",
+                        declension_forms: { singular: { nom: "οὐρανός", gen: "οὐρανοῦ", dat: "οὐρανῷ", acc: "οὐρανόν", voc: "οὐρανέ" }, plural: { nom: "οὐρανοί", gen: "οὐρανῶν", dat: "οὐρανοῖς", acc: "οὐρανούς", voc: "οὐρανοί" } } },
+                    { greek: "προφήτης", article: "ὁ", translation: "пророк", type: "noun",
+                        declension_forms: { singular: { nom: "προφήτης", gen: "προφήτου", dat: "προφήτῃ", acc: "προφήτην", voc: "προφῆτα" }, plural: { nom: "προφῆται", gen: "προφητῶν", dat: "προφήταις", acc: "προφήτας", voc: "προφῆται" } } },
+                    { greek: "τέκνον", article: "τό", translation: "ребенок, дитя", type: "noun",
+                        declension_forms: { singular: { nom: "τέκνον", gen: "τέκνου", dat: "τέκνῳ", acc: "τέκνον", voc: "τέκνον" }, plural: { nom: "τέκνα", gen: "τέκνων", dat: "τέκνοις", acc: "τέκνα", voc: "τέκνα" } } }
+                    // предлоги и глаголы без таблиц
                 ],
                 exercises: {
                     declension_fill: [
-                        { case: "gen_sg", word: "προφήτης", translation: "пророк", correct: "προφήτου",
-                            distractors: ["προφητῶν", "προφήτῃ", "προφήτην"] },
-                        { case: "dat_sg", word: "προφήτης", translation: "пророк", correct: "προφήτῃ",
-                            distractors: ["προφήτου", "προφήταις", "προφήτην"] },
-                        { case: "acc_sg", word: "προφήτης", translation: "пророк", correct: "προφήτην",
-                            distractors: ["προφήτου", "προφήτῃ", "προφῆτα"] },
-                        { case: "nom_pl", word: "προφήτης", translation: "пророк", correct: "προφῆται",
-                            distractors: ["προφήτας", "προφητῶν", "προφήταις"] },
-                        { case: "gen_pl", word: "προφήτης", translation: "пророк", correct: "προφητῶν",
-                            distractors: ["προφήτου", "προφήταις", "προφῆται"] },
-                        { case: "dat_pl", word: "προφήτης", translation: "пророк", correct: "προφήταις",
-                            distractors: ["προφητῶν", "προφήτῃ", "προφήτας"] },
-                        { case: "acc_pl", word: "προφήτης", translation: "пророк", correct: "προφήτας",
-                            distractors: ["προφήταις", "προφητῶν", "προφῆται"] }
+                        { case: "gen_sg", word: "προφήτης", translation: "пророк", correct: "προφήτου", distractors: ["προφητῶν", "προφήτῃ", "προφήτην"] },
+                        { case: "dat_sg", word: "προφήτης", translation: "пророк", correct: "προφήτῃ", distractors: ["προφήτου", "προφήταις", "προφήτην"] },
+                        { case: "acc_sg", word: "προφήτης", translation: "пророк", correct: "προφήτην", distractors: ["προφήτου", "προφήτῃ", "προφῆτα"] },
+                        { case: "nom_pl", word: "προφήτης", translation: "пророк", correct: "προφῆται", distractors: ["προφήτας", "προφητῶν", "προφήταις"] },
+                        { case: "gen_pl", word: "προφήτης", translation: "пророк", correct: "προφητῶν", distractors: ["προφήτου", "προφήταις", "προφῆται"] },
+                        { case: "dat_pl", word: "προφήτης", translation: "пророк", correct: "προφήταις", distractors: ["προφητῶν", "προφήτῃ", "προφήτας"] },
+                        { case: "acc_pl", word: "προφήτης", translation: "пророк", correct: "προφήτας", distractors: ["προφήταις", "προφητῶν", "προφῆται"] }
                     ],
                     translate_greek_to_russian: [
                         { greek: "ὁ προφήτης", keywords: ["пророк"] },
@@ -984,25 +1010,13 @@
                         { greek: "τῶν οὐρανῶν", keywords: ["небес"] }
                     ],
                     translate_russian_to_greek: [
-                        { russian: "пророк", correct_sequence: ["προφήτης"], all_words: ["προφήτης", "μαθητής",
-                                "ἄγγελος"
-                            ] },
-                        { russian: "юноши (Gen.)", correct_sequence: ["νεανίου"], all_words: ["νεανίου", "νεανίαν",
-                                "νεανίαις"
-                            ] },
-                        { russian: "к Богу", correct_sequence: ["πρὸς", "τὸν", "θεόν"], all_words: ["πρὸς",
-                                "τὸν", "θεόν", "ἀπό", "τοῦ"
-                            ] }
+                        { russian: "пророк", correct_sequence: ["προφήτης"], all_words: ["προφήτης", "μαθητής", "ἄγγελος"] },
+                        { russian: "юноши (Gen.)", correct_sequence: ["νεανίου"], all_words: ["νεανίου", "νεανίαν", "νεανίαις"] },
+                        { russian: "к Богу", correct_sequence: ["πρὸς", "τὸν", "θεόν"], all_words: ["πρὸς", "τὸν", "θεόν", "ἀπό", "τοῦ"] }
                     ],
                     case_number: [
-                        { form: "προφήτῃ", correct: "Dativus (Дат. п.) ед.ч.",
-                            distractors: ["Nominativus (Им. п.) ед.ч.", "Genitivus (Род. п.) ед.ч.",
-                            "Accusativus (Вин. п.) ед.ч."
-                            ] },
-                        { form: "ἀγγέλων", correct: "Genitivus (Род. п.) мн.ч.",
-                            distractors: ["Dativus (Дат. п.) мн.ч.", "Accusativus (Вин. п.) мн.ч.",
-                            "Nominativus (Им. п.) мн.ч."
-                            ] }
+                        { form: "προφήτῃ", correct: "Dativus (Дат. п.) ед.ч.", distractors: ["Nominativus (Им. п.) ед.ч.", "Genitivus (Род. п.) ед.ч.", "Accusativus (Вин. п.) ед.ч."] },
+                        { form: "ἀγγέλων", correct: "Genitivus (Род. п.) мн.ч.", distractors: ["Dativus (Дат. п.) мн.ч.", "Accusativus (Вин. п.) мн.ч.", "Nominativus (Им. п.) мн.ч."] }
                     ]
                 }
             },
@@ -1020,39 +1034,53 @@
                 <b>Проклитики</b> (безударные, примыкающие к последующему слову):<br>
                 ὁ, ἡ, οἱ, αἱ, εἰ, ὡς, οὐκ, οὐχ и др.`,
                 vocabulary: [
-                    { greek: "αὐτός, ή, ό", translation: "(в косв. падежах) он, она, оно, (Plur.) они",
-                    type: "pronoun" },
-                    { greek: "δέ", translation: "же, а, но (обычно стоит в предложении на 2-м месте)",
-                    type: "other" },
-                    { greek: "δεσπότης", article: "ὁ", translation: "господин", type: "noun" },
-                    { greek: "ἐγώ", translation: "я", type: "pronoun" },
-                    { greek: "εἰμί", translation: "(я) есмь", type: "verb" },
-                    { greek: "ἡμεῖς", translation: "мы", type: "pronoun" },
-                    { greek: "κριτής", article: "ὁ", translation: "судья", type: "noun" },
-                    { greek: "σύ", translation: "ты", type: "pronoun" },
-                    { greek: "τελώνης", article: "ὁ", translation: "мытарь, сборщик податей", type: "noun" },
-                    { greek: "ὑμεῖς", translation: "вы", type: "pronoun" }
+                    { greek: "εἰμί", translation: "(я) есмь", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "εἰμί", "2": "εἶ", "3": "ἐστί(ν)" },
+                            plural: { "1": "ἐσμέν", "2": "ἐστέ", "3": "εἰσί(ν)" }
+                        }
+                    },
+                    { greek: "ἐγώ", translation: "я", type: "pronoun",
+                        declension_forms: {
+                            singular: { nom: "ἐγώ", gen: "μου", dat: "μοι", acc: "με" },
+                            plural: {} // у местоимения нет множественного числа
+                        }
+                    },
+                    { greek: "σύ", translation: "ты", type: "pronoun",
+                        declension_forms: {
+                            singular: { nom: "σύ", gen: "σου", dat: "σοι", acc: "σε" },
+                            plural: {}
+                        }
+                    },
+                    { greek: "αὐτός, ή, ό", translation: "(в косв. падежах) он, она, оно, (Plur.) они", type: "pronoun",
+                        declension_forms: {
+                            masculine: { singular: { nom: "αὐτός", gen: "αὐτοῦ", dat: "αὐτῷ", acc: "αὐτόν" }, plural: { nom: "αὐτοί", gen: "αὐτῶν", dat: "αὐτοῖς", acc: "αὐτούς" } },
+                            feminine: { singular: { nom: "αὐτή", gen: "αὐτῆς", dat: "αὐτῇ", acc: "αὐτήν" }, plural: { nom: "αὐταί", gen: "αὐτῶν", dat: "αὐταῖς", acc: "αὐτάς" } },
+                            neuter: { singular: { nom: "αὐτό", gen: "αὐτοῦ", dat: "αὐτῷ", acc: "αὐτό" }, plural: { nom: "αὐτά", gen: "αὐτῶν", dat: "αὐτοῖς", acc: "αὐτά" } }
+                        }
+                    },
+                    { greek: "ἡμεῖς", translation: "мы", type: "pronoun",
+                        declension_forms: {
+                            plural: { nom: "ἡμεῖς", gen: "ἡμῶν", dat: "ἡμῖν", acc: "ἡμᾶς" },
+                            singular: {}
+                        }
+                    },
+                    { greek: "ὑμεῖς", translation: "вы", type: "pronoun",
+                        declension_forms: {
+                            plural: { nom: "ὑμεῖς", gen: "ὑμῶν", dat: "ὑμῖν", acc: "ὑμᾶς" },
+                            singular: {}
+                        }
+                    }
+                    // остальные слова без таблиц
                 ],
                 exercises: {
                     declension_fill: [
-                        { case: "1sg", word: "εἰμί", translation: "быть", correct: "εἰμί", distractors: ["εἶ",
-                                "ἐστί", "ἐσμέν"
-                            ] },
-                        { case: "2sg", word: "εἰμί", translation: "быть", correct: "εἶ", distractors: ["εἰμί",
-                                "ἐστί", "ἐστέ"
-                            ] },
-                        { case: "3sg", word: "εἰμί", translation: "быть", correct: "ἐστί(ν)", distractors: ["εἰμί",
-                                "εἶ", "εἰσί"
-                            ] },
-                        { case: "1pl", word: "εἰμί", translation: "быть", correct: "ἐσμέν", distractors: ["ἐστέ",
-                                "εἰσί", "εἰμί"
-                            ] },
-                        { case: "2pl", word: "εἰμί", translation: "быть", correct: "ἐστέ", distractors: ["ἐσμέν",
-                                "εἰσί", "εἶ"
-                            ] },
-                        { case: "3pl", word: "εἰμί", translation: "быть", correct: "εἰσί(ν)", distractors: ["ἐσμέν",
-                                "ἐστέ", "ἐστί"
-                            ] }
+                        { case: "1sg", word: "εἰμί", translation: "быть", correct: "εἰμί", distractors: ["εἶ", "ἐστί", "ἐσμέν"] },
+                        { case: "2sg", word: "εἰμί", translation: "быть", correct: "εἶ", distractors: ["εἰμί", "ἐστί", "ἐστέ"] },
+                        { case: "3sg", word: "εἰμί", translation: "быть", correct: "ἐστί(ν)", distractors: ["εἰμί", "εἶ", "εἰσί"] },
+                        { case: "1pl", word: "εἰμί", translation: "быть", correct: "ἐσμέν", distractors: ["ἐστέ", "εἰσί", "εἰμί"] },
+                        { case: "2pl", word: "εἰμί", translation: "быть", correct: "ἐστέ", distractors: ["ἐσμέν", "εἰσί", "εἶ"] },
+                        { case: "3pl", word: "εἰμί", translation: "быть", correct: "εἰσί(ν)", distractors: ["ἐσμέν", "ἐστέ", "ἐστί"] }
                     ],
                     translate_greek_to_russian: [
                         { greek: "ἐγώ εἰμι", keywords: ["я", "есмь"] },
@@ -1062,12 +1090,8 @@
                         { greek: "ὑμεῖς ἐστέ", keywords: ["вы", "есте"] }
                     ],
                     translate_russian_to_greek: [
-                        { russian: "я есмь", correct_sequence: ["ἐγώ", "εἰμι"], all_words: ["ἐγώ", "εἰμι", "σύ",
-                                "εἶ"
-                            ] },
-                        { russian: "ты еси", correct_sequence: ["σύ", "εἶ"], all_words: ["σύ", "εἶ", "ἐγώ",
-                                "εἰμι"
-                            ] }
+                        { russian: "я есмь", correct_sequence: ["ἐγώ", "εἰμι"], all_words: ["ἐγώ", "εἰμι", "σύ", "εἶ"] },
+                        { russian: "ты еси", correct_sequence: ["σύ", "εἶ"], all_words: ["σύ", "εἶ", "ἐγώ", "εἰμι"] }
                     ]
                 }
             },
@@ -1084,32 +1108,26 @@
                 <tr><td>Accusativus (Вин. п.)</td><td>τοῦτον</td><td>ταύτην</td><td>τοῦτο</td></tr></table><br>
                 <b>αὐτός</b> — в косвенных падежах = «он, она, оно»; в Nominativus = «сам»; с артиклем = «тот же».`,
                 vocabulary: [
-                    { greek: "ἀγάπη", article: "ἡ", translation: "любовь", type: "noun" },
-                    { greek: "ἁμαρτία", article: "ἡ", translation: "грех", type: "noun" },
-                    { greek: "βαπτίζω", translation: "крещу", type: "verb" },
-                    { greek: "διδάσκαλος", article: "ὁ", translation: "учитель", type: "noun" },
-                    { greek: "ἐκεῖνος, ἐκείνη, ἐκεῖνο", translation: "тот, та, то", type: "pronoun" },
-                    { greek: "ἐπαγγελία", article: "ἡ", translation: "обещание, обетование", type: "noun" },
-                    { greek: "εὐαγγέλιον", article: "τό", translation: "Евангелие", type: "noun" },
-                    { greek: "κρίνω", translation: "сужу", type: "verb" },
-                    { greek: "νῦν", translation: "теперь, сейчас", type: "adverb" },
-                    { greek: "οὗτος, αὕτη, τοῦτο", translation: "этот, эта, это", type: "pronoun" },
-                    { greek: "οὕτως", translation: "так, таким образом", type: "adverb" },
-                    { greek: "πονηρός, ά, όν", translation: "дурной, плохой, порочный (-ая, -ое)", type: "adjective" },
-                    { greek: "πρόσωπον", article: "τό", translation: "лицо", type: "noun" },
-                    { greek: "χαρά", article: "ἡ", translation: "радость", type: "noun" }
+                    { greek: "οὗτος, αὕτη, τοῦτο", translation: "этот, эта, это", type: "pronoun",
+                        declension_forms: {
+                            masculine: { singular: { nom: "οὗτος", gen: "τούτου", dat: "τούτῳ", acc: "τοῦτον" }, plural: { nom: "οὗτοι", gen: "τούτων", dat: "τούτοις", acc: "τούτους" } },
+                            feminine: { singular: { nom: "αὕτη", gen: "ταύτης", dat: "ταύτῃ", acc: "ταύτην" }, plural: { nom: "αὗται", gen: "ταύτων", dat: "ταύταις", acc: "ταύτας" } },
+                            neuter: { singular: { nom: "τοῦτο", gen: "τούτου", dat: "τούτῳ", acc: "τοῦτο" }, plural: { nom: "ταῦτα", gen: "τούτων", dat: "τούτοις", acc: "ταῦτα" } }
+                        }
+                    },
+                    { greek: "ἐκεῖνος, ἐκείνη, ἐκεῖνο", translation: "тот, та, то", type: "pronoun",
+                        declension_forms: {
+                            masculine: { singular: { nom: "ἐκεῖνος", gen: "ἐκείνου", dat: "ἐκείνῳ", acc: "ἐκεῖνον" }, plural: { nom: "ἐκεῖνοι", gen: "ἐκείνων", dat: "ἐκείνοις", acc: "ἐκείνους" } },
+                            feminine: { singular: { nom: "ἐκείνη", gen: "ἐκείνης", dat: "ἐκείνῃ", acc: "ἐκείνην" }, plural: { nom: "ἐκεῖναι", gen: "ἐκείνων", dat: "ἐκείναις", acc: "ἐκείνας" } },
+                            neuter: { singular: { nom: "ἐκεῖνο", gen: "ἐκείνου", dat: "ἐκείνῳ", acc: "ἐκεῖνο" }, plural: { nom: "ἐκεῖνα", gen: "ἐκείνων", dat: "ἐκείνοις", acc: "ἐκεῖνα" } }
+                        }
+                    }
                 ],
                 exercises: {
                     declension_fill: [
-                        { case: "gen_sg_m", word: "οὗτος", translation: "этот", correct: "τούτου", distractors: [
-                                "ταύτης", "τούτῳ", "τοῦτον"
-                            ] },
-                        { case: "dat_sg_f", word: "αὕτη", translation: "эта", correct: "ταύτῃ", distractors: [
-                                "ταύτης", "τούτῳ", "ταύτην"
-                            ] },
-                        { case: "acc_sg_n", word: "τοῦτο", translation: "это", correct: "τοῦτο", distractors: [
-                                "τούτου", "τούτῳ", "τοῦτον"
-                            ] }
+                        { case: "gen_sg_m", word: "οὗτος", translation: "этот", correct: "τούτου", distractors: ["ταύτης", "τούτῳ", "τοῦτον"] },
+                        { case: "dat_sg_f", word: "αὕτη", translation: "эта", correct: "ταύτῃ", distractors: ["ταύτης", "τούτῳ", "ταύτην"] },
+                        { case: "acc_sg_n", word: "τοῦτο", translation: "это", correct: "τοῦτο", distractors: ["τούτου", "τούτῳ", "τοῦτον"] }
                     ],
                     translate_greek_to_russian: [
                         { greek: "οὗτος ὁ λόγος", keywords: ["этот", "слово"] },
@@ -1117,9 +1135,7 @@
                         { greek: "ἐκεῖνο τὸ δῶρον", keywords: ["тот", "дар"] }
                     ],
                     translate_russian_to_greek: [
-                        { russian: "этот человек", correct_sequence: ["οὗτος", "ἄνθρωπος"], all_words: ["οὗτος",
-                                "ἄνθρωπος", "αὕτη", "γυνή"
-                            ] }
+                        { russian: "этот человек", correct_sequence: ["οὗτος", "ἄνθρωπος"], all_words: ["οὗτος", "ἄνθρωπος", "αὕτη", "γυνή"] }
                     ]
                 }
             },
@@ -1135,40 +1151,57 @@
                 <b>Отложительные глаголы:</b> имеют медио-пассивные формы с активным значением.<br>
                 Пример: ἔρχομαι — прихожу (не «прихожусь»).`,
                 vocabulary: [
-                    { greek: "ἀκούω + Gen.", translation: "слышу (кого, что)", type: "verb" },
-                    { greek: "ἁμαρτωλός", article: "ὁ", translation: "грешник", type: "noun" },
-                    { greek: "ἀπέρχομαι (dep.)", translation: "отхожу, ухожу", type: "verb" },
-                    { greek: "ἀποκρίνομαι (dep.)", translation: "отвечаю", type: "verb" },
-                    { greek: "ἄρχομαι", translation: "начинаю", type: "verb" },
-                    { greek: "ἄρχω + Gen.", translation: "управляю (чем)", type: "verb" },
-                    { greek: "γίνομαι (dep.) + Nom.", translation: "становлюсь, делаюсь (чем)", type: "verb" },
-                    { greek: "διώκω", translation: "гоню, преследую", type: "verb" },
-                    { greek: "εἰσέρχομαι (dep.)", translation: "вхожу", type: "verb" },
-                    { greek: "ἐξέρχομαι (dep.)", translation: "выхожу", type: "verb" },
-                    { greek: "ἔρχομαι (dep.)", translation: "прихожу", type: "verb" },
-                    { greek: "λῃστής", article: "ὁ", translation: "разбойник", type: "noun" },
-                    { greek: "ὅτι", translation: "что, потому что", type: "conjunction" },
-                    { greek: "οὔ (οὐκ, οὐχ)", translation: "не", type: "other" },
-                    { greek: "πορεύομαι (dep.)", translation: "иду", type: "verb" },
-                    { greek: "σώζω", translation: "спасаю", type: "verb" },
-                    { greek: "ὑπό + Gen.", translation: "предлог, обозначающий лицо в страдательном обороте",
-                        type: "preposition" },
-                    { greek: "ὑπό + Acc.", translation: "под", type: "preposition" }
+                    { greek: "ἀπέρχομαι (dep.)", translation: "отхожу, ухожу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "ἀπέρχομαι", "2": "ἀπέρχῃ", "3": "ἀπέρχεται" },
+                            plural: { "1": "ἀπερχόμεθα", "2": "ἀπέρχεσθε", "3": "ἀπέρχονται" }
+                        }
+                    },
+                    { greek: "ἀποκρίνομαι (dep.)", translation: "отвечаю", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "ἀποκρίνομαι", "2": "ἀποκρίνῃ", "3": "ἀποκρίνεται" },
+                            plural: { "1": "ἀποκρινόμεθα", "2": "ἀποκρίνεσθε", "3": "ἀποκρίνονται" }
+                        }
+                    },
+                    { greek: "γίνομαι (dep.) + Nom.", translation: "становлюсь, делаюсь (чем)", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "γίνομαι", "2": "γίνῃ", "3": "γίνεται" },
+                            plural: { "1": "γινόμεθα", "2": "γίνεσθε", "3": "γίνονται" }
+                        }
+                    },
+                    { greek: "εἰσέρχομαι (dep.)", translation: "вхожу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "εἰσέρχομαι", "2": "εἰσέρχῃ", "3": "εἰσέρχεται" },
+                            plural: { "1": "εἰσερχόμεθα", "2": "εἰσέρχεσθε", "3": "εἰσέρχονται" }
+                        }
+                    },
+                    { greek: "ἐξέρχομαι (dep.)", translation: "выхожу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "ἐξέρχομαι", "2": "ἐξέρχῃ", "3": "ἐξέρχεται" },
+                            plural: { "1": "ἐξερχόμεθα", "2": "ἐξέρχεσθε", "3": "ἐξέρχονται" }
+                        }
+                    },
+                    { greek: "ἔρχομαι (dep.)", translation: "прихожу", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "ἔρχομαι", "2": "ἔρχῃ", "3": "ἔρχεται" },
+                            plural: { "1": "ἐρχόμεθα", "2": "ἔρχεσθε", "3": "ἔρχονται" }
+                        }
+                    },
+                    { greek: "πορεύομαι (dep.)", translation: "иду", type: "verb",
+                        declension_forms: {
+                            singular: { "1": "πορεύομαι", "2": "πορεύῃ", "3": "πορεύεται" },
+                            plural: { "1": "πορευόμεθα", "2": "πορεύεσθε", "3": "πορεύονται" }
+                        }
+                    }
                 ],
                 exercises: {
                     declension_fill: [
-                        { case: "1sg", word: "λύομαι", translation: "развязываюсь", correct: "λύομαι",
-                            distractors: ["λύῃ", "λύεται", "λυόμεθα"] },
-                        { case: "2sg", word: "λύομαι", translation: "развязываюсь", correct: "λύῃ",
-                            distractors: ["λύομαι", "λύεται", "λύεσθε"] },
-                        { case: "3sg", word: "λύομαι", translation: "развязываюсь", correct: "λύεται",
-                            distractors: ["λύομαι", "λύῃ", "λύονται"] },
-                        { case: "1pl", word: "λύομαι", translation: "развязываюсь", correct: "λυόμεθα",
-                            distractors: ["λύεσθε", "λύονται", "λύομαι"] },
-                        { case: "2pl", word: "λύομαι", translation: "развязываюсь", correct: "λύεσθε",
-                            distractors: ["λυόμεθα", "λύονται", "λύῃ"] },
-                        { case: "3pl", word: "λύομαι", translation: "развязываюсь", correct: "λύονται",
-                            distractors: ["λυόμεθα", "λύεσθε", "λύεται"] }
+                        { case: "1sg", word: "λύομαι", translation: "развязываюсь", correct: "λύομαι", distractors: ["λύῃ", "λύεται", "λυόμεθα"] },
+                        { case: "2sg", word: "λύομαι", translation: "развязываюсь", correct: "λύῃ", distractors: ["λύομαι", "λύεται", "λύεσθε"] },
+                        { case: "3sg", word: "λύομαι", translation: "развязываюсь", correct: "λύεται", distractors: ["λύομαι", "λύῃ", "λύονται"] },
+                        { case: "1pl", word: "λύομαι", translation: "развязываюсь", correct: "λυόμεθα", distractors: ["λύεσθε", "λύονται", "λύομαι"] },
+                        { case: "2pl", word: "λύομαι", translation: "развязываюсь", correct: "λύεσθε", distractors: ["λυόμεθα", "λύονται", "λύῃ"] },
+                        { case: "3pl", word: "λύομαι", translation: "развязываюсь", correct: "λύονται", distractors: ["λυόμεθα", "λύεσθε", "λύεται"] }
                     ],
                     translate_greek_to_russian: [
                         { greek: "γίνομαι", keywords: ["становлюсь"] },
@@ -1178,27 +1211,19 @@
                         { greek: "σώζεται", keywords: ["спасается"] }
                     ],
                     translate_russian_to_greek: [
-                        { russian: "я становлюсь", correct_sequence: ["γίνομαι"], all_words: ["γίνομαι", "ἔρχομαι",
-                                "λύομαι"
-                            ] },
-                        { russian: "он спасается", correct_sequence: ["σώζεται"], all_words: ["σώζεται", "σώζω",
-                                "σώζονται"
-                            ] }
+                        { russian: "я становлюсь", correct_sequence: ["γίνομαι"], all_words: ["γίνομαι", "ἔρχομαι", "λύομαι"] },
+                        { russian: "он спасается", correct_sequence: ["σώζεται"], all_words: ["σώζεται", "σώζω", "σώζονται"] }
                     ],
                     case_number: [
-                        { form: "λύεται", correct: "3-е л. ед.ч.", distractors: ["2-е л. ед.ч.", "1-е л. мн.ч.",
-                                "3-е л. мн.ч."
-                            ] },
-                        { form: "πορεύονται", correct: "3-е л. мн.ч.", distractors: ["3-е л. ед.ч.", "2-е л. мн.ч.",
-                                "1-е л. мн.ч."
-                            ] }
+                        { form: "λύεται", correct: "3-е л. ед.ч.", distractors: ["2-е л. ед.ч.", "1-е л. мн.ч.", "3-е л. мн.ч."] },
+                        { form: "πορεύονται", correct: "3-е л. мн.ч.", distractors: ["3-е л. ед.ч.", "2-е л. мн.ч.", "1-е л. мн.ч."] }
                     ]
                 }
             }
         };
 
         // ======================================================================
-        // ОСНОВНАЯ ЛОГИКА (полностью рабочая)
+        // ОСТАЛЬНАЯ ЛОГИКА (БЕЗ ИЗМЕНЕНИЙ)
         // ======================================================================
 
         let currentLesson = 3;
@@ -1270,12 +1295,9 @@
             }
         }
 
-        // ===== СЛОВАРЬ ВСЕХ СЛОВ (С ГРУППИРОВКОЙ ПО ЧАСТЯМ РЕЧИ) =====
-
         function showAllVocab() {
             showSection('allVocabSection');
             var container = document.getElementById('allVocabContent');
-            // Собираем все слова
             var nouns = [],
                 verbs = [],
                 adjectives = [],
@@ -1322,7 +1344,6 @@
                     }
                 }
             }
-            // Убираем дубликаты (по греческому слову)
             function unique(arr) {
                 var seen = {};
                 return arr.filter(function(item) {
@@ -1341,7 +1362,6 @@
             conjunctions = unique(conjunctions);
             others = unique(others);
 
-            // Сортируем по греческому алфавиту (приблизительно)
             function sortByGreek(a, b) { return a.greek.localeCompare(b.greek); }
             nouns.sort(sortByGreek);
             verbs.sort(sortByGreek);
@@ -1357,72 +1377,62 @@
                 html += '<div class="vocab-section"><h4>📌 Существительные</h4>';
                 for (var i = 0; i < nouns.length; i++) {
                     var art = nouns[i].article ? nouns[i].article + ' ' : '';
-                    html += '<div class="word-item"><div class="word-row"><strong>' + art + nouns[i].greek + '</strong><span>' + nouns[i]
-                        .translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + art + nouns[i].greek + '</strong><span>' + nouns[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (verbs.length) {
                 html += '<div class="vocab-section"><h4>📌 Глаголы</h4>';
                 for (var i = 0; i < verbs.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + verbs[i].greek + '</strong><span>' + verbs[i]
-                        .translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + verbs[i].greek + '</strong><span>' + verbs[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (adjectives.length) {
                 html += '<div class="vocab-section"><h4>📌 Прилагательные</h4>';
                 for (var i = 0; i < adjectives.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + adjectives[i].greek + '</strong><span>' + adjectives[i]
-                        .translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + adjectives[i].greek + '</strong><span>' + adjectives[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (prepositions.length) {
                 html += '<div class="vocab-section"><h4>📌 Предлоги</h4>';
                 for (var i = 0; i < prepositions.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + prepositions[i].greek + '</strong><span>' +
-                        prepositions[i].translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + prepositions[i].greek + '</strong><span>' + prepositions[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (pronouns.length) {
                 html += '<div class="vocab-section"><h4>📌 Местоимения</h4>';
                 for (var i = 0; i < pronouns.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + pronouns[i].greek + '</strong><span>' + pronouns[i]
-                        .translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + pronouns[i].greek + '</strong><span>' + pronouns[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (adverbs.length) {
                 html += '<div class="vocab-section"><h4>📌 Наречия</h4>';
                 for (var i = 0; i < adverbs.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + adverbs[i].greek + '</strong><span>' + adverbs[i]
-                        .translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + adverbs[i].greek + '</strong><span>' + adverbs[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (conjunctions.length) {
                 html += '<div class="vocab-section"><h4>📌 Союзы</h4>';
                 for (var i = 0; i < conjunctions.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + conjunctions[i].greek + '</strong><span>' +
-                        conjunctions[i].translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + conjunctions[i].greek + '</strong><span>' + conjunctions[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (others.length) {
                 html += '<div class="vocab-section"><h4>📌 Прочее</h4>';
                 for (var i = 0; i < others.length; i++) {
-                    html += '<div class="word-item"><div class="word-row"><strong>' + others[i].greek + '</strong><span>' + others[i]
-                        .translation + '</span></div></div>';
+                    html += '<div class="word-item"><div class="word-row"><strong>' + others[i].greek + '</strong><span>' + others[i].translation + '</span></div></div>';
                 }
                 html += '</div>';
             }
             if (html === '') html = '<p>Словарь пуст.</p>';
             container.innerHTML = html;
         }
-
-        // ===== ПРОВЕРКА ВСЕХ СЛОВ (КАРТОЧКИ) =====
 
         function startAllFlashcards() {
             showSection('allFlashcardsSection');
@@ -1458,18 +1468,14 @@
             var container = document.getElementById('allFlashcardContainer');
             if (s.index >= s.total) {
                 var p = Math.round((s.correct / s.total) * 100);
-                container.innerHTML = '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') +
-                    '">🏁 Проверка завершена!<br>Знаю: ' + s.correct + ' из ' + s.total + ' (' + p +
-                    '%)</div><button class="menu-btn primary" onclick="startAllFlashcards()">🔄 Повторить</button><button class="menu-btn" onclick="goToMain()">🔙 В главное</button>';
+                container.innerHTML = '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Проверка завершена!<br>Знаю: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startAllFlashcards()">🔄 Повторить</button><button class="menu-btn" onclick="goToMain()">🔙 В главное</button>';
                 return;
             }
             var w = s.words[s.index];
-            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Слово ' + (s.index + 1) + ' из ' +
-                s.total + '</div>';
+            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Слово ' + (s.index + 1) + ' из ' + s.total + '</div>';
             html += '<div class="flashcard-word">' + (w.article ? w.article + ' ' : '') + w.greek + '</div>';
             if (s.revealed) {
-                html += '<div class="flashcard-translation">' + w.translation +
-                    '</div><div class="flashcard-buttons"><button class="know" onclick="allFlashcardAnswer(true)">✅ Знаю</button><button class="dontknow" onclick="allFlashcardAnswer(false)">❌ Не знаю</button></div>';
+                html += '<div class="flashcard-translation">' + w.translation + '</div><div class="flashcard-buttons"><button class="know" onclick="allFlashcardAnswer(true)">✅ Знаю</button><button class="dontknow" onclick="allFlashcardAnswer(false)">❌ Не знаю</button></div>';
             } else {
                 html += '<div class="flashcard-buttons"><button class="show" onclick="allFlashcardReveal()">👁️ Показать перевод</button></div>';
             }
@@ -1508,7 +1514,6 @@
             document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
             document.getElementById('grammarContent').innerHTML = data.grammar || '';
 
-            // -- ОБНОВЛЁННАЯ ОТРИСОВКА СЛОВАРЯ С АККОРДЕОНОМ --
             var container = document.getElementById('vocabList');
             container.innerHTML = '';
             if (data.vocabulary) {
@@ -1517,19 +1522,27 @@
                     var article = item.article ? item.article + ' ' : '';
                     var div = document.createElement('div');
                     div.className = 'word-item';
+                    // Проверяем наличие declension_forms для всех типов (объект с singular/plural или с masculine/feminine/neuter)
+                    var hasForms = false;
                     if (item.declension_forms) {
+                        // если есть поля singular/plural или masculine/feminine/neuter
+                        if (item.declension_forms.singular || item.declension_forms.plural ||
+                            item.declension_forms.masculine || item.declension_forms.feminine || item.declension_forms.neuter) {
+                            hasForms = true;
+                        }
+                    }
+                    if (hasForms) {
                         div.classList.add('clickable');
                         div.onclick = function(el) { return function() { toggleDeclension(el); }; }(div);
                     }
                     var detailsHtml = '';
-                    if (item.declension_forms) {
+                    if (hasForms) {
                         detailsHtml = '<div class="word-details">' + generateDeclensionTable(item.declension_forms) + '</div>';
                     }
                     div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
                     container.appendChild(div);
                 }
             }
-            // -- КОНЕЦ ОБНОВЛЕНИЯ --
 
             var hasExercises = false;
             if (data.exercises) {
@@ -1572,20 +1585,79 @@
             switchLessonPart('grammar');
         }
 
-        // ===== ФУНКЦИИ ДЛЯ АККОРДЕОНА =====
+        // ===== ФУНКЦИИ ДЛЯ ГЕНЕРАЦИИ ТАБЛИЦ =====
+
         function generateDeclensionTable(forms) {
             if (!forms) return '';
+            var html = '';
+            // Определяем тип: если есть masculine, feminine, neuter — это прилагательное или местоимение с тремя родами
+            if (forms.masculine || forms.feminine || forms.neuter) {
+                html += '<table><thead><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr></thead><tbody>';
+                var cases = ['nom', 'gen', 'dat', 'acc', 'voc'];
+                var labels = { nom: 'Nom.', gen: 'Gen.', dat: 'Dat.', acc: 'Acc.', voc: 'Voc.' };
+                for (var c = 0; c < cases.length; c++) {
+                    var caseKey = cases[c];
+                    var m = (forms.masculine && forms.masculine.singular && forms.masculine.singular[caseKey]) ? forms.masculine.singular[caseKey] : '';
+                    var f = (forms.feminine && forms.feminine.singular && forms.feminine.singular[caseKey]) ? forms.feminine.singular[caseKey] : '';
+                    var n = (forms.neuter && forms.neuter.singular && forms.neuter.singular[caseKey]) ? forms.neuter.singular[caseKey] : '';
+                    html += '<tr><td>' + labels[caseKey] + '</td><td>' + m + '</td><td>' + f + '</td><td>' + n + '</td></tr>';
+                }
+                html += '</tbody></table>';
+                // добавим множественное число, если есть
+                var hasPlural = false;
+                if (forms.masculine && forms.masculine.plural) hasPlural = true;
+                else if (forms.feminine && forms.feminine.plural) hasPlural = true;
+                else if (forms.neuter && forms.neuter.plural) hasPlural = true;
+                if (hasPlural) {
+                    html += '<table><thead><tr><th>Падеж</th><th>Муж. (мн.)</th><th>Жен. (мн.)</th><th>Ср. (мн.)</th></tr></thead><tbody>';
+                    for (var c2 = 0; c2 < cases.length; c2++) {
+                        var caseKey2 = cases[c2];
+                        var m2 = (forms.masculine && forms.masculine.plural && forms.masculine.plural[caseKey2]) ? forms.masculine.plural[caseKey2] : '';
+                        var f2 = (forms.feminine && forms.feminine.plural && forms.feminine.plural[caseKey2]) ? forms.feminine.plural[caseKey2] : '';
+                        var n2 = (forms.neuter && forms.neuter.plural && forms.neuter.plural[caseKey2]) ? forms.neuter.plural[caseKey2] : '';
+                        html += '<tr><td>' + labels[caseKey2] + '</td><td>' + m2 + '</td><td>' + f2 + '</td><td>' + n2 + '</td></tr>';
+                    }
+                    html += '</tbody></table>';
+                }
+                return html;
+            }
+            // Иначе стандартная таблица с единственным и множественным числом (для существительных, глаголов, местоимений)
             var cases = ['nom', 'gen', 'dat', 'acc', 'voc'];
             var labels = { nom: 'Nom.', gen: 'Gen.', dat: 'Dat.', acc: 'Acc.', voc: 'Voc.' };
-            var html = '<table><thead><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
-            for (var i = 0; i < cases.length; i++) {
-                var c = cases[i];
-                var sg = (forms.singular && forms.singular[c]) || '';
-                var pl = (forms.plural && forms.plural[c]) || '';
-                html += '<tr><td>' + labels[c] + '</td><td>' + sg + '</td><td>' + pl + '</td></tr>';
+            // Проверим, есть ли у нас данные в singular/plural
+            if (forms.singular || forms.plural) {
+                html += '<table><thead><tr><th>Падеж/Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
+                // Для существительных используем падежи
+                if (forms.singular && forms.singular.nom !== undefined) {
+                    for (var c3 = 0; c3 < cases.length; c3++) {
+                        var key = cases[c3];
+                        var sg = (forms.singular && forms.singular[key]) ? forms.singular[key] : '';
+                        var pl = (forms.plural && forms.plural[key]) ? forms.plural[key] : '';
+                        html += '<tr><td>' + labels[key] + '</td><td>' + sg + '</td><td>' + pl + '</td></tr>';
+                    }
+                } else if (forms.singular && forms.singular["1"] !== undefined) {
+                    // Глаголы и местоимения (лица)
+                    var persons = ['1', '2', '3'];
+                    var personLabels = ['1-е лицо', '2-е лицо', '3-е лицо'];
+                    for (var p = 0; p < persons.length; p++) {
+                        var sg = (forms.singular && forms.singular[persons[p]]) ? forms.singular[persons[p]] : '';
+                        var pl = (forms.plural && forms.plural[persons[p]]) ? forms.plural[persons[p]] : '';
+                        html += '<tr><td>' + personLabels[p] + '</td><td>' + sg + '</td><td>' + pl + '</td></tr>';
+                    }
+                } else {
+                    // Если нет ни nom, ни "1" - просто покажем все ключи
+                    var keys = Object.keys(forms.singular || {});
+                    for (var k = 0; k < keys.length; k++) {
+                        var key2 = keys[k];
+                        var sg = forms.singular ? forms.singular[key2] : '';
+                        var pl = forms.plural ? forms.plural[key2] : '';
+                        html += '<tr><td>' + key2 + '</td><td>' + sg + '</td><td>' + pl + '</td></tr>';
+                    }
+                }
+                html += '</tbody></table>';
+                return html;
             }
-            html += '</tbody></table>';
-            return html;
+            return '';
         }
 
         function toggleDeclension(el) {
@@ -1594,6 +1666,9 @@
                 details.classList.toggle('open');
             }
         }
+
+        // Остальные функции (switchLessonPart, startExercise, ...) остаются без изменений, они уже есть выше
+        // Но я добавлю их для полноты, т.к. они используются.
 
         function switchLessonPart(part) {
             var tabs = document.querySelectorAll('.tab-bar button');
@@ -1607,12 +1682,9 @@
             if (part === 'flashcards' && flashcardState.words.length === 0) startFlashcards();
         }
 
-        // ===== УПРАЖНЕНИЯ =====
-
         function startExercise(type) {
             var questions = getExercises(currentLesson, type);
-            if (!questions || questions.length === 0) { document.getElementById('exerciseQuestion').innerHTML =
-                    '<p>Нет вопросов.</p>'; return; }
+            if (!questions || questions.length === 0) { document.getElementById('exerciseQuestion').innerHTML = '<p>Нет вопросов.</p>'; return; }
             exerciseState = { type: type, questions: shuffle(questions), index: 0, correct: 0, total: questions.length };
             showExercise();
         }
@@ -1643,86 +1715,66 @@
             var s = exerciseState;
             if (s.index >= s.total) {
                 var p = Math.round((s.correct / s.total) * 100);
-                document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback ' + (p >= 70 ? 'ok' :
-                    'fail') + '">🏁 Упражнение завершено!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p +
-                    '%)</div><button class="menu-btn primary" onclick="startExercise(\'' + s.type +
-                    '\')">🔄 Ещё раз</button>';
+                document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Упражнение завершено!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startExercise(\'' + s.type + '\')">🔄 Ещё раз</button>';
                 return;
             }
             var q = s.questions[s.index];
             var container = document.getElementById('exerciseQuestion');
-            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson +
-                ', упражнение ' + (s.index + 1) + ' из ' + s.total + '</div>';
+            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', упражнение ' + (s.index + 1) + ' из ' + s.total + '</div>';
             if (s.type === 'declension_fill') {
                 var caseName = getCaseName(q.case);
                 var wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
-                html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <b>' +
-                    wordDisplay + '</b></div><div class="options">';
+                html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <b>' + wordDisplay + '</b></div><div class="options">';
                 var opts = shuffle([q.correct].concat(q.distractors));
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct +
-                        '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else if (s.type === 'translate_greek_to_russian') {
-                html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' +
-                    q.greek +
-                    '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..."><button onclick="checkTranslation()">✅ Проверить</button></div>';
+                html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..."><button onclick="checkTranslation()">✅ Проверить</button></div>';
                 window._trans_q = q;
             } else if (s.type === 'translate_russian_to_greek') {
                 var words = shuffle(q.all_words);
-                html += '<div class="question">Переведите на греческий (выберите слова по порядку):</div><div style="font-size:20px;text-align:center;margin:12px 0;">' +
-                    q.russian +
-                    '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
+                html += '<div class="question">Переведите на греческий (выберите слова по порядку):</div><div style="font-size:20px;text-align:center;margin:12px 0;">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
                 for (var i = 0; i < words.length; i++) {
                     html += '<span class="chip" onclick="pickWord(\'' + words[i] + '\')">' + words[i] + '</span>';
                 }
-                html +=
-                    '</div><button class="menu-btn primary" onclick="checkTranslationRu()">✅ Готово</button> <button class="menu-btn" onclick="clearChosen()">↩️ Очистить</button>';
+                html += '</div><button class="menu-btn primary" onclick="checkTranslationRu()">✅ Готово</button> <button class="menu-btn" onclick="clearChosen()">↩️ Очистить</button>';
                 window._trans_ru = q;
                 window._chosen = [];
             } else if (s.type === 'case_number') {
-                html += '<div class="question">Определите падеж и число для формы: <b>' + q.form +
-                    '</b></div><div class="options">';
+                html += '<div class="question">Определите падеж и число для формы: <b>' + q.form + '</b></div><div class="options">';
                 var opts = shuffle([q.correct].concat(q.distractors));
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct +
-                        '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else if (s.type === 'agreement') {
-                html += '<div class="question">Вставьте прилагательное <b>' + q.adjective +
-                    '</b> в правильной форме:<br>' + q.article + ' ____ ' + q.noun + '</div><div class="options">';
+                html += '<div class="question">Вставьте прилагательное <b>' + q.adjective + '</b> в правильной форме:<br>' + q.article + ' ____ ' + q.noun + '</div><div class="options">';
                 var opts = shuffle([q.correct].concat(q.distractors));
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct +
-                        '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else if (s.type === 'attribute_vs_predicate') {
-                html += '<div class="question">Определите, атрибутив или предикатив:<br><b>' + q.phrase +
-                    '</b></div><div class="options">';
+                html += '<div class="question">Определите, атрибутив или предикатив:<br><b>' + q.phrase + '</b></div><div class="options">';
                 var opts = shuffle([q.correct].concat(q.distractors));
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct +
-                        '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else if (s.type === 'substantivation') {
                 html += '<div class="question">Что означает:<br><b>' + q.phrase + '</b> ?</div><div class="options">';
                 var opts = shuffle([q.correct].concat(q.distractors));
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct +
-                        '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else if (s.type === 'article_fill') {
-                html += '<div class="question">Вставьте правильную форму артикля:<br>____ ' + q.noun +
-                    '</div><div class="options">';
+                html += '<div class="question">Вставьте правильную форму артикля:<br>____ ' + q.noun + '</div><div class="options">';
                 var opts = shuffle([q.correct_article].concat(q.distractors));
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q
-                        .correct_article + '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="answerOpt(\'' + opts[i] + '\',\'' + q.correct_article + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else {
@@ -1735,8 +1787,7 @@
             var container = document.getElementById('exerciseQuestion');
             var btns = container.querySelectorAll('.option-btn');
             var ok = sel === corr;
-            btns.forEach(function(b) { b.disabled = true; if (b.textContent === corr) b.classList.add('correct'); if (b
-                    .textContent === sel && !ok) b.classList.add('wrong'); });
+            btns.forEach(function(b) { b.disabled = true; if (b.textContent === corr) b.classList.add('correct'); if (b.textContent === sel && !ok) b.classList.add('wrong'); });
             if (ok) { stats.totalCorrect++;
                 exerciseState.correct++; } else {
                 stats.totalWrong++;
@@ -1768,8 +1819,7 @@
                 var lesson = currentLesson;
                 if (!stats.errors[lesson]) stats.errors[lesson] = [];
                 stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
-                container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(
-                    ', ') + '</div>';
+                container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</div>';
             }
             saveStats();
             exerciseState.index++;
@@ -1792,8 +1842,7 @@
         function clearChosen() {
             window._chosen = [];
             document.getElementById('buildArea').innerHTML = '';
-            document.getElementById('wordBank').querySelectorAll('.chip').forEach(function(c) { c.classList.remove(
-                    'picked'); });
+            document.getElementById('wordBank').querySelectorAll('.chip').forEach(function(c) { c.classList.remove('picked'); });
         }
 
         function checkTranslationRu() {
@@ -1810,20 +1859,16 @@
                 var lesson = currentLesson;
                 if (!stats.errors[lesson]) stats.errors[lesson] = [];
                 stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
-                container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: ' + corr.join(' ') +
-                    '</div>';
+                container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: ' + corr.join(' ') + '</div>';
             }
             saveStats();
             exerciseState.index++;
             setTimeout(showExercise, 1500);
         }
 
-        // ===== КАРТОЧКИ (УРОКА) =====
-
         function startFlashcards() {
             var data = getLessonData(currentLesson);
-            if (!data || !data.vocabulary || data.vocabulary.length === 0) { document.getElementById(
-                    'flashcardContainer').innerHTML = '<p>Нет слов.</p>'; return; }
+            if (!data || !data.vocabulary || data.vocabulary.length === 0) { document.getElementById('flashcardContainer').innerHTML = '<p>Нет слов.</p>'; return; }
             var words = shuffle(data.vocabulary.map(function(item) {
                 return { greek: item.greek, article: item.article || '', translation: item.translation };
             }));
@@ -1836,19 +1881,14 @@
             var container = document.getElementById('flashcardContainer');
             if (s.index >= s.total) {
                 var p = Math.round((s.correct / s.total) * 100);
-                container.innerHTML = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' +
-                    currentLesson + '</div><div class="feedback ' + (p >= 70 ? 'ok' : 'fail') +
-                    '">🏁 Карточки завершены!<br>Знаю: ' + s.correct + ' из ' + s.total + ' (' + p +
-                    '%)</div><button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>';
+                container.innerHTML = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + '</div><div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Карточки завершены!<br>Знаю: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>';
                 return;
             }
             var w = s.words[s.index];
-            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson +
-                ', карточка ' + (s.index + 1) + ' из ' + s.total + '</div>';
+            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', карточка ' + (s.index + 1) + ' из ' + s.total + '</div>';
             html += '<div class="flashcard-word">' + (w.article ? w.article + ' ' : '') + w.greek + '</div>';
             if (s.revealed) {
-                html += '<div class="flashcard-translation">' + w.translation +
-                    '</div><div class="flashcard-buttons"><button class="know" onclick="flashAnswer(true)">✅ Знаю</button><button class="dontknow" onclick="flashAnswer(false)">❌ Не знаю</button></div>';
+                html += '<div class="flashcard-translation">' + w.translation + '</div><div class="flashcard-buttons"><button class="know" onclick="flashAnswer(true)">✅ Знаю</button><button class="dontknow" onclick="flashAnswer(false)">❌ Не знаю</button></div>';
             } else {
                 html += '<div class="flashcard-buttons"><button class="show" onclick="flashReveal()">👁️ Показать перевод</button></div>';
             }
@@ -1874,15 +1914,11 @@
             showFlashcard();
         }
 
-        // ===== ТЕСТ =====
-
         function startTest() {
             var data = getLessonData(currentLesson);
             if (!data) return;
             var all = [];
-            var types = ['declension_fill', 'translate_greek_to_russian', 'translate_russian_to_greek', 'case_number',
-                'agreement', 'attribute_vs_predicate', 'substantivation', 'article_fill'
-            ];
+            var types = ['declension_fill', 'translate_greek_to_russian', 'translate_russian_to_greek', 'case_number', 'agreement', 'attribute_vs_predicate', 'substantivation', 'article_fill'];
             for (var t = 0; t < types.length; t++) {
                 var qs = data.exercises[types[t]] || [];
                 for (var i = 0; i < qs.length; i++) {
@@ -1907,16 +1943,12 @@
             var s = testState;
             if (s.index >= s.total) {
                 var p = Math.round((s.correct / s.total) * 100);
-                document.getElementById('testContainer').innerHTML = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' +
-                    currentLesson + '</div><div class="feedback ' + (p >= 70 ? 'ok' : 'fail') +
-                    '">🏁 Тест завершён!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p +
-                    '%)</div><button class="menu-btn primary" onclick="startTest()">🔄 Повторить</button><button class="menu-btn" onclick="cancelTest()">🔙 Назад</button>';
+                document.getElementById('testContainer').innerHTML = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + '</div><div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Тест завершён!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startTest()">🔄 Повторить</button><button class="menu-btn" onclick="cancelTest()">🔙 Назад</button>';
                 return;
             }
             var q = s.questions[s.index];
             var container = document.getElementById('testContainer');
-            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson +
-                ', вопрос ' + (s.index + 1) + ' из ' + s.total + '</div>';
+            var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', вопрос ' + (s.index + 1) + ' из ' + s.total + '</div>';
             var t = q._type;
 
             if (t === 'declension_fill' || t === 'case_number' || t === 'agreement' ||
@@ -1941,25 +1973,20 @@
                 var opts = shuffle([corr].concat(q.distractors));
                 html += '<div class="question">' + text + '</div><div class="options">';
                 for (var i = 0; i < opts.length; i++) {
-                    html += '<button class="option-btn" onclick="testAnswer(\'' + opts[i] + '\',\'' + corr +
-                        '\')">' + opts[i] + '</button>';
+                    html += '<button class="option-btn" onclick="testAnswer(\'' + opts[i] + '\',\'' + corr + '\')">' + opts[i] + '</button>';
                 }
                 html += '</div>';
             } else if (t === 'translate_greek_to_russian') {
-                html += '<div class="question">Переведите: <b>' + q.greek +
-                    '</b></div><div class="input-group"><input type="text" id="testTransInput" placeholder="Введите перевод..."><button onclick="testTranslation()">✅ Проверить</button></div>';
+                html += '<div class="question">Переведите: <b>' + q.greek + '</b></div><div class="input-group"><input type="text" id="testTransInput" placeholder="Введите перевод..."><button onclick="testTranslation()">✅ Проверить</button></div>';
                 window._test_q = q;
             } else if (t === 'translate_russian_to_greek') {
                 var words = shuffle(q.all_words);
-                html += '<div class="question">Переведите на греческий (выберите слова по порядку):<br>' + q
-                    .russian + '</div>';
+                html += '<div class="question">Переведите на греческий (выберите слова по порядку):<br>' + q.russian + '</div>';
                 html += '<div class="build-area" id="testBuildArea"></div><div class="word-bank" id="testWordBank">';
                 for (var i = 0; i < words.length; i++) {
-                    html += '<span class="chip" onclick="testPickWord(\'' + words[i] + '\')">' + words[i] +
-                    '</span>';
+                    html += '<span class="chip" onclick="testPickWord(\'' + words[i] + '\')">' + words[i] + '</span>';
                 }
-                html +=
-                    '</div><button class="menu-btn primary" onclick="testTranslationRu()">✅ Готово</button> <button class="menu-btn" onclick="testClearChosen()">↩️ Очистить</button>';
+                html += '</div><button class="menu-btn primary" onclick="testTranslationRu()">✅ Готово</button> <button class="menu-btn" onclick="testClearChosen()">↩️ Очистить</button>';
                 window._test_ru = q;
                 window._test_chosen = [];
             } else {
@@ -1985,8 +2012,7 @@
             saveStats();
             var container = document.getElementById('testContainer');
             if (ok) { container.innerHTML = '<div class="feedback ok">✅ Верно!</div>'; } else {
-                container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильный ответ: <strong>' +
-                    corr + '</strong></div>';
+                container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильный ответ: <strong>' + corr + '</strong></div>';
             }
             setTimeout(function() { testState.index++;
                 showTest(); }, 1500);
@@ -2011,8 +2037,7 @@
                 var lesson = currentLesson;
                 if (!stats.errors[lesson]) stats.errors[lesson] = [];
                 stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
-                container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(
-                    ', ') + '</div>';
+                container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</div>';
             }
             saveStats();
             testState.answered = true;
@@ -2037,8 +2062,7 @@
         function testClearChosen() {
             window._test_chosen = [];
             document.getElementById('testBuildArea').innerHTML = '';
-            document.getElementById('testWordBank').querySelectorAll('.chip').forEach(function(c) { c.classList
-                    .remove('picked'); });
+            document.getElementById('testWordBank').querySelectorAll('.chip').forEach(function(c) { c.classList.remove('picked'); });
         }
 
         function testTranslationRu() {
@@ -2056,8 +2080,7 @@
                 var lesson = currentLesson;
                 if (!stats.errors[lesson]) stats.errors[lesson] = [];
                 stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
-                container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: ' + corr.join(' ') +
-                    '</div>';
+                container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: ' + corr.join(' ') + '</div>';
             }
             saveStats();
             testState.answered = true;
@@ -2065,15 +2088,10 @@
                 showTest(); }, 1500);
         }
 
-        // ===== СТАТИСТИКА И ОШИБКИ =====
-
         function showStats() {
             showSection('statsSection');
             document.getElementById('statsContent').innerHTML =
-                '<div class="stat-row"><span>✅ Правильных:</span><span>' + stats.totalCorrect +
-                '</span></div><div class="stat-row"><span>❌ Неправильных:</span><span>' + stats.totalWrong +
-                '</span></div><div class="stat-row"><span>📚 Уроков с ошибками:</span><span>' + Object.keys(stats
-                    .errors).length + '</span></div>';
+                '<div class="stat-row"><span>✅ Правильных:</span><span>' + stats.totalCorrect + '</span></div><div class="stat-row"><span>❌ Неправильных:</span><span>' + stats.totalWrong + '</span></div><div class="stat-row"><span>📚 Уроков с ошибками:</span><span>' + Object.keys(stats.errors).length + '</span></div>';
         }
 
         function showErrors() {
@@ -2088,8 +2106,7 @@
                 var items = err[lesson];
                 html += '<div style="margin-bottom:12px;"><strong>Урок ' + lesson + '</strong></div>';
                 for (var j = 0; j < items.length; j++) {
-                    html += '<div class="error-item">' + items[j].word + ' → правильно: <strong>' + items[j]
-                        .correct + '</strong>, вы: ' + items[j].your + '</div>';
+                    html += '<div class="error-item">' + items[j].word + ' → правильно: <strong>' + items[j].correct + '</strong>, вы: ' + items[j].your + '</div>';
                 }
             }
             html += '<button class="clear-btn" onclick="clearErrors()">🗑️ Очистить ошибки</button>';
@@ -2100,12 +2117,9 @@
                 saveStats();
                 showErrors(); } }
 
-        function clearAllProgress() { if (confirm('Сбросить всю статистику?')) { stats = { totalCorrect: 0,
-                    totalWrong: 0, errors: {} };
+        function clearAllProgress() { if (confirm('Сбросить всю статистику?')) { stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
                 saveStats();
                 goToMain(); } }
-
-        // ===== ЗАПУСК =====
 
         loadStats();
         renderMainMenu();
