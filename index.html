@@ -471,6 +471,12 @@
 
 <!-- Урок -->
 <div id="lessonSection" class="section">
+    <!-- Навигация между уроками -->
+<div id="lessonNav" style="margin-top: 16px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+    <button class="menu-btn" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex: 1; min-width: 120px;">⬅️ Предыдущий урок</button>
+    <button class="menu-btn" onclick="goToMain()" style="flex: 0.5; min-width: 100px;">🏠 Меню</button>
+    <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex: 1; min-width: 120px;">Следующий урок ➡️</button>
+</div>
     <button class="back-btn" onclick="goToMain()">← Назад</button>
     <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
     <div class="lesson-badge" id="lessonBadge">Урок 3</div>
