@@ -471,28 +471,23 @@
 
 <!-- Урок -->
 <div id="lessonSection" class="section">
-    <!-- Навигация между уроками -->
-<div id="lessonNav" style="margin-top: 16px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-    <button class="menu-btn" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex: 1; min-width: 120px;">⬅️ Предыдущий урок</button>
-    <button class="menu-btn" onclick="goToMain()" style="flex: 0.5; min-width: 100px;">🏠 Меню</button>
-    <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex: 1; min-width: 120px;">Следующий урок ➡️</button>
-</div>
+    <div id="lessonSection" class="section">
     <button class="back-btn" onclick="goToMain()">← Назад</button>
     <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
     <div class="lesson-badge" id="lessonBadge">Урок 3</div>
-    <div class="tab-bar">
-        <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')">📚 Грамматика</button>
-        <button data-part="vocab" onclick="switchLessonPart('vocab')">📖 Словарь</button>
-        <button data-part="exercise" onclick="switchLessonPart('exercise')">🔤 Упражнения</button>
-        <button data-part="flashcards" onclick="switchLessonPart('flashcards')">📇 Карточки</button>
-        <button data-part="test" onclick="startTest()">📝 Тест (10)</button>
-        <button data-part="translation" onclick="switchLessonPart('translation')">🌍 Перевод</button>
+    <div class="tab-bar">...</div>
+    <div id="partGrammar" class="section active">...</div>
+    <div id="partVocab" class="section">...</div>
+    <div id="partExercise" class="section">...</div>
+    <div id="partFlashcards" class="section">...</div>
+    <div id="partTranslation" class="section">...</div>
+    
+    <!-- Навигация между уроками (внизу) -->
+    <div id="lessonNav" style="margin-top: 16px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+        <button class="menu-btn" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex: 1; min-width: 120px;">⬅️ Предыдущий урок</button>
+        <button class="menu-btn" onclick="goToMain()" style="flex: 0.5; min-width: 100px;">🏠 Меню</button>
+        <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex: 1; min-width: 120px;">Следующий урок ➡️</button>
     </div>
-    <div id="partGrammar" class="section active"><div class="card"><h3>Грамматика</h3><div class="grammar-text" id="grammarContent"></div></div></div>
-    <div id="partVocab" class="section"><div class="card"><h3>Словарь урока</h3><div class="word-list" id="vocabList"></div></div></div>
-    <div id="partExercise" class="section"><div class="card"><h3>Упражнения</h3><div id="exerciseButtons"></div><div id="exerciseQuestion" style="margin-top:16px;"></div></div></div>
-    <div id="partFlashcards" class="section"><div class="card"><h3>📇 Карточки</h3><div id="flashcardContainer" class="flashcard-area"><p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button></div></div></div>
-    <div id="partTranslation" class="section"><div class="card"><h3>🌍 Перевод</h3><div id="translationButtons"></div><div id="translationQuestion" style="margin-top:16px;"></div></div></div>
 </div>
 
 <!-- Статистика -->
@@ -2329,6 +2324,94 @@ function checkTranslation() {
 // ============================================================
 loadStats();
 renderMainMenu();
+    // ============================================================
+// НАВИГАЦИЯ МЕЖДУ УРОКАМИ
+// ============================================================
+
+function goToPrevLesson() {
+    let prev = currentLesson - 1;
+    if (prev < 3) {
+        showToast('Это первый урок (урок 3).');
+        return;
+    }
+    let data = getLessonData(prev);
+    if (!data) {
+        showToast('Урок ' + prev + ' ещё не добавлен.');
+        return;
+    }
+    openLesson(prev);
+    updateNavButtons(prev);
+}
+
+function goToNextLesson() {
+    let next = currentLesson + 1;
+    if (next > 10) {
+        showToast('Это последний урок (урок 10).');
+        return;
+    }
+    let data = getLessonData(next);
+    if (!data) {
+        showToast('Урок ' + next + ' ещё не добавлен.');
+        return;
+    }
+    openLesson(next);
+    updateNavButtons(next);
+}
+
+function updateNavButtons(lesson) {
+    let prevBtn = document.getElementById('prevLessonBtn');
+    let nextBtn = document.getElementById('nextLessonBtn');
+    
+    if (prevBtn) {
+        if (lesson <= 3) {
+            prevBtn.style.opacity = '0.5';
+            prevBtn.style.cursor = 'not-allowed';
+        } else {
+            prevBtn.style.opacity = '1';
+            prevBtn.style.cursor = 'pointer';
+        }
+    }
+    
+    if (nextBtn) {
+        if (lesson >= 10) {
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.cursor = 'not-allowed';
+        } else {
+            nextBtn.style.opacity = '1';
+            nextBtn.style.cursor = 'pointer';
+        }
+    }
+}
+
+function showToast(message) {
+    let existing = document.querySelector('.toast-message');
+    if (existing) existing.remove();
+    
+    let toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    Object.assign(toast.style, {
+        position: 'fixed',
+        bottom: '30px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#3d2a1e',
+        color: '#fff',
+        padding: '12px 24px',
+        borderRadius: '12px',
+        fontSize: '16px',
+        zIndex: '9999',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+        transition: 'opacity 0.3s ease',
+        opacity: '1'
+    });
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
 </script>
 </body>
 </html>
