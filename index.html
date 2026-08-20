@@ -470,18 +470,25 @@
 </div>
 
 <!-- Урок -->
+<!-- Урок -->
 <div id="lessonSection" class="section">
-    <div id="lessonSection" class="section">
     <button class="back-btn" onclick="goToMain()">← Назад</button>
     <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
     <div class="lesson-badge" id="lessonBadge">Урок 3</div>
-    <div class="tab-bar">...</div>
-    <div id="partGrammar" class="section active">...</div>
-    <div id="partVocab" class="section">...</div>
-    <div id="partExercise" class="section">...</div>
-    <div id="partFlashcards" class="section">...</div>
-    <div id="partTranslation" class="section">...</div>
-    
+    <div class="tab-bar">
+        <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')">📚 Грамматика</button>
+        <button data-part="vocab" onclick="switchLessonPart('vocab')">📖 Словарь</button>
+        <button data-part="exercise" onclick="switchLessonPart('exercise')">🔤 Упражнения</button>
+        <button data-part="flashcards" onclick="switchLessonPart('flashcards')">📇 Карточки</button>
+        <button data-part="test" onclick="startTest()">📝 Тест (10)</button>
+        <button data-part="translation" onclick="switchLessonPart('translation')">🌍 Перевод</button>
+    </div>
+    <div id="partGrammar" class="section active"><div class="card"><h3>Грамматика</h3><div class="grammar-text" id="grammarContent"></div></div></div>
+    <div id="partVocab" class="section"><div class="card"><h3>Словарь урока</h3><div class="word-list" id="vocabList"></div></div></div>
+    <div id="partExercise" class="section"><div class="card"><h3>Упражнения</h3><div id="exerciseButtons"></div><div id="exerciseQuestion" style="margin-top:16px;"></div></div></div>
+    <div id="partFlashcards" class="section"><div class="card"><h3>📇 Карточки</h3><div id="flashcardContainer" class="flashcard-area"><p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button></div></div></div>
+    <div id="partTranslation" class="section"><div class="card"><h3>🌍 Перевод</h3><div id="translationButtons"></div><div id="translationQuestion" style="margin-top:16px;"></div></div></div>
+
     <!-- Навигация между уроками (внизу) -->
     <div id="lessonNav" style="margin-top: 16px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
         <button class="menu-btn" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex: 1; min-width: 120px;">⬅️ Предыдущий урок</button>
@@ -489,6 +496,7 @@
         <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex: 1; min-width: 120px;">Следующий урок ➡️</button>
     </div>
 </div>
+   
 
 <!-- Статистика -->
 <div id="statsSection" class="section"><button class="back-btn" onclick="goToMain()">← Назад</button><div class="card"><h3>📊 Статистика</h3><div id="statsContent"></div></div></div>
@@ -1540,6 +1548,7 @@ function openLesson(lesson) {
     document.getElementById('lessonTitle').textContent = data.title;
     document.getElementById('lessonBadge').textContent = 'Урок ' + lesson;
     showSection('lessonSection');
+    updateNavButtons(lesson); 
 
     // ===== СКРЫВАЕМ/ПОКАЗЫВАЕМ ВКЛАДКИ ДЛЯ УРОКОВ 1–2 =====
     let isIntroLesson = (lesson === 1 || lesson === 2);
@@ -2320,11 +2329,6 @@ function checkTranslation() {
 }
 
 // ============================================================
-// ЗАПУСК
-// ============================================================
-loadStats();
-renderMainMenu();
-    // ============================================================
 // НАВИГАЦИЯ МЕЖДУ УРОКАМИ
 // ============================================================
 
@@ -2412,6 +2416,12 @@ function showToast(message) {
         setTimeout(() => toast.remove(), 300);
     }, 2000);
 }
+// ============================================================
+// ЗАПУСК
+// ============================================================
+loadStats();
+renderMainMenu();
+    
 </script>
 </body>
 </html>
