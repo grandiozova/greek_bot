@@ -506,6 +506,98 @@
 // ============================================================
 
 const LESSONS_DATA = {
+    1: {
+        title: "Алфавит и произношение",
+        grammar: `<b>Греческий алфавит (24 буквы):</b><br>
+        <table>
+        <tr><th>Προπисная</th><th>Строчная</th><th>Название</th><th>Произношение</th></tr>
+        <tr><td>Α</td><td>α</td><td>άλφα</td><td>[а]</td></tr>
+        <tr><td>Β</td><td>β</td><td>βῆτα</td><td>[в]</td></tr>
+        <tr><td>Γ</td><td>γ</td><td>γάμμα</td><td>[г] (перед γ, κ, ξ, χ – [н])</td></tr>
+        <tr><td>Δ</td><td>δ</td><td>δέλτα</td><td>[д]</td></tr>
+        <tr><td>Ε</td><td>ε</td><td>ἒ ψιλόν</td><td>[э]</td></tr>
+        <tr><td>Ζ</td><td>ζ</td><td>ζῆτα</td><td>[дз]</td></tr>
+        <tr><td>Η</td><td>η</td><td>ῆτα</td><td>[э] (долгий)</td></tr>
+        <tr><td>Θ</td><td>θ</td><td>θῆτα</td><td>[т] (придыхательный)</td></tr>
+        <tr><td>Ι</td><td>ι</td><td>ἰῶτα</td><td>[и]</td></tr>
+        <tr><td>Κ</td><td>κ</td><td>κάππα</td><td>[к]</td></tr>
+        <tr><td>Λ</td><td>λ</td><td>λάβδα</td><td>[л]</td></tr>
+        <tr><td>Μ</td><td>μ</td><td>μῦ</td><td>[м]</td></tr>
+        <tr><td>Ν</td><td>ν</td><td>νῦ</td><td>[н]</td></tr>
+        <tr><td>Ξ</td><td>ξ</td><td>ξεῖ</td><td>[кс]</td></tr>
+        <tr><td>Ο</td><td>ο</td><td>ὂ μικρόν</td><td>[о]</td></tr>
+        <tr><td>Π</td><td>π</td><td>πεῖ</td><td>[п]</td></tr>
+        <tr><td>Ρ</td><td>ρ</td><td>ρῶ</td><td>[р]</td></tr>
+        <tr><td>Σ</td><td>σ (ς)</td><td>σίγμα</td><td>[с] (в конце слова ς)</td></tr>
+        <tr><td>Τ</td><td>τ</td><td>ταῦ</td><td>[т]</td></tr>
+        <tr><td>Υ</td><td>υ</td><td>ὖ ψιλόν</td><td>[ю] (как нем. ü)</td></tr>
+        <tr><td>Φ</td><td>φ</td><td>φεῖ</td><td>[ф]</td></tr>
+        <tr><td>Χ</td><td>χ</td><td>χεῖ</td><td>[х]</td></tr>
+        <tr><td>Ψ</td><td>ψ</td><td>ψεῖ</td><td>[пс]</td></tr>
+        <tr><td>Ω</td><td>ω</td><td>ὦ μέγα</td><td>[о] (долгий)</td></tr>
+        </table><br>
+        <b>Дифтонги:</b> αι [ай], ει [эй], οι [ой], υι [юй], αυ [ав], ευ [эв], ου [у], ηυ [эв].<br>
+        <b>Придыхание:</b> ῾ (густое – [х]), ᾿ (тонкое – не произносится).<br>
+        <b>Ударения:</b> ´ (острое), ` (тупое), ῀ (облеченное).`,
+        vocabulary: [
+            {greek:"ἄλφα", translation:"альфа (Α α)", type:"other"},
+            {greek:"βῆτα", translation:"бета (Β β)", type:"other"},
+            {greek:"γάμμα", translation:"гамма (Γ γ)", type:"other"},
+            {greek:"δέλτα", translation:"дельта (Δ δ)", type:"other"},
+            {greek:"ἒ ψιλόν", translation:"эпсилон (Ε ε)", type:"other"},
+            {greek:"ζῆτα", translation:"дзета (Ζ ζ)", type:"other"},
+            {greek:"ῆτα", translation:"эта (Η η)", type:"other"},
+            {greek:"θῆτα", translation:"тета (Θ θ)", type:"other"},
+            {greek:"ἰῶτα", translation:"йота (Ι ι)", type:"other"},
+            {greek:"κάππα", translation:"каппа (Κ κ)", type:"other"},
+            {greek:"λάβδα", translation:"лямбда (Λ λ)", type:"other"},
+            {greek:"μῦ", translation:"мю (Μ μ)", type:"other"},
+            {greek:"νῦ", translation:"ню (Ν ν)", type:"other"},
+            {greek:"ξεῖ", translation:"кси (Ξ ξ)", type:"other"},
+            {greek:"ὂ μικρόν", translation:"омикрон (Ο ο)", type:"other"},
+            {greek:"πεῖ", translation:"пи (Π π)", type:"other"},
+            {greek:"ρῶ", translation:"ро (Ρ ρ)", type:"other"},
+            {greek:"σίγμα", translation:"сигма (Σ σ/ς)", type:"other"},
+            {greek:"ταῦ", translation:"тау (Τ τ)", type:"other"},
+            {greek:"ὖ ψιλόν", translation:"ипсилон (Υ υ)", type:"other"},
+            {greek:"φεῖ", translation:"фи (Φ φ)", type:"other"},
+            {greek:"χεῖ", translation:"хи (Χ χ)", type:"other"},
+            {greek:"ψεῖ", translation:"пси (Ψ ψ)", type:"other"},
+            {greek:"ὦ μέγα", translation:"омега (Ω ω)", type:"other"}
+        ],
+        exercises: {},
+        translation: {}
+    },
+    2: {
+        title: "Ударение и правила чтения",
+        grammar: `<b>Правила ударения:</b><br>
+        • Ударение может стоять только на одном из трёх последних слогов.<br>
+        • Острое ударение (´) – повышение тона.<br>
+        • Тупое ударение (`) – понижение тона (в потоке речи).<br>
+        • Облеченное ударение (῀) – повышение + понижение (только на долгих гласных).<br><br>
+        <b>Специальные правила:</b><br>
+        • У глаголов ударение ставится как можно дальше от конца слова.<br>
+        • У существительных и прилагательных ударение сохраняется на том же слоге, что и в именительном падеже единственного числа.<br><br>
+        <b>Энклитики и проклитики:</b><br>
+        • Энклитики – безударные слова, примыкающие к предыдущему слову (например, μου, σου).<br>
+        • Проклитики – безударные слова, примыкающие к последующему (например, ὁ, ἡ, οἱ, αἱ, εἰς, ἐκ, ἐν, οὐ).`,
+        vocabulary: [
+            {greek:"ὁ", translation:"определённый артикль м.р.", type:"other"},
+            {greek:"ἡ", translation:"определённый артикль ж.р.", type:"other"},
+            {greek:"τό", translation:"определённый артикль ср.р.", type:"other"},
+            {greek:"οἱ", translation:"определённый артикль м.р. мн.ч.", type:"other"},
+            {greek:"αἱ", translation:"определённый артикль ж.р. мн.ч.", type:"other"},
+            {greek:"τά", translation:"определённый артикль ср.р. мн.ч.", type:"other"},
+            {greek:"εἰς", translation:"предлог 'в' (с Acc.)", type:"other"},
+            {greek:"ἐκ", translation:"предлог 'из' (с Gen.)", type:"other"},
+            {greek:"ἐν", translation:"предлог 'в' (с Dat.)", type:"other"},
+            {greek:"οὐ", translation:"отрицание 'не' (перед согласными)", type:"other"},
+            {greek:"οὐκ", translation:"отрицание 'не' (перед гласными)", type:"other"},
+            {greek:"οὐχ", translation:"отрицание 'не' (перед густым придыханием)", type:"other"}
+        ],
+        exercises: {},
+        translation: {}
+    },
     3: {
         title: "Глаголы на -ω (настоящее время)",
         grammar: `<b>Окончания глаголов в настоящем времени:</b><br>
