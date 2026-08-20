@@ -1539,6 +1539,32 @@ function openLesson(lesson) {
     document.getElementById('lessonBadge').textContent = 'Урок ' + lesson;
     showSection('lessonSection');
 
+    // ===== СКРЫВАЕМ/ПОКАЗЫВАЕМ ВКЛАДКИ ДЛЯ УРОКОВ 1–2 =====
+    let isIntroLesson = (lesson === 1 || lesson === 2);
+    let tabButtons = document.querySelectorAll('.tab-bar button');
+    let tabMapping = {
+        'grammar': 'partGrammar',
+        'vocab': 'partVocab',
+        'exercise': 'partExercise',
+        'flashcards': 'partFlashcards',
+        'test': 'partTest',
+        'translation': 'partTranslation'
+    };
+    // Скрываем или показываем каждую вкладку
+    tabButtons.forEach(btn => {
+        let part = btn.getAttribute('data-part');
+        // Для уроков 1–2 показываем только грамматику и словарь
+        if (isIntroLesson) {
+            if (part === 'grammar' || part === 'vocab') {
+                btn.style.display = ''; // показываем
+            } else {
+                btn.style.display = 'none'; // скрываем
+            }
+        } else {
+            btn.style.display = ''; // показываем все
+        }
+    });
+
     document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
     document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
 
@@ -1631,6 +1657,7 @@ function openLesson(lesson) {
     }
     document.getElementById('translationQuestion').innerHTML = '';
 
+    // Переключаем на грамматику
     switchLessonPart('grammar');
 }
 
