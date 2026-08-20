@@ -1742,18 +1742,41 @@ function generateDeclensionTable(forms) {
     }
     // Для существительных и местоимений с singular/plural
     if (forms.singular || forms.plural) {
-        // Проверяем, есть ли падежи (nom, gen, dat, acc, voc)
-        let hasCases = forms.singular && (forms.singular.nom !== undefined || forms.singular.gen !== undefined);
+        let cases = ['nom','gen','dat','acc','voc'];
+        let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
+        
+        // Проверяем, есть ли падежи в singular или plural
+        let hasCases = false;
+        for (let c of cases) {
+            if ((forms.singular && forms.singular[c]) || (forms.plural && forms.plural[c])) {
+                hasCases = true;
+                break;
+            }
+        }
+        
         if (hasCases) {
-            let cases = ['nom','gen','dat','acc','voc'];
-            let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
-            html += '<table><thead><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
+            html += '<table><thead><tr><th>Падеж</th>';
+            // Добавляем заголовки только для тех колонок, где есть данные
+            if (forms.singular && Object.keys(forms.singular).length > 0) {
+                html += '<th>Ед.ч.</th>';
+            }
+            if (forms.plural && Object.keys(forms.plural).length > 0) {
+                html += '<th>Мн.ч.</th>';
+            }
+            html += '</tr></thead><tbody>';
             for (let c of cases) {
                 let sg = (forms.singular && forms.singular[c]) ? forms.singular[c] : '';
                 let pl = (forms.plural && forms.plural[c]) ? forms.plural[c] : '';
-                // Если есть хотя бы одна форма — показываем строку
+                // Показываем строку, если есть хотя бы одна форма
                 if (sg || pl) {
-                    html += '<tr><td>'+labels[c]+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
+                    html += '<tr><td>'+labels[c]+'</td>';
+                    if (forms.singular && Object.keys(forms.singular).length > 0) {
+                        html += '<td>'+sg+'</td>';
+                    }
+                    if (forms.plural && Object.keys(forms.plural).length > 0) {
+                        html += '<td>'+pl+'</td>';
+                    }
+                    html += '</tr>';
                 }
             }
             html += '</tbody></table>';
@@ -1787,6 +1810,7 @@ function generateDeclensionTable(forms) {
     }
     return '';
 }
+   
 
 function toggleDeclension(el) {
     let details = el.querySelector('.word-details');
