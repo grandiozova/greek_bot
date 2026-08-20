@@ -1716,6 +1716,7 @@ function generateDeclensionTable(forms) {
             html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td></tr>';
         }
         html += '</tbody></table>';
+        // множественное число
         let hasPlural = (forms.masculine && forms.masculine.plural) || (forms.feminine && forms.feminine.plural) || (forms.neuter && forms.neuter.plural);
         if (hasPlural) {
             html += '<table><thead><tr><th>Падеж</th><th>Муж. (мн.)</th><th>Жен. (мн.)</th><th>Ср. (мн.)</th></tr></thead><tbody>';
@@ -1729,18 +1730,27 @@ function generateDeclensionTable(forms) {
         }
         return html;
     }
+    // Для существительных и местоимений с singular/plural
     if (forms.singular || forms.plural) {
-        let cases = ['nom','gen','dat','acc','voc'];
-        let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
-        if (forms.singular && forms.singular.nom !== undefined) {
+        // Проверяем, есть ли падежи (nom, gen, dat, acc, voc)
+        let hasCases = forms.singular && (forms.singular.nom !== undefined || forms.singular.gen !== undefined);
+        if (hasCases) {
+            let cases = ['nom','gen','dat','acc','voc'];
+            let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
             html += '<table><thead><tr><th>Падеж</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
             for (let c of cases) {
                 let sg = (forms.singular && forms.singular[c]) ? forms.singular[c] : '';
                 let pl = (forms.plural && forms.plural[c]) ? forms.plural[c] : '';
-                html += '<tr><td>'+labels[c]+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
+                // Если есть хотя бы одна форма — показываем строку
+                if (sg || pl) {
+                    html += '<tr><td>'+labels[c]+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
+                }
             }
             html += '</tbody></table>';
-        } else if (forms.singular && forms.singular["1"] !== undefined) {
+            return html;
+        }
+        // Для глаголов (лица)
+        if (forms.singular && forms.singular["1"] !== undefined) {
             let persons = ['1','2','3'];
             let personLabels = ['1-е лицо','2-е лицо','3-е лицо'];
             html += '<table><thead><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
@@ -1750,13 +1760,18 @@ function generateDeclensionTable(forms) {
                 html += '<tr><td>'+personLabels[i]+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
             }
             html += '</tbody></table>';
-        } else {
-            let keys = Object.keys(forms.singular || {});
+            return html;
+        }
+        // fallback: просто таблица
+        let keys = Object.keys(forms.singular || {});
+        if (keys.length) {
+            html += '<table><thead><tr><th></th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
             for (let k of keys) {
                 let sg = forms.singular ? forms.singular[k] : '';
                 let pl = forms.plural ? forms.plural[k] : '';
                 html += '<tr><td>'+k+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
             }
+            html += '</tbody></table>';
         }
         return html;
     }
