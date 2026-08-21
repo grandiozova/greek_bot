@@ -436,6 +436,9 @@
         .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .progress-text { font-size: 14px; color: #7a5f4b; }
         .decor-line { border: none; border-top: 2px solid #e5d9cf; margin: 20px 0; }
+        [id^="analysis-"] {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -2606,27 +2609,41 @@ function renderPrayerText() {
     const container = document.getElementById('prayerContent');
     let html = '<div style="margin-bottom:20px;">';
     PRAYER_DATA.verses.forEach((verse, verseIdx) => {
-        html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;padding:6px 0;border-bottom:1px solid #eee;">`;
+        // Строка с греческими словами
+        html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;padding:6px 0;border-bottom:1px solid #eee;">`;
         verse.words.forEach((word, wordIdx) => {
             html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" style="cursor:pointer;background:#ede7e0;padding:2px 8px;border-radius:4px;font-size:18px;transition:0.1s;" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
         });
         html += `</div>`;
-        html += `<div style="margin-left:12px;color:#5f4a38;font-size:15px;margin-bottom:12px;">${verse.russian}</div>`;
+        // Русский перевод
+        html += `<div style="margin-left:12px;color:#5f4a38;font-size:15px;margin-bottom:6px;">${verse.russian}</div>`;
+        // КОНТЕЙНЕР ДЛЯ АНАЛИЗА (ИМЕННО ПОД ЭТИМ СТИХОМ)
+        html += `<div id="analysis-${verseIdx}" style="background:#f4eee8;padding:8px 12px;border-radius:8px;margin:6px 0 12px 12px;display:none;border-left:3px solid #b7a48b;"></div>`;
     });
     html += '</div>';
-    html += '<div id="wordAnalysis" style="background:#f4eee8;padding:12px;border-radius:8px;margin:12px 0;display:none;"></div>';
     container.innerHTML = html;
 }
 
 function showWordAnalysis(verseIdx, wordIdx) {
     const verse = PRAYER_DATA.verses[verseIdx];
     const word = verse.words[wordIdx];
-    const analysisDiv = document.getElementById('wordAnalysis');
+    // Находим контейнер анализа для этого стиха
+    const analysisDiv = document.getElementById(`analysis-${verseIdx}`);
+    if (!analysisDiv) return;
+
+    // Закрываем все другие окна анализа (по желанию)
+    document.querySelectorAll('[id^="analysis-"]').forEach(el => {
+        if (el.id !== `analysis-${verseIdx}`) {
+            el.style.display = 'none';
+        }
+    });
+
+    // Показываем и заполняем
     analysisDiv.style.display = 'block';
     analysisDiv.innerHTML = `
         <strong>${word.greek}</strong> — ${word.translation}<br>
         <span style="font-size:14px;color:#4a3728;">${word.analysis}</span>
-        <button class="menu-btn" style="margin-top:8px;padding:4px 12px;" onclick="document.getElementById('wordAnalysis').style.display='none'">✕ Закрыть</button>
+        <button class="menu-btn" style="margin-top:6px;padding:2px 12px;font-size:13px;" onclick="document.getElementById('analysis-${verseIdx}').style.display='none'">✕ Закрыть</button>
     `;
 }
 
