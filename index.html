@@ -454,6 +454,7 @@
         <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
         <button class="menu-btn" onclick="showErrors()">🔄 Ошибки</button>
         <button class="menu-btn danger" onclick="clearAllProgress()">🗑️ Сброс прогресса</button>
+        <button class="menu-btn primary" onclick="showPrayer()">📜 Отче наш</button>
     </div>
 </div>
 
@@ -506,7 +507,16 @@
 
 <!-- Тест -->
 <div id="testSection" class="section"><button class="back-btn" onclick="cancelTest()">← Выйти</button><div class="card"><h3>📝 Тест</h3><div id="testContainer"></div></div></div>
-
+<!-- Отче наш -->
+<div id="prayerSection" class="section">
+    <button class="back-btn" onclick="goToMain()">← Назад</button>
+    <div class="card">
+        <h3>📜 Отче наш (Πάτερ ἡμῶν)</h3>
+        <div id="prayerContent"></div>
+        <div id="prayerExercise" style="margin-top:20px;"></div>
+    </div>
+</div>
+    
 </div>
 
 <script>
@@ -1273,7 +1283,135 @@ const LESSONS_DATA = {
         }
     }
 };
+        }
+};
 
+// ============================================================
+// ДАННЫЕ ДЛЯ МОЛИТВЫ "ОТЧЕ НАШ"
+// ============================================================
+
+const PRAYER_DATA = {
+    verses: [
+        {
+            greek: "Πάτερ ἡμῶν ὁ ἐν τοῖς οὐρανοῖς",
+            russian: "Отче наш, сущий на небесах",
+            words: [
+                { greek: "Πάτερ", translation: "Отче", analysis: "сущ., м.р., ед.ч., зват.п." },
+                { greek: "ἡμῶν", translation: "наш", analysis: "мест., 1-е л., мн.ч., род.п." },
+                { greek: "ὁ", translation: "сущий (артикль)", analysis: "артикль, м.р., ед.ч., им.п." },
+                { greek: "ἐν", translation: "в", analysis: "предлог (с дат.п.)" },
+                { greek: "τοῖς", translation: "тех (артикль)", analysis: "артикль, м.р., мн.ч., дат.п." },
+                { greek: "οὐρανοῖς", translation: "небесах", analysis: "сущ., м.р., мн.ч., дат.п." }
+            ]
+        },
+        {
+            greek: "ἁγιασθήτω τὸ ὄνομά σου",
+            russian: "да святится имя Твоё",
+            words: [
+                { greek: "ἁγιασθήτω", translation: "да святится", analysis: "глагол, аорист, пассив, 3-е л., ед.ч., повел." },
+                { greek: "τὸ", translation: "(артикль)", analysis: "артикль, ср.р., ед.ч., им./вин.п." },
+                { greek: "ὄνομά", translation: "имя", analysis: "сущ., ср.р., ед.ч., им.п." },
+                { greek: "σου", translation: "Твой", analysis: "мест., 2-е л., ед.ч., род.п." }
+            ]
+        },
+        {
+            greek: "ἐλθέτω ἡ βασιλεία σου",
+            russian: "да придёт Царствие Твоё",
+            words: [
+                { greek: "ἐλθέτω", translation: "да придёт", analysis: "глагол, аорист, актив, 3-е л., ед.ч., повел." },
+                { greek: "ἡ", translation: "(артикль)", analysis: "артикль, ж.р., ед.ч., им.п." },
+                { greek: "βασιλεία", translation: "Царствие", analysis: "сущ., ж.р., ед.ч., им.п." },
+                { greek: "σου", translation: "Твоё", analysis: "мест., 2-е л., ед.ч., род.п." }
+            ]
+        },
+        {
+            greek: "γενηθήτω τὸ θέλημά σου",
+            russian: "да будет воля Твоя",
+            words: [
+                { greek: "γενηθήτω", translation: "да будет", analysis: "глагол, аорист, пассив, 3-е л., ед.ч., повел." },
+                { greek: "τὸ", translation: "(артикль)", analysis: "артикль, ср.р., ед.ч., им./вин.п." },
+                { greek: "θέλημά", translation: "воля", analysis: "сущ., ср.р., ед.ч., им.п." },
+                { greek: "σου", translation: "Твоя", analysis: "мест., 2-е л., ед.ч., род.п." }
+            ]
+        },
+        {
+            greek: "ὡς ἐν οὐρανῷ καὶ ἐπὶ τῆς γῆς",
+            russian: "как на небе, так и на земле",
+            words: [
+                { greek: "ὡς", translation: "как", analysis: "союз" },
+                { greek: "ἐν", translation: "на", analysis: "предлог (с дат.п.)" },
+                { greek: "οὐρανῷ", translation: "небе", analysis: "сущ., м.р., ед.ч., дат.п." },
+                { greek: "καὶ", translation: "и", analysis: "союз" },
+                { greek: "ἐπὶ", translation: "на", analysis: "предлог (с род./вин.п.)" },
+                { greek: "τῆς", translation: "(артикль)", analysis: "артикль, ж.р., ед.ч., род.п." },
+                { greek: "γῆς", translation: "земли", analysis: "сущ., ж.р., ед.ч., род.п." }
+            ]
+        },
+        {
+            greek: "τὸν ἄρτον ἡμῶν τὸν ἐπιούσιον δὸς ἡμῖν σήμερον",
+            russian: "хлеб наш насущный дай нам сегодня",
+            words: [
+                { greek: "τὸν", translation: "(артикль)", analysis: "артикль, м.р., ед.ч., вин.п." },
+                { greek: "ἄρτον", translation: "хлеб", analysis: "сущ., м.р., ед.ч., вин.п." },
+                { greek: "ἡμῶν", translation: "наш", analysis: "мест., 1-е л., мн.ч., род.п." },
+                { greek: "τὸν", translation: "(артикль)", analysis: "артикль, м.р., ед.ч., вин.п." },
+                { greek: "ἐπιούσιον", translation: "насущный", analysis: "прил., м.р., ед.ч., вин.п." },
+                { greek: "δὸς", translation: "дай", analysis: "глагол, аорист, актив, 2-е л., ед.ч., повел." },
+                { greek: "ἡμῖν", translation: "нам", analysis: "мест., 1-е л., мн.ч., дат.п." },
+                { greek: "σήμερον", translation: "сегодня", analysis: "наречие" }
+            ]
+        },
+        {
+            greek: "καὶ ἄφες ἡμῖν τὰ ὀφειλήματα ἡμῶν",
+            russian: "и прости нам долги наши",
+            words: [
+                { greek: "καὶ", translation: "и", analysis: "союз" },
+                { greek: "ἄφες", translation: "прости", analysis: "глагол, аорист, актив, 2-е л., ед.ч., повел." },
+                { greek: "ἡμῖν", translation: "нам", analysis: "мест., 1-е л., мн.ч., дат.п." },
+                { greek: "τὰ", translation: "(артикль)", analysis: "артикль, ср.р., мн.ч., вин.п." },
+                { greek: "ὀφειλήματα", translation: "долги", analysis: "сущ., ср.р., мн.ч., вин.п." },
+                { greek: "ἡμῶν", translation: "наши", analysis: "мест., 1-е л., мн.ч., род.п." }
+            ]
+        },
+        {
+            greek: "ὡς καὶ ἡμεῖς ἀφήκαμεν τοῖς ὀφειλέταις ἡμῶν",
+            russian: "как и мы прощаем должникам нашим",
+            words: [
+                { greek: "ὡς", translation: "как", analysis: "союз" },
+                { greek: "καὶ", translation: "и", analysis: "союз" },
+                { greek: "ἡμεῖς", translation: "мы", analysis: "мест., 1-е л., мн.ч., им.п." },
+                { greek: "ἀφήκαμεν", translation: "прощаем", analysis: "глагол, аорист, актив, 1-е л., мн.ч." },
+                { greek: "τοῖς", translation: "(артикль)", analysis: "артикль, м.р., мн.ч., дат.п." },
+                { greek: "ὀφειλέταις", translation: "должникам", analysis: "сущ., м.р., мн.ч., дат.п." },
+                { greek: "ἡμῶν", translation: "нашим", analysis: "мест., 1-е л., мн.ч., род.п." }
+            ]
+        },
+        {
+            greek: "καὶ μὴ εἰσενέγκῃς ἡμᾶς εἰς πειρασμόν",
+            russian: "и не введи нас в искушение",
+            words: [
+                { greek: "καὶ", translation: "и", analysis: "союз" },
+                { greek: "μὴ", translation: "не", analysis: "частица" },
+                { greek: "εἰσενέγκῃς", translation: "введи", analysis: "глагол, аорист, актив, 2-е л., ед.ч., повел." },
+                { greek: "ἡμᾶς", translation: "нас", analysis: "мест., 1-е л., мн.ч., вин.п." },
+                { greek: "εἰς", translation: "в", analysis: "предлог (с вин.п.)" },
+                { greek: "πειρασμόν", translation: "искушение", analysis: "сущ., м.р., ед.ч., вин.п." }
+            ]
+        },
+        {
+            greek: "ἀλλὰ ῥῦσαι ἡμᾶς ἀπὸ τοῦ πονηροῦ",
+            russian: "но избавь нас от лукавого",
+            words: [
+                { greek: "ἀλλὰ", translation: "но", analysis: "союз" },
+                { greek: "ῥῦσαι", translation: "избавь", analysis: "глагол, аорист, средн., 2-е л., ед.ч., повел." },
+                { greek: "ἡμᾶς", translation: "нас", analysis: "мест., 1-е л., мн.ч., вин.п." },
+                { greek: "ἀπὸ", translation: "от", analysis: "предлог (с род.п.)" },
+                { greek: "τοῦ", translation: "(артикль)", analysis: "артикль, м.р., ед.ч., род.п." },
+                { greek: "πονηροῦ", translation: "лукавого", analysis: "прил., м.р., ед.ч., род.п." }
+            ]
+        }
+    ]
+};
 // ============================================================
 // ВСЕ ФУНКЦИИ (полный набор)
 // ============================================================
@@ -2454,6 +2592,195 @@ function showToast(message) {
         setTimeout(() => toast.remove(), 300);
     }, 2000);
 }
+// ============================================================
+// ФУНКЦИИ ДЛЯ "ОТЧЕ НАШ"
+// ============================================================
+
+let prayerExerciseState = { type: null, questions: [], index: 0, correct: 0, total: 0, chosen: [] };
+
+function showPrayer() {
+    showSection('prayerSection');
+    renderPrayerText();
+    renderPrayerExercise();
+}
+
+function renderPrayerText() {
+    const container = document.getElementById('prayerContent');
+    let html = '<div style="margin-bottom:20px;">';
+    PRAYER_DATA.verses.forEach((verse, verseIdx) => {
+        html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;padding:6px 0;border-bottom:1px solid #eee;">`;
+        verse.words.forEach((word, wordIdx) => {
+            html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" style="cursor:pointer;background:#ede7e0;padding:2px 8px;border-radius:4px;font-size:18px;transition:0.1s;" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
+        });
+        html += `</div>`;
+        html += `<div style="margin-left:12px;color:#5f4a38;font-size:15px;margin-bottom:12px;">${verse.russian}</div>`;
+    });
+    html += '</div>';
+    html += '<div id="wordAnalysis" style="background:#f4eee8;padding:12px;border-radius:8px;margin:12px 0;display:none;"></div>';
+    container.innerHTML = html;
+}
+
+function showWordAnalysis(verseIdx, wordIdx) {
+    const verse = PRAYER_DATA.verses[verseIdx];
+    const word = verse.words[wordIdx];
+    const analysisDiv = document.getElementById('wordAnalysis');
+    analysisDiv.style.display = 'block';
+    analysisDiv.innerHTML = `
+        <strong>${word.greek}</strong> — ${word.translation}<br>
+        <span style="font-size:14px;color:#4a3728;">${word.analysis}</span>
+        <button class="menu-btn" style="margin-top:8px;padding:4px 12px;" onclick="document.getElementById('wordAnalysis').style.display='none'">✕ Закрыть</button>
+    `;
+}
+
+function renderPrayerExercise() {
+    const container = document.getElementById('prayerExercise');
+    let html = `<h4 style="margin:12px 0;">📝 Упражнения</h4>`;
+    html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="menu-btn" onclick="startPrayerFill()">🔤 Заполни пропуски</button>
+        <button class="menu-btn primary" onclick="startPrayerTranslate()">🌍 Перевод на греческий</button>
+    </div>`;
+    html += `<div id="prayerExerciseQuestion"></div>`;
+    container.innerHTML = html;
+}
+
+function startPrayerFill() {
+    let questions = [];
+    PRAYER_DATA.verses.forEach(verse => {
+        const wordIndex = Math.floor(Math.random() * verse.words.length);
+        const correctWord = verse.words[wordIndex].greek;
+        const allWords = PRAYER_DATA.verses.flatMap(v => v.words.map(w => w.greek));
+        const distractors = shuffle(allWords.filter(w => w !== correctWord)).slice(0, 3);
+        questions.push({
+            verse: verse.greek,
+            correct: correctWord,
+            distractors: distractors,
+            blankIndex: wordIndex,
+            russian: verse.russian
+        });
+    });
+    prayerExerciseState = { type: 'fill', questions: shuffle(questions), index: 0, correct: 0, total: questions.length };
+    showPrayerExerciseQuestion();
+}
+
+function startPrayerTranslate() {
+    let questions = [];
+    PRAYER_DATA.verses.forEach(verse => {
+        const correctWords = verse.words.map(w => w.greek);
+        const allWords = PRAYER_DATA.verses.flatMap(v => v.words.map(w => w.greek));
+        const extras = shuffle(allWords.filter(w => !correctWords.includes(w))).slice(0, 3);
+        const pool = shuffle([...correctWords, ...extras]);
+        questions.push({
+            russian: verse.russian,
+            correct: correctWords,
+            pool: pool
+        });
+    });
+    prayerExerciseState = { type: 'translate', questions: shuffle(questions), index: 0, correct: 0, total: questions.length, chosen: [] };
+    showPrayerExerciseQuestion();
+}
+
+function showPrayerExerciseQuestion() {
+    const state = prayerExerciseState;
+    const container = document.getElementById('prayerExerciseQuestion');
+    if (state.index >= state.total) {
+        let p = Math.round((state.correct / state.total) * 100);
+        container.innerHTML = `<div class="feedback ${p>=70?'ok':'fail'}">🏁 Упражнение завершено!<br>Правильно: ${state.correct} из ${state.total} (${p}%)</div>
+            <button class="menu-btn primary" onclick="startPrayer${state.type==='fill'?'Fill':'Translate'}()">🔄 Ещё раз</button>`;
+        return;
+    }
+    const q = state.questions[state.index];
+    if (state.type === 'fill') {
+        const words = q.verse.split(' ');
+        const displayWords = words.map((w, i) => {
+            if (i === q.blankIndex) return '___';
+            return w;
+        });
+        const text = displayWords.join(' ');
+        let html = `<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Вопрос ${state.index+1} из ${state.total}</div>`;
+        html += `<div style="font-size:18px;margin-bottom:8px;">${text}</div>`;
+        html += `<div style="font-size:15px;color:#5f4a38;margin-bottom:12px;">${q.russian}</div>`;
+        html += `<div class="options">`;
+        const opts = shuffle([q.correct, ...q.distractors]);
+        opts.forEach(opt => {
+            html += `<button class="option-btn" onclick="prayerFillAnswer('${opt}', '${q.correct}')">${opt}</button>`;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+    } else if (state.type === 'translate') {
+        let html = `<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Вопрос ${state.index+1} из ${state.total}</div>`;
+        html += `<div style="font-size:18px;margin-bottom:8px;">${q.russian}</div>`;
+        html += `<div style="font-size:15px;color:#5f4a38;margin-bottom:12px;">Соберите греческий перевод из слов:</div>`;
+        html += `<div class="build-area" id="prayerBuildArea"></div>`;
+        html += `<div class="word-bank" id="prayerWordBank">`;
+        q.pool.forEach(w => {
+            html += `<span class="chip" onclick="prayerPickWord('${w}')">${w}</span>`;
+        });
+        html += `</div>`;
+        html += `<button class="menu-btn primary" onclick="prayerCheckTranslate()">✅ Проверить</button>`;
+        html += `<button class="menu-btn" onclick="prayerClearTranslate()">↩️ Очистить</button>`;
+        container.innerHTML = html;
+        prayerExerciseState.chosen = [];
+    }
+}
+
+function prayerFillAnswer(selected, correct) {
+    const state = prayerExerciseState;
+    const container = document.getElementById('prayerExerciseQuestion');
+    const btns = container.querySelectorAll('.option-btn');
+    btns.forEach(b => {
+        b.disabled = true;
+        if (b.textContent === correct) b.classList.add('correct');
+        if (b.textContent === selected && selected !== correct) b.classList.add('wrong');
+    });
+    if (selected === correct) {
+        state.correct++;
+        stats.totalCorrect++;
+    } else {
+        stats.totalWrong++;
+    }
+    saveStats();
+    state.index++;
+    setTimeout(showPrayerExerciseQuestion, 1200);
+}
+
+function prayerPickWord(w) {
+    prayerExerciseState.chosen.push(w);
+    let bank = document.getElementById('prayerWordBank');
+    bank.querySelectorAll('.chip').forEach(c => {
+        if (c.textContent === w && !c.classList.contains('picked')) c.classList.add('picked');
+    });
+    let area = document.getElementById('prayerBuildArea');
+    let t = document.createElement('span');
+    t.className = 'token';
+    t.textContent = w;
+    area.appendChild(t);
+}
+
+function prayerClearTranslate() {
+    prayerExerciseState.chosen = [];
+    document.getElementById('prayerBuildArea').innerHTML = '';
+    document.getElementById('prayerWordBank').querySelectorAll('.chip').forEach(c => c.classList.remove('picked'));
+}
+
+function prayerCheckTranslate() {
+    const state = prayerExerciseState;
+    const q = state.questions[state.index];
+    const chosen = state.chosen;
+    const correct = q.correct;
+    const ok = chosen.length === correct.length && chosen.every((w, i) => w === correct[i]);
+    const container = document.getElementById('prayerExerciseQuestion');
+    if (ok) {
+        state.correct++;
+        stats.totalCorrect++;
+        container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
+    } else {
+        stats.totalWrong++;
+        container.innerHTML = `<div class="feedback fail">❌ Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></div>`;
+    }
+    saveStats();
+    state.index++;
+    setTimeout(showPrayerExerciseQuestion, 1500);
+}    
 // ============================================================
 // ЗАПУСК
 // ============================================================
