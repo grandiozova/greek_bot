@@ -2642,23 +2642,21 @@ function renderPrayerText() {
 function showWordAnalysis(verseIdx, wordIdx) {
     const verse = PRAYER_DATA.verses[verseIdx];
     const word = verse.words[wordIdx];
-    // Находим контейнер анализа для этого стиха
     const analysisDiv = document.getElementById(`analysis-${verseIdx}`);
     if (!analysisDiv) return;
 
-    // Закрываем все другие окна анализа (по желанию)
+    // Закрываем все другие окна анализа
     document.querySelectorAll('[id^="analysis-"]').forEach(el => {
         if (el.id !== `analysis-${verseIdx}`) {
             el.style.display = 'none';
         }
     });
 
-    // Показываем и заполняем
+    // Показываем и заполняем (без кнопки!)
     analysisDiv.style.display = 'block';
     analysisDiv.innerHTML = `
         <strong>${word.greek}</strong> — ${word.translation}<br>
         <span style="font-size:14px;color:#4a3728;">${word.analysis}</span>
-        <button class="menu-btn" style="margin-top:6px;padding:2px 12px;font-size:13px;" onclick="document.getElementById('analysis-${verseIdx}').style.display='none'">✕ Закрыть</button>
     `;
 }
 
@@ -2672,7 +2670,13 @@ function renderPrayerExercise() {
     html += `<div id="prayerExerciseQuestion"></div>`;
     container.innerHTML = html;
 }
-
+    
+function closeAllAnalysis() {
+    document.querySelectorAll('[id^="analysis-"]').forEach(el => {
+        el.style.display = 'none';
+    });
+}
+    
 function startPrayerFill() {
     let questions = [];
     PRAYER_DATA.verses.forEach(verse => {
@@ -2815,6 +2819,16 @@ function prayerCheckTranslate() {
 // ============================================================
 // ЗАПУСК
 // ============================================================
+// Закрываем окно анализа при клике на пустое место
+document.addEventListener('click', function(e) {
+    const target = e.target;
+    // Если клик был по слову (prayer-word) – ничего не делаем (откроется в showWordAnalysis)
+    if (target.classList.contains('prayer-word')) return;
+    // Если клик был внутри любого окна анализа – ничего не делаем (оставляем открытым)
+    if (target.closest('[id^="analysis-"]')) return;
+    // Иначе – закрываем все окна
+    closeAllAnalysis();
+});
 loadStats();
 renderMainMenu();
     
