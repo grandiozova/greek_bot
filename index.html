@@ -1045,14 +1045,98 @@ const LESSONS_DATA = {
         <tr><td>2-е</td><td>εἶ</td><td>ἐστέ</td></tr>
         <tr><td>3-е</td><td>ἐστί(ν)</td><td>εἰσί(ν)</td></tr></table><br>
         <b>Личные местоимения:</b> ἐγώ (я), σύ (ты), αὐτός (он, сам), ἡμεῖς (мы), ὑμεῖς (вы).`,
-        vocabulary: [
-            {greek:"εἰμί", translation:"(я) есмь", type:"verb", declension_forms:{singular:{"1":"εἰμί","2":"εἶ","3":"ἐστί(ν)"},plural:{"1":"ἐσμέν","2":"ἐστέ","3":"εἰσί(ν)"}}},
-            {greek:"ἐγώ", translation:"я", type:"pronoun", declension_forms:{singular:{nom:"ἐγώ",gen:"μου",dat:"μοι",acc:"με"}}},
-            {greek:"σύ", translation:"ты", type:"pronoun", declension_forms:{singular:{nom:"σύ",gen:"σου",dat:"σοι",acc:"σε"}}},
-            {greek:"αὐτός, ή, ό", translation:"(в косв. падежах) он, она, оно", type:"pronoun", declension_forms:{masculine:{singular:{nom:"αὐτός",gen:"αὐτοῦ",dat:"αὐτῷ",acc:"αὐτόν"},plural:{nom:"αὐτοί",gen:"αὐτῶν",dat:"αὐτοῖς",acc:"αὐτούς"}},feminine:{singular:{nom:"αὐτή",gen:"αὐτῆς",dat:"αὐτῇ",acc:"αὐτήν"},plural:{nom:"αὐταί",gen:"αὐτῶν",dat:"αὐταῖς",acc:"αὐτάς"}},neuter:{singular:{nom:"αὐτό",gen:"αὐτοῦ",dat:"αὐτῷ",acc:"αὐτό"},plural:{nom:"αὐτά",gen:"αὐτῶν",dat:"αὐτοῖς",acc:"αὐτά"}}}},
-            {greek:"ἡμεῖς", translation:"мы", type:"pronoun", declension_forms:{plural:{nom:"ἡμεῖς",gen:"ἡμῶν",dat:"ἡμῖν",acc:"ἡμᾶς"}}},
-            {greek:"ὑμεῖς", translation:"вы", type:"pronoun", declension_forms:{plural:{nom:"ὑμεῖς",gen:"ὑμῶν",dat:"ὑμῖν",acc:"ὑμᾶς"}}}
-        ],
+vocabulary: [
+  {greek:"εἰμί", translation:"(я) есмь", type:"verb", declension_forms:{singular:{"1":"εἰμί","2":"εἶ","3":"ἐστί(ν)"},plural:{"1":"ἐσμέν","2":"ἐστέ","3":"εἰσί(ν)"}}},
+  {
+    greek: "ἐγώ",
+    translation: "я",
+    type: "pronoun",
+    declension_forms: { singular: { nom: "ἐγώ", gen: "μου", dat: "μοι", acc: "με" } },
+    caseTranslations: {
+      singular: {
+        nom: "я",
+        gen: "меня",
+        dat: "мне",
+        acc: "меня"
+      }
+    }
+  },
+  {
+    greek: "σύ",
+    translation: "ты",
+    type: "pronoun",
+    declension_forms: { singular: { nom: "σύ", gen: "σου", dat: "σοι", acc: "σε" } },
+    caseTranslations: {
+      singular: {
+        nom: "ты",
+        gen: "тебя",
+        dat: "тебе",
+        acc: "тебя"
+      }
+    }
+  },
+  {
+    greek: "αὐτός, ή, ό",
+    translation: "сам (в косв. падежах — он, она, оно)",
+    type: "pronoun",
+    declension_forms: {
+      masculine: {
+        singular: { nom: "αὐτός", gen: "αὐτοῦ", dat: "αὐτῷ", acc: "αὐτόν" },
+        plural: { nom: "αὐτοί", gen: "αὐτῶν", dat: "αὐτοῖς", acc: "αὐτούς" }
+      },
+      feminine: {
+        singular: { nom: "αὐτή", gen: "αὐτῆς", dat: "αὐτῇ", acc: "αὐτήν" },
+        plural: { nom: "αὐταί", gen: "αὐτῶν", dat: "αὐταῖς", acc: "αὐτάς" }
+      },
+      neuter: {
+        singular: { nom: "αὐτό", gen: "αὐτοῦ", dat: "αὐτῷ", acc: "αὐτό" },
+        plural: { nom: "αὐτά", gen: "αὐτῶν", dat: "αὐτοῖς", acc: "αὐτά" }
+      }
+    },
+    caseTranslations: {
+      singular: {
+        nom: "сам / сама / само",
+        gen: "его / её",
+        dat: "ему / ей",
+        acc: "его / её"
+      },
+      plural: {
+        nom: "сами",
+        gen: "их",
+        dat: "им",
+        acc: "их"
+      }
+    }
+  },
+  {
+    greek: "ἡμεῖς",
+    translation: "мы",
+    type: "pronoun",
+    declension_forms: { plural: { nom: "ἡμεῖς", gen: "ἡμῶν", dat: "ἡμῖν", acc: "ἡμᾶς" } },
+    caseTranslations: {
+      plural: {
+        nom: "мы",
+        gen: "нас",
+        dat: "нам",
+        acc: "нас"
+      }
+    }
+  },
+  {
+    greek: "ὑμεῖς",
+    translation: "вы",
+    type: "pronoun",
+    declension_forms: { plural: { nom: "ὑμεῖς", gen: "ὑμῶν", dat: "ὑμῖν", acc: "ὑμᾶς" } },
+    caseTranslations: {
+      plural: {
+        nom: "вы",
+        gen: "вас",
+        dat: "вам",
+        acc: "вас"
+      }
+    }
+  }
+],
         exercises: {
             declension_fill: [
                 {case:"1sg", word:"εἰμί", translation:"быть", correct:"εἰμί", distractors:["εἶ","ἐστί","ἐσμέν"]},
@@ -1742,10 +1826,12 @@ function openLesson(lesson) {
                 div.classList.add('clickable');
                 div.onclick = function(el) { return function() { toggleDeclension(el); }; }(div);
             }
-            let detailsHtml = '';
-            if (item.declension_forms) {
-                detailsHtml = '<div class="word-details">' + generateDeclensionTable(item.declension_forms) + '</div>';
-            }
+    let detailsHtml = '';
+    if (item.declension_forms) {
+        let hasTranslations = item.caseTranslations && typeof item.caseTranslations === 'object';
+        let openClass = hasTranslations ? ' open' : '';
+            detailsHtml = '<div class="word-details' + openClass + '">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div>';
+        }
             div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
             container.appendChild(div);
         });
@@ -1862,40 +1948,51 @@ function switchLessonPart(part) {
 // ============================================================
 // ФУНКЦИИ ДЛЯ АККОРДЕОНА (таблицы склонений)
 // ============================================================
-function generateDeclensionTable(forms) {
+function generateDeclensionTable(forms, translations) {
     if (!forms) return '';
     let html = '';
+    // Для местоимений с мужским/женским/средним родом
     if (forms.masculine || forms.feminine || forms.neuter) {
         let cases = ['nom','gen','dat','acc','voc'];
         let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
-        html += '<table><thead><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th></tr></thead><tbody>';
+        html += '<table><thead><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th>';
+        if (translations) html += '<th>Перевод</th>';
+        html += '</tr></thead><tbody>';
         for (let c of cases) {
             let m = (forms.masculine && forms.masculine.singular && forms.masculine.singular[c]) ? forms.masculine.singular[c] : '';
             let f = (forms.feminine && forms.feminine.singular && forms.feminine.singular[c]) ? forms.feminine.singular[c] : '';
             let n = (forms.neuter && forms.neuter.singular && forms.neuter.singular[c]) ? forms.neuter.singular[c] : '';
-            html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td></tr>';
+            html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td>';
+            if (translations && translations.singular && translations.singular[c]) {
+                html += '<td>'+translations.singular[c]+'</td>';
+            }
+            html += '</tr>';
         }
         html += '</tbody></table>';
-        // множественное число
+        // Множественное число
         let hasPlural = (forms.masculine && forms.masculine.plural) || (forms.feminine && forms.feminine.plural) || (forms.neuter && forms.neuter.plural);
         if (hasPlural) {
-            html += '<table><thead><tr><th>Падеж</th><th>Муж. (мн.)</th><th>Жен. (мн.)</th><th>Ср. (мн.)</th></tr></thead><tbody>';
+            html += '<table><thead><tr><th>Падеж</th><th>Муж. (мн.)</th><th>Жен. (мн.)</th><th>Ср. (мн.)</th>';
+            if (translations) html += '<th>Перевод</th>';
+            html += '</tr></thead><tbody>';
             for (let c of cases) {
                 let m = (forms.masculine && forms.masculine.plural && forms.masculine.plural[c]) ? forms.masculine.plural[c] : '';
                 let f = (forms.feminine && forms.feminine.plural && forms.feminine.plural[c]) ? forms.feminine.plural[c] : '';
                 let n = (forms.neuter && forms.neuter.plural && forms.neuter.plural[c]) ? forms.neuter.plural[c] : '';
-                html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td></tr>';
+                html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td>';
+                if (translations && translations.plural && translations.plural[c]) {
+                    html += '<td>'+translations.plural[c]+'</td>';
+                }
+                html += '</tr>';
             }
             html += '</tbody></table>';
         }
         return html;
     }
-    // Для существительных и местоимений с singular/plural
+    // Для существительных с singular/plural (без разделения по родам)
     if (forms.singular || forms.plural) {
         let cases = ['nom','gen','dat','acc','voc'];
         let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
-        
-        // Проверяем, есть ли падежи в singular или plural
         let hasCases = false;
         for (let c of cases) {
             if ((forms.singular && forms.singular[c]) || (forms.plural && forms.plural[c])) {
@@ -1903,28 +2000,24 @@ function generateDeclensionTable(forms) {
                 break;
             }
         }
-        
         if (hasCases) {
             html += '<table><thead><tr><th>Падеж</th>';
-            // Добавляем заголовки только для тех колонок, где есть данные
-            if (forms.singular && Object.keys(forms.singular).length > 0) {
-                html += '<th>Ед.ч.</th>';
-            }
-            if (forms.plural && Object.keys(forms.plural).length > 0) {
-                html += '<th>Мн.ч.</th>';
-            }
+            if (forms.singular && Object.keys(forms.singular).length > 0) html += '<th>Ед.ч.</th>';
+            if (forms.plural && Object.keys(forms.plural).length > 0) html += '<th>Мн.ч.</th>';
+            if (translations) html += '<th>Перевод</th>';
             html += '</tr></thead><tbody>';
             for (let c of cases) {
                 let sg = (forms.singular && forms.singular[c]) ? forms.singular[c] : '';
                 let pl = (forms.plural && forms.plural[c]) ? forms.plural[c] : '';
-                // Показываем строку, если есть хотя бы одна форма
                 if (sg || pl) {
                     html += '<tr><td>'+labels[c]+'</td>';
-                    if (forms.singular && Object.keys(forms.singular).length > 0) {
-                        html += '<td>'+sg+'</td>';
-                    }
-                    if (forms.plural && Object.keys(forms.plural).length > 0) {
-                        html += '<td>'+pl+'</td>';
+                    if (forms.singular && Object.keys(forms.singular).length > 0) html += '<td>'+sg+'</td>';
+                    if (forms.plural && Object.keys(forms.plural).length > 0) html += '<td>'+pl+'</td>';
+                    if (translations) {
+                        let trans = '';
+                        if (translations.singular && translations.singular[c]) trans = translations.singular[c];
+                        else if (translations.plural && translations.plural[c]) trans = translations.plural[c];
+                        html += '<td>'+trans+'</td>';
                     }
                     html += '</tr>';
                 }
@@ -1932,7 +2025,7 @@ function generateDeclensionTable(forms) {
             html += '</tbody></table>';
             return html;
         }
-        // Для глаголов (лица)
+        // Для глаголов (лица) — оставляем без перевода
         if (forms.singular && forms.singular["1"] !== undefined) {
             let persons = ['1','2','3'];
             let personLabels = ['1-е лицо','2-е лицо','3-е лицо'];
@@ -1945,14 +2038,23 @@ function generateDeclensionTable(forms) {
             html += '</tbody></table>';
             return html;
         }
-        // fallback: просто таблица
+        // fallback
         let keys = Object.keys(forms.singular || {});
         if (keys.length) {
-            html += '<table><thead><tr><th></th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
+            html += '<table><thead><tr><th></th><th>Ед.ч.</th><th>Мн.ч.</th>';
+            if (translations) html += '<th>Перевод</th>';
+            html += '</tr></thead><tbody>';
             for (let k of keys) {
                 let sg = forms.singular ? forms.singular[k] : '';
                 let pl = forms.plural ? forms.plural[k] : '';
-                html += '<tr><td>'+k+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
+                html += '<tr><td>'+k+'</td><td>'+sg+'</td><td>'+pl+'</td>';
+                if (translations) {
+                    let trans = '';
+                    if (translations.singular && translations.singular[k]) trans = translations.singular[k];
+                    else if (translations.plural && translations.plural[k]) trans = translations.plural[k];
+                    html += '<td>'+trans+'</td>';
+                }
+                html += '</tr>';
             }
             html += '</tbody></table>';
         }
