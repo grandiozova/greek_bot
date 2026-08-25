@@ -2040,19 +2040,28 @@ function generateDeclensionTable(forms, translations) {
             html += '</tbody></table>';
             return html;
         }
-        // Для глаголов (лица) — оставляем без перевода
-        if (forms.singular && forms.singular["1"] !== undefined) {
-            let persons = ['1','2','3'];
-            let personLabels = ['1-е лицо','2-е лицо','3-е лицо'];
-            html += '<table><thead><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th></tr></thead><tbody>';
-            for (let i=0; i<persons.length; i++) {
-                let sg = (forms.singular && forms.singular[persons[i]]) ? forms.singular[persons[i]] : '';
-                let pl = (forms.plural && forms.plural[persons[i]]) ? forms.plural[persons[i]] : '';
-                html += '<tr><td>'+personLabels[i]+'</td><td>'+sg+'</td><td>'+pl+'</td></tr>';
-            }
-            html += '</tbody></table>';
-            return html;
+// Для глаголов (лица) — добавляем перевод
+if (forms.singular && forms.singular["1"] !== undefined) {
+    let persons = ['1','2','3'];
+    let personLabels = ['1-е лицо','2-е лицо','3-е лицо'];
+    html += '<table><thead><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th>';
+    if (translations) html += '<th>Перевод</th>';
+    html += '</tr></thead><tbody>';
+    for (let i=0; i<persons.length; i++) {
+        let sg = (forms.singular && forms.singular[persons[i]]) ? forms.singular[persons[i]] : '';
+        let pl = (forms.plural && forms.plural[persons[i]]) ? forms.plural[persons[i]] : '';
+        html += '<tr><td>'+personLabels[i]+'</td><td>'+sg+'</td><td>'+pl+'</td>';
+        if (translations) {
+            let trans = '';
+            if (translations.singular && translations.singular[persons[i]]) trans = translations.singular[persons[i]];
+            else if (translations.plural && translations.plural[persons[i]]) trans = translations.plural[persons[i]];
+            html += '<td>'+trans+'</td>';
         }
+        html += '</tr>';
+    }
+    html += '</tbody></table>';
+    return html;
+}
         // fallback
         let keys = Object.keys(forms.singular || {});
         if (keys.length) {
