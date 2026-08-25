@@ -1826,11 +1826,10 @@ function openLesson(lesson) {
                 div.classList.add('clickable');
                 div.onclick = function(el) { return function() { toggleDeclension(el); }; }(div);
             }
-    let detailsHtml = '';
-    if (item.declension_forms) {
-        let hasTranslations = item.caseTranslations && typeof item.caseTranslations === 'object';
-            detailsHtml = '<div class="word-details' + openClass + '">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div>';
-        }
+let detailsHtml = '';
+if (item.declension_forms) {
+    detailsHtml = '<div class="word-details">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div>';
+}
             div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
             container.appendChild(div);
         });
