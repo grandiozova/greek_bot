@@ -439,6 +439,62 @@
         [id^="analysis-"] {
             transition: opacity 0.3s ease;
         }
+        /* Улучшения для мобильных устройств */
+@media (max-width: 600px) {
+    .app {
+        padding: 12px 8px;
+    }
+    .word-item .word-row {
+        padding: 8px 10px;
+        font-size: 16px;
+    }
+    .menu-btn {
+        padding: 12px 8px;
+        font-size: 14px;
+    }
+    .tab-bar button {
+        min-width: 50px;
+        font-size: 12px;
+        padding: 8px 4px;
+    }
+    .flashcard-word {
+        font-size: 28px;
+    }
+    .flashcard-translation {
+        font-size: 20px;
+    }
+    .option-btn {
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+    .input-group input {
+        font-size: 16px;
+        padding: 10px 12px;
+        min-width: 120px;
+    }
+    .input-group button {
+        padding: 10px 16px;
+        font-size: 16px;
+    }
+    .build-area .token {
+        font-size: 15px;
+        padding: 4px 10px;
+    }
+    .word-bank .chip {
+        padding: 6px 12px;
+        font-size: 15px;
+    }
+    .grammar-text {
+        font-size: 14px;
+        padding: 12px 14px;
+    }
+    .grammar-text table {
+        font-size: 12px;
+    }
+    .grammar-text td, .grammar-text th {
+        padding: 4px 6px;
+    }
+}
     </style>
 </head>
 <body>
@@ -2311,8 +2367,8 @@ function showExercise() {
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
 } else if (s.type === 'translate_greek_to_russian') {
-    html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..." onkeydown="if(event.key===\'Enter\'){checkTranslation();}"><button type="button" onclick="checkTranslation()">✅ Проверить</button></div>';
-    window._trans_q = q;
+    let idx = s.index; // сохраняем текущий индекс
+    html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..." onkeydown="if(event.key===\'Enter\'){checkTranslation(' + idx + ');}"><button type="button" onclick="checkTranslation(' + idx + ')">✅ Проверить</button></div>';
 } else if (s.type === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
         html += '<div class="question">Переведите на греческий (выберите слова по порядку):</div><div style="font-size:20px;text-align:center;margin:12px 0;">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
@@ -2778,27 +2834,35 @@ function transClear() {
     document.getElementById('transWordBank').querySelectorAll('.chip').forEach(c => c.classList.remove('picked'));
 }
 
-function checkTranslation() {
-    let s = translationState;
-    let q = s.questions[s.index];
-    let chosen = s.chosen;
-    let correct = q.correct;
-    let ok = chosen.length === correct.length && chosen.every((w, i) => w === correct[i]);
-    let container = document.getElementById('translationQuestion');
+function checkTranslation(index) {
+    let inp = document.getElementById('transInput');
+    if (!inp) return;
+    let ans = inp.value.trim().toLowerCase();
+    // Берём вопрос из exerciseState по переданному индексу
+    let q = exerciseState.questions[index];
+    if (!q) {
+        document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback fail">⚠️ Ошибка. Пожалуйста, начните упражнение заново.</div>';
+        return;
+    }
+    let ok = true;
+    for (let kw of q.keywords) {
+        if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
+    }
+    let container = document.getElementById('exerciseQuestion');
     if (ok) {
         stats.totalCorrect++;
-        s.correct++;
+        exerciseState.correct++;
         container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
     } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.source, correct: correct.join(' '), your: chosen.join(' ') });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильный порядок: <strong>' + correct.join(' ') + '</strong></div>';
+        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
+        container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</div>';
     }
     saveStats();
-    s.index++;
-    setTimeout(showTranslation, 1500);
+    exerciseState.index++;
+    setTimeout(showExercise, 1500);
 }
 
 // ============================================================
