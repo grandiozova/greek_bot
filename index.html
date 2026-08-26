@@ -1110,7 +1110,7 @@ grammar: `<b>1. Энклитики и проклитики</b><br>
 Такая конструкция используется для выделения или противопоставления.<br><br>
 
 <b>Примечание:</b> В косвенных падежах местоимение <b>αὐτός</b> употребляется как личное местоимение (он, она, оно), а в именительном падеже — как «сам». С артиклем оно означает «тот же самый» (ὁ αὐτός — тот же самый).`,
-vocabulary: [
+  vocabulary: [
   {
     greek: "εἰμί",
     translation: "(я) есмь",
@@ -1217,29 +1217,123 @@ vocabulary: [
         acc: "вас"
       }
     }
+  },
+  {
+    greek: "δέ",
+    translation: "же, а, но",
+    type: "other"
+  },
+  {
+    greek: "δεσπότης",
+    article: "ὁ",
+    translation: "господин",
+    type: "noun",
+    declension_forms: {
+      singular: { nom: "δεσπότης", gen: "δεσπότου", dat: "δεσπότῃ", acc: "δεσπότην", voc: "δεσπότα" },
+      plural: { nom: "δεσπόται", gen: "δεσποτῶν", dat: "δεσπόταις", acc: "δεσπότας", voc: "δεσπόται" }
+    }
+  },
+  {
+    greek: "κριτής",
+    article: "ὁ",
+    translation: "судья",
+    type: "noun",
+    declension_forms: {
+      singular: { nom: "κριτής", gen: "κριτοῦ", dat: "κριτῇ", acc: "κριτήν", voc: "κριτά" },
+      plural: { nom: "κριταί", gen: "κριτῶν", dat: "κριταῖς", acc: "κριτάς", voc: "κριταί" }
+    }
+  },
+  {
+    greek: "τελώνης",
+    article: "ὁ",
+    translation: "мытарь, сборщик податей",
+    type: "noun",
+    declension_forms: {
+      singular: { nom: "τελώνης", gen: "τελώνου", dat: "τελώνῃ", acc: "τελώνην", voc: "τελώνᾱ" },
+      plural: { nom: "τελῶναι", gen: "τελωνῶν", dat: "τελώναις", acc: "τελώνας", voc: "τελῶναι" }
+    }
   }
 ],
-        exercises: {
-            declension_fill: [
-                {case:"1sg", word:"εἰμί", translation:"быть", correct:"εἰμί", distractors:["εἶ","ἐστί","ἐσμέν"]},
-                {case:"2sg", word:"εἰμί", translation:"быть", correct:"εἶ", distractors:["εἰμί","ἐστί","ἐστέ"]},
-                {case:"3sg", word:"εἰμί", translation:"быть", correct:"ἐστί(ν)", distractors:["εἰμί","εἶ","εἰσί"]},
-                {case:"1pl", word:"εἰμί", translation:"быть", correct:"ἐσμέν", distractors:["ἐστέ","εἰσί","εἰμί"]},
-                {case:"2pl", word:"εἰμί", translation:"быть", correct:"ἐστέ", distractors:["ἐσμέν","εἰσί","εἶ"]},
-                {case:"3pl", word:"εἰμί", translation:"быть", correct:"εἰσί(ν)", distractors:["ἐσμέν","ἐστέ","ἐστί"]}
-            ],
-            translate_greek_to_russian: [
-                {greek:"ἐγώ εἰμι", keywords:["я","есмь"]},
-                {greek:"σὺ εἶ", keywords:["ты","еси"]},
-                {greek:"αὐτός ἐστι", keywords:["он","есть"]},
-                {greek:"ἡμεῖς ἐσμέν", keywords:["мы","есмы"]},
-                {greek:"ὑμεῖς ἐστέ", keywords:["вы","есте"]}
-            ],
-            translate_russian_to_greek: [
-                {russian:"я есмь", correct_sequence:["ἐγώ","εἰμι"], all_words:["ἐγώ","εἰμι","σύ","εἶ"]},
-                {russian:"ты еси", correct_sequence:["σύ","εἶ"], all_words:["σύ","εἶ","ἐγώ","εἰμι"]}
-            ]
-        },
+exercises: {
+    // ===== СКЛОНЕНИЕ =====
+    declension_fill: [
+        // εἰμί (глагол — все лица)
+        {case:"1sg", word:"εἰμί", translation:"быть", correct:"εἰμί", distractors:["εἶ","ἐστί","ἐσμέν"]},
+        {case:"2sg", word:"εἰμί", translation:"быть", correct:"εἶ", distractors:["εἰμί","ἐστί","ἐστέ"]},
+        {case:"3sg", word:"εἰμί", translation:"быть", correct:"ἐστί(ν)", distractors:["εἰμί","εἶ","εἰσί"]},
+        {case:"1pl", word:"εἰμί", translation:"быть", correct:"ἐσμέν", distractors:["ἐστέ","εἰσί","εἰμί"]},
+        {case:"2pl", word:"εἰμί", translation:"быть", correct:"ἐστέ", distractors:["ἐσμέν","εἰσί","εἶ"]},
+        {case:"3pl", word:"εἰμί", translation:"быть", correct:"εἰσί(ν)", distractors:["ἐσμέν","ἐστέ","ἐστί"]},
+        // δεσπότης (существительное)
+        {case:"gen_sg", word:"δεσπότης", translation:"господин", correct:"δεσπότου", distractors:["δεσποτῶν","δεσπότῃ","δεσπότην"]},
+        {case:"dat_sg", word:"δεσπότης", translation:"господин", correct:"δεσπότῃ", distractors:["δεσπότου","δεσπόταις","δεσπότην"]},
+        {case:"nom_pl", word:"δεσπότης", translation:"господин", correct:"δεσπόται", distractors:["δεσπότας","δεσποτῶν","δεσπόταις"]},
+        // κριτής (существительное)
+        {case:"gen_sg", word:"κριτής", translation:"судья", correct:"κριτοῦ", distractors:["κριτῶν","κριτῇ","κριτήν"]},
+        {case:"dat_sg", word:"κριτής", translation:"судья", correct:"κριτῇ", distractors:["κριτοῦ","κριταῖς","κριτήν"]},
+        {case:"nom_pl", word:"κριτής", translation:"судья", correct:"κριταί", distractors:["κριτάς","κριτῶν","κριταῖς"]},
+        // τελώνης (существительное)
+        {case:"gen_sg", word:"τελώνης", translation:"мытарь", correct:"τελώνου", distractors:["τελωνῶν","τελώνῃ","τελώνην"]},
+        {case:"dat_sg", word:"τελώνης", translation:"мытарь", correct:"τελώνῃ", distractors:["τελώνου","τελώναις","τελώνην"]},
+        {case:"nom_pl", word:"τελώνης", translation:"мытарь", correct:"τελῶναι", distractors:["τελώνας","τελωνῶν","τελώναις"]}
+    ],
+
+    // ===== ПЕРЕВОД С ГРЕЧЕСКОГО НА РУССКИЙ =====
+    translate_greek_to_russian: [
+        // Личные формы εἰμί
+        {greek:"ἐγώ εἰμι", keywords:["я","есмь"]},
+        {greek:"σὺ εἶ", keywords:["ты","еси"]},
+        {greek:"αὐτός ἐστι", keywords:["он","есть"]},
+        {greek:"ἡμεῖς ἐσμέν", keywords:["мы","есмы"]},
+        {greek:"ὑμεῖς ἐστέ", keywords:["вы","есте"]},
+        // Личные местоимения в косвенных падежах
+        {greek:"μου", keywords:["меня"]},
+        {greek:"σοι", keywords:["тебе"]},
+        {greek:"αὐτόν", keywords:["его"]},
+        {greek:"αὐτῇ", keywords:["ей"]},
+        {greek:"ἡμᾶς", keywords:["нас"]},
+        {greek:"ὑμῖν", keywords:["вам"]},
+        // Существительные
+        {greek:"ὁ δεσπότης", keywords:["господин"]},
+        {greek:"τοῦ κριτοῦ", keywords:["судьи"]},
+        {greek:"τῷ τελώνῃ", keywords:["мытарю"]},
+        {greek:"τοὺς δεσπότας", keywords:["господ"]}
+    ],
+
+    // ===== ПЕРЕВОД С РУССКОГО НА ГРЕЧЕСКИЙ =====
+    translate_russian_to_greek: [
+        // εἰμί
+        {russian:"я есмь", correct_sequence:["ἐγώ","εἰμι"], all_words:["ἐγώ","εἰμι","σύ","εἶ"]},
+        {russian:"ты еси", correct_sequence:["σύ","εἶ"], all_words:["σύ","εἶ","ἐγώ","εἰμι"]},
+        // Местоимения + предлоги
+        {russian:"меня", correct_sequence:["μου"], all_words:["μου","σου","με"]},
+        {russian:"тебе", correct_sequence:["σοι"], all_words:["σοι","μοι","σε"]},
+        {russian:"его (Acc.)", correct_sequence:["αὐτόν"], all_words:["αὐτόν","αὐτό","αὐτοῦ"]},
+        {russian:"их (Gen.)", correct_sequence:["αὐτῶν"], all_words:["αὐτῶν","αὐτοῖς","αὐτούς"]},
+        // Существительные с артиклем
+        {russian:"господин", correct_sequence:["ὁ","δεσπότης"], all_words:["ὁ","δεσπότης","κριτής","τελώνης"]},
+        {russian:"судья", correct_sequence:["ὁ","κριτής"], all_words:["ὁ","κριτής","δεσπότης","τελώνης"]},
+        {russian:"мытарь", correct_sequence:["ὁ","τελώνης"], all_words:["ὁ","τελώνης","δεσπότης","κριτής"]},
+        {russian:"господина (Gen.)", correct_sequence:["τοῦ","δεσπότου"], all_words:["τοῦ","δεσπότου","κριτοῦ","τελώνου"]},
+        {russian:"судье (Dat.)", correct_sequence:["τῷ","κριτῇ"], all_words:["τῷ","κριτῇ","τῷ","δεσπότῃ","τῷ","τελώνῃ"]}
+    ],
+
+    // ===== ОПРЕДЕЛЕНИЕ ПАДЕЖА И ЧИСЛА =====
+    case_number: [
+        // εἰμί
+        {form:"λύεις", correct:"2-е л. ед.ч.", distractors:["1-е л. ед.ч.","3-е л. ед.ч.","2-е л. мн.ч."]},
+        {form:"λύομεν", correct:"1-е л. мн.ч.", distractors:["1-е л. ед.ч.","2-е л. мн.ч.","3-е л. мн.ч."]},
+        // δεσπότης
+        {form:"δεσπότην", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
+        {form:"δεσπόται", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
+        // κριτής
+        {form:"κριτοῦ", correct:"Genitivus (Род. п.) ед.ч.", distractors:["Accusativus (Вин. п.) ед.ч.","Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) ед.ч."]},
+        {form:"κριταί", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
+        // τελώνης
+        {form:"τελώνην", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
+        {form:"τελῶναι", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]}
+    ]
+},
         translation: {
             ru_to_el: [
                 {source:"Твои ученики — в доме Господа.", correct:["οἱ","μαθηταί","σου","εἰσιν","ἐν","τῷ","οἴκῳ","τοῦ","κυρίου"]},
@@ -2216,10 +2310,10 @@ function showExercise() {
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
-    } else if (s.type === 'translate_greek_to_russian') {
-        html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..."><button onclick="checkTranslation()">✅ Проверить</button></div>';
-        window._trans_q = q;
-    } else if (s.type === 'translate_russian_to_greek') {
+} else if (s.type === 'translate_greek_to_russian') {
+    html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..." onkeydown="if(event.key===\'Enter\'){checkTranslation();}"><button type="button" onclick="checkTranslation()">✅ Проверить</button></div>';
+    window._trans_q = q;
+} else if (s.type === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
         html += '<div class="question">Переведите на греческий (выберите слова по порядку):</div><div style="font-size:20px;text-align:center;margin:12px 0;">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
         for (let w of words) html += '<span class="chip" onclick="pickWord(\'' + w + '\')">' + w + '</span>';
