@@ -3541,5 +3541,11 @@ loadStats();
 renderMainMenu();
     
 </script>
+<script>
+    // Принудительно обновляем меню через секунду после загрузки
+    setTimeout(function() {
+        renderMainMenu();
+    }, 500);
+</script>
 </body>
 </html>
