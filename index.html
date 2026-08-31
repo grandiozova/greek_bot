@@ -3202,11 +3202,11 @@ function checkExerciseTranslation(index) {
 // ============================================================
 // НАВИГАЦИЯ МЕЖДУ УРОКАМИ
 // ============================================================
-
+    
 function goToPrevLesson() {
     let prev = currentLesson - 1;
-    if (prev < 3) {
-        showToast('Это первый урок (урок 3).');
+    if (prev < 1) {  // было prev < 3
+        showToast('Это первый урок.');
         return;
     }
     let data = getLessonData(prev);
@@ -3238,7 +3238,7 @@ function updateNavButtons(lesson) {
     let nextBtn = document.getElementById('nextLessonBtn');
     
     if (prevBtn) {
-        if (lesson <= 3) {
+        if (lesson <= 1) {  // было <= 3
             prevBtn.style.opacity = '0.5';
             prevBtn.style.cursor = 'not-allowed';
         } else {
