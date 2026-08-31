@@ -3081,6 +3081,31 @@ function clearAllProgress() {
 // ============================================================
 // ФУНКЦИИ ДЛЯ ПЕРЕВОДА
 // ============================================================
+
+function checkTranslationBuild() {
+    let s = translationState;
+    if (s.index >= s.total) return;
+    let q = s.questions[s.index];
+    if (!q) return;
+    let chosen = s.chosen;
+    let correct = q.correct;
+    let ok = chosen.length === correct.length && chosen.every((w, i) => w === correct[i]);
+    let container = document.getElementById('translationQuestion');
+    if (ok) {
+        s.correct++;
+        stats.totalCorrect++;
+        container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
+    } else {
+        stats.totalWrong++;
+        let lesson = currentLesson;
+        if (!stats.errors[lesson]) stats.errors[lesson] = [];
+        stats.errors[lesson].push({ word: q.source, correct: correct.join(' '), your: chosen.join(' ') });
+        container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: <strong>' + correct.join(' ') + '</strong></div>';
+    }
+    saveStats();
+    s.index++;
+    setTimeout(showTranslation, 1500);
+}
 function startTranslation(type) {
     let data = getLessonData(currentLesson);
     if (!data || !data.translation || !data.translation[type]) {
@@ -3143,7 +3168,7 @@ function showTranslation() {
         html += '<span class="chip" onclick="transPickWord(\'' + w.replace(/'/g, "\\'") + '\')">' + w + '</span>';
     }
     html += '</div>';
-    html += '<button class="menu-btn primary" onclick="checkTranslation()">✅ Проверить</button> ';
+    html += '<button class="menu-btn primary" onclick="checkTranslationBuild()">✅ Проверить</button> ';
     html += '<button class="menu-btn" onclick="transClear()">↩️ Очистить</button>';
 
     container.innerHTML = html;
