@@ -898,7 +898,19 @@ grammar: `<b>1. Общие сведения о склонении</b><br>
                 {case:"nom_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἄνθρωποι", distractors:["ἀνθρώπους","ἀνθρώπων","ἀνθρώποις"]},
                 {case:"gen_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπων", distractors:["ἀνθρώπου","ἀνθρώποις","ἄνθρωποι"]},
                 {case:"dat_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώποις", distractors:["ἀνθρώπων","ἀνθρώπῳ","ἀνθρώπους"]},
-                {case:"acc_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπους", distractors:["ἀνθρώποις","ἀνθρώπων","ἄνθρωποι"]}
+                {case:"acc_pl", word:"ἄνθρωπος", translation:"человек", correct:"ἀνθρώπους", distractors:["ἀνθρώποις","ἀνθρώπων","ἄνθρωποι"]},
+                        // Склонения для других существительных
+        {case:"dat_sg", word:"λόγος", translation:"слово", correct:"λόγῳ", distractors:["λόγον","λόγου","λόγοις"]},
+        {case:"gen_sg", word:"νόμος", translation:"закон", correct:"νόμου", distractors:["νόμῳ","νόμον","νόμοι"]},
+        {case:"acc_pl", word:"οἶκος", translation:"дом", correct:"οἴκους", distractors:["οἴκοις","οἴκων","οἶκοι"]},
+        {case:"nom_pl", word:"δοῦλος", translation:"раб", correct:"δοῦλοι", distractors:["δούλων","δούλοις","δούλους"]},
+        {case:"dat_pl", word:"ἀδελφός", translation:"брат", correct:"ἀδελφοῖς", distractors:["ἀδελφῶν","ἀδελφούς","ἀδελφοί"]},
+        {case:"gen_pl", word:"ἱερόν", translation:"храм", correct:"ἱερῶν", distractors:["ἱεροῖς","ἱερά","ἱερόν"]},
+        {case:"acc_sg", word:"θάνατος", translation:"смерть", correct:"θάνατον", distractors:["θανάτῳ","θανάτου","θάνατε"]},
+        {case:"voc_sg", word:"υἱός", translation:"сын", correct:"υἱέ", distractors:["υἱός","υἱοῦ","υἱόν"]},
+        {case:"dat_sg", word:"ἀπόστολος", translation:"апостол", correct:"ἀποστόλῳ", distractors:["ἀπόστολον","ἀποστόλου","ἀποστόλοις"]},
+        {case:"gen_sg", word:"Χριστός", translation:"Христос", correct:"Χριστοῦ", distractors:["Χριστόν","Χριστῷ","Χριστέ"]}
+                
             ],
             translate_greek_to_russian: [
                 {greek:"ὁ λόγος", keywords:["слово"]},
@@ -907,16 +919,34 @@ grammar: `<b>1. Общие сведения о склонении</b><br>
                 {greek:"τὸν οἶκον", keywords:["дом"]},
                 {greek:"οἱ ἀπόστολοι", keywords:["апостолы"]},
                 {greek:"τῶν δούλων", keywords:["рабов"]},
-                {greek:"τοῖς τέκνοις", keywords:["детям"]}
+                {greek:"τοῖς τέκνοις", keywords:["детям"]},
+                {greek:"ὁ νόμος", keywords:["закон"]},
+        {greek:"τοῦ δούλου", keywords:["раба"]},
+        {greek:"τὸν ἀδελφόν", keywords:["брата"]},
+        {greek:"τὸ ἱερόν", keywords:["храм"]},
+        {greek:"τῷ θανάτῳ", keywords:["смерти"]},
+        {greek:"οἱ υἱοί", keywords:["сыны"]},
+        {greek:"τῶν ἀποστόλων", keywords:["апостолов"]},
+        {greek:"τῷ Χριστῷ", keywords:["Христу"]}
             ],
             translate_russian_to_greek: [
                 {russian:"слово", correct_sequence:["λόγος"], all_words:["λόγος","οἶκος","υἱός"]},
                 {russian:"человека (Gen.)", correct_sequence:["ἀνθρώπου"], all_words:["ἀνθρώπου","ἄνθρωπον","ἀνθρώπῳ"]},
-                {russian:"сыну", correct_sequence:["υἱῷ"], all_words:["υἱῷ","υἱόν","υἱοῦ"]}
+                {russian:"сыну", correct_sequence:["υἱῷ"], all_words:["υἱῷ","υἱόν","υἱοῦ"]},
+                {russian:"закон", correct_sequence:["νόμος"], all_words:["νόμος","λόγος","οἶκος","υἱός"]},
+        {russian:"раба (Gen.)", correct_sequence:["δούλου"], all_words:["δούλου","δοῦλον","δούλῳ","δοῦλοι"]},
+        {russian:"брата (Acc.)", correct_sequence:["ἀδελφόν"], all_words:["ἀδελφόν","ἀδελφός","ἀδελφοῦ","ἀδελφῷ"]},
+        {russian:"храм (Nom.)", correct_sequence:["ἱερόν"], all_words:["ἱερόν","ἱεροῦ","ἱερῷ","ἱερά"]},
+        {russian:"смерти (Dat.)", correct_sequence:["θανάτῳ"], all_words:["θανάτῳ","θάνατος","θανάτου","θάνατον"]},
+        {russian:"сыны (Nom.)", correct_sequence:["υἱοί"], all_words:["υἱοί","υἱῶν","υἱοῖς","υἱούς"]},
+        {russian:"апостолов (Gen.)", correct_sequence:["ἀποστόλων"], all_words:["ἀποστόλων","ἀπόστολοι","ἀποστόλοις","ἀποστόλους"]},
+        {russian:"Христу (Dat.)", correct_sequence:["Χριστῷ"], all_words:["Χριστῷ","Χριστός","Χριστοῦ","Χριστόν"]}
             ],
             case_number: [
                 {form:"ἀνθρώπων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-                {form:"δῶρα", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]}
+                {form:"δῶρα", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
+                {form:"λόγοις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+                {form:"ἱερά", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Nominativus (Им. п.) ед.ч."]}
             ]
         },
         translation: {
