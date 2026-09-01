@@ -1100,7 +1100,20 @@ grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
                 {case:"nom_pl", word:"ὥρα", translation:"час", correct:"ὥραι", distractors:["ὥρας","ὥραις","ὡρῶν"]},
                 {case:"gen_pl", word:"ὥρα", translation:"час", correct:"ὡρῶν", distractors:["ὥρας","ὥρᾳ","ὥραις"]},
                 {case:"dat_pl", word:"ὥρα", translation:"час", correct:"ὥραις", distractors:["ὡρῶν","ὥραι","ὥραν"]},
-                {case:"acc_pl", word:"ὥρα", translation:"час", correct:"ὥρας", distractors:["ὥραις","ὡρῶν","ὥραι"]}
+                {case:"acc_pl", word:"ὥρα", translation:"час", correct:"ὥρας", distractors:["ὥραις","ὡρῶν","ὥραι"]},
+         {case:"gen_sg", word:"ἀλήθεια", translation:"истина", correct:"ἀληθείας", distractors:["ἀληθείᾳ","ἀλήθειαν","ἀλήθειαι"]},
+        {case:"dat_sg", word:"ζωή", translation:"жизнь", correct:"ζωῇ", distractors:["ζωῆς","ζωήν","ζωαί"]},
+        {case:"acc_sg", word:"βασιλεία", translation:"царство", correct:"βασιλείαν", distractors:["βασιλείας","βασιλείᾳ","βασιλεῖαι"]},
+        {case:"nom_pl", word:"ἡμέρα", translation:"день", correct:"ἡμέραι", distractors:["ἡμέρας","ἡμέραις","ἡμερῶν"]},
+        {case:"gen_pl", word:"γραφή", translation:"писание", correct:"γραφῶν", distractors:["γραφῆς","γραφαῖς","γραφάς"]},
+        {case:"dat_pl", word:"καρδία", translation:"сердце", correct:"καρδίαις", distractors:["καρδίας","καρδιῶν","καρδίαι"]},
+        {case:"acc_pl", word:"δόξα", translation:"слава", correct:"δόξας", distractors:["δόξαις","δοξῶν","δόξαι"]},
+        {case:"gen_sg", word:"παραβολή", translation:"притча", correct:"παραβολῆς", distractors:["παραβολῇ","παραβολήν","παραβολαί"]},
+        {case:"dat_sg", word:"εἰρήνη", translation:"мир", correct:"εἰρήνῃ", distractors:["εἰρήνης","εἰρήνην","εἰρῆναι"]},
+        {case:"acc_sg", word:"φωνή", translation:"голос", correct:"φωνήν", distractors:["φωνῆς","φωνῇ","φωναί"]},
+        {case:"gen_sg", word:"ἐκκλησία", translation:"церковь", correct:"ἐκκλησίας", distractors:["ἐκκλησίᾳ","ἐκκλησίαν","ἐκκλησίαι"]},
+        {case:"dat_sg", word:"ψυχή", translation:"душа", correct:"ψυχῇ", distractors:["ψυχῆς","ψυχήν","ψυχαί"]},
+        {case:"acc_pl", word:"ἐντολή", translation:"заповедь", correct:"ἐντολάς", distractors:["ἐντολαῖς","ἐντολῶν","ἐντολαί"]}
             ],
             translate_greek_to_russian: [
                 {greek:"ἡ ἀλήθεια", keywords:["истина"]},
@@ -1109,7 +1122,12 @@ grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
                 {greek:"τὴν ζωήν", keywords:["жизнь"]},
                 {greek:"αἱ βασιλεῖαι", keywords:["царства"]},
                 {greek:"τῶν ἡμερῶν", keywords:["дней"]},
-                {greek:"ταῖς παραβολαῖς", keywords:["притчам"]}
+                {greek:"ταῖς παραβολαῖς", keywords:["притчам"]},
+                {greek:"ἡ φωνή", keywords:["голос"]},
+        {greek:"ἡ ἐκκλησία", keywords:["церковь"]},
+        {greek:"ἡ ψυχή", keywords:["душа"]},
+        {greek:"ἡ ἐντολή", keywords:["заповедь"]},
+        {greek:"ἡ ὥρα", keywords:["час"]}
             ],
             translate_russian_to_greek: [
                 {russian:"истина", correct_sequence:["ἀλήθεια"], all_words:["ἀλήθεια","δόξα","ὥρα","ζωή"]},
@@ -1118,7 +1136,23 @@ grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
             ],
             case_number: [
                 {form:"ὡρῶν", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-                {form:"δόξαις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]}
+                {form:"δόξαις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+                {russian:"царство", correct_sequence:["βασιλεία"], all_words:["βασιλεία","ἀλήθεια","ζωή","ἡμέρα"]},
+        {russian:"день", correct_sequence:["ἡμέρα"], all_words:["ἡμέρα","βασιλεία","γραφή","καρδία"]},
+        {russian:"писание", correct_sequence:["γραφή"], all_words:["γραφή","δόξα","παραβολή","εἰρήνη"]},
+        {russian:"сердце", correct_sequence:["καρδία"], all_words:["καρδία","φωνή","ἐκκλησία","ψυχή"]},
+        {russian:"слава", correct_sequence:["δόξα"], all_words:["δόξα","ἀλήθεια","ζωή","ὥρα"]},
+        {russian:"притча", correct_sequence:["παραβολή"], all_words:["παραβολή","γραφή","ἐντολή","εἰρήνη"]},
+        {russian:"мир", correct_sequence:["εἰρήνη"], all_words:["εἰρήνη","φωνή","ἐκκλησία","ψυχή"]},
+        {russian:"голос", correct_sequence:["φωνή"], all_words:["φωνή","ἐκκλησία","ψυχή","ἐντολή"]},
+        {russian:"церковь", correct_sequence:["ἐκκλησία"], all_words:["ἐκκλησία","ψυχή","ἐντολή","ὥρα"]},
+        {russian:"душа", correct_sequence:["ψυχή"], all_words:["ψυχή","ἐντολή","ὥρα","φωνή"]},
+        {russian:"заповедь", correct_sequence:["ἐντολή"], all_words:["ἐντολή","ὥρα","φωνή","ἐκκλησία"]},
+        {russian:"час", correct_sequence:["ὥρα"], all_words:["ὥρα","ἐντολή","φωνή","ἐκκλησία"]},
+        {form:"ἀλήθειαι", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+        {form:"ζωῶν", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+        {form:"βασιλείαις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+        {form:"ἡμέραν", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]}
             ]
         },
         translation: {
@@ -1347,7 +1381,16 @@ grammar: `<b>1. Существительные мужского рода 1-го 
                 {case:"nom_pl", word:"προφήτης", translation:"пророк", correct:"προφῆται", distractors:["προφήτας","προφητῶν","προφήταις"]},
                 {case:"gen_pl", word:"προφήτης", translation:"пророк", correct:"προφητῶν", distractors:["προφήτου","προφήταις","προφῆται"]},
                 {case:"dat_pl", word:"προφήτης", translation:"пророк", correct:"προφήταις", distractors:["προφητῶν","προφήτῃ","προφήτας"]},
-                {case:"acc_pl", word:"προφήτης", translation:"пророк", correct:"προφήτας", distractors:["προφήταις","προφητῶν","προφῆται"]}
+                {case:"acc_pl", word:"προφήτης", translation:"пророк", correct:"προφήτας", distractors:["προφήταις","προφητῶν","προφῆται"]},
+             {case:"gen_sg", word:"ἄγγελος", translation:"ангел", correct:"ἀγγέλου", distractors:["ἀγγέλῳ","ἄγγελον","ἄγγελοι"]},
+        {case:"dat_sg", word:"βαπτιστής", translation:"креститель", correct:"βαπτιστῇ", distractors:["βαπτιστοῦ","βαπτιστήν","βαπτιστά"]},
+        {case:"acc_sg", word:"θεός", translation:"Бог", correct:"θεόν", distractors:["θεοῦ","θεῷ","θεέ"]},
+        {case:"nom_pl", word:"κόσμος", translation:"мир", correct:"κόσμοι", distractors:["κόσμους","κόσμων","κόσμοις"]},
+        {case:"gen_pl", word:"λίθος", translation:"камень", correct:"λίθων", distractors:["λίθοις","λίθους","λίθοι"]},
+        {case:"dat_pl", word:"μαθητής", translation:"ученик", correct:"μαθηταῖς", distractors:["μαθητῶν","μαθητάς","μαθηταί"]},
+        {case:"acc_sg", word:"νεανίας", translation:"юноша", correct:"νεανίαν", distractors:["νεανίου","νεανίᾳ","νεανία"]},
+        {case:"gen_sg", word:"οὐρανός", translation:"небо", correct:"οὐρανοῦ", distractors:["οὐρανῷ","οὐρανόν","οὐρανέ"]},
+        {case:"dat_sg", word:"τέκνον", translation:"дитя", correct:"τέκνῳ", distractors:["τέκνου","τέκνον","τέκνα"]}
             ],
             translate_greek_to_russian: [
                 {greek:"ὁ προφήτης", keywords:["пророк"]},
@@ -1355,16 +1398,38 @@ grammar: `<b>1. Существительные мужского рода 1-го 
                 {greek:"τῷ θεῷ", keywords:["Богу"]},
                 {greek:"τὸν κόσμον", keywords:["мир"]},
                 {greek:"οἱ μαθηταί", keywords:["ученики"]},
-                {greek:"τῶν οὐρανῶν", keywords:["небес"]}
+                {greek:"τῶν οὐρανῶν", keywords:["небес"]},
+                 {greek:"ὁ ἄγγελος", keywords:["ангел"]},
+        {greek:"ὁ βαπτιστής", keywords:["креститель"]},
+        {greek:"ὁ θεός", keywords:["Бог"]},
+        {greek:"ὁ κόσμος", keywords:["мир"]},
+        {greek:"ὁ λίθος", keywords:["камень"]},
+        {greek:"ὁ μαθητής", keywords:["ученик"]},
+        // уже есть: προφήτης, νεανίας? добавим, если нет
+        {greek:"ὁ νεανίας", keywords:["юноша"]},
+        {greek:"ὁ οὐρανός", keywords:["небо"]},
+        {greek:"τὸ τέκνον", keywords:["дитя"]}
             ],
             translate_russian_to_greek: [
                 {russian:"пророк", correct_sequence:["προφήτης"], all_words:["προφήτης","μαθητής","ἄγγελος"]},
                 {russian:"юноши (Gen.)", correct_sequence:["νεανίου"], all_words:["νεανίου","νεανίαν","νεανίαις"]},
-                {russian:"к Богу", correct_sequence:["πρὸς","τὸν","θεόν"], all_words:["πρὸς","τὸν","θεόν","ἀπό","τοῦ"]}
+                {russian:"к Богу", correct_sequence:["πρὸς","τὸν","θεόν"], all_words:["πρὸς","τὸν","θεόν","ἀπό","τοῦ"]},
+                {russian:"ангел", correct_sequence:["ἄγγελος"], all_words:["ἄγγελος","βαπτιστής","θεός","κόσμος"]},
+        {russian:"креститель", correct_sequence:["βαπτιστής"], all_words:["βαπτιστής","προφήτης","μαθητής","νεανίας"]},
+        {russian:"Бог", correct_sequence:["θεός"], all_words:["θεός","κόσμος","οὐρανός","λίθος"]},
+        {russian:"мир", correct_sequence:["κόσμος"], all_words:["κόσμος","οὐρανός","λίθος","ἄγγελος"]},
+        {russian:"камень", correct_sequence:["λίθος"], all_words:["λίθος","θεός","κόσμος","οὐρανός"]},
+        {russian:"ученик", correct_sequence:["μαθητής"], all_words:["μαθητής","προφήτης","βαπτιστής","νεανίας"]},
+        {russian:"юноша", correct_sequence:["νεανίας"], all_words:["νεανίας","μαθητής","προφήτης","βαπτιστής"]},
+        {russian:"небо", correct_sequence:["οὐρανός"], all_words:["οὐρανός","κόσμος","λίθος","θεός"]},
+        {russian:"дитя", correct_sequence:["τέκνον"], all_words:["τέκνον","ἄγγελος","μαθητής","νεανίας"]}
             ],
             case_number: [
                 {form:"προφήτῃ", correct:"Dativus (Дат. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч."]},
-                {form:"ἀγγέλων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч.","Nominativus (Им. п.) мн.ч."]}
+                {form:"ἀγγέλων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч.","Nominativus (Им. п.) мн.ч."]},
+              {form:"προφῆται", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+        {form:"ἀγγέλων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
+        {form:"μαθηταῖς", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]}
             ]
         },
         translation: {
@@ -1822,15 +1887,34 @@ grammar: `<b>1. Указательные местоимения οὗτος, α�
             declension_fill: [
                 {case:"gen_sg_m", word:"οὗτος", translation:"этот", correct:"τούτου", distractors:["ταύτης","τούτῳ","τοῦτον"]},
                 {case:"dat_sg_f", word:"αὕτη", translation:"эта", correct:"ταύτῃ", distractors:["ταύτης","τούτῳ","ταύτην"]},
-                {case:"acc_sg_n", word:"τοῦτο", translation:"это", correct:"τοῦτο", distractors:["τούτου","τούτῳ","τοῦτον"]}
+                {case:"acc_sg_n", word:"τοῦτο", translation:"это", correct:"τοῦτο", distractors:["τούτου","τούτῳ","τοῦτον"]},
+                 {case:"gen_sg_m", word:"οὗτος", translation:"этот", correct:"τούτου", distractors:["ταύτης","τούτῳ","τοῦτον"]},
+        {case:"dat_sg_f", word:"αὕτη", translation:"эта", correct:"ταύτῃ", distractors:["ταύτης","τούτῳ","ταύτην"]},
+        {case:"acc_sg_n", word:"τοῦτο", translation:"это", correct:"τοῦτο", distractors:["τούτου","τούτῳ","τοῦτον"]},
+        // Добавим для ἐκεῖνος
+        {case:"gen_sg_m", word:"ἐκεῖνος", translation:"тот", correct:"ἐκείνου", distractors:["ἐκείνῳ","ἐκεῖνον","ἐκείνη"]},
+        {case:"dat_sg_f", word:"ἐκείνη", translation:"та", correct:"ἐκείνῃ", distractors:["ἐκείνης","ἐκείνην","ἐκεῖνο"]},
+        {case:"acc_sg_n", word:"ἐκεῖνο", translation:"то", correct:"ἐκεῖνο", distractors:["ἐκείνου","ἐκείνῳ","ἐκεῖνον"]},
+        {case:"nom_pl_m", word:"οὗτος", translation:"этот", correct:"οὗτοι", distractors:["τούτους","τούτων","τούτοις"]},
+        {case:"nom_pl_m", word:"ἐκεῖνος", translation:"тот", correct:"ἐκεῖνοι", distractors:["ἐκείνους","ἐκείνων","ἐκείνοις"]}
             ],
             translate_greek_to_russian: [
                 {greek:"οὗτος ὁ λόγος", keywords:["этот","слово"]},
                 {greek:"αὕτη ἡ ἀλήθεια", keywords:["эта","истина"]},
-                {greek:"ἐκεῖνο τὸ δῶρον", keywords:["тот","дар"]}
+                {greek:"ἐκεῖνο τὸ δῶρον", keywords:["тот","дар"]},
+        {greek:"ἐκεῖνος", keywords:["тот"]},
+        {greek:"ἐκείνη", keywords:["та"]},
+        {greek:"ἐκεῖνο", keywords:["то"]},
+        {greek:"οὗτοι", keywords:["эти"]},
+        {greek:"ἐκεῖνοι", keywords:["те"]}
             ],
             translate_russian_to_greek: [
-                {russian:"этот человек", correct_sequence:["οὗτος","ἄνθρωπος"], all_words:["οὗτος","ἄνθρωπος","αὕτη","γυνή"]}
+                {russian:"этот человек", correct_sequence:["οὗτος","ἄνθρωπος"], all_words:["οὗτος","ἄνθρωπος","αὕτη","γυνή"]},
+                {russian:"ангел", correct_sequence:["ἄγγελος"], all_words:["ἄγγελος","βαπτιστής","θεός","κόσμος"]},
+        {russian:"эта", correct_sequence:["αὕτη"], all_words:["αὕτη","οὗτος","τοῦτο","ἐκείνη"]},
+        {russian:"это", correct_sequence:["τοῦτο"], all_words:["τοῦτο","οὗτος","αὕτη","ἐκεῖνο"]},
+        {russian:"тот", correct_sequence:["ἐκεῖνος"], all_words:["ἐκεῖνος","οὗτος","αὕτη","τοῦτο"]},
+        {russian:"те", correct_sequence:["ἐκεῖνοι"], all_words:["ἐκεῖνοι","οὗτοι","αὗται","ταῦτα"]}
             ]
         },
         translation: {
@@ -1907,22 +1991,44 @@ grammar: `<b>1. Указательные местоимения οὗτος, α�
                 {case:"3sg", word:"λύομαι", translation:"развязываюсь", correct:"λύεται", distractors:["λύομαι","λύῃ","λύονται"]},
                 {case:"1pl", word:"λύομαι", translation:"развязываюсь", correct:"λυόμεθα", distractors:["λύεσθε","λύονται","λύομαι"]},
                 {case:"2pl", word:"λύομαι", translation:"развязываюсь", correct:"λύεσθε", distractors:["λυόμεθα","λύονται","λύῃ"]},
-                {case:"3pl", word:"λύομαι", translation:"развязываюсь", correct:"λύονται", distractors:["λυόμεθα","λύεσθε","λύεται"]}
+                {case:"3pl", word:"λύομαι", translation:"развязываюсь", correct:"λύονται", distractors:["λυόμεθα","λύεσθε","λύεται"]},
+                        {case:"1sg", word:"γίνομαι", translation:"становлюсь", correct:"γίνομαι", distractors:["γίνῃ","γίνεται","γινόμεθα"]},
+        {case:"2sg", word:"ἔρχομαι", translation:"прихожу", correct:"ἔρχῃ", distractors:["ἔρχομαι","ἔρχεται","ἐρχόμεθα"]},
+        {case:"3sg", word:"πορεύομαι", translation:"иду", correct:"πορεύεται", distractors:["πορεύομαι","πορεύῃ","πορευόμεθα"]},
+        {case:"1pl", word:"ἀποκρίνομαι", translation:"отвечаю", correct:"ἀποκρινόμεθα", distractors:["ἀποκρίνομαι","ἀποκρίνῃ","ἀποκρίνεται"]},
+        {case:"2pl", word:"εἰσέρχομαι", translation:"вхожу", correct:"εἰσέρχεσθε", distractors:["εἰσέρχομαι","εἰσέρχῃ","εἰσέρχεται"]},
+        {case:"3pl", word:"ἐξέρχομαι", translation:"выхожу", correct:"ἐξέρχονται", distractors:["ἐξέρχομαι","ἐξέρχῃ","ἐξέρχεται"]}
             ],
             translate_greek_to_russian: [
                 {greek:"γίνομαι", keywords:["становлюсь"]},
                 {greek:"ἔρχεται", keywords:["приходит"]},
                 {greek:"πορεύονται", keywords:["идут"]},
                 {greek:"ἀποκρίνομαι", keywords:["отвечаю"]},
-                {greek:"σώζεται", keywords:["спасается"]}
+                {greek:"σώζεται", keywords:["спасается"]},
+                        {greek:"ἀπέρχομαι", keywords:["отхожу"]},
+        {greek:"ἀποκρίνομαι", keywords:["отвечаю"]},
+        {greek:"εἰσέρχομαι", keywords:["вхожу"]},
+        {greek:"ἐξέρχομαι", keywords:["выхожу"]},
+        {greek:"ἔρχομαι", keywords:["прихожу"]},
+        {greek:"πορεύομαι", keywords:["иду"]}
+        // γίνομαι уже есть
             ],
             translate_russian_to_greek: [
                 {russian:"я становлюсь", correct_sequence:["γίνομαι"], all_words:["γίνομαι","ἔρχομαι","λύομαι"]},
-                {russian:"он спасается", correct_sequence:["σώζεται"], all_words:["σώζεται","σώζω","σώζονται"]}
+                {russian:"он спасается", correct_sequence:["σώζεται"], all_words:["σώζεται","σώζω","σώζονται"]},
+                        {russian:"я отвечаю", correct_sequence:["ἀποκρίνομαι"], all_words:["ἀποκρίνομαι","ἔρχομαι","πορεύομαι","γίνομαι"]},
+        {russian:"я вхожу", correct_sequence:["εἰσέρχομαι"], all_words:["εἰσέρχομαι","ἐξέρχομαι","ἔρχομαι","ἀπέρχομαι"]},
+        {russian:"я выхожу", correct_sequence:["ἐξέρχομαι"], all_words:["ἐξέρχομαι","εἰσέρχομαι","ἔρχομαι","πορεύομαι"]},
+        {russian:"я прихожу", correct_sequence:["ἔρχομαι"], all_words:["ἔρχομαι","ἀπέρχομαι","πορεύομαι","γίνομαι"]},
+        {russian:"я иду", correct_sequence:["πορεύομαι"], all_words:["πορεύομαι","ἔρχομαι","ἀποκρίνομαι","γίνομαι"]},
+        {russian:"я отхожу", correct_sequence:["ἀπέρχομαι"], all_words:["ἀπέρχομαι","ἔρχομαι","πορεύομαι","εἰσέρχομαι"]}
             ],
             case_number: [
                 {form:"λύεται", correct:"3-е л. ед.ч.", distractors:["2-е л. ед.ч.","1-е л. мн.ч.","3-е л. мн.ч."]},
-                {form:"πορεύονται", correct:"3-е л. мн.ч.", distractors:["3-е л. ед.ч.","2-е л. мн.ч.","1-е л. мн.ч."]}
+                {form:"πορεύονται", correct:"3-е л. мн.ч.", distractors:["3-е л. ед.ч.","2-е л. мн.ч.","1-е л. мн.ч."]},
+             {form:"γίνεται", correct:"3-е л. ед.ч.", distractors:["1-е л. ед.ч.","2-е л. ед.ч.","3-е л. мн.ч."]},
+        {form:"πορευόμεθα", correct:"1-е л. мн.ч.", distractors:["2-е л. мн.ч.","3-е л. мн.ч.","1-е л. ед.ч."]},
+        {form:"ἔρχονται", correct:"3-е л. мн.ч.", distractors:["1-е л. мн.ч.","2-е л. мн.ч.","3-е л. ед.ч."]}
             ]
         },
         translation: {
