@@ -8,9 +8,10 @@ An Ancient Greek learning web app, published to GitHub Pages.
 
 | Part | Files | Notes |
 |---|---|---|
-| Web app | `index.html` | Single self-contained file. Data, styles and logic are all inline. All work happens here. |
+| Web app | `index.html` | Data, styles and logic are all inline. Nearly all work happens here. |
+| Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
 
-There is no backend and no build step: `index.html` is the whole application. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
+There is no backend and no build step. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
 
 All user-facing copy is **Russian**. Greek content is **polytonic** (accents, breathings, iota subscript — `ᾅ`, `ὥρᾳ`, `ἡμῶν`). Never "normalise" or strip Greek diacritics; they are the subject matter.
 
@@ -89,6 +90,19 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 - Greek: **Noto Serif** (`--md-ref-typeface-greek`), applied *only* where Greek is the object of study — headwords, flashcards, chips and tokens, prayer text, and Greek answer options via `.options--greek`. Russian UI text never gets the serif.
 - Mark inline Greek inside Russian sentences with `<span class="greek">`, not `<b>`.
 - Icons are **Material Symbols Rounded** (`<span class="msym">name</span>`). No emoji in the interface.
+- The icon font is **subsetted** via the `icon_names=` parameter on the Google Fonts `<link>` in `<head>`. The full family is 5.4 MB and loads with `display=block`, so the whole UI sits iconless until it arrives; the subset is 68 KB. **Adding an icon means adding its ligature name to that list** — otherwise it renders as raw text (`menu_book`) instead of a glyph. Sweep the rendered DOM for `.msym` text to regenerate the list rather than editing it by hand.
+
+## Offline shell
+
+`sw.js` precaches `index.html`, the manifest and the icon, and caches the Google Fonts CSS and font files at runtime. Strategies differ on purpose:
+
+- **navigation → network-first**, cache as fallback. A published change reaches users on their next load; going cache-first here would strand them on a stale build.
+- **same-origin assets → cache-first** with a background refresh.
+- **fonts → cache-first**; their URLs are already content-versioned.
+
+`manifest.webmanifest` uses **relative** `start_url` and `scope` because Pages serves this from the `/greek_bot/` subpath; absolute paths would break it. Registration is guarded on `location.protocol` so opening the file over `file://` is still fine, and a failed registration is swallowed — offline is a bonus, never a precondition.
+
+Bump `CACHE_VERSION` in `sw.js` when the cached set changes; `activate` deletes every cache that does not match.
 
 ## Verify before reporting done
 
@@ -98,6 +112,8 @@ Do not claim completion on a design change without checking it renders. At minim
 2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **both** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `index.html` so the audit cannot drift from the source.
 3. **Behaviour** — exercise every screen (jsdom is enough) and confirm no screen renders empty, no `undefined` leaks into markup, and no stray hex colors appear in the live DOM.
 4. **Render** — screenshot light and dark, mobile (412px) and desktop (1280px), and check for console errors and horizontal overflow.
+5. **Icon coverage** — drive every screen and collect `.msym` text, then diff it against `icon_names=`. A missing name is invisible in jsdom and obvious to users.
+6. **Offline** — if you touched `sw.js`, the manifest, or anything in `<head>`: serve the repo over HTTP under a `/greek_bot/` subpath, load once, `setOffline(true)`, and confirm a cold load still boots and renders. Then confirm an edited `index.html` is still served when back online — a service worker that pins a stale build is worse than no service worker.
 
 These harnesses are not committed; they are quick to rewrite. Ask before adding a `tools/` directory and its dependencies to the repo.
 

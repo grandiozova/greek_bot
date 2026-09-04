@@ -10,7 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300..700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+    <!-- Material Symbols только теми иконками, что реально используются (icon_names).
+         Полный набор — 5.4 МБ, и при display=block интерфейс стоит без иконок, пока он не придёт.
+         Добавляя новую иконку в разметку или в JS, допишите её имя в этот список. -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=abc,account_tree,arrow_back,arrow_forward,balance,cancel,check,check_circle,chevron_right,close,dark_mode,delete,delete_sweep,dictionary,edit,edit_note,edit_off,error,g_translate,help,home,inbox,info,insights,light_mode,link,local_library,menu_book,play_arrow,push_pin,quiz,restart_alt,resume,rocket_launch,rule,school,search,search_off,settings_backup_restore,style,target,task_alt,translate,undo,visibility,warning&display=block" rel="stylesheet">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 /* ============================================================
    MATERIAL 3 (MATERIAL YOU) — ТОКЕНЫ ДИЗАЙН-СИСТЕМЫ
@@ -5276,11 +5281,17 @@ function applyTheme(theme) {
     let surface = getComputedStyle(document.documentElement)
         .getPropertyValue('--md-sys-color-surface').trim();
     if (surface) {
-        document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
-        let meta = document.createElement('meta');
-        meta.name = 'theme-color';
-        meta.content = surface;
-        document.head.appendChild(meta);
+        let meta = document.getElementById('themeColorMeta');
+        if (!meta) {
+            // Статические media-варианты нужны до запуска скрипта; дальше
+            // цветом управляет выбор пользователя, и они только мешают.
+            document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+            meta = document.createElement('meta');
+            meta.id = 'themeColorMeta';
+            meta.name = 'theme-color';
+            document.head.appendChild(meta);
+        }
+        if (meta.content !== surface) meta.content = surface;
     }
     try { localStorage.setItem('greek_theme', theme); } catch(e) {}
 }
@@ -5304,10 +5315,18 @@ function initTheme() {
 // ============================================================
 let allVocabCache = null;
 
+// Урок 1 — это названия букв (ἄλφα, βῆτα…), а не лексика: в словарь он не идёт.
+// Со второго урока начинаются настоящие слова — артикли и предлоги.
+const VOCAB_FIRST_LESSON = 2;
+
 function buildAllVocabCache() {
     let entries = [];
     let seen = new Set();
-    for (let l = 3; l <= 10; l++) {
+    let lessons = Object.keys(LESSONS_DATA)
+        .map(Number)
+        .filter(n => n >= VOCAB_FIRST_LESSON)
+        .sort((a, b) => a - b);
+    for (let l of lessons) {
         let data = getLessonData(l);
         if (!data || !data.vocabulary) continue;
         data.vocabulary.forEach(item => {
@@ -5446,6 +5465,16 @@ window.addEventListener('scroll', function () {
 // Индикатор вкладок пересчитывается после загрузки шрифтов и при ресайзе
 window.addEventListener('resize', moveTabIndicator);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveTabIndicator);
+
+// Офлайн-режим. Регистрируем после load, чтобы не соперничать за канал
+// с разметкой и шрифтами; file:// и старые браузеры просто пропускают этот блок.
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {
+            // Офлайн — приятное дополнение, а не условие работы: молча живём без него.
+        });
+    });
+}
 
 // Клавиатурная активация слов молитвы (они не <button>, но интерактивны)
 document.addEventListener('keydown', function (e) {

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Древнегреческий учебник">
+    <rect width="512" height="512" rx="112" fill="#1A73E8"/>
+    <!-- Ω — прописная. Базовая линия опущена под высоту прописных (~0.7em),
+         иначе буква висит выше центра плитки. -->
+    <text x="256" y="360" text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', 'Noto Serif', serif"
+          font-size="300" fill="#FFFFFF">Ω</text>
+</svg>
