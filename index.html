@@ -3694,7 +3694,7 @@ let allVocabCache = null;
 function buildAllVocabCache() {
     let entries = [];
     let seen = new Set();
-    for (let l = 1; l <= 10; l++) {
+    for (let l = 3; l <= 10; l++) {
         let data = getLessonData(l);
         if (!data || !data.vocabulary) continue;
         data.vocabulary.forEach(item => {
