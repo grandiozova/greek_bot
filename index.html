@@ -3448,7 +3448,7 @@ function renderPrayerText() {
         // Строка с греческими словами (кликабельными)
         html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;padding:6px 0;border-bottom:1px solid #eee;">`;
         verse.words.forEach((word, wordIdx) => {
-            html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" style="cursor:pointer;background:#ede7e0;padding:2px 8px;border-radius:4px;font-size:18px;transition:0.1s;" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
+            html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" style="cursor:pointer;background:var(--chip-bg);padding:2px 8px;border-radius:4px;font-size:18px;"transition:0.1s;" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
         });
         html += `</div>`;
         // Русский перевод
