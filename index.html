@@ -3549,6 +3549,29 @@ function shuffle(a) {
     return c;
 }
 
+// Экранирование текста, попадающего в innerHTML.
+// Нужно всюду, где в разметку идёт ответ пользователя — это произвольная строка.
+function escHtml(v) {
+    return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Экранирование аргумента для инлайнового onclick="f('…')".
+// Греческие формы с элизией (παρ', δι', ὑπ') иначе рвут литерал и кнопка молчит.
+function escArg(v) {
+    return escHtml(String(v == null ? '' : v).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+}
+
+// Переход к следующему вопросу отложен на 1.2–1.5 с. Таймер всегда один:
+// иначе уход с экрана оставляет его висеть и состояние уезжает вслепую.
+let pendingAdvance = null;
+function scheduleAdvance(fn, ms) {
+    clearTimeout(pendingAdvance);
+    pendingAdvance = setTimeout(fn, ms);
+}
+function cancelAdvance() { clearTimeout(pendingAdvance); pendingAdvance = null; }
+
 function getLessonData(l) { return LESSONS_DATA[l]; }
 
 function getExercises(l, t) {
@@ -3557,18 +3580,62 @@ function getExercises(l, t) {
     return d.exercises[t] || [];
 }
 
+// Сколько ошибок храним на урок. Без предела журнал растёт до квоты localStorage,
+// и тогда падает уже любое сохранение прогресса.
+const MAX_ERRORS_PER_LESSON = 200;
+
+function toCount(v) {
+    let n = Number(v);
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+}
+
 function loadStats() {
+    let p = null;
     try {
         let d = localStorage.getItem('greek_stats');
-        if (d) {
-            let p = JSON.parse(d);
-            stats.totalCorrect = p.totalCorrect || 0;
-            stats.totalWrong = p.totalWrong || 0;
-            stats.errors = p.errors || {};
+        if (d) p = JSON.parse(d);
+    } catch (e) { p = null; }
+    if (!p || typeof p !== 'object') return;
+    stats.totalCorrect = toCount(p.totalCorrect);
+    stats.totalWrong = toCount(p.totalWrong);
+    // Хранилище правит кто угодно (и прошлые версии приложения) — форму проверяем.
+    stats.errors = {};
+    if (p.errors && typeof p.errors === 'object') {
+        for (let k in p.errors) {
+            let list = p.errors[k];
+            if (!Array.isArray(list)) continue;
+            stats.errors[k] = list
+                .filter(e => e && typeof e === 'object')
+                .slice(-MAX_ERRORS_PER_LESSON)
+                .map(e => ({
+                    word: String(e.word == null ? '' : e.word),
+                    correct: String(e.correct == null ? '' : e.correct),
+                    your: String(e.your == null ? '' : e.your)
+                }));
         }
-    } catch(e) {}
+    }
 }
-function saveStats() { localStorage.setItem('greek_stats', JSON.stringify(stats)); }
+
+function recordError(key, entry) {
+    let list = stats.errors[key];
+    if (!Array.isArray(list)) list = stats.errors[key] = [];
+    list.push(entry);
+    if (list.length > MAX_ERRORS_PER_LESSON) list.splice(0, list.length - MAX_ERRORS_PER_LESSON);
+}
+
+// Приватный режим и переполнение квоты бросают из setItem. Прогресс — не то,
+// ради чего стоит ронять текущий ответ, поэтому пишем «по возможности».
+let storageWarned = false;
+function saveStats() {
+    try {
+        localStorage.setItem('greek_stats', JSON.stringify(stats));
+    } catch (e) {
+        if (!storageWarned) {
+            storageWarned = true;
+            showToast('Прогресс не сохраняется: браузер блокирует хранилище', 'warning');
+        }
+    }
+}
 
 // ============================================================
 // M3 SHELL: top app bar, navigation bar, FAB
@@ -3607,6 +3674,8 @@ const FAB_CONFIG = {
 };
 
 function showSection(id) {
+    // Уходя с экрана, гасим отложенный переход к следующему вопросу.
+    cancelAdvance();
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     let t = document.getElementById(id);
     if (t) t.classList.add('active');
@@ -3919,8 +3988,7 @@ function allFlashcardAnswer(know) {
     } else {
         stats.totalWrong++;
         var w = s.words[s.index];
-        if (!stats.errors['all']) stats.errors['all'] = [];
-        stats.errors['all'].push({ word: w.greek, correct: w.translation, your: 'не знал' });
+        recordError('all', { word: w.greek, correct: w.translation, your: 'не знал' });
     }
     saveStats();
     s.index++;
@@ -4319,7 +4387,7 @@ function showExercise() {
         let wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
         html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <span class="greek">' + wordDisplay + '</span></div><div class="options options--greek">';
         let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
 } else if (s.type === 'translate_greek_to_russian') {
     let idx = s.index;
@@ -4327,34 +4395,34 @@ function showExercise() {
 } else if (s.type === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
         html += '<div class="question">Переведите на греческий</div><div class="md-prompt-ru">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
-        for (let w of words) html += '<span class="chip" onclick="pickWord(\'' + w + '\')">' + w + '</span>';
+        for (let w of words) html += '<span class="chip" onclick="pickWord(\'' + escArg(w) + '\')">' + w + '</span>';
         html += '</div><div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationRu()"><span class="msym">check</span>Готово</button><button class="menu-btn text" onclick="clearChosen()"><span class="msym">undo</span>Очистить</button></div>';
         window._trans_ru = q;
         window._chosen = [];
     } else if (s.type === 'case_number') {
         html += '<div class="question">Определите падеж и число для формы: <span class="greek">' + q.form + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'agreement') {
         html += '<div class="question">Вставьте прилагательное <span class="greek">' + q.adjective + '</span> в правильной форме:<br><span class="greek">' + q.article + ' ____ ' + q.noun + '</span></div><div class="options options--greek">';
         let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'attribute_vs_predicate') {
         html += '<div class="question">Определите, атрибутив или предикатив:<br><span class="greek">' + q.phrase + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'substantivation') {
         html += '<div class="question">Что означает:<br><span class="greek">' + q.phrase + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'article_fill') {
         html += '<div class="question">Вставьте правильную форму артикля:<br><span class="greek">____ ' + q.noun + '</span></div><div class="options options--greek">';
         let opts = shuffle([q.correct_article].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct_article + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct_article) + '\')">' + o + '</button>';
         html += '</div>';
     } else {
         html += '<p>Тип упражнения не поддерживается.</p>';
@@ -4370,13 +4438,12 @@ function answerOpt(sel, corr) {
     if (ok) { stats.totalCorrect++; exerciseState.correct++; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
         let q = exerciseState.questions[exerciseState.index];
-        stats.errors[lesson].push({ word: q.word || q.greek || 'вопрос', correct: corr, your: sel });
+        recordError(lesson, { word: q.word || q.greek || 'вопрос', correct: corr, your: sel });
     }
     saveStats();
     exerciseState.index++;
-    setTimeout(showExercise, 1200);
+    scheduleAdvance(showExercise, 1200);
 }
 
 function checkTranslation() {
@@ -4393,13 +4460,12 @@ function checkTranslation() {
     if (ok) { stats.totalCorrect++; exerciseState.correct++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
+        recordError(lesson, { word: q.greek, correct: q.keywords.join(', '), your: ans });
         container.innerHTML = '<div class="feedback fail"><span>Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</span></div>';
     }
     saveStats();
     exerciseState.index++;
-    setTimeout(showExercise, 1500);
+    scheduleAdvance(showExercise, 1500);
 }
 
 function pickWord(w) {
@@ -4438,8 +4504,7 @@ function checkTranslationRu() {
     } else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
+        recordError(lesson, { word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
         container.innerHTML = `
             <div class="feedback fail"><span>Неверно. Правильный порядок: <strong>${corr.join(' ')}</strong></span></div>
             <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
@@ -4495,8 +4560,7 @@ function flashAnswer(know) {
         stats.totalWrong++;
         let lesson = currentLesson;
         let w = s.words[s.index];
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: w.greek, correct: w.translation, your: 'не знал' });
+        recordError(lesson, { word: w.greek, correct: w.translation, your: 'не знал' });
     }
     saveStats();
     s.index++;
@@ -4569,7 +4633,7 @@ function showTest() {
         let corr = q.correct || q.correct_article;
         let opts = shuffle([corr].concat(q.distractors));
         html += '<div class="question">' + text + '</div><div class="options' + (greekOpts ? ' options--greek' : '') + '">';
-        for (let o of opts) html += '<button class="option-btn" onclick="testAnswer(\'' + o + '\',\'' + corr + '\')">' + o + '</button>';
+        for (let o of opts) html += '<button class="option-btn" onclick="testAnswer(\'' + escArg(o) + '\',\'' + escArg(corr) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (t === 'translate_greek_to_russian') {
         html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="testTransInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){testTranslation();}"><button onclick="testTranslation()"><span class="msym">check</span>Проверить</button></div>';
@@ -4578,7 +4642,7 @@ function showTest() {
         let words = shuffle(q.all_words);
         html += '<div class="question">Переведите на греческий</div><div class="md-prompt-ru">' + q.russian + '</div>';
         html += '<div class="build-area" id="testBuildArea"></div><div class="word-bank" id="testWordBank">';
-        for (let w of words) html += '<span class="chip" onclick="testPickWord(\'' + w + '\')">' + w + '</span>';
+        for (let w of words) html += '<span class="chip" onclick="testPickWord(\'' + escArg(w) + '\')">' + w + '</span>';
         html += '</div><div class="md-button-row"><button class="menu-btn primary" onclick="testTranslationRu()"><span class="msym">check</span>Готово</button><button class="menu-btn text" onclick="testClearChosen()"><span class="msym">undo</span>Очистить</button></div>';
         window._test_ru = q;
         window._test_chosen = [];
@@ -4597,16 +4661,15 @@ function testAnswer(sel, corr) {
     else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
         let q = testState.questions[testState.index];
-        stats.errors[lesson].push({ word: q.word || q.greek || 'вопрос', correct: corr, your: sel });
+        recordError(lesson, { word: q.word || q.greek || 'вопрос', correct: corr, your: sel });
     }
     stats.totalCorrect += ok ? 1 : 0;
     saveStats();
     let container = document.getElementById('testContainer');
     if (ok) container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>';
     else container.innerHTML = '<div class="feedback fail"><span>Неверно. Правильный ответ: <strong>' + corr + '</strong></span></div>';
-    setTimeout(() => { testState.index++; showTest(); }, 1500);
+    scheduleAdvance(() => { testState.index++; showTest(); }, 1500);
 }
 
 function testTranslation() {
@@ -4624,8 +4687,7 @@ function testTranslation() {
     if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
+        recordError(lesson, { word: q.greek, correct: q.keywords.join(', '), your: ans });
         container.innerHTML = '<div class="feedback fail"><span>Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</span></div>';
     }
     saveStats();
@@ -4663,8 +4725,7 @@ function testTranslationRu() {
     if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
+        recordError(lesson, { word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
         container.innerHTML = '<div class="feedback fail"><span>Неверно. Правильно: <strong>' + corr.join(' ') + '</strong></span></div>';
     }
     saveStats();
@@ -4723,10 +4784,12 @@ function showErrors() {
     let html = '';
     for (let lesson of Object.keys(err)) {
         let items = err[lesson];
-        html += '<div class="md-subhead">Урок ' + lesson + '</div>';
+        if (!Array.isArray(items) || items.length === 0) continue;
+        html += '<div class="md-subhead">' + (lesson === 'all' ? 'Все слова' : 'Урок ' + escHtml(lesson)) + '</div>';
         for (let e of items) {
-            html += '<div class="error-item"><span class="msym sm">error</span><span>' + e.word +
-                ' → правильно: <strong>' + e.correct + '</strong><br>ваш ответ: ' + e.your + '</span></div>';
+            // e.your — то, что напечатал пользователь; в разметку только экранированным
+            html += '<div class="error-item"><span class="msym sm">error</span><span>' + escHtml(e.word) +
+                ' → правильно: <strong>' + escHtml(e.correct) + '</strong><br>ваш ответ: ' + escHtml(e.your) + '</span></div>';
         }
     }
     html += '<button class="clear-btn" onclick="clearErrors()"><span class="msym sm">delete_sweep</span>Очистить ошибки</button>';
@@ -4857,7 +4920,7 @@ function showTranslation() {
     html += '<div class="build-area" id="transBuildArea"></div>';
     html += '<div class="word-bank" id="transWordBank">';
     for (let w of allWords) {
-        html += '<span class="chip" onclick="transPickWord(\'' + w.replace(/'/g, "\\'") + '\')">' + w + '</span>';
+        html += '<span class="chip" onclick="transPickWord(\'' + escArg(w) + '\')">' + w + '</span>';
     }
     html += '</div>';
     html += '<div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationBuild()"><span class="msym">check</span>Проверить</button>';
@@ -4910,8 +4973,7 @@ function checkExerciseTranslation(index) {
     } else {
         stats.totalWrong++;
         let lesson = currentLesson;
-        if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
+        recordError(lesson, { word: q.greek, correct: q.keywords.join(', '), your: ans });
         container.innerHTML = `
             <div class="feedback fail"><span>Неверно. Ключевые слова: <strong>${q.keywords.join(', ')}</strong></span></div>
             <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
@@ -5145,7 +5207,7 @@ function prayerFillAnswer(selected, correct) {
     }
     saveStats();
     state.index++;
-    setTimeout(showPrayerExerciseQuestion, 1200);
+    scheduleAdvance(showPrayerExerciseQuestion, 1200);
 }
 
 function prayerPickWord(w) {
@@ -5184,7 +5246,7 @@ function prayerCheckTranslate() {
     }
     saveStats();
     state.index++;
-    setTimeout(showPrayerExerciseQuestion, 1500);
+    scheduleAdvance(showPrayerExerciseQuestion, 1500);
 }    
     
 // ============================================================
@@ -5289,28 +5351,37 @@ function renderVocabEntries(entries) {
         byType[e.type].push(e);
     });
     let order = ['noun','verb','adjective','preposition','pronoun','adverb','conjunction','other'];
-    let html = '';
+    let parts = [];
     order.forEach(type => {
         if (!byType[type] || byType[type].length === 0) return;
-        html += '<div class="vocab-section"><h4>' + (TYPE_LABELS[type] || type) + '</h4>';
+        parts.push('<div class="vocab-section"><h4>', TYPE_LABELS[type] || type, '</h4>');
         byType[type].forEach(e => {
             let art = e.article ? e.article + ' ' : '';
-            html += '<div class="word-item"><div class="word-row"><strong>' + art + e.greek + '</strong><span>' + e.translation + '</span></div></div>';
+            parts.push('<div class="word-item"><div class="word-row"><strong>', art, e.greek,
+                '</strong><span>', e.translation, '</span></div></div>');
         });
-        html += '</div>';
+        parts.push('</div>');
     });
+    let html = parts.join('');
     container.innerHTML = html || emptyState('search_off', 'Ничего не найдено', 'Попробуйте другое слово или его часть');
 }
 function showAllVocab() {
     showSection('allVocabSection');
-    allVocabCache = buildAllVocabCache();
+    if (!allVocabCache) allVocabCache = buildAllVocabCache();
     let input = document.getElementById('vocabSearchInput');
     if (input) input.value = '';
     let clearBtn = document.getElementById('vocabSearchClear');
     if (clearBtn) clearBtn.classList.remove('show');
     renderVocabEntries(allVocabCache);
 }
+// oninput летит на каждый символ; перерисовку словаря сводим к одной на кадр
+let vocabFilterFrame = null;
 function filterAllVocab() {
+    if (vocabFilterFrame) return;
+    vocabFilterFrame = requestAnimationFrame(() => { vocabFilterFrame = null; applyVocabFilter(); });
+}
+
+function applyVocabFilter() {
     let input = document.getElementById('vocabSearchInput');
     let clearBtn = document.getElementById('vocabSearchClear');
     if (!input) return;
@@ -5334,7 +5405,8 @@ function clearVocabSearch() {
     if (input) input.value = '';
     let clearBtn = document.getElementById('vocabSearchClear');
     if (clearBtn) clearBtn.classList.remove('show');
-    renderVocabEntries(allVocabCache || buildAllVocabCache());
+    if (!allVocabCache) allVocabCache = buildAllVocabCache();
+    renderVocabEntries(allVocabCache);
 }
     function normalizeTranslationData() {
     for (let key in LESSONS_DATA) {
@@ -5360,9 +5432,15 @@ renderMainMenu();
 updateShell();
 
 // Top app bar получает контейнерный тон при прокрутке (поведение M3 «on scroll»)
+// Класс на app bar переключаем не чаще кадра — иначе запись в DOM на каждый тик скролла
+let scrollFrame = null;
 window.addEventListener('scroll', function () {
-    let bar = document.getElementById('topAppBar');
-    if (bar) bar.classList.toggle('scrolled', window.scrollY > 4);
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(function () {
+        scrollFrame = null;
+        let bar = document.getElementById('topAppBar');
+        if (bar) bar.classList.toggle('scrolled', window.scrollY > 4);
+    });
 }, { passive: true });
 
 // Индикатор вкладок пересчитывается после загрузки шрифтов и при ресайзе
@@ -5377,12 +5455,6 @@ document.addEventListener('keydown', function (e) {
     }
 });
     
-</script>
-<script>
-    // Принудительно обновляем меню через секунду после загрузки
-    setTimeout(function() {
-        renderMainMenu();
-    }, 500);
 </script>
 </body>
 </html>
