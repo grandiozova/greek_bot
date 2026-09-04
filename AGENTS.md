@@ -90,7 +90,15 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 - Greek: **Noto Serif** (`--md-ref-typeface-greek`), applied *only* where Greek is the object of study — headwords, flashcards, chips and tokens, prayer text, and Greek answer options via `.options--greek`. Russian UI text never gets the serif.
 - Mark inline Greek inside Russian sentences with `<span class="greek">`, not `<b>`.
 - Icons are **Material Symbols Rounded** (`<span class="msym">name</span>`). No emoji in the interface.
-- The icon font is **subsetted** via the `icon_names=` parameter on the Google Fonts `<link>` in `<head>`. The full family is 5.4 MB and loads with `display=block`, so the whole UI sits iconless until it arrives; the subset is 68 KB. **Adding an icon means adding its ligature name to that list** — otherwise it renders as raw text (`menu_book`) instead of a glyph. Sweep the rendered DOM for `.msym` text to regenerate the list rather than editing it by hand.
+- The icon font is **subsetted** via the `icon_names=` parameter on the Google Fonts `<link>` in `<head>`. The full family is 5.4 MB and loads with `display=block`, so the whole UI sits iconless until it arrives; the subset is ~76 KB for the 50 icons currently used. **Adding an icon means adding its ligature name to that list** — otherwise it renders as raw text (`menu_book`) instead of a glyph. Sweep the rendered DOM for `.msym` text to regenerate the list rather than editing it by hand.
+
+## Settings screen
+
+`settingsSection` is the fifth navigation destination and the home for anything that is not study content: theme, data management, licenses.
+
+- **Theme** is a three-way choice — `system` / `light` / `dark` — stored in `greek_theme` as the *mode*, never as the resolved colour. Storing the resolved value is what breaks "follow the system": the app would pin whatever the OS happened to be on first run. `system` stays live via a `matchMedia` listener. A value written by an older build (`light`/`dark`) is still read as a valid manual choice.
+- **Licenses** come from the `LICENSES` array; add an entry when you add a dependency. The course material is listed last because it is a copyright statement, not an open licence.
+- The nav bar now holds **five** destinations — the M3 maximum. A sixth needs a different pattern, not a sixth item.
 
 ## Offline shell
 

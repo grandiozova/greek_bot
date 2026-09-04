@@ -13,7 +13,7 @@
     <!-- Material Symbols только теми иконками, что реально используются (icon_names).
          Полный набор — 5.4 МБ, и при display=block интерфейс стоит без иконок, пока он не придёт.
          Добавляя новую иконку в разметку или в JS, допишите её имя в этот список. -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=abc,account_tree,arrow_back,arrow_forward,balance,cancel,check,check_circle,chevron_right,close,dark_mode,delete,delete_sweep,dictionary,edit,edit_note,edit_off,error,g_translate,help,home,inbox,info,insights,light_mode,link,local_library,menu_book,play_arrow,push_pin,quiz,restart_alt,resume,rocket_launch,rule,school,search,search_off,settings_backup_restore,style,target,task_alt,translate,undo,visibility,warning&display=block" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=abc,account_tree,arrow_back,arrow_forward,balance,brightness_auto,cancel,check,check_circle,chevron_right,close,contrast,dark_mode,delete,delete_sweep,dictionary,edit,edit_note,edit_off,error,g_translate,help,home,inbox,info,insights,light_mode,link,local_library,menu_book,open_in_new,play_arrow,push_pin,quiz,restart_alt,resume,rocket_launch,rule,school,search,search_off,settings,settings_backup_restore,style,target,task_alt,translate,undo,visibility,warning&display=block" rel="stylesheet">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
@@ -1688,9 +1688,91 @@ a { color: var(--md-sys-color-primary); }
     .md-fab { padding: 0 16px; width: 56px; justify-content: center; }
     .word-details td, .word-details th,
     .grammar-text td, .grammar-text th { padding: 8px 6px; font-size: 0.8125rem; }
-    .md-nav-item__label { font-size: 0.6875rem; }
+    .md-nav-item__label { font-size: 0.6875rem; letter-spacing: 0.0125rem; }
+    .md-nav-item__indicator { width: 56px; }
     .tab-bar { margin: 0 -12px 16px; }
 }
+
+/* ============================================================
+   НАСТРОЙКИ: segmented button (выбор темы) и список лицензий
+   ============================================================ */
+.md-segmented {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    overflow: hidden;
+}
+.md-segmented button {
+    flex: 1;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0 8px;
+    border: 0;
+    border-left: 1px solid var(--md-sys-color-outline);
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    isolation: isolate;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+}
+.md-segmented button:first-child { border-left: 0; }
+.md-segmented button { white-space: nowrap; }
+.md-segmented button .msym { font-size: 18px; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
+.md-segmented button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-on-surface);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+.md-segmented button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.md-segmented button:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.md-segmented button[aria-checked="true"] {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+.md-segmented button[aria-checked="true"] .msym { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
+
+.settings-hint {
+    margin: 12px 0 0;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.license-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.license-item:last-child { border-bottom: 0; }
+.license-item__name { font-weight: 500; color: var(--md-sys-color-on-surface); }
+.license-item__terms {
+    margin-top: 2px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.license-item a {
+    color: var(--md-sys-color-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.license-item a:hover { text-decoration: underline; }
+.license-item a .msym { font-size: 16px; }
 
 /* Широкое окно (expanded): navigation bar превращается в navigation rail */
 @media (min-width: 905px) {
@@ -1738,9 +1820,6 @@ a { color: var(--md-sys-color-primary); }
 <header class="md-top-app-bar" id="topAppBar">
     <div class="md-top-app-bar__leading" id="appBarLeading"></div>
     <h1 class="md-top-app-bar__title" id="appBarTitle">Древнегреческий</h1>
-    <button class="md-icon-button" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Сменить тему" title="Сменить тему">
-        <span class="msym" id="themeToggleIcon">dark_mode</span>
-    </button>
 </header>
 
 <main class="md-content" id="mdContent">
@@ -1817,12 +1896,39 @@ a { color: var(--md-sys-color-primary); }
         <h3><span class="msym">insights</span>Ваш прогресс</h3>
         <div id="statsContent"></div>
     </div>
+</div>
+
+<!-- ============ НАСТРОЙКИ ============ -->
+<div id="settingsSection" class="section">
+    <div class="card">
+        <h3><span class="msym">contrast</span>Оформление</h3>
+        <div class="md-segmented" id="themeSegmented" role="radiogroup" aria-label="Тема оформления">
+            <button type="button" role="radio" data-theme-mode="system" onclick="setThemeMode('system')" aria-checked="true">
+                <span class="msym">brightness_auto</span>Системная
+            </button>
+            <button type="button" role="radio" data-theme-mode="light" onclick="setThemeMode('light')" aria-checked="false">
+                <span class="msym">light_mode</span>Светлая
+            </button>
+            <button type="button" role="radio" data-theme-mode="dark" onclick="setThemeMode('dark')" aria-checked="false">
+                <span class="msym">dark_mode</span>Тёмная
+            </button>
+        </div>
+        <p class="md-body-medium settings-hint" id="themeHint"></p>
+    </div>
+
     <div class="card">
         <h3><span class="msym">settings_backup_restore</span>Управление данными</h3>
-        <p class="md-body-medium">Сброс удалит статистику ответов и список ошибок. Отменить это действие нельзя.</p>
+        <p class="md-body-medium">Прогресс хранится только в этом браузере и никуда не отправляется.
+            Сброс удалит статистику ответов и список ошибок. Отменить это действие нельзя.</p>
         <div class="md-button-row">
             <button class="menu-btn danger-outlined" onclick="clearAllProgress()"><span class="msym">delete_sweep</span>Сбросить прогресс</button>
         </div>
+    </div>
+
+    <div class="card">
+        <h3><span class="msym">balance</span>Лицензии</h3>
+        <p class="md-body-medium">Приложение собрано из открытых компонентов. Ниже — что и на каких условиях используется.</p>
+        <div id="licenseList"></div>
     </div>
 </div>
 
@@ -1874,6 +1980,10 @@ a { color: var(--md-sys-color-primary); }
     <button class="md-nav-item" data-dest="progress" onclick="navigateTo('progress')">
         <span class="md-nav-item__indicator"><span class="msym">insights</span></span>
         <span class="md-nav-item__label">Прогресс</span>
+    </button>
+    <button class="md-nav-item" data-dest="settings" onclick="navigateTo('settings')">
+        <span class="md-nav-item__indicator"><span class="msym">settings</span></span>
+        <span class="md-nav-item__label">Настройки</span>
     </button>
 </nav>
 
@@ -3659,14 +3769,16 @@ const SCREEN_META = {
     lessonSection:        { title: 'Урок',            dest: 'lessons',  back: 'lessons' },
     testSection:          { title: 'Тест',            dest: null,       back: 'test' },
     errorsSection:        { title: 'Ошибки',          dest: 'progress', back: 'progress' },
-    prayerSection:        { title: 'Отче наш',        dest: 'lessons',  back: 'lessons' }
+    prayerSection:        { title: 'Отче наш',        dest: 'lessons',  back: 'lessons' },
+    settingsSection:      { title: 'Настройки',       dest: 'settings', back: null }
 };
 
 const DEST_SECTION = {
     lessons:  'mainMenu',
     vocab:    'allVocabSection',
     cards:    'allFlashcardsSection',
-    progress: 'statsSection'
+    progress: 'statsSection',
+    settings: 'settingsSection'
 };
 
 // Контекстный FAB — главное действие текущего экрана
@@ -3748,6 +3860,7 @@ function navigateTo(dest) {
     if (!id) return;
     if (dest === 'lessons') { goToMain(); return; }
     if (dest === 'progress') { showStats(); return; }
+    if (dest === 'settings') { showSettings(); return; }
     if (dest === 'vocab') {
         // возвращаясь в словарь, сохраняем набранный запрос
         if (allVocabCache) { showSection(id); filterAllVocab(); }
@@ -4828,7 +4941,8 @@ function clearAllProgress() {
         if (!ok) return;
         stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
         saveStats();
-        showStats();
+        // Кнопка есть в настройках; уводить пользователя с экрана не за что.
+        if (currentSectionId === 'statsSection') showStats();
         showToast('Прогресс сброшен', 'restart_alt');
     });
 }
@@ -5270,12 +5384,42 @@ document.addEventListener('click', function(e) {
         // ============================================================
 // ТЁМНАЯ / СВЕТЛАЯ ТЕМА
 // ============================================================
+// 'system' хранится как выбор, а не как вычисленная тема: иначе смена темы
+// в ОС перестанет доходить до приложения после первого же запуска.
+const THEME_MODES = ['system', 'light', 'dark'];
+let themeMode = 'system';
+
+const darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+function systemTheme() { return darkQuery && darkQuery.matches ? 'dark' : 'light'; }
+function resolvedTheme() { return themeMode === 'system' ? systemTheme() : themeMode; }
+
+function setThemeMode(mode) {
+    if (THEME_MODES.indexOf(mode) === -1) mode = 'system';
+    themeMode = mode;
+    try { localStorage.setItem('greek_theme', mode); } catch (e) {}
+    applyTheme(resolvedTheme());
+    syncThemeControls();
+}
+
+// Подсветка выбранного режима и подпись под ним.
+function syncThemeControls() {
+    let group = document.getElementById('themeSegmented');
+    if (group) {
+        group.querySelectorAll('[data-theme-mode]').forEach(b => {
+            b.setAttribute('aria-checked', b.getAttribute('data-theme-mode') === themeMode ? 'true' : 'false');
+        });
+    }
+    let hint = document.getElementById('themeHint');
+    if (hint) {
+        hint.textContent = themeMode === 'system'
+            ? 'Тема следует за настройкой системы: сейчас ' + (resolvedTheme() === 'dark' ? 'тёмная' : 'светлая') + '.'
+            : 'Тема выбрана вручную и не меняется вместе с системной.';
+    }
+}
+
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    let icon = document.getElementById('themeToggleIcon');
-    if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-    let btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.setAttribute('aria-label', theme === 'dark' ? 'Светлая тема' : 'Тёмная тема');
     // Строка состояния браузера следует за поверхностью M3.
     // Цвет читаем из токена, а не дублируем — иначе он разъедется с палитрой.
     let surface = getComputedStyle(document.documentElement)
@@ -5293,21 +5437,84 @@ function applyTheme(theme) {
         }
         if (meta.content !== surface) meta.content = surface;
     }
-    try { localStorage.setItem('greek_theme', theme); } catch(e) {}
-}
-
-function toggleTheme() {
-    let current = document.documentElement.getAttribute('data-theme') || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
 function initTheme() {
     let saved = null;
-    try { saved = localStorage.getItem('greek_theme'); } catch(e) {}
-    if (!saved) {
-        saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    try { saved = localStorage.getItem('greek_theme'); } catch (e) {}
+    // До появления настроек здесь лежала уже вычисленная тема ('light'/'dark') —
+    // такое значение остаётся валидным выбором «вручную».
+    themeMode = THEME_MODES.indexOf(saved) !== -1 ? saved : 'system';
+    applyTheme(resolvedTheme());
+    syncThemeControls();
+    // Пока выбран режим «как в системе», следим за переключением темы в ОС.
+    if (darkQuery) {
+        let onChange = () => { if (themeMode === 'system') { applyTheme(resolvedTheme()); syncThemeControls(); } };
+        if (darkQuery.addEventListener) darkQuery.addEventListener('change', onChange);
+        else if (darkQuery.addListener) darkQuery.addListener(onChange);
     }
-    applyTheme(saved);
+}
+
+// ============================================================
+// НАСТРОЙКИ
+// ============================================================
+
+// Лицензии всего, из чего собрано приложение. Учебник — не открытая лицензия,
+// а отдельные права правообладателя, поэтому он вынесен последней строкой.
+const LICENSES = [
+    {
+        name: 'Код приложения',
+        terms: 'MIT © 2026 grandiozova',
+        url: 'https://github.com/grandiozova/greek_bot/blob/main/LICENSE'
+    },
+    {
+        name: 'Noto Sans, Noto Serif',
+        terms: 'SIL Open Font License 1.1 © Google',
+        url: 'https://openfontlicense.org/'
+    },
+    {
+        name: 'Material Symbols Rounded',
+        terms: 'Apache License 2.0 © Google',
+        url: 'https://www.apache.org/licenses/LICENSE-2.0'
+    },
+    {
+        name: 'Material Design 3',
+        terms: 'Apache License 2.0 © Google',
+        url: 'https://m3.material.io/'
+    },
+    {
+        name: 'Учебные материалы',
+        terms: 'Дж. Грешем Мейчен. Учебник греческого языка Нового Завета. ' +
+               'Перевод А. А. Руденко, научный редактор Е. Б. Смагина. ' +
+               'Москва: Российское Библейское общество, 2024. ISBN 978-5-85524-292-8. ' +
+               'Оригинал: J. Gresham Machen. New Testament Greek for Beginners, 1923. ' +
+               'Права на русскоязычную версию принадлежат Российскому Библейскому обществу. ' +
+               'Проект некоммерческий и образовательный.',
+        url: null
+    }
+];
+
+function renderLicenses() {
+    let box = document.getElementById('licenseList');
+    if (!box) return;
+    let parts = [];
+    for (let l of LICENSES) {
+        parts.push('<div class="license-item">',
+            '<div class="license-item__name">', escHtml(l.name), '</div>',
+            '<div class="license-item__terms">', escHtml(l.terms));
+        if (l.url) {
+            parts.push(' <a href="', escHtml(l.url), '" target="_blank" rel="noopener noreferrer">',
+                'текст лицензии<span class="msym">open_in_new</span></a>');
+        }
+        parts.push('</div></div>');
+    }
+    box.innerHTML = parts.join('');
+}
+
+function showSettings() {
+    showSection('settingsSection');
+    syncThemeControls();
+    renderLicenses();
 }
 
 // ============================================================
