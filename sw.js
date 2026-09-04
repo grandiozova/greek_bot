@@ -2,18 +2,40 @@
  *
  * Стратегии:
  *   навигация      — сеть, при неудаче кэш (обновление доходит сразу, офлайн работает)
- *   свои файлы     — кэш, параллельно обновляем (мгновенно и не устаревает)
+ *   свои файлы     — сеть, при неудаче кэш (то же самое, и по той же причине)
  *   шрифты Google  — кэш, при промахе сеть (они версионированы в URL)
+ *
+ * Почему свои файлы больше не «кэш вперёд»: стили и данные лежат отдельными
+ * файлами, а index.html берётся из сети. Кэш вперёд отдал бы свежую разметку
+ * со вчерашним styles/*.css — рассинхрон, которого при одном файле быть не могло.
+ * Офлайн от этого не страдает: без сети fetch падает сразу и отвечает кэш.
  *
  * ВАЖНО: подняв CACHE_VERSION, вы гарантированно раздаёте новую версию —
  * старые кэши удаляются в activate.
  */
-const CACHE_VERSION = 'greek-v2';
+const CACHE_VERSION = 'greek-v3';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const FONT_CACHE = CACHE_VERSION + '-fonts';
 
 // Всё, что нужно для холодного старта без сети.
-const CORE_ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+// Приложение больше не один файл: без стилей и данных холодный старт покажет
+// голую разметку и пустые экраны, поэтому здесь перечислено всё, что грузит <head> и <body>.
+const CORE_ASSETS = [
+    './',
+    './index.html',
+    './manifest.webmanifest',
+    './icon.svg',
+    './styles/tokens.css',
+    './styles/base.css',
+    './styles/components.css',
+    './styles/screens.css',
+    './styles/dialogs.css',
+    './styles/layout.css',
+    './styles/settings.css',
+    './data/lessons.js',
+    './data/prayer.js',
+    './data/licenses.js'
+];
 
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
@@ -81,19 +103,20 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // --- свои файлы: кэш вперёд, обновление в фоне ---
+    // --- свои файлы: сеть вперёд, кэш как страховка ---
+    // Стили, данные и разметка обязаны быть из одной сборки: index.html идёт из
+    // сети, значит и остальное тоже, иначе получим свежую разметку со старым CSS.
     if (url.origin === self.location.origin) {
         event.respondWith(
-            caches.match(request).then(hit => {
-                const network = fetch(request).then(response => {
+            fetch(request)
+                .then(response => {
                     if (isCacheable(response)) {
                         const copy = response.clone();
                         caches.open(CORE_CACHE).then(c => c.put(request, copy));
                     }
                     return response;
-                }).catch(() => hit);
-                return hit || network;
-            })
+                })
+                .catch(() => caches.match(request).then(hit => hit || Response.error()))
         );
     }
 });

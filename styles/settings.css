@@ -1,0 +1,120 @@
+/* ============================================================
+   НАСТРОЙКИ: segmented button (выбор темы) и список лицензий
+   ============================================================ */
+.md-segmented {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    overflow: hidden;
+}
+.md-segmented button {
+    flex: 1;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0 8px;
+    border: 0;
+    border-left: 1px solid var(--md-sys-color-outline);
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    isolation: isolate;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+}
+.md-segmented button:first-child { border-left: 0; }
+.md-segmented button { white-space: nowrap; }
+.md-segmented button .msym { font-size: 18px; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
+.md-segmented button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-on-surface);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+.md-segmented button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.md-segmented button:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.md-segmented button[aria-checked="true"] {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+.md-segmented button[aria-checked="true"] .msym { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
+
+.settings-hint {
+    margin: 12px 0 0;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.license-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.license-item:last-child { border-bottom: 0; }
+.license-item__name { font-weight: 500; color: var(--md-sys-color-on-surface); }
+.license-item__terms {
+    margin-top: 2px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.license-item a {
+    color: var(--md-sys-color-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.license-item a:hover { text-decoration: underline; }
+.license-item a .msym { font-size: 16px; }
+
+/* Широкое окно (expanded): navigation bar превращается в navigation rail */
+@media (min-width: 905px) {
+    :root { --nav-bar-height: 0px; --rail-width: 88px; }
+    .app { padding: 16px 24px 0; }
+    .md-content { padding-left: var(--rail-width); padding-bottom: 88px; }
+    .md-top-app-bar { left: var(--rail-width); }
+    .md-nav-bar {
+        top: 0;
+        bottom: 0;
+        right: auto;
+        width: var(--rail-width);
+        height: 100%;
+        padding: 0;
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+        background: var(--md-sys-color-surface);
+        box-shadow: none;
+        z-index: 25;
+    }
+    .md-nav-item {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        padding: 0;
+    }
+    .md-snackbar { left: calc(50% + var(--rail-width) / 2); bottom: 24px; }
+    .md-fab { bottom: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

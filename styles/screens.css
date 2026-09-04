@@ -1,0 +1,522 @@
+/* ============================================================
+   ВОПРОС / ВАРИАНТЫ ОТВЕТА
+   ============================================================ */
+.question {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 16px;
+}
+.question b, .question .greek { font-weight: 600; }
+.question .greek { font-family: var(--md-ref-typeface-greek); }
+.md-prompt-strong {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--md-sys-color-on-surface);
+}
+.md-prompt-ru {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--md-sys-color-on-surface);
+}
+.options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin: 16px 0;
+}
+.option-btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 56px;
+    padding: 12px 20px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                border-radius var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+}
+.option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.option-btn:hover:not(:disabled)::before { opacity: var(--md-sys-state-hover-opacity); }
+.option-btn:active:not(:disabled) { border-radius: var(--md-sys-shape-corner-medium); }
+.options--greek .option-btn {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.0625rem;
+    letter-spacing: 0;
+}
+.option-btn:disabled { cursor: default; }
+.option-btn:disabled:not(.correct):not(.wrong) { opacity: 0.38; }
+.option-btn.correct {
+    background: var(--md-extended-color-success-container);
+    color: var(--md-extended-color-on-success-container);
+    border-color: transparent;
+    animation: md-answer-pop var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-emphasized);
+}
+.option-btn.wrong {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    border-color: transparent;
+    animation: md-answer-shake var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-standard);
+}
+@keyframes md-answer-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+@keyframes md-answer-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(2px); }
+}
+
+/* ============================================================
+   ОБРАТНАЯ СВЯЗЬ (результат ответа)
+   ============================================================ */
+.feedback {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    margin: 16px 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes md-feedback-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.feedback strong { font-family: var(--md-ref-typeface-greek); }
+.feedback.ok {
+    background: var(--md-extended-color-success-container);
+    color: var(--md-extended-color-on-success-container);
+}
+.feedback.fail {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+}
+.feedback::before {
+    font-family: 'Material Symbols Rounded';
+    font-size: 20px;
+    line-height: 1.25rem;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    flex-shrink: 0;
+}
+.feedback.ok::before { content: 'check_circle'; }
+.feedback.fail::before { content: 'cancel'; }
+
+/* индикатор прогресса упражнения */
+.md-progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+.progress-text, .md-progress-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface-variant);
+    white-space: nowrap;
+}
+.md-linear-progress {
+    flex: 1;
+    height: 4px;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-secondary-container);
+    overflow: hidden;
+}
+.md-linear-progress__bar {
+    height: 100%;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    transition: width var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized);
+}
+
+/* ============================================================
+   СПИСКИ СЛОВ
+   ============================================================ */
+.word-list { display: flex; flex-direction: column; }
+.word-item {
+    border-radius: var(--md-sys-shape-corner-medium);
+    overflow: hidden;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.word-item + .word-item { margin-top: 2px; }
+.word-item .word-row {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    padding: 8px 16px;
+    user-select: none;
+}
+.word-item.clickable .word-row { cursor: pointer; }
+.word-item.clickable .word-row::after {
+    content: 'expand_more';
+    font-family: 'Material Symbols Rounded';
+    font-size: 20px;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+.word-item.clickable.open .word-row::after { transform: rotate(180deg); }
+.word-item .word-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-on-surface);
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.word-item.clickable .word-row:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.word-item .word-row strong {
+    font-family: var(--md-ref-typeface-greek);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: var(--md-sys-color-on-surface);
+}
+.word-item .word-row > span {
+    /* перевод всегда прижат к правому краю, чтобы строка читалась как список */
+    margin-left: auto;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    color: var(--md-sys-color-on-surface-variant);
+    text-align: right;
+}
+.word-details {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    padding: 0 16px;
+    background: var(--md-sys-color-surface-container-high);
+    transition: max-height var(--md-sys-motion-duration-long1) var(--md-sys-motion-easing-emphasized),
+                padding var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized),
+                opacity var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.word-details.open {
+    max-height: 720px;
+    padding: 12px 16px 16px;
+    opacity: 1;
+}
+.vocab-section { margin-bottom: 8px; }
+.vocab-section h4 {
+    padding: 16px 16px 8px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    color: var(--md-sys-color-primary);
+}
+
+/* ============================================================
+   ТАБЛИЦЫ (склонения, грамматика)
+   ============================================================ */
+.md-table-scroll { overflow-x: auto; margin: 12px 0; }
+.word-details table, .grammar-text table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin: 8px 0;
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-medium);
+    overflow: hidden;
+}
+.word-details td, .word-details th,
+.grammar-text td, .grammar-text th {
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    padding: 10px 12px;
+    text-align: center;
+    color: var(--md-sys-color-on-surface);
+}
+.word-details th, .grammar-text th {
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+    text-transform: uppercase;
+}
+.word-details tr:last-child td, .grammar-text tr:last-child td { border-bottom: 0; }
+
+.grammar-text {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface);
+}
+.grammar-text b { color: var(--md-sys-color-on-surface); }
+.grammar-text > table { display: table; }
+
+/* ============================================================
+   КАРТОЧКИ ДЛЯ ЗАУЧИВАНИЯ (flashcards)
+   ============================================================ */
+.flashcard-area { text-align: center; padding: 8px 0; }
+.md-flashcard {
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    padding: 40px 24px;
+    margin: 8px 0 24px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: md-card-in var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes md-card-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.flashcard-word {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 2.8125rem;
+    line-height: 3.25rem;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface);
+    word-break: break-word;
+}
+.flashcard-translation {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: var(--md-sys-color-primary);
+    animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.flashcard-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.flashcard-buttons button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 48px;
+    padding: 12px 24px;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-radius var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+}
+.flashcard-buttons button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.flashcard-buttons button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.flashcard-buttons button:active { border-radius: var(--md-sys-shape-corner-medium); }
+.flashcard-buttons .show { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.flashcard-buttons .know { background: var(--md-extended-color-success-container); color: var(--md-extended-color-on-success-container); }
+.flashcard-buttons .dontknow { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+
+/* ============================================================
+   СТАТИСТИКА / ОШИБКИ
+   ============================================================ */
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-row .msym { color: var(--md-sys-color-on-surface-variant); }
+.stat-row__label { flex: 1; font-size: 1rem; line-height: 1.5rem; }
+.stat-row__value {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    color: var(--md-sys-color-primary);
+    font-variant-numeric: tabular-nums;
+}
+.md-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.md-stat-tile {
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-large);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.md-stat-tile__value {
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+    color: var(--md-sys-color-on-surface);
+    font-variant-numeric: tabular-nums;
+}
+.md-stat-tile__label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.md-subhead {
+    padding: 16px 0 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    color: var(--md-sys-color-primary);
+}
+.error-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    margin: 4px 0;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.error-item strong { font-family: var(--md-ref-typeface-greek); color: var(--md-extended-color-success); }
+.error-item .msym { color: var(--md-sys-color-error); }
+.clear-btn {
+    min-height: 40px;
+    padding: 9px 23px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    background: transparent;
+    color: var(--md-sys-color-error);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.clear-btn:hover { background: color-mix(in srgb, var(--md-sys-color-error) 8%, transparent); }
+.md-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 16px;
+    text-align: center;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.md-empty-state .msym {
+    font-size: 48px;
+    color: var(--md-sys-color-outline);
+    margin-bottom: 8px;
+}
+
+
+/* ============================================================
+   «ОТЧЕ НАШ»
+   ============================================================ */
+.prayer-verse {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.prayer-verse:last-child { border-bottom: 0; }
+.prayer-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.prayer-word {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 4px 10px;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.prayer-word:hover { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
+.prayer-word.selected { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.prayer-russian {
+    margin-left: 4px;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.prayer-transcription {
+    margin-left: 4px;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-style: italic;
+    color: var(--md-sys-color-outline);
+}
+.prayer-analysis {
+    display: none;
+    margin: 12px 0 4px;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.prayer-analysis strong { font-family: var(--md-ref-typeface-greek); font-size: 1.0625rem; }
+

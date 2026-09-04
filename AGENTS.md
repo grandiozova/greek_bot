@@ -8,29 +8,54 @@ An Ancient Greek learning web app, published to GitHub Pages.
 
 | Part | Files | Notes |
 |---|---|---|
-| Web app | `index.html` | Data, styles and logic are all inline. Nearly all work happens here. |
+| Shell + logic | `index.html` | Markup and the whole application logic, still inline in one `<script>`. |
+| Styles | `styles/*.css` | The design system, seven files. See "Project layout". |
+| Lesson content | `data/*.js` | Vocabulary, grammar, exercises, prayer, licences. |
 | Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
 
 There is no backend and no build step. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
 
+The split files are **classic scripts and plain stylesheets**, deliberately not ES modules: 73 inline `onclick=` handlers need their functions to stay global, and `type="module"` / `fetch()` are both blocked on `file://`, which would break "clone and open `index.html`". Keep it that way unless you first replace the inline handlers with delegation.
+
 All user-facing copy is **Russian**. Greek content is **polytonic** (accents, breathings, iota subscript — `ᾅ`, `ὥρᾳ`, `ἡμῶν`). Never "normalise" or strip Greek diacritics; they are the subject matter.
 
-## `index.html` anatomy
+## Project layout
 
-~5,400 lines in four bands. Line numbers drift — locate by anchor, not by number.
+```
+index.html          ~2,250  <head>, разметка, вся логика в одном <script>
+styles/
+  tokens.css           164  :root и [data-theme=dark] — все переменные
+  base.css             322  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
+  components.css       519  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  screens.css          522  вопрос/варианты, обратная связь, списки слов, таблицы, flashcards, статистика, «Отче наш»
+  dialogs.css           88  snackbar, dialog
+  layout.css            61  переходы экранов, утилиты, адаптивность (nav rail)
+  settings.css         120  segmented button темы, список лицензий
+data/
+  lessons.js         1,495  const LESSONS_DATA
+  prayer.js            136  const PRAYER_DATA
+  licenses.js           38  const LICENSES
+```
 
-| Band | Anchor | Rule |
-|---|---|---|
-| Head + design tokens + CSS | `<head>` → `</style>` | The whole design system lives here. |
-| Markup shell | `<body>` → first `<script>` | App bar, screens, nav bar, FAB, snackbar, dialog. |
-| **Lesson data** | `const LESSONS_DATA` → `const PRAYER_DATA` → its closing `};` | **Do not touch.** ~1,600 lines of vocabulary, grammar, exercises. Edit only when the task is explicitly about content. |
-| Application logic | from `let currentLesson = 3;` to `</script>` | Screens, navigation, exercises, rendering. |
+**Load order is the contract.** `tokens.css` must come first — everything else reads its variables — and the remaining stylesheets are listed in the order their rules appeared in the old single `<style>`, so the cascade is unchanged. Reordering the `<link>` tags is a silent visual regression. Likewise the `data/*.js` tags must precede the inline `<script>`: the logic reads `LESSONS_DATA` during boot.
+
+Whatever you touch, it is almost always one file:
+
+| Task | File |
+|---|---|
+| Colours, shape, motion, elevation | `styles/tokens.css` |
+| A component's look | `styles/components.css` (or `dialogs.css` / `settings.css`) |
+| A screen's look | `styles/screens.css` |
+| Responsive / nav rail | `styles/layout.css` |
+| **Lesson content** | `data/lessons.js` — **do not touch** unless the task is explicitly about content |
+| A new dependency's licence | `data/licenses.js` |
+| Anything behavioural | `index.html` |
 
 Structural facts worth knowing before editing:
 
 - Screens are `div.section`; `showSection(id)` clears `.active` from **all** `.section` elements, including the lesson's inner tab panels — which is why `restoreLessonPart()` exists. Keep that invariant if you touch navigation.
 - `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
-- Top-level `let` bindings (`stats`, `testState`, `allFlashcardState`, …) are **not** on `window`. Test through the DOM, not through `window.someState`.
+- Top-level `let` and `const` bindings — state (`stats`, `testState`, `allFlashcardState`, …) *and* the data (`LESSONS_DATA`, `PRAYER_DATA`, `LICENSES`) — are **not** on `window`; splitting the data into their own files did not change this, because `const` at the top level of a classic script never creates a window property. `function` declarations *are* on `window`. So a harness can call `window.openLesson(3)` but must reach data through `window.eval('LESSONS_DATA')`. Test through the DOM, not through `window.someState`.
 - Progress is `localStorage` only: `greek_stats`, `greek_theme`, `greek_last_lesson`. All reads/writes must stay wrapped in `try/catch` — they throw in private-mode Safari.
 
 ## Design: Material 3 (Material You) — mandatory
@@ -102,11 +127,13 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 
 ## Offline shell
 
-`sw.js` precaches `index.html`, the manifest and the icon, and caches the Google Fonts CSS and font files at runtime. Strategies differ on purpose:
+`sw.js` precaches `index.html`, every stylesheet, every data file, the manifest and the icon, and caches the Google Fonts CSS and font files at runtime. Strategies differ on purpose:
 
 - **navigation → network-first**, cache as fallback. A published change reaches users on their next load; going cache-first here would strand them on a stale build.
-- **same-origin assets → cache-first** with a background refresh.
+- **same-origin assets → network-first**, cache as fallback. This used to be cache-first, which was safe while the app was a single file. It is not safe now: fresh `index.html` from the network plus yesterday's `styles/*.css` from the cache is a broken build. Both must come from the same place, so they use the same strategy. Offline is unaffected — with no network the fetch rejects immediately and the cache answers.
 - **fonts → cache-first**; their URLs are already content-versioned.
+
+**Adding a stylesheet or data file means adding it to `CORE_ASSETS`.** Miss it and the app still works online, then cold-starts offline with no styles or empty screens — a failure you will not see in any online test.
 
 `manifest.webmanifest` uses **relative** `start_url` and `scope` because Pages serves this from the `/greek_bot/` subpath; absolute paths would break it. Registration is guarded on `location.protocol` so opening the file over `file://` is still fine, and a failed registration is swallowed — offline is a bonus, never a precondition.
 
@@ -116,7 +143,7 @@ Bump `CACHE_VERSION` in `sw.js` when the cached set changes; `activate` deletes 
 
 Do not claim completion on a design change without checking it renders. At minimum:
 
-1. **JS syntax** — extract both `<script>` blocks and `node --check` each. The file is one giant HTML blob; a broken string literal is otherwise silent.
+1. **JS syntax** — `node --check` each of `data/*.js` and `sw.js` directly, and extract the inline `<script>` from `index.html` to check that too. A broken string literal is otherwise silent.
 2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **both** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `index.html` so the audit cannot drift from the source.
 3. **Behaviour** — exercise every screen (jsdom is enough) and confirm no screen renders empty, no `undefined` leaks into markup, and no stray hex colors appear in the live DOM.
 4. **Render** — screenshot light and dark, mobile (412px) and desktop (1280px), and check for console errors and horizontal overflow.
