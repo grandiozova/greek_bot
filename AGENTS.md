@@ -8,9 +8,10 @@ An Ancient Greek learning web app, published to GitHub Pages.
 
 | Part | Files | Notes |
 |---|---|---|
-| Shell + logic | `index.html` | Markup and the whole application logic, still inline in one `<script>`. |
+| Markup shell | `index.html` | `<head>`, the screens, and the tag list that loads everything else. No logic, no styles, no data. |
 | Styles | `styles/*.css` | The design system, seven files. See "Project layout". |
 | Lesson content | `data/*.js` | Vocabulary, grammar, exercises, prayer, licences. |
+| Logic | `js/*.js` | Fifteen files, one per feature area. |
 | Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
 
 There is no backend and no build step. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
@@ -22,7 +23,7 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ## Project layout
 
 ```
-index.html          ~2,250  <head>, разметка, вся логика в одном <script>
+index.html           251  <head>, разметка, порядок загрузки
 styles/
   tokens.css           164  :root и [data-theme=dark] — все переменные
   base.css             322  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
@@ -35,9 +36,31 @@ data/
   lessons.js         1,495  const LESSONS_DATA
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
+js/
+  core.js              109  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
+  ui.js                 78  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
+  shell.js             200  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
+  theme.js              74  режимы темы, applyTheme, initTheme
+  lesson.js            252  openLesson, вкладки, переходы между уроками
+  declension.js        137  generateDeclensionTable, аккордеон
+  exercises.js         182  упражнения урока
+  flashcards.js        135  карточки: общие и урока
+  test.js              164  тест
+  translation.js       155  перевод
+  stats.js              97  статистика, ошибки, сброс прогресса
+  prayer.js            224  «Отче наш»: разбор и упражнения
+  vocab.js             117  общий словарь и поиск
+  settings.js           27  showSettings, renderLicenses
+  boot.js               61  normalizeTranslationData, init*, глобальные слушатели
 ```
 
-**Load order is the contract.** `tokens.css` must come first — everything else reads its variables — and the remaining stylesheets are listed in the order their rules appeared in the old single `<style>`, so the cascade is unchanged. Reordering the `<link>` tags is a silent visual regression. Likewise the `data/*.js` tags must precede the inline `<script>`: the logic reads `LESSONS_DATA` during boot.
+**Load order is the contract.** Three rules, all enforced only by the order of tags in `index.html`:
+
+1. `tokens.css` first — everything else reads its variables. The other six stylesheets are listed in the order their rules appeared in the old single `<style>`, so the cascade is unchanged; reordering the `<link>` tags is a silent visual regression.
+2. `data/*.js` before `js/*.js` — the logic reads `LESSONS_DATA` during boot.
+3. **`boot.js` last.** It is the only file that *executes* anything at load time; every other file just declares. Top-level `let`/`const` across classic scripts share one global lexical environment, so a file that ran code referencing a binding declared in a later file would hit a temporal-dead-zone `ReferenceError`. Keep new files declaration-only, and keep `boot.js` at the bottom.
+
+The two exceptions to "declaration-only" are `ui.js` (the ripple `pointerdown`/`keydown` listeners) and `prayer.js` (the click-outside handler); both only register callbacks, which run long after every script has loaded.
 
 Whatever you touch, it is almost always one file:
 
@@ -49,12 +72,14 @@ Whatever you touch, it is almost always one file:
 | Responsive / nav rail | `styles/layout.css` |
 | **Lesson content** | `data/lessons.js` — **do not touch** unless the task is explicitly about content |
 | A new dependency's licence | `data/licenses.js` |
-| Anything behavioural | `index.html` |
+| Behaviour | the matching `js/*.js` — the table above says which |
+| A new screen | `index.html` markup **+** `SCREEN_META`/`DEST_SECTION`/`FAB_CONFIG` in `js/shell.js` |
 
 Structural facts worth knowing before editing:
 
-- Screens are `div.section`; `showSection(id)` clears `.active` from **all** `.section` elements, including the lesson's inner tab panels — which is why `restoreLessonPart()` exists. Keep that invariant if you touch navigation.
-- `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
+- Screens are `div.section`; `showSection(id)` (`js/shell.js`) clears `.active` from **all** `.section` elements, including the lesson's inner tab panels — which is why `restoreLessonPart()` (`js/lesson.js`) exists. Keep that invariant if you touch navigation.
+- `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` (`js/shell.js`) drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
+- Functions call freely across files — they are all globals on `window`, and every file is loaded before anything runs. There is no import graph to keep in sync; the only ordering rule is the one about `boot.js` above.
 - Top-level `let` and `const` bindings — state (`stats`, `testState`, `allFlashcardState`, …) *and* the data (`LESSONS_DATA`, `PRAYER_DATA`, `LICENSES`) — are **not** on `window`; splitting the data into their own files did not change this, because `const` at the top level of a classic script never creates a window property. `function` declarations *are* on `window`. So a harness can call `window.openLesson(3)` but must reach data through `window.eval('LESSONS_DATA')`. Test through the DOM, not through `window.someState`.
 - Progress is `localStorage` only: `greek_stats`, `greek_theme`, `greek_last_lesson`. All reads/writes must stay wrapped in `try/catch` — they throw in private-mode Safari.
 
@@ -133,7 +158,7 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 - **same-origin assets → network-first**, cache as fallback. This used to be cache-first, which was safe while the app was a single file. It is not safe now: fresh `index.html` from the network plus yesterday's `styles/*.css` from the cache is a broken build. Both must come from the same place, so they use the same strategy. Offline is unaffected — with no network the fetch rejects immediately and the cache answers.
 - **fonts → cache-first**; their URLs are already content-versioned.
 
-**Adding a stylesheet or data file means adding it to `CORE_ASSETS`.** Miss it and the app still works online, then cold-starts offline with no styles or empty screens — a failure you will not see in any online test.
+**Adding any file under `styles/`, `data/` or `js/` means adding it to `CORE_ASSETS`.** Miss it and the app still works online, then cold-starts offline with no styles or empty screens — a failure you will not see in any online test.
 
 `manifest.webmanifest` uses **relative** `start_url` and `scope` because Pages serves this from the `/greek_bot/` subpath; absolute paths would break it. Registration is guarded on `location.protocol` so opening the file over `file://` is still fine, and a failed registration is swallowed — offline is a bonus, never a precondition.
 
@@ -143,7 +168,7 @@ Bump `CACHE_VERSION` in `sw.js` when the cached set changes; `activate` deletes 
 
 Do not claim completion on a design change without checking it renders. At minimum:
 
-1. **JS syntax** — `node --check` each of `data/*.js` and `sw.js` directly, and extract the inline `<script>` from `index.html` to check that too. A broken string literal is otherwise silent.
+1. **JS syntax** — `node --check` every file in `js/` and `data/`, plus `sw.js`. There is no inline script left to extract.
 2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **both** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `index.html` so the audit cannot drift from the source.
 3. **Behaviour** — exercise every screen (jsdom is enough) and confirm no screen renders empty, no `undefined` leaks into markup, and no stray hex colors appear in the live DOM.
 4. **Render** — screenshot light and dark, mobile (412px) and desktop (1280px), and check for console errors and horizontal overflow.
