@@ -2943,7 +2943,6 @@ function clearChosen() {
 }
 
 function checkTranslationRu() {
-function checkTranslationRu() {
     let chosen = window._chosen || [];
     let q = window._trans_ru;
     if (!q) return;
@@ -3351,39 +3350,51 @@ function transClear() {
 function checkExerciseTranslation(index) {
     let inp = document.getElementById('transInput');
     if (!inp) return;
-    let userAnswer = inp.value.trim().toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ');
+    let ans = inp.value.trim().toLowerCase();
     let q = exerciseState.questions[index];
     if (!q) {
         document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback fail">⚠️ Ошибка. Пожалуйста, начните упражнение заново.</div>';
         return;
     }
-    let correctAnswer = q.correct.toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ');
-    let ok = (userAnswer === correctAnswer);
+    let ok = true;
+    for (let kw of q.keywords) {
+        if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
+    }
     let container = document.getElementById('exerciseQuestion');
     if (ok) {
         stats.totalCorrect++;
         exerciseState.correct++;
         container.innerHTML = `
-            <div class="feedback ok">✅ Верно! <strong>${q.correct}</strong></div>
+            <div class="feedback ok">✅ Верно! <strong>${q.keywords.join(', ')}</strong></div>
             <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
         `;
     } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.correct, your: inp.value.trim() });
+        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
         container.innerHTML = `
-            <div class="feedback fail">❌ Неверно. Правильный перевод: <strong>${q.correct}</strong></div>
+            <div class="feedback fail">❌ Неверно. Ключевые слова: <strong>${q.keywords.join(', ')}</strong></div>
             <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
         `;
     }
     saveStats();
-    // Убираем setTimeout – переход только по кнопке
+    // setTimeout убираем
 }
 
 // ============================================================
 // НАВИГАЦИЯ МЕЖДУ УРОКАМИ
 // ============================================================
+  
+function nextExercise() {
+    exerciseState.index++;
+    showExercise();
+}
+
+function nextTranslation() {
+    translationState.index++;
+    showTranslation();
+}
     
 function goToPrevLesson() {
     let prev = currentLesson - 1;
