@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Древнегреческий учебник в кармане: уроки 1–10, словарь, карточки, тесты и разбор «Отче наш».">
-    <meta name="theme-color" content="#FAF9FD" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#FAFAFD" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
     <title>Древнегреческий учебник в кармане (уроки 1–10)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -5209,12 +5209,17 @@ function applyTheme(theme) {
     if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
     let btn = document.getElementById('themeToggleBtn');
     if (btn) btn.setAttribute('aria-label', theme === 'dark' ? 'Светлая тема' : 'Тёмная тема');
-    // строка состояния браузера следует за поверхностью M3
-    document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
-    let meta = document.createElement('meta');
-    meta.name = 'theme-color';
-    meta.content = theme === 'dark' ? '#0E1116' : '#FAF9FD';
-    document.head.appendChild(meta);
+    // Строка состояния браузера следует за поверхностью M3.
+    // Цвет читаем из токена, а не дублируем — иначе он разъедется с палитрой.
+    let surface = getComputedStyle(document.documentElement)
+        .getPropertyValue('--md-sys-color-surface').trim();
+    if (surface) {
+        document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+        let meta = document.createElement('meta');
+        meta.name = 'theme-color';
+        meta.content = surface;
+        document.head.appendChild(meta);
+    }
     try { localStorage.setItem('greek_theme', theme); } catch(e) {}
 }
 
