@@ -4,14 +4,13 @@ Guidance for AI agents working in this repository.
 
 ## What this repo is
 
-An Ancient Greek learning project with **two independent halves that share no code**:
+An Ancient Greek learning web app, published to GitHub Pages.
 
 | Part | Files | Notes |
 |---|---|---|
-| Web app (Mini App / GitHub Pages) | `index.html` | Single self-contained file. Data, styles and logic are all inline. This is where nearly all work happens. |
-| Telegram bot | `bot.py`, `db.py`, `data.json`, `requirements.txt` | aiogram 3 + SQLite. Reads `data.json`, **not** `index.html`. |
+| Web app | `index.html` | Single self-contained file. Data, styles and logic are all inline. All work happens here. |
 
-Changing one half never implies changing the other. `data.json` and the lesson data inside `index.html` are separate copies; do not try to unify them unless asked.
+There is no backend and no build step: `index.html` is the whole application. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
 
 All user-facing copy is **Russian**. Greek content is **polytonic** (accents, breathings, iota subscript — `ᾅ`, `ὥρᾳ`, `ἡμῶν`). Never "normalise" or strip Greek diacritics; they are the subject matter.
 
@@ -107,7 +106,3 @@ These harnesses are not committed; they are quick to rewrite. Ask before adding 
 - Windows. The Bash tool mangles heredocs containing quotes — write patch scripts to a file and run them, rather than piping a heredoc.
 - jsdom does not implement `window.scrollTo`/`Element.scrollTo`; those errors in test output are harness noise, not app bugs. The app already guards both calls.
 - Playwright needs `npx playwright install chromium` before first use.
-
-## Security
-
-`bot.py` contains a **hard-coded live Telegram bot token**, committed to git history. It should be revoked, rotated, and moved to an environment variable. Do not add new secrets to tracked files.
