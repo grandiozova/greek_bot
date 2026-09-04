@@ -3,504 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏛️ Древнегреческий тренажер (уроки 1–10)</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #f7f2eb;
-            color: #2c2c2c;
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-        }
-        .app {
-            max-width: 950px;
-            width: 100%;
-            background: #fff;
-            border-radius: 32px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-            padding: 24px 20px;
-        }
-        h1 {
-            font-size: 28px;
-            color: #3d2a1e;
-            border-bottom: 2px solid #e5d9cf;
-            padding-bottom: 14px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        h1 small {
-            font-size: 28px;
-            font-weight: 400;
-            color: #3d2a1e;
-        }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 16px 0;
-        }
-        .menu-btn {
-            background: #f0eae4;
-            border: 0;
-            border-radius: 8px;
-            padding: 14px 12px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            text-align: center;
-        }
-        .menu-btn:hover {
-            background: #e0d5cb;
-            transform: translateY(-2px);
-        }
-        .menu-btn.primary {
-            background: #b7a48b;
-            color: #fff;
-        }
-        .menu-btn.primary:hover {
-            background: #9e8a73;
-        }
-        .menu-btn.danger {
-            background: #d4b8b8;
-            color: #4a2e2e;
-        }
-        .back-btn {
-            background: 0;
-            border: 0;
-            color: #7a5f4b;
-            font-size: 15px;
-            cursor: pointer;
-            margin-bottom: 14px;
-        }
-        .back-btn:hover {
-            text-decoration: underline;
-        }
-        .section {
-            display: none;
-        }
-        .section.active {
-            display: block;
-            animation: fade 0.25s ease;
-        }
-        @keyframes fade {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        .card {
-            background: #fcf9f6;
-            border-radius: 18px;
-            padding: 20px 18px;
-            margin-bottom: 18px;
-            border: 1px solid #eee5dd;
-        }
-        .card h3 {
-            margin-bottom: 10px;
-            color: #4a3728;
-            font-size: 18px;
-        }
-        .word-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .word-item {
-            background: #ede7e0;
-            border-radius: 8px;
-            font-size: 15px;
-            overflow: hidden;
-        }
-        .word-item .word-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 14px;
-            cursor: pointer;
-            user-select: none;
-        }
-        .word-item .word-row:hover {
-            background: #e2d5c9;
-        }
-        .word-item .word-row strong {
-            font-weight: 600;
-            color: #3d2a1e;
-        }
-        .word-details {
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-            padding: 0 14px;
-            background: #f9f6f2;
-            border-radius: 0 0 8px 8px;
-            opacity: 0;
-        }
-        .word-details.open {
-            max-height: 600px;
-            padding: 8px 14px 12px;
-            opacity: 1;
-        }
-        .word-details table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            margin: 0;
-        }
-        .word-details td, .word-details th {
-            border: 1px solid #c9b9ab;
-            padding: 4px 8px;
-            text-align: center;
-        }
-        .word-details th {
-            background: #ede7e0;
-        }
-        .grammar-text {
-            font-size: 15px;
-            line-height: 1.7;
-            background: #f4eee8;
-            padding: 16px 18px;
-            border-radius: 14px;
-            border-left: 4px solid #b7a48b;
-        }
-        .grammar-text table {
-            border-collapse: collapse;
-            margin: 10px 0;
-            width: 100%;
-            font-size: 14px;
-        }
-        .grammar-text td, .grammar-text th {
-            border: 1px solid #c9b9ab;
-            padding: 6px 10px;
-            text-align: center;
-        }
-        .question {
-            font-size: 19px;
-            font-weight: 500;
-            margin-bottom: 16px;
-        }
-        .options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        .option-btn {
-            background: #f0eae4;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            padding: 10px 22px;
-            font-size: 17px;
-            cursor: pointer;
-            transition: 0.1s;
-            flex: 1;
-            text-align: center;
-        }
-        .option-btn:hover {
-            background: #e2d5c9;
-            border-color: #b7a48b;
-        }
-        .option-btn.correct {
-            background: #8fbc8f;
-            color: #fff;
-            border-color: #5f8b5f;
-        }
-        .option-btn.wrong {
-            background: #d4a0a0;
-            color: #fff;
-            border-color: #b06a6a;
-        }
-        .feedback {
-            padding: 14px 18px;
-            border-radius: 14px;
-            margin: 14px 0;
-            font-weight: 500;
-        }
-        .feedback.ok {
-            background: #e0f0e0;
-            color: #1f5f2f;
-        }
-        .feedback.fail {
-            background: #f0e0e0;
-            color: #7a2e2e;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 10px 0;
-        }
-        .input-group input {
-            flex: 1;
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: 2px solid #d9cec2;
-            font-size: 17px;
-            background: white;
-            min-width: 180px;
-        }
-        .input-group button {
-            padding: 10px 24px;
-            border: 0;
-            border-radius: 8px;
-            background: #b7a48b;
-            color: #fff;
-            font-size: 17px;
-            cursor: pointer;
-        }
-        .input-group button:hover {
-            background: #9e8a73;
-        }
-        .word-bank {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 10px 0;
-        }
-        .word-bank .chip {
-            background: #ede7e0;
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 17px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            user-select: none;
-        }
-        .word-bank .chip:hover {
-            background: #d9cec2;
-            transform: scale(1.02);
-        }
-        .word-bank .chip.picked {
-            background: #b7a48b;
-            color: #fff;
-            opacity: 0.5;
-            transform: scale(0.95);
-            cursor: default;
-        }
-        .build-area {
-            background: #f4eee8;
-            padding: 10px 16px;
-            border-radius: 8px;
-            min-height: 44px;
-            margin: 10px 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            border: 2px dashed #c9b9ab;
-        }
-        .build-area .token {
-            background: #b7a48b;
-            color: #fff;
-            padding: 4px 14px;
-            border-radius: 8px;
-            font-size: 17px;
-        }
-        .tab-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin: 12px 0;
-        }
-        .tab-bar button {
-            flex: 1;
-            min-width: 80px;
-            padding: 10px 8px;
-            border: 0;
-            border-radius: 8px;
-            background: #f0eae4;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .tab-bar button.active {
-            background: #b7a48b;
-            color: #fff;
-        }
-        .tab-bar button:hover {
-            background: #e0d5cb;
-        }
-        .flashcard-area {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .flashcard-word {
-            font-size: 40px;
-            font-weight: 600;
-            color: #3d2a1e;
-            margin: 20px 0;
-        }
-        .flashcard-translation {
-            font-size: 28px;
-            color: #5f4a38;
-            margin: 16px 0;
-        }
-        .flashcard-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        .flashcard-buttons button {
-            padding: 12px 32px;
-            border: 0;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .flashcard-buttons .show {
-            background: #b7a48b;
-            color: #fff;
-        }
-        .flashcard-buttons .know {
-            background: #8fbc8f;
-            color: #fff;
-        }
-        .flashcard-buttons .dontknow {
-            background: #d4a0a0;
-            color: #fff;
-        }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee5dd;
-        }
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-        .lesson-badge {
-            background: #3d2a1e;
-            color: #fff;
-            padding: 2px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        .error-item {
-            background: #fcf1f1;
-            padding: 8px 14px;
-            border-radius: 8px;
-            margin: 4px 0;
-            border-left: 4px solid #d4a0a0;
-        }
-        .clear-btn {
-            background: none;
-            border: 1px solid #d4a0a0;
-            border-radius: 8px;
-            padding: 6px 18px;
-            color: #7a2e2e;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-        .clear-btn:hover {
-            background: #d4a0a0;
-            color: #fff;
-        }
-        .vocab-section {
-            margin-bottom: 16px;
-        }
-        .vocab-section h4 {
-            background: #ede7e0;
-            padding: 6px 12px;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            color: #3d2a1e;
-        }
-        .vocab-section .word-item {
-            margin-left: 8px;
-        }
-        @media (max-width: 600px) {
-            .app { padding: 16px 12px; }
-            .menu-grid { grid-template-columns: 1fr; }
-            .options { flex-direction: column; }
-            .option-btn { width: 100%; }
-            .input-group input { min-width: 140px; }
-            .tab-bar button { min-width: 60px; font-size: 13px; padding: 8px 6px; }
-            .flashcard-word { font-size: 30px; }
-            .flashcard-translation { font-size: 22px; }
-        }
-        .hidden { display: none !important; }
-        .center { text-align: center; }
-        .mt-12 { margin-top: 12px; }
-        .mb-12 { margin-bottom: 12px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .progress-text { font-size: 14px; color: #7a5f4b; }
-        .decor-line { border: none; border-top: 2px solid #e5d9cf; margin: 20px 0; }
-        [id^="analysis-"] {
-            transition: opacity 0.3s ease;
-        }
-        /* Улучшения для мобильных устройств */
-@media (max-width: 600px) {
-    .app {
-        padding: 12px 8px;
+    <title>🏛️ Древнегреческий учебник в кармане (уроки 1–10)</title>
+<style>
+    :root {
+        --bg: #f7f2eb;
+        --app-bg: #ffffff;
+        --text: #2c2c2c;
+        --text-soft: #7a5f4b;
+        --text-dark: #3d2a1e;
+        --border: #e5d9cf;
+        --card-bg: #fcf9f6;
+        --card-border: #eee5dd;
+        --btn-bg: #f0eae4;
+        --btn-hover: #e0d5cb;
+        --primary: #b7a48b;
+        --primary-hover: #9e8a73;
+        --danger-bg: #d4b8b8;
+        --danger-text: #4a2e2e;
+        --word-item-bg: #ede7e0;
+        --word-item-hover: #e2d5c9;
+        --word-details-bg: #f9f6f2;
+        --table-border: #c9b9ab;
+        --grammar-bg: #f4eee8;
+        --ok-bg: #e0f0e0;
+        --ok-text: #1f5f2f;
+        --fail-bg: #f0e0e0;
+        --fail-text: #7a2e2e;
+        --input-border: #d9cec2;
+        --input-bg: #ffffff;
+        --chip-bg: #ede7e0;
+        --chip-hover: #d9cec2;
+        --build-bg: #f4eee8;
+        --build-border: #c9b9ab;
+        --token-bg: #b7a48b;
+        --correct-bg: #8fbc8f;
+        --correct-border: #5f8b5f;
+        --wrong-bg: #d4a0a0;
+        --wrong-border: #b06a6a;
+        --error-bg: #fcf1f1;
+        --shadow: rgba(0, 0, 0, 0.08);
     }
-    .word-item .word-row {
-        padding: 8px 10px;
-        font-size: 16px;
+
+    [data-theme="dark"] {
+        --bg: #1a1613;
+        --app-bg: #24201c;
+        --text: #ece6dd;
+        --text-soft: #b8a894;
+        --text-dark: #f0e6d8;
+        --border: #3a332c;
+        --card-bg: #2c2620;
+        --card-border: #3a332c;
+        --btn-bg: #34302a;
+        --btn-hover: #423c33;
+        --primary: #a68f6b;
+        --primary-hover: #bfa87f;
+        --danger-bg: #5c3a3a;
+        --danger-text: #f0d6d6;
+        --word-item-bg: #322c25;
+        --word-item-hover: #423a30;
+        --word-details-bg: #201c18;
+        --table-border: #4a4238;
+        --grammar-bg: #221f1a;
+        --ok-bg: #1f3d24;
+        --ok-text: #a3d9ad;
+        --fail-bg: #3d2323;
+        --fail-text: #e0a3a3;
+        --input-border: #4a4238;
+        --input-bg: #201c18;
+        --chip-bg: #322c25;
+        --chip-hover: #423a30;
+        --build-bg: #221f1a;
+        --build-border: #4a4238;
+        --token-bg: #a68f6b;
+        --correct-bg: #3d6b45;
+        --correct-border: #5f8b5f;
+        --wrong-bg: #8b4a4a;
+        --wrong-border: #b06a6a;
+        --error-bg: #2e1f1f;
+        --shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 16px;
+        display: flex;
+        justify-content: center;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+    .app {
+        max-width: 950px;
+        width: 100%;
+        background: var(--app-bg);
+        border-radius: 32px;
+        box-shadow: 0 12px 40px var(--shadow);
+        padding: 24px 20px;
+        transition: background 0.3s ease;
+    }
+    h1 {
+        font-size: 28px;
+        color: var(--text-dark);
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 14px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    h1 .title-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    h1 small {
+        font-size: 28px;
+        font-weight: 400;
+        color: var(--text-dark);
+    }
+    .theme-toggle {
+        background: var(--btn-bg);
+        border: 2px solid var(--border);
+        border-radius: 999px;
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+        background: var(--btn-hover);
+        transform: scale(1.08);
+    }
+    .menu-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 16px 0;
     }
     .menu-btn {
-        padding: 12px 8px;
+        background: var(--btn-bg);
+        border: 0;
+        border-radius: 8px;
+        padding: 14px 12px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.15s;
+        text-align: center;
+        color: var(--text);
+    }
+    .menu-btn:hover {
+        background: var(--btn-hover);
+        transform: translateY(-2px);
+    }
+    .menu-btn.primary {
+        background: var(--primary);
+        color: #fff;
+    }
+    .menu-btn.primary:hover {
+        background: var(--primary-hover);
+    }
+    .menu-btn.danger {
+        background: var(--danger-bg);
+        color: var(--danger-text);
+    }
+    .back-btn {
+        background: 0;
+        border: 0;
+        color: var(--text-soft);
+        font-size: 15px;
+        cursor: pointer;
+        margin-bottom: 14px;
+    }
+    .back-btn:hover {
+        text-decoration: underline;
+    }
+    .section {
+        display: none;
+    }
+    .section.active {
+        display: block;
+        animation: fade 0.25s ease;
+    }
+    @keyframes fade {
+        0% { opacity: 0.3; }
+        100% { opacity: 1; }
+    }
+    .card {
+        background: var(--card-bg);
+        border-radius: 18px;
+        padding: 20px 18px;
+        margin-bottom: 18px;
+        border: 1px solid var(--card-border);
+    }
+    .card h3 {
+        margin-bottom: 10px;
+        color: var(--text-dark);
+        font-size: 18px;
+    }
+    .word-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--input-bg);
+        border: 2px solid var(--input-border);
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+    }
+    .search-box input {
+        border: 0;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        flex: 1;
+        color: var(--text);
+    }
+    .search-box .search-icon {
+        font-size: 16px;
+        opacity: 0.6;
+    }
+    .search-clear {
+        background: none;
+        border: 0;
+        cursor: pointer;
+        font-size: 16px;
+        opacity: 0.5;
+        display: none;
+    }
+    .search-clear.show { display: block; }
+    .search-empty {
+        text-align: center;
+        color: var(--text-soft);
+        padding: 20px;
+        font-size: 15px;
+    }
+    .word-item {
+        background: var(--word-item-bg);
+        border-radius: 8px;
+        font-size: 15px;
+        overflow: hidden;
+    }
+    .word-item .word-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 14px;
+        cursor: pointer;
+        user-select: none;
+    }
+    .word-item .word-row:hover {
+        background: var(--word-item-hover);
+    }
+    .word-item .word-row strong {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    .word-details {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+        padding: 0 14px;
+        background: var(--word-details-bg);
+        border-radius: 0 0 8px 8px;
+        opacity: 0;
+    }
+    .word-details.open {
+        max-height: 600px;
+        padding: 8px 14px 12px;
+        opacity: 1;
+    }
+    .word-details table {
+        width: 100%;
+        border-collapse: collapse;
         font-size: 14px;
+        margin: 0;
     }
-    .tab-bar button {
-        min-width: 50px;
-        font-size: 12px;
-        padding: 8px 4px;
+    .word-details td, .word-details th {
+        border: 1px solid var(--table-border);
+        padding: 4px 8px;
+        text-align: center;
+        color: var(--text);
     }
-    .flashcard-word {
-        font-size: 28px;
-    }
-    .flashcard-translation {
-        font-size: 20px;
-    }
-    .option-btn {
-        padding: 12px 16px;
-        font-size: 16px;
-    }
-    .input-group input {
-        font-size: 16px;
-        padding: 10px 12px;
-        min-width: 120px;
-    }
-    .input-group button {
-        padding: 10px 16px;
-        font-size: 16px;
-    }
-    .build-area .token {
-        font-size: 15px;
-        padding: 4px 10px;
-    }
-    .word-bank .chip {
-        padding: 6px 12px;
-        font-size: 15px;
+    .word-details th {
+        background: var(--word-item-bg);
     }
     .grammar-text {
-        font-size: 14px;
-        padding: 12px 14px;
+        font-size: 15px;
+        line-height: 1.7;
+        background: var(--grammar-bg);
+        padding: 16px 18px;
+        border-radius: 14px;
+        border-left: 4px solid var(--primary);
+        color: var(--text);
     }
     .grammar-text table {
-        font-size: 12px;
+        border-collapse: collapse;
+        margin: 10px 0;
+        width: 100%;
+        font-size: 14px;
     }
     .grammar-text td, .grammar-text th {
-        padding: 4px 6px;
+        border: 1px solid var(--table-border);
+        padding: 6px 10px;
+        text-align: center;
     }
-}
-    </style>
+    .question {
+        font-size: 19px;
+        font-weight: 500;
+        margin-bottom: 16px;
+    }
+    .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 10px 0;
+    }
+    .option-btn {
+        background: var(--btn-bg);
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 17px;
+        cursor: pointer;
+        transition: 0.1s;
+        flex: 1;
+        text-align: center;
+        color: var(--text);
+    }
+    .option-btn:hover {
+        background: var(--btn-hover);
+        border-color: var(--primary);
+    }
+    .option-btn.correct {
+        background: var(--correct-bg);
+        color: #fff;
+        border-color: var(--correct-border);
+    }
+    .option-btn.wrong {
+        background: var(--wrong-bg);
+        color: #fff;
+        border-color: var(--wrong-border);
+    }
+    .feedback {
+        padding: 14px 18px;
+        border-radius: 14px;
+        margin: 14px 0;
+        font-weight: 500;
+    }
+    .feedback.ok {
+        background: var(--ok-bg);
+        color: var(--ok-text);
+    }
+    .feedback.fail {
+        background: var(--fail-bg);
+        color: var(--fail-text);
+    }
+    .input-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0;
+    }
+    .input-group input {
+        flex: 1;
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: 2px solid var(--input-border);
+        font-size: 17px;
+        background: var(--input-bg);
+        color: var(--text);
+        min-width: 180px;
+    }
+    .input-group button {
+        padding: 10px 24px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 17px;
+        cursor: pointer;
+    }
+    .input-group button:hover {
+        background: var(--primary-hover);
+    }
+    .word-bank {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+    }
+    .word-bank .chip {
+        background: var(--chip-bg);
+        color: var(--text);
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 17px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        user-select: none;
+    }
+    .word-bank .chip:hover {
+        background: var(--chip-hover);
+        transform: scale(1.02);
+    }
+    .word-bank .chip.picked {
+        background: var(--primary);
+        color: #fff;
+        opacity: 0.5;
+        transform: scale(0.95);
+        cursor: default;
+    }
+    .build-area {
+        background: var(--build-bg);
+        padding: 10px 16px;
+        border-radius: 8px;
+        min-height: 44px;
+        margin: 10px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        border: 2px dashed var(--build-border);
+    }
+    .build-area .token {
+        background: var(--token-bg);
+        color: #fff;
+        padding: 4px 14px;
+        border-radius: 8px;
+        font-size: 17px;
+    }
+    .tab-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 12px 0;
+    }
+    .tab-bar button {
+        flex: 1;
+        min-width: 80px;
+        padding: 10px 8px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--btn-bg);
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    .tab-bar button.active {
+        background: var(--primary);
+        color: #fff;
+    }
+    .tab-bar button:hover {
+        background: var(--btn-hover);
+    }
+    .flashcard-area {
+        text-align: center;
+        padding: 20px 0;
+    }
+    .flashcard-word {
+        font-size: 40px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 20px 0;
+    }
+    .flashcard-translation {
+        font-size: 28px;
+        color: var(--text-soft);
+        margin: 16px 0;
+    }
+    .flashcard-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .flashcard-buttons button {
+        padding: 12px 32px;
+        border: 0;
+        border-radius: 8px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    .flashcard-buttons .show {
+        background: var(--primary);
+        color: #fff;
+    }
+    .flashcard-buttons .know {
+        background: var(--correct-bg);
+        color: #fff;
+    }
+    .flashcard-buttons .dontknow {
+        background: var(--wrong-bg);
+        color: #fff;
+    }
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--card-border);
+    }
+    .stat-row:last-child {
+        border-bottom: none;
+    }
+    .lesson-badge {
+        background: var(--text-dark);
+        color: var(--app-bg);
+        padding: 2px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    .error-item {
+        background: var(--error-bg);
+        padding: 8px 14px;
+        border-radius: 8px;
+        margin: 4px 0;
+        border-left: 4px solid var(--wrong-bg);
+        color: var(--text);
+    }
+    .clear-btn {
+        background: none;
+        border: 1px solid var(--wrong-bg);
+        border-radius: 8px;
+        padding: 6px 18px;
+        color: var(--fail-text);
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    .clear-btn:hover {
+        background: var(--wrong-bg);
+        color: #fff;
+    }
+    .vocab-section {
+        margin-bottom: 16px;
+    }
+    .vocab-section h4 {
+        background: var(--word-item-bg);
+        padding: 6px 12px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        color: var(--text-dark);
+    }
+    .vocab-section .word-item {
+        margin-left: 8px;
+    }
+    .hidden { display: none !important; }
+    .center { text-align: center; }
+    .mt-12 { margin-top: 12px; }
+    .mb-12 { margin-bottom: 12px; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .progress-text { font-size: 14px; color: var(--text-soft); }
+    .decor-line { border: none; border-top: 2px solid var(--border); margin: 20px 0; }
+    [id^="analysis-"] {
+        transition: opacity 0.3s ease;
+    }
+    @media (max-width: 600px) {
+        .app { padding: 16px 12px; }
+        .menu-grid { grid-template-columns: 1fr; }
+        .options { flex-direction: column; }
+        .option-btn { width: 100%; }
+        .input-group input { min-width: 140px; }
+        .tab-bar button { min-width: 60px; font-size: 13px; padding: 8px 6px; }
+        .flashcard-word { font-size: 30px; }
+        .flashcard-translation { font-size: 22px; }
+        h1 { font-size: 22px; }
+        h1 small { font-size: 22px; }
+    }
+    @media (max-width: 600px) {
+        .app { padding: 12px 8px; }
+        .word-item .word-row { padding: 8px 10px; font-size: 16px; }
+        .menu-btn { padding: 12px 8px; font-size: 14px; }
+        .tab-bar button { min-width: 50px; font-size: 12px; padding: 8px 4px; }
+        .flashcard-word { font-size: 28px; }
+        .flashcard-translation { font-size: 20px; }
+        .option-btn { padding: 12px 16px; font-size: 16px; }
+        .input-group input { font-size: 16px; padding: 10px 12px; min-width: 120px; }
+        .input-group button { padding: 10px 16px; font-size: 16px; }
+        .build-area .token { font-size: 15px; padding: 4px 10px; }
+        .word-bank .chip { padding: 6px 12px; font-size: 15px; }
+        .grammar-text { font-size: 14px; padding: 12px 14px; }
+        .grammar-text table { font-size: 12px; }
+        .grammar-text td, .grammar-text th { padding: 4px 6px; }
+    }
+</style>
 </head>
 <body>
 <div class="app" id="app">
 
-<h1>🏛️ Древнегреческий в кармане (уроки 1–10)</h1>
+<h1>
+    <span class="title-text">🏛️ <small>Древнегреческий учебник в кармане (уроки 1–10)</small></span>
+    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
+</h1>
 
 <!-- Главное меню -->
 <div id="mainMenu" class="section active">
@@ -520,7 +635,15 @@
 <!-- Словарь всех слов -->
 <div id="allVocabSection" class="section">
     <button class="back-btn" onclick="goToMain()">← Назад</button>
-    <div class="card"><h3>📚 Словарь всех слов (уроки 1–10)</h3><div id="allVocabContent"></div></div>
+    <div class="card">
+        <h3>📚 Словарь всех слов (уроки 1–10)</h3>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="vocabSearchInput" placeholder="Поиск по-гречески или по-русски..." oninput="filterAllVocab()">
+            <button class="search-clear" id="vocabSearchClear" onclick="clearVocabSearch()">✕</button>
+        </div>
+        <div id="allVocabContent"></div>
+    </div>
 </div>
 
 <!-- Проверка всех слов (карточки) -->
@@ -947,41 +1070,40 @@ grammar: `<b>1. Общие сведения о склонении</b><br>
                 {form:"ἱερά", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Nominativus (Им. п.) ед.ч."]}
             ]
         },
-        translation: {
-            ru_to_el: [
-                {source:"Христос говорит слово закона людям.", correct:["ὁ","Χριστὸς","λέγει","τὸν","λόγον","τοῦ","νόμου","τοῖς","ἀνθρώποις"]},
-                {source:"Братья освобождают рабов.", correct:["οἱ","ἀδελφοὶ","λύουσι","τοὺς","δούλους"]},
-                {source:"Братья говорят слово рабу.", correct:["οἱ","ἀδελφοὶ","λέγουσι","τὸν","λόγον","τῷ","δούλῳ"]},
-                {source:"Мы видим дары рабов.", correct:["βλέπομεν","τὰ","δῶρα","τῶν","δούλων"]},
-                {source:"Мы пишем братьям слова закона.", correct:["γράφομεν","τοῖς","ἀδελφοῖς","τοὺς","λόγους","τοῦ","νόμου"]},
-                {source:"Сын видит храмы и дома.", correct:["ὁ","υἱὸς","βλέπει","τὰ","ἱερὰ","καὶ","τοὺς","οἴκους"]},
-                {source:"Я освобождаю слуг и говорю слова сынам и братьям.", correct:["λύω","τοὺς","δούλους","καὶ","λέγω","λόγους","τοῖς","υἱοῖς","καὶ","τοῖς","ἀδελφοῖς"]},
-                {source:"Человек видит смерть.", correct:["ὁ","ἄνθρωπος","βλέπει","τὸν","θάνατον"]},
-                {source:"Сыны берут дары.", correct:["οἱ","υἱοὶ","λαμβάνουσι","τὰ","δῶρα"]},
-                {source:"Вы знаете смерть.", correct:["γινώσκετε","τὸν","θάνατον"]},
-                {source:"Люди видят дома смерти.", correct:["οἱ","ἄνθρωποι","βλέπουσι","τοὺς","οἴκους","τοῦ","θανάτου"]},
-                {source:"Ты берёшь дар апостола.", correct:["λαμβάνεις","τὸ","δῶρον","τοῦ","ἀποστόλου"]},
-                {source:"Они знают законы и учат слуг.", correct:["γινώσκουσι","τοὺς","νόμους","καὶ","διδάσκουσι","τοὺς","δούλους"]},
-                {source:"О человек, ты знаешь закон.", correct:["ὦ","ἄνθρωπε","γινώσκεις","τὸν","νόμον"]}
-            ],
-            el_to_ru: [
-                {source:"ὁ Χριστὸς λέγει τὸν λόγον τοῦ νόμου τοῖς ἀνθρώποις.", correct:["Христос","говорит","слово","закона","людям"]},
-                {source:"οἱ ἀδελφοὶ λύουσι τοὺς δούλους.", correct:["Братья","освобождают","рабов"]},
-                {source:"οἱ ἀδελφοὶ λέγουσι τὸν λόγον τῷ δούλῳ.", correct:["Братья","говорят","слово","рабу"]},
-                {source:"βλέπομεν τὰ δῶρα τῶν δούλων.", correct:["Мы","видим","дары","рабов"]},
-                {source:"γράφομεν τοῖς ἀδελφοῖς τοὺς λόγους τοῦ νόμου.", correct:["Мы","пишем","братьям","слова","закона"]},
-                {source:"ὁ υἱὸς βλέπει τὰ ἱερὰ καὶ τοὺς οἴκους.", correct:["Сын","видит","храмы","и","дома"]},
-                {source:"λύω τοὺς δούλους καὶ λέγω λόγους τοῖς υἱοῖς καὶ τοῖς ἀδελφοῖς.", correct:["Я","освобождаю","слуг","и","говорю","слова","сынам","и","братьям"]},
-                {source:"ὁ ἄνθρωπος βλέπει τὸν θάνατον.", correct:["Человек","видит","смерть"]},
-                {source:"οἱ υἱοὶ λαμβάνουσι τὰ δῶρα.", correct:["Сыны","берут","дары"]},
-                {source:"γινώσκετε τὸν θάνατον.", correct:["Вы","знаете","смерть"]},
-                {source:"οἱ ἄνθρωποι βλέπουσι τοὺς οἴκους τοῦ θανάτου.", correct:["Люди","видят","дома","смерти"]},
-                {source:"λαμβάνεις τὸ δῶρον τοῦ ἀποστόλου.", correct:["Ты","берёшь","дар","апостола"]},
-                {source:"γινώσκουσι τοὺς νόμους καὶ διδάσκουσι τοὺς δούλους.", correct:["Они","знают","законы","и","учат","слуг"]},
-                {source:"ὦ ἄνθρωπε, γινώσκεις τὸν νόμον.", correct:["О","человек","ты","знаешь","закон"]}
-            ]
-        }
-    },
+translation: {
+    ru_to_el: [
+        { source: "Христос говорит слово закона людям.", correct: ["ὁ","Χριστὸς","λέγει","τὸν","λόγον","τοῦ","νόμου","τοῖς","ἀνθρώποις"] },
+        { source: "Братья освобождают рабов.", correct: ["οἱ","ἀδελφοὶ","λύουσι","τοὺς","δούλους"] },
+        { source: "Братья говорят слово рабу.", correct: ["οἱ","ἀδελφοὶ","λέγουσι","τὸν","λόγον","τῷ","δούλῳ"] },
+        { source: "Мы видим дары рабов.", correct: ["βλέπομεν","τὰ","δῶρα","τῶν","δούλων"] },
+        { source: "Мы пишем братьям слова закона.", correct: ["γράφομεν","τοῖς","ἀδελφοῖς","τοὺς","λόγους","τοῦ","νόμου"] },
+        { source: "Сын видит храмы и дома.", correct: ["ὁ","υἱὸς","βλέπει","τὰ","ἱερὰ","καὶ","τοὺς","οἴκους"] },
+        { source: "Я освобождаю слуг и говорю слова сынам и братьям.", correct: ["λύω","τοὺς","δούλους","καὶ","λέγω","λόγους","τοῖς","υἱοῖς","καὶ","τοῖς","ἀδελφοῖς"] },
+        { source: "Человек видит смерть.", correct: ["ὁ","ἄνθρωπος","βλέπει","τὸν","θάνατον"] },
+        { source: "Сыны берут дары.", correct: ["οἱ","υἱοὶ","λαμβάνουσι","τὰ","δῶρα"] },
+        { source: "Вы знаете смерть.", correct: ["γινώσκετε","τὸν","θάνατον"] },
+        { source: "Люди видят дома смерти.", correct: ["οἱ","ἄνθρωποι","βλέπουσι","τοὺς","οἴκους","τοῦ","θανάτου"] },
+        { source: "Ты берёшь дар апостола.", correct: ["λαμβάνεις","τὸ","δῶρον","τοῦ","ἀποστόλου"] },
+        { source: "Они знают законы и учат слуг.", correct: ["γινώσκουσι","τοὺς","νόμους","καὶ","διδάσκουσι","τοὺς","δούλους"] },
+        { source: "О человек, ты знаешь закон.", correct: ["ὦ","ἄνθρωπε","γινώσκεις","τὸν","νόμον"] }
+    ],
+    el_to_ru: [
+        { source: "ὁ Χριστὸς λέγει τὸν λόγον τοῦ νόμου τοῖς ἀνθρώποις.", correct: "Христос говорит слово закона людям." },
+        { source: "οἱ ἀδελφοὶ λύουσι τοὺς δούλους.", correct: "Братья освобождают рабов." },
+        { source: "οἱ ἀδελφοὶ λέγουσι τὸν λόγον τῷ δούλῳ.", correct: "Братья говорят слово рабу." },
+        { source: "βλέπομεν τὰ δῶρα τῶν δούλων.", correct: "Мы видим дары рабов." },
+        { source: "γράφομεν τοῖς ἀδελφοῖς τοὺς λόγους τοῦ νόμου.", correct: "Мы пишем братьям слова закона." },
+        { source: "ὁ υἱὸς βλέπει τὰ ἱερὰ καὶ τοὺς οἴκους.", correct: "Сын видит храмы и дома." },
+        { source: "λύω τοὺς δούλους καὶ λέγω λόγους τοῖς υἱοῖς καὶ τοῖς ἀδελφοῖς.", correct: "Я освобождаю слуг и говорю слова сынам и братьям." },
+        { source: "ὁ ἄνθρωπος βλέπει τὸν θάνατον.", correct: "Человек видит смерть." },
+        { source: "οἱ υἱοὶ λαμβάνουσι τὰ δῶρα.", correct: "Сыны берут дары." },
+        { source: "γινώσκετε τὸν θάνατον.", correct: "Вы знаете смерть." },
+        { source: "οἱ ἄνθρωποι βλέπουσι τοὺς οἴκους τοῦ θανάτου.", correct: "Люди видят дома смерти." },
+        { source: "λαμβάνεις τὸ δῶρον τοῦ ἀποστόλου.", correct: "Ты берёшь дар апостола." },
+        { source: "γινώσκουσι τοὺς νόμους καὶ διδάσκουσι τοὺς δούλους.", correct: "Они знают законы и учат слуг." },
+        { source: "ὦ ἄνθρωπε, γινώσκεις τὸν νόμον.", correct: "О человек, ты знаешь закон." }
+    ]
+},
     5: {
         title: "1-е склонение (женский род)",
 grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
@@ -1150,33 +1272,40 @@ grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
         {form:"ἡμέραν", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]}
     ]
 },
-        translation: {
-            ru_to_el: [
-                {source:"Царство имеет славу.", correct:["ἡ","βασιλεία","ἔχει","δόξαν"]},
-                {source:"Церкви говорят сердцам людей притчи.", correct:["αἱ","ἐκκλησίαι","λέγουσι","ταῖς","καρδίαις","τῶν","ἀνθρώπων","παραβολάς"]},
-                {source:"Голос Сына Человеческого учит апостола, и голос апостола учит человека.", correct:["ἡ","φωνὴ","τοῦ","υἱοῦ","τοῦ","ἀνθρώπου","διδάσκει","τὸν","ἀπόστολον","καὶ","ἡ","φωνὴ","τοῦ","ἀποστόλου","διδάσκει","τὸν","ἄνθρωπον"]},
-                {source:"Мы имеем писания апостолов.", correct:["ἔχομεν","τὰς","γραφὰς","τῶν","ἀποστόλων"]},
-                {source:"Человек видит жизнь и смерть.", correct:["ὁ","ἄνθρωπος","βλέπει","ζωὴν","καὶ","θάνατον"]},
-                {source:"Апостолы освобождают души.", correct:["οἱ","ἀπόστολοι","λύουσι","τὰς","ψυχάς"]},
-                {source:"Мы видим дома и храмы.", correct:["βλέπομεν","τοὺς","οἴκους","καὶ","τὰ","ἱερά"]},
-                {source:"Иисус знает сердца людей.", correct:["ὁ","Ἰησοῦς","γινώσκει","τὰς","καρδίας","τῶν","ἀνθρώπων"]},
-                {source:"Мы знаем голоса церквей, слова истины и души людей.", correct:["γινώσκομεν","τὰς","φωνὰς","τῶν","ἐκκλησιῶν","τοὺς","λόγους","τῆς","ἀληθείας","καὶ","τὰς","ψυχὰς","τῶν","ἀνθρώπων"]},
-                {source:"Церкви имеют мир и славу.", correct:["αἱ","ἐκκλησίαι","ἔχουσι","εἰρήνην","καὶ","δόξαν"]}
-            ],
-            el_to_ru: [
-                {source:"ἡ βασιλεία ἔχει δόξαν.", correct:["Царство","имеет","славу"]},
-                {source:"αἱ ἐκκλησίαι λέγουσι ταῖς καρδίαις τῶν ἀνθρώπων παραβολάς.", correct:["Церкви","говорят","сердцам","людей","притчи"]},
-                {source:"ἡ φωνὴ τοῦ υἱοῦ τοῦ ἀνθρώπου διδάσκει τὸν ἀπόστολον, καὶ ἡ φωνὴ τοῦ ἀποστόλου διδάσκει τὸν ἄνθρωπον.", correct:["Голос","Сына","Человеческого","учит","апостола","и","голос","апостола","учит","человека"]},
-                {source:"ἔχομεν τὰς γραφὰς τῶν ἀποστόλων.", correct:["Мы","имеем","писания","апостолов"]},
-                {source:"ὁ ἄνθρωπος βλέπει ζωὴν καὶ θάνατον.", correct:["Человек","видит","жизнь","и","смерть"]},
-                {source:"οἱ ἀπόστολοι λύουσι τὰς ψυχάς.", correct:["Апостолы","освобождают","души"]},
-                {source:"βλέπομεν τοὺς οἴκους καὶ τὰ ἱερά.", correct:["Мы","видим","дома","и","храмы"]},
-                {source:"ὁ Ἰησοῦς γινώσκει τὰς καρδίας τῶν ἀνθρώπων.", correct:["Иисус","знает","сердца","людей"]},
-                {source:"γινώσκομεν τὰς φωνὰς τῶν ἐκκλησιῶν, τοὺς λόγους τῆς ἀληθείας καὶ τὰς ψυχὰς τῶν ἀνθρώπων.", correct:["Мы","знаем","голоса","церквей","слова","истины","и","души","людей"]},
-                {source:"αἱ ἐκκλησίαι ἔχουσι εἰρήνην καὶ δόξαν.", correct:["Церкви","имеют","мир","и","славу"]}
-            ]
-        }
-    },
+translation: {
+    ru_to_el: [
+        { source: "Царство имеет славу.", correct: ["ἡ","βασιλεία","ἔχει","δόξαν"] },
+        { source: "Церкви говорят сердцам людей притчи.", correct: ["αἱ","ἐκκλησίαι","λέγουσι","ταῖς","καρδίαις","τῶν","ἀνθρώπων","παραβολάς"] },
+        { source: "Голос Сына Человеческого учит апостола, и голос апостола учит человека.", correct: ["ἡ","φωνὴ","τοῦ","υἱοῦ","τοῦ","ἀνθρώπου","διδάσκει","τὸν","ἀπόστολον","καὶ","ἡ","φωνὴ","τοῦ","ἀποστόλου","διδάσκει","τὸν","ἄνθρωπον"] },
+        { source: "Мы имеем писания апостолов.", correct: ["ἔχομεν","τὰς","γραφὰς","τῶν","ἀποστόλων"] },
+        { source: "Человек видит жизнь и смерть.", correct: ["ὁ","ἄνθρωπος","βλέπει","ζωὴν","καὶ","θάνατον"] },
+        { source: "Апостолы освобождают души.", correct: ["οἱ","ἀπόστολοι","λύουσι","τὰς","ψυχάς"] },
+        { source: "Мы видим дома и храмы.", correct: ["βλέπομεν","τοὺς","οἴκους","καὶ","τὰ","ἱερά"] },
+        { source: "Иисус знает сердца людей.", correct: ["ὁ","Ἰησοῦς","γινώσκει","τὰς","καρδίας","τῶν","ἀνθρώπων"] },
+        { source: "Мы знаем голоса церквей, слова истины и души людей.", correct: ["γινώσκομεν","τὰς","φωνὰς","τῶν","ἐκκλησιῶν","τοὺς","λόγους","τῆς","ἀληθείας","καὶ","τὰς","ψυχὰς","τῶν","ἀνθρώπων"] },
+        { source: "Церкви имеют мир и славу.", correct: ["αἱ","ἐκκλησίαι","ἔχουσι","εἰρήνην","καὶ","δόξαν"] }
+    ],
+    el_to_ru: [
+        { source: "ψυχή βλέπει ζωήν.", correct: "Душа видит жизнь." },
+        { source: "βασιλεία γινώσκει άλήθειαν.", correct: "Царство знает истину." },
+        { source: "άνθρωπος γράφει έντολάς καί νόμους.", correct: "Человек пишет заповеди и законы." },
+        { source: "άπόστολοι γινώσκουσι δούλους καί έκκλησίας.", correct: "Апостолы знают рабов и церкви." },
+        { source: "άπόστολοι καί έκκλησίαι βλέπουσι ζωήν καί θάνατον.", correct: "Апостолы и церкви видят жизнь и смерть." },
+        { source: "υίός δούλου λέγει παραβολήν έκκλησία.", correct: "Сын раба говорит притчу церкви." },
+        { source: "παραβολήν λέγομεν καί έντολήν καί νόμον.", correct: "Мы говорим притчу и заповедь и закон." },
+        { source: "βασιλείας γινώσκετε καί έκκλησίας.", correct: "Вы знаете царства и церкви." },
+        { source: "έκκλησίαν διδάσκει άπόστολος καί άνθρωπον.", correct: "Апостол учит церковь и человека." },
+        { source: "νόμον καί παραβολήν γράφει άδελφός έκκλησία.", correct: "Брат пишет закон и притчу церкви." },
+        { source: "καρδίαι άνθρώπων έχουσι ζωήν καί είρήνην.", correct: "Сердца людей имеют жизнь и мир." },
+        { source: "φωνή άποστόλων διδάσκει ψυχάς δούλων.", correct: "Голос апостолов учит души рабов." },
+        { source: "ίερόν έχει δόξαν.", correct: "Храм имеет славу." },
+        { source: "φωναί έκκλησιών διδάσκουσι βασιλείας καί άνθρώπους.", correct: "Голоса церквей учат царства и людей." },
+        { source: "βλέπεις δώρα καί ίερά.", correct: "Ты видишь дары и храмы." },
+        { source: "γράφει έκκλησία λόγον ζωής.", correct: "Церковь пишет слово жизни." },
+        { source: "λέγει καρδίας άνθρώπων παραβολήν καί νόμον.", correct: "Он говорит сердцам людей притчу и закон." },
+        { source: "γράφει έκκλησία υίός άποστόλου.", correct: "Сын апостола пишет церкви." }
+    ]
+},
     6: {
         title: "Прилагательные 1-2 склонения, артикль",
 grammar: `<b>1. Прилагательные 1-2 склонения</b><br>
@@ -1283,29 +1412,28 @@ grammar: `<b>1. Прилагательные 1-2 склонения</b><br>
                 {noun:"δίκαιον λόγον", correct_article:"τόν", distractors:["τοῦ","τῷ","τήν"]}
             ]
         },
-        translation: {
-            ru_to_el: [
-                {source:"Первой Церкви Господь пишет первую притчу.", correct:["τῇ","πρώτῃ","ἐκκλησίᾳ","ὁ","κύριος","γράφει","τὴν","πρώτην","παραβολήν"]},
-                {source:"Хорошая (девушка) видит пути пустыни.", correct:["ἡ","καλὴ","παρθένος","βλέπει","τὰς","ὁδοὺς","τῆς","ἐρήμου"]},
-                {source:"Хорошие (дела) — первые, а плохие (дела) — последние.", correct:["τὰ","καλὰ","πρῶτά","ἐστιν","τὰ","δὲ","κακὰ","ἔσχατα"]},
-                {source:"Смерть плоха, а жизнь хороша.", correct:["ὁ","θάνατος","κακός","ἐστιν","ἡ","δὲ","ζωὴ","καλή"]},
-                {source:"Господь Царства воскрешает верных (мужчин) и верных (женщин).", correct:["ὁ","κύριος","τῆς","βασιλείας","ἐγείρει","τοὺς","πιστοὺς","καὶ","τὰς","πιστάς"]},
-                {source:"Хорошие (люди) знают плохих (людей), и плохие (люди) знают хороших (людей).", correct:["οἱ","ἀγαθοὶ","γινώσκουσι","τοὺς","κακοὺς","καὶ","οἱ","κακοὶ","γινώσκουσι","τοὺς","ἀγαθούς"]},
-                {source:"Хорошие слова мы говорим Церкви, а плохое (слово) пишут люди.", correct:["τοὺς","ἀγαθούς","λόγους","λέγομεν","τῇ","ἐκκλησίᾳ","τὸ","δὲ","κακὸν","γράφουσι","οἱ","ἄνθρωποι"]},
-                {source:"Красивые девушки видят плохой путь.", correct:["αἱ","καλαὶ","παρθένοι","βλέπουσι","τὴν","κακὴν","ὁδόν"]}
-            ],
-            el_to_ru: [
-                {source:"τῇ πρώτῃ ἐκκλησίᾳ ὁ κύριος γράφει τὴν πρώτην παραβολήν.", correct:["Первой","Церкви","Господь","пишет","первую","притчу"]},
-                {source:"ἡ καλὴ παρθένος βλέπει τὰς ὁδοὺς τῆς ἐρήμου.", correct:["Хорошая","девушка","видит","пути","пустыни"]},
-                {source:"τὰ καλὰ πρῶτά ἐστιν, τὰ δὲ κακὰ ἔσχατα.", correct:["Хорошие","первые","а","плохие","последние"]},
-                {source:"ὁ θάνατος κακός ἐστιν, ἡ δὲ ζωὴ καλή.", correct:["Смерть","плоха","а","жизнь","хороша"]},
-                {source:"ὁ κύριος τῆς βασιλείας ἐγείρει τοὺς πιστοὺς καὶ τὰς πιστάς.", correct:["Господь","Царства","воскрешает","верных","и","верных"]},
-                {source:"οἱ ἀγαθοὶ γινώσκουσι τοὺς κακοὺς καὶ οἱ κακοὶ γινώσκουσι τοὺς ἀγαθούς.", correct:["Хорошие","знают","плохих","и","плохие","знают","хороших"]},
-                {source:"τοὺς ἀγαθούς λόγους λέγομεν τῇ ἐκκλησίᾳ, τὸ δὲ κακὸν γράφουσιν οἱ ἄνθρωποι.", correct:["Хорошие","слова","говорим","Церкви","а","плохое","пишут","люди"]},
-                {source:"αἱ καλαὶ παρθένοι βλέπουσι τὴν κακὴν ὁδόν.", correct:["Красивые","девушки","видят","плохой","путь"]}
-            ]
-        }
-    },
+translation: {
+    ru_to_el: [
+        { source: "Первой Церкви Господь пишет первую притчу.", correct: ["τῇ","πρώτῃ","ἐκκλησίᾳ","ὁ","κύριος","γράφει","τὴν","πρώτην","παραβολήν"] },
+        { source: "Хорошая (девушка) видит пути пустыни.", correct: ["ἡ","καλὴ","παρθένος","βλέπει","τὰς","ὁδοὺς","τῆς","ἐρήμου"] },
+        { source: "Хорошие (дела) — первые, а плохие (дела) — последние.", correct: ["τὰ","καλὰ","πρῶτά","ἐστιν","τὰ","δὲ","κακὰ","ἔσχατα"] },
+        { source: "Смерть плоха, а жизнь хороша.", correct: ["ὁ","θάνατος","κακός","ἐστιν","ἡ","δὲ","ζωὴ","καλή"] },
+        { source: "Господь Царства воскрешает верных (мужчин) и верных (женщин).", correct: ["ὁ","κύριος","τῆς","βασιλείας","ἐγείρει","τοὺς","πιστοὺς","καὶ","τὰς","πιστάς"] },
+        { source: "Хорошие (люди) знают плохих (людей), и плохие (люди) знают хороших (людей).", correct: ["οἱ","ἀγαθοὶ","γινώσκουσι","τοὺς","κακοὺς","καὶ","οἱ","κακοὶ","γινώσκουσι","τοὺς","ἀγαθούς"] },
+        { source: "Хорошие слова мы говорим Церкви, а плохое (слово) пишут люди.", correct: ["τοὺς","ἀγαθούς","λόγους","λέγομεν","τῇ","ἐκκλησίᾳ","τὸ","δὲ","κακὸν","γράφουσι","οἱ","ἄνθρωποι"] },
+        { source: "Красивые девушки видят плохой путь.", correct: ["αἱ","καλαὶ","παρθένοι","βλέπουσι","τὴν","κακὴν","ὁδόν"] }
+    ],
+    el_to_ru: [
+        { source: "τῇ πρώτῃ ἐκκλησίᾳ ὁ κύριος γράφει τὴν πρώτην παραβολήν.", correct: "Первой Церкви Господь пишет первую притчу." },
+        { source: "ἡ καλὴ παρθένος βλέπει τὰς ὁδοὺς τῆς ἐρήμου.", correct: "Хорошая девушка видит пути пустыни." },
+        { source: "τὰ καλὰ πρῶτά ἐστιν, τὰ δὲ κακὰ ἔσχατα.", correct: "Хорошие дела — первые, а плохие дела — последние." },
+        { source: "ὁ θάνατος κακός ἐστιν, ἡ δὲ ζωὴ καλή.", correct: "Смерть плоха, а жизнь хороша." },
+        { source: "ὁ κύριος τῆς βασιλείας ἐγείρει τοὺς πιστοὺς καὶ τὰς πιστάς.", correct: "Господь Царства воскрешает верных мужчин и верных женщин." },
+        { source: "οἱ ἀγαθοὶ γινώσκουσι τοὺς κακοὺς καὶ οἱ κακοὶ γινώσκουσι τοὺς ἀγαθούς.", correct: "Хорошие люди знают плохих, и плохие люди знают хороших." },
+        { source: "τοὺς ἀγαθούς λόγους λέγομεν τῇ ἐκκλησίᾳ, τὸ δὲ κακὸν γράφουσιν οἱ ἄνθρωποι.", correct: "Хорошие слова мы говорим Церкви, а плохое слово пишут люди." },
+        { source: "αἱ καλαὶ παρθένοι βλέπουσι τὴν κακὴν ὁδόν.", correct: "Красивые девушки видят плохой путь." }
+    ]
+},
     7: {
         title: "Существительные муж. рода 1-го скл., предлоги",
 grammar: `<b>1. Существительные мужского рода 1-го склонения</b><br>
@@ -1419,45 +1547,44 @@ grammar: `<b>1. Существительные мужского рода 1-го 
         {form:"μαθηταῖς", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]}
     ]
 },
-        translation: {
-            ru_to_el: [
-                {source:"В мире мы имеем смерть, а в Церкви жизнь.", correct:["ἐν","τῷ","κόσμῳ","ἔχομεν","θάνατον","ἐν","δὲ","τῇ","ἐκκλησίᾳ","ζωήν"]},
-                {source:"Хорошая (женщина) посылает девушку и детей к великим пророкам.", correct:["ἡ","ἀγαθὴ","γυνὴ","πέμπει","τὴν","παρθένον","καὶ","τὰ","τέκνα","πρὸς","τοὺς","μεγάλους","προφήτας"]},
-                {source:"Малое дитя бросает камень в красивый дом.", correct:["τὸ","μικρὸν","παιδίον","βάλλει","τὸν","λίθον","εἰς","τὸν","καλὸν","οἶκον"]},
-                {source:"Креститель говорит хорошее слово юношам и ведёт учеников к Господу.", correct:["ὁ","βαπτιστής","λέγει","τὸν","ἀγαθὸν","λόγον","τοῖς","νεανίαις","καὶ","ἄγει","τοὺς","μαθητὰς","πρὸς","τὸν","κύριον"]},
-                {source:"Ученики пребывают в Церкви и говорят притчу другим.", correct:["οἱ","μαθηταὶ","μένουσιν","ἐν","τῇ","ἐκκλησίᾳ","καὶ","λέγουσι","παραβολὴν","τοῖς","ἄλλοις"]},
-                {source:"Через голос пророка Господь учит учеников.", correct:["διὰ","τῆς","φωνῆς","τοῦ","προφήτου","ὁ","κύριος","διδάσκει","τοὺς","μαθητάς"]},
-                {source:"Вследствие (из-за) заповедей Бога ученики пишут братьям хорошие слова.", correct:["διὰ","τὰς","ἐντολὰς","τοῦ","θεοῦ","οἱ","μαθηταὶ","γράφουσι","τοῖς","ἀδελφοῖς","τοὺς","ἀγαθούς","λόγους"]},
-                {source:"Ради (из-за) детей пророк посылает плохих юношей в пустыню.", correct:["διὰ","τὰ","τέκνα","ὁ","προφήτης","πέμπει","τοὺς","κακοὺς","νεανίας","εἰς","τὴν","ἔρημον"]},
-                {source:"После Господа апостол ведёт учеников.", correct:["μετὰ","τὸν","κύριον","ὁ","ἀπόστολος","ἄγει","τοὺς","μαθητάς"]},
-                {source:"Пророки учат юношей с детьми.", correct:["οἱ","προφῆται","διδάσκουσι","τοὺς","νεανίας","σὺν","τοῖς","τέκνοις"]},
-                {source:"Хорошие (женщины) несут детей к Господу, а плохие ведут в мир.", correct:["αἱ","ἀγαθαὶ","φέρουσι","τὰ","τέκνα","πρὸς","τὸν","κύριον","αἱ","δὲ","κακαὶ","ἄγουσι","εἰς","τὸν","κόσμον"]},
-                {source:"Господь с пророком пребывают в другом месте.", correct:["ὁ","κύριος","μετὰ","τοῦ","προφήτου","μένουσιν","ἐν","ἄλλῳ","τόπῳ"]},
-                {source:"Праведники ведут учеников через пустыню к Господу.", correct:["οἱ","δίκαιοι","ἄγουσι","τοὺς","μαθητὰς","διὰ","τῆς","ἐρήμου","πρὸς","τὸν","κύριον"]},
-                {source:"Мы видим жизнь Сына Божиего в этом мире.", correct:["βλέπομεν","τὴν","ζωὴν","τοῦ","υἱοῦ","τοῦ","θεοῦ","ἐν","τούτῳ","τῷ","κόσμῳ"]},
-                {source:"Ты плох, Церковь хороша.", correct:["σὺ","κακὸς","εἶ","ἡ","δὲ","ἐκκλησία","καλή"]},
-                {source:"Через слово Божие Господь воскрешает мёртвых.", correct:["διὰ","τοῦ","λόγου","τοῦ","θεοῦ","ὁ","κύριος","ἐγείρει","τοὺς","νεκρούς"]}
-            ],
-            el_to_ru: [
-                {source:"ἐν τῷ κόσμῳ ἔχομεν θάνατον, ἐν δὲ τῇ ἐκκλησίᾳ ζωήν.", correct:["В","мире","мы","имеем","смерть","а","в","Церкви","жизнь"]},
-                {source:"ἡ ἀγαθὴ γυνὴ πέμπει τὴν παρθένον καὶ τὰ τέκνα πρὸς τοὺς μεγάλους προφήτας.", correct:["Хорошая","женщина","посылает","девушку","и","детей","к","великим","пророкам"]},
-                {source:"τὸ μικρὸν παιδίον βάλλει τὸν λίθον εἰς τὸν καλὸν οἶκον.", correct:["Малое","дитя","бросает","камень","в","красивый","дом"]},
-                {source:"ὁ βαπτιστὴς λέγει τὸν ἀγαθὸν λόγον τοῖς νεανίαις καὶ ἄγει τοὺς μαθητὰς πρὸς τὸν κύριον.", correct:["Креститель","говорит","хорошее","слово","юношам","и","ведёт","учеников","к","Господу"]},
-                {source:"οἱ μαθηταὶ μένουσιν ἐν τῇ ἐκκλησίᾳ καὶ λέγουσι παραβολὴν τοῖς ἄλλοις.", correct:["Ученики","пребывают","в","Церкви","и","говорят","притчу","другим"]},
-                {source:"διὰ τῆς φωνῆς τοῦ προφήτου ὁ κύριος διδάσκει τοὺς μαθητάς.", correct:["Через","голос","пророка","Господь","учит","учеников"]},
-                {source:"διὰ τὰς ἐντολὰς τοῦ θεοῦ οἱ μαθηταὶ γράφουσι τοῖς ἀδελφοῖς τοὺς ἀγαθούς λόγους.", correct:["Вследствие","заповедей","Бога","ученики","пишут","братьям","хорошие","слова"]},
-                {source:"διὰ τὰ τέκνα ὁ προφήτης πέμπει τοὺς κακοὺς νεανίας εἰς τὴν ἔρημον.", correct:["Ради","детей","пророк","посылает","плохих","юношей","в","пустыню"]},
-                {source:"μετὰ τὸν κύριον ὁ ἀπόστολος ἄγει τοὺς μαθητάς.", correct:["После","Господа","апостол","ведёт","учеников"]},
-                {source:"οἱ προφῆται διδάσκουσι τοὺς νεανίας σὺν τοῖς τέκνοις.", correct:["Пророки","учат","юношей","с","детьми"]},
-                {source:"αἱ ἀγαθαὶ φέρουσι τὰ τέκνα πρὸς τὸν κύριον, αἱ δὲ κακαὶ ἄγουσιν εἰς τὸν κόσμον.", correct:["Хорошие","несут","детей","к","Господу","а","плохие","ведут","в","мир"]},
-                {source:"ὁ κύριος μετὰ τοῦ προφήτου μένουσιν ἐν ἄλλῳ τόπῳ.", correct:["Господь","с","пророком","пребывают","в","другом","месте"]},
-                {source:"οἱ δίκαιοι ἄγουσι τοὺς μαθητὰς διὰ τῆς ἐρήμου πρὸς τὸν κύριον.", correct:["Праведники","ведут","учеников","через","пустыню","к","Господу"]},
-                {source:"βλέπομεν τὴν ζωὴν τοῦ υἱοῦ τοῦ θεοῦ ἐν τούτῳ τῷ κόσμῳ.", correct:["Мы","видим","жизнь","Сына","Божиего","в","этом","мире"]},
-                {source:"σὺ κακὸς εἶ, ἡ δὲ ἐκκλησία καλή.", correct:["Ты","плох","а","Церковь","хороша"]},
-                {source:"διὰ τοῦ λόγου τοῦ θεοῦ ὁ κύριος ἐγείρει τοὺς νεκρούς.", correct:["Через","слово","Божие","Господь","воскрешает","мёртвых"]}
-            ]
-        }
-    },
+translation: {
+    ru_to_el: [
+        { source: "В мире мы имеем смерть, а в Церкви жизнь.", correct: ["ἐν","τῷ","κόσμῳ","ἔχομεν","θάνατον","ἐν","δὲ","τῇ","ἐκκλησίᾳ","ζωήν"] },
+        { source: "Хорошая (женщина) посылает девушку и детей к великим пророкам.", correct: ["ἡ","ἀγαθὴ","γυνὴ","πέμπει","τὴν","παρθένον","καὶ","τὰ","τέκνα","πρὸς","τοὺς","μεγάλους","προφήτας"] },
+        { source: "Малое дитя бросает камень в красивый дом.", correct: ["τὸ","μικρὸν","παιδίον","βάλλει","τὸν","λίθον","εἰς","τὸν","καλὸν","οἶκον"] },
+        { source: "Креститель говорит хорошее слово юношам и ведёт учеников к Господу.", correct: ["ὁ","βαπτιστής","λέγει","τὸν","ἀγαθὸν","λόγον","τοῖς","νεανίαις","καὶ","ἄγει","τοὺς","μαθητὰς","πρὸς","τὸν","κύριον"] },
+        { source: "Ученики пребывают в Церкви и говорят притчу другим.", correct: ["οἱ","μαθηταὶ","μένουσιν","ἐν","τῇ","ἐκκλησίᾳ","καὶ","λέγουσι","παραβολὴν","τοῖς","ἄλλοις"] },
+        { source: "Через голос пророка Господь учит учеников.", correct: ["διὰ","τῆς","φωνῆς","τοῦ","προφήτου","ὁ","κύριος","διδάσκει","τοὺς","μαθητάς"] },
+        { source: "Вследствие (из-за) заповедей Бога ученики пишут братьям хорошие слова.", correct: ["διὰ","τὰς","ἐντολὰς","τοῦ","θεοῦ","οἱ","μαθηταὶ","γράφουσι","τοῖς","ἀδελφοῖς","τοὺς","ἀγαθούς","λόγους"] },
+        { source: "Ради (из-за) детей пророк посылает плохих юношей в пустыню.", correct: ["διὰ","τὰ","τέκνα","ὁ","προφήτης","πέμπει","τοὺς","κακοὺς","νεανίας","εἰς","τὴν","ἔρημον"] },
+        { source: "После Господа апостол ведёт учеников.", correct: ["μετὰ","τὸν","κύριον","ὁ","ἀπόστολος","ἄγει","τοὺς","μαθητάς"] },
+        { source: "Пророки учат юношей с детьми.", correct: ["οἱ","προφῆται","διδάσκουσι","τοὺς","νεανίας","σὺν","τοῖς","τέκνοις"] },
+        { source: "Хорошие (женщины) несут детей к Господу, а плохие ведут в мир.", correct: ["αἱ","ἀγαθαὶ","φέρουσι","τὰ","τέκνα","πρὸς","τὸν","κύριον","αἱ","δὲ","κακαὶ","ἄγουσι","εἰς","τὸν","κόσμον"] },
+        { source: "Господь с пророком пребывают в другом месте.", correct: ["ὁ","κύριος","μετὰ","τοῦ","προφήτου","μένουσιν","ἐν","ἄλλῳ","τόπῳ"] },
+        { source: "Праведники ведут учеников через пустыню к Господу.", correct: ["οἱ","δίκαιοι","ἄγουσι","τοὺς","μαθητὰς","διὰ","τῆς","ἐρήμου","πρὸς","τὸν","κύριον"] },
+        { source: "Мы видим жизнь Сына Божиего в этом мире.", correct: ["βλέπομεν","τὴν","ζωὴν","τοῦ","υἱοῦ","τοῦ","θεοῦ","ἐν","τούτῳ","τῷ","κόσμῳ"] },
+        { source: "Ты плох, Церковь хороша.", correct: ["σὺ","κακὸς","εἶ","ἡ","δὲ","ἐκκλησία","καλή"] },
+        { source: "Через слово Божие Господь воскрешает мёртвых.", correct: ["διὰ","τοῦ","λόγου","τοῦ","θεοῦ","ὁ","κύριος","ἐγείρει","τοὺς","νεκρούς"] }
+    ],
+    el_to_ru: [
+        { source: "ἐν τῷ κόσμῳ ἔχομεν θάνατον, ἐν δὲ τῇ ἐκκλησίᾳ ζωήν.", correct: "В мире мы имеем смерть, а в Церкви жизнь." },
+        { source: "ἡ ἀγαθὴ γυνὴ πέμπει τὴν παρθένον καὶ τὰ τέκνα πρὸς τοὺς μεγάλους προφήτας.", correct: "Хорошая женщина посылает девушку и детей к великим пророкам." },
+        { source: "τὸ μικρὸν παιδίον βάλλει τὸν λίθον εἰς τὸν καλὸν οἶκον.", correct: "Малое дитя бросает камень в красивый дом." },
+        { source: "ὁ βαπτιστὴς λέγει τὸν ἀγαθὸν λόγον τοῖς νεανίαις καὶ ἄγει τοὺς μαθητὰς πρὸς τὸν κύριον.", correct: "Креститель говорит хорошее слово юношам и ведёт учеников к Господу." },
+        { source: "οἱ μαθηταὶ μένουσιν ἐν τῇ ἐκκλησίᾳ καὶ λέγουσι παραβολὴν τοῖς ἄλλοις.", correct: "Ученики пребывают в Церкви и говорят притчу другим." },
+        { source: "διὰ τῆς φωνῆς τοῦ προφήτου ὁ κύριος διδάσκει τοὺς μαθητάς.", correct: "Через голос пророка Господь учит учеников." },
+        { source: "διὰ τὰς ἐντολὰς τοῦ θεοῦ οἱ μαθηταὶ γράφουσι τοῖς ἀδελφοῖς τοὺς ἀγαθούς λόγους.", correct: "Вследствие заповедей Бога ученики пишут братьям хорошие слова." },
+        { source: "διὰ τὰ τέκνα ὁ προφήτης πέμπει τοὺς κακοὺς νεανίας εἰς τὴν ἔρημον.", correct: "Ради детей пророк посылает плохих юношей в пустыню." },
+        { source: "μετὰ τὸν κύριον ὁ ἀπόστολος ἄγει τοὺς μαθητάς.", correct: "После Господа апостол ведёт учеников." },
+        { source: "οἱ προφῆται διδάσκουσι τοὺς νεανίας σὺν τοῖς τέκνοις.", correct: "Пророки учат юношей с детьми." },
+        { source: "αἱ ἀγαθαὶ φέρουσι τὰ τέκνα πρὸς τὸν κύριον, αἱ δὲ κακαὶ ἄγουσιν εἰς τὸν κόσμον.", correct: "Хорошие женщины несут детей к Господу, а плохие ведут в мир." },
+        { source: "ὁ κύριος μετὰ τοῦ προφήτου μένουσιν ἐν ἄλλῳ τόπῳ.", correct: "Господь с пророком пребывают в другом месте." },
+        { source: "οἱ δίκαιοι ἄγουσι τοὺς μαθητὰς διὰ τῆς ἐρήμου πρὸς τὸν κύριον.", correct: "Праведники ведут учеников через пустыню к Господу." },
+        { source: "βλέπομεν τὴν ζωὴν τοῦ υἱοῦ τοῦ θεοῦ ἐν τούτῳ τῷ κόσμῳ.", correct: "Мы видим жизнь Сына Божиего в этом мире." },
+        { source: "σὺ κακὸς εἶ, ἡ δὲ ἐκκλησία καλή.", correct: "Ты плох, Церковь хороша." },
+        { source: "διὰ τοῦ λόγου τοῦ θεοῦ ὁ κύριος ἐγείρει τοὺς νεκρούς.", correct: "Через слово Божие Господь воскрешает мёртвых." }
+    ]
+},
     8: {
 title: "Энклитики и проклитики, местоимения",
 grammar: `<b>1. Энклитики и проклитики</b><br>
@@ -1755,53 +1882,52 @@ exercises: {
         {form:"τελῶναι", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]}
     ]
 },
-        translation: {
-            ru_to_el: [
-                {source:"Твои ученики — в доме Господа.", correct:["οἱ","μαθηταί","σου","εἰσιν","ἐν","τῷ","οἴκῳ","τοῦ","κυρίου"]},
-                {source:"Мои братья — в пустыне.", correct:["οἱ","ἀδελφοί","μου","εἰσιν","ἐν","τῇ","ἐρήμῳ"]},
-                {source:"Пророк знает мытарей и ведёт их к судье.", correct:["ὁ","προφήτης","γινώσκει","τοὺς","τελώνας","καὶ","ἄγει","αὐτοὺς","πρὸς","τὸν","κριτήν"]},
-                {source:"Через его слово вы имеете славу.", correct:["διὰ","τοῦ","λόγου","αὐτοῦ","ἔχετε","δόξαν"]},
-                {source:"Из-за ваших детей вы знаете плохие дни.", correct:["διὰ","τὰ","τέκνα","ὑμῶν","γινώσκετε","τὰς","κακὰς","ἡμέρας"]},
-                {source:"В наши дни мир зол.", correct:["ἐν","ταῖς","ἡμέραις","ἡμῶν","ὁ","κόσμος","πονηρός","ἐστιν"]},
-                {source:"Бог знает наши души и освобождает их от смерти.", correct:["ὁ","θεὸς","γινώσκει","τὰς","ψυχὰς","ἡμῶν","καὶ","λύει","αὐτὰς","ἀπὸ","τοῦ","θανάτου"]},
-                {source:"Ты — мой сын и мой ученик.", correct:["σὺ","εἶ","ὁ","υἱός","μου","καὶ","ὁ","μαθητής","μου"]},
-                {source:"Мы — в Царстве Божием с твоими верными учениками.", correct:["ἡμεῖς","ἐσμεν","ἐν","τῇ","βασιλεία","τοῦ","θεοῦ","μετὰ","τῶν","πιστῶν","μαθητῶν","σου"]},
-                {source:"Мы говорим тебе притчу, ты же говоришь нам другое слово.", correct:["ἡμεῖς","λέγομέν","σοι","παραβολήν","σὺ","δὲ","λέγεις","ἡμῖν","ἄλλον","λόγον"]},
-                {source:"Путь плох, мы же ведём детей к Господу.", correct:["ἡ","ὁδὸς","κακή","ἐστιν","ἡμεῖς","δὲ","ἄγομεν","τὰ","τέκνα","πρὸς","τὸν","κύριον"]},
-                {source:"Мой Господь несёт для вас дары, вы же пишете Ему плохое слово.", correct:["ὁ","κύριός","μου","φέρει","ὑμῖν","δῶρα","ὑμεῖς","δὲ","γράφετε","αὐτῷ","κακὸν","λόγον"]},
-                {source:"Мои дома плохи, и ваши ученики уводят детей из него.", correct:["οἱ","οἶκοι","μου","κακοί","εἰσιν","καὶ","οἱ","μαθηταί","σου","ἄγουσι","τὰ","τέκνα","ἐξ","αὐτοῦ"]},
-                {source:"Твои ученики ведут своих братьев ко мне.", correct:["οἱ","μαθηταί","σου","ἄγουσι","τοὺς","ἀδελφοὺς","αὐτῶν","πρός","με"]},
-                {source:"Я вижу и знаю моих сыновей и веду их к Господу.", correct:["ἐγὼ","βλέπω","καὶ","γινώσκω","τοὺς","υἱούς","μου","καὶ","ἄγω","αὐτοὺς","πρὸς","τὸν","κύριον"]},
-                {source:"Бог знает Свою Церковь и ведёт её из смерти в Своё Царство.", correct:["ὁ","θεὸς","γινώσκει","τὴν","ἐκκλησίαν","αὐτοῦ","καὶ","ἄγει","αὐτὴν","ἐκ","τοῦ","θανάτου","εἰς","τὴν","βασιλείαν","αὐτοῦ"]},
-                {source:"Твои заповеди хороши и праведны и ведут нас в жизнь.", correct:["αἱ","ἐντολαί","σου","ἀγαθαί","εἰσιν","καὶ","δίκαιαι","καὶ","ἄγουσιν","ἡμᾶς","εἰς","ζωήν"]},
-                {source:"Наш Господь посылает Своих апостолов к тебе.", correct:["ὁ","κύριός","ἡμῶν","πέμπει","τοὺς","ἀποστόλους","αὐτοῦ","πρός","σε"]},
-                {source:"Мы посылаем наших слуг в ваши дома, вы же берёте от нас наши дары.", correct:["ἡμεῖς","πέμπομεν","τοὺς","δούλους","ἡμῶν","εἰς","τοὺς","οἴκους","ὑμῶν","ὑμεῖς","δὲ","λαμβάνετε","παρ'","ἡμῶν","τὰ","δῶρα","ἡμῶν"]},
-                {source:"Вы — хорошие, а ваши ученики — плохие.", correct:["ὑμεῖς","ἀγαθοί","ἐστε","οἱ","δὲ","μαθηταί","ὑμῶν","κακοί"]}
-            ],
-            el_to_ru: [
-                {source:"οἱ μαθηταί σου εἰσιν ἐν τῷ οἴκῳ τοῦ κυρίου.", correct:["Твои","ученики","в","доме","Господа"]},
-                {source:"οἱ ἀδελφοί μου εἰσιν ἐν τῇ ἐρήμῳ.", correct:["Мои","братья","в","пустыне"]},
-                {source:"ὁ προφήτης γινώσκει τοὺς τελώνας καὶ ἄγει αὐτοὺς πρὸς τὸν κριτήν.", correct:["Пророк","знает","мытарей","и","ведёт","их","к","судье"]},
-                {source:"διὰ τοῦ λόγου αὐτοῦ ἔχετε δόξαν.", correct:["Через","его","слово","вы","имеете","славу"]},
-                {source:"διὰ τὰ τέκνα ὑμῶν γινώσκετε τὰς κακὰς ἡμέρας.", correct:["Из-за","ваших","детей","вы","знаете","плохие","дни"]},
-                {source:"ἐν ταῖς ἡμέραις ἡμῶν ὁ κόσμος πονηρός ἐστιν.", correct:["В","наши","дни","мир","зол"]},
-                {source:"ὁ θεὸς γινώσκει τὰς ψυχὰς ἡμῶν καὶ λύει αὐτὰς ἀπὸ τοῦ θανάτου.", correct:["Бог","знает","наши","души","и","освобождает","их","от","смерти"]},
-                {source:"σὺ εἶ ὁ υἱός μου καὶ ὁ μαθητής μου.", correct:["Ты","мой","сын","и","мой","ученик"]},
-                {source:"ἡμεῖς ἐσμεν ἐν τῇ βασιλείᾳ τοῦ θεοῦ μετὰ τῶν πιστῶν μαθητῶν σου.", correct:["Мы","в","Царстве","Божием","с","твоими","верными","учениками"]},
-                {source:"ἡμεῖς λέγομέν σοι παραβολήν, σὺ δὲ λέγεις ἡμῖν ἄλλον λόγον.", correct:["Мы","говорим","тебе","притчу","ты","же","говоришь","нам","другое","слово"]},
-                {source:"ἡ ὁδὸς κακή ἐστιν, ἡμεῖς δὲ ἄγομεν τὰ τέκνα πρὸς τὸν κύριον.", correct:["Путь","плох","мы","же","ведём","детей","к","Господу"]},
-                {source:"ὁ κύριός μου φέρει ὑμῖν δῶρα, ὑμεῖς δὲ γράφετε αὐτῷ κακὸν λόγον.", correct:["Мой","Господь","несёт","вам","дары","вы","же","пишете","Ему","плохое","слово"]},
-                {source:"οἱ οἶκοι μου κακοί εἰσιν, καὶ οἱ μαθηταί σου ἄγουσι τὰ τέκνα ἐξ αὐτοῦ.", correct:["Мои","дома","плохи","и","твои","ученики","уводят","детей","из","него"]},
-                {source:"οἱ μαθηταί σου ἄγουσι τοὺς ἀδελφοὺς αὐτῶν πρός με.", correct:["Твои","ученики","ведут","своих","братьев","ко","мне"]},
-                {source:"ἐγὼ βλέπω καὶ γινώσκω τοὺς υἱούς μου καὶ ἄγω αὐτοὺς πρὸς τὸν κύριον.", correct:["Я","вижу","и","знаю","моих","сыновей","и","веду","их","к","Господу"]},
-                {source:"ὁ θεὸς γινώσκει τὴν ἐκκλησίαν αὐτοῦ καὶ ἄγει αὐτὴν ἐκ τοῦ θανάτου εἰς τὴν βασιλείαν αὐτοῦ.", correct:["Бог","знает","Свою","Церковь","и","ведёт","её","из","смерти","в","Своё","Царство"]},
-                {source:"αἱ ἐντολαί σου ἀγαθαί εἰσιν καὶ δίκαιαι καὶ ἄγουσιν ἡμᾶς εἰς ζωήν.", correct:["Твои","заповеди","хороши","и","праведны","и","ведут","нас","в","жизнь"]},
-                {source:"ὁ κύριός ἡμῶν πέμπει τοὺς ἀποστόλους αὐτοῦ πρός σε.", correct:["Наш","Господь","посылает","Своих","апостолов","к","тебе"]},
-                {source:"ἡμεῖς πέμπομεν τοὺς δούλους ἡμῶν εἰς τοὺς οἴκους ὑμῶν, ὑμεῖς δὲ λαμβάνετε παρ' ἡμῶν τὰ δῶρα ἡμῶν.", correct:["Мы","посылаем","наших","слуг","в","ваши","дома","вы","же","берёте","от","нас","наши","дары"]},
-                {source:"ὑμεῖς ἀγαθοί ἐστε, οἱ δὲ μαθηταί ὑμῶν κακοί.", correct:["Вы","хорошие","а","ваши","ученики","плохие"]}
-            ]
-        }
-    },
+translation: {
+    ru_to_el: [
+        { source: "Твои ученики — в доме Господа.", correct: ["οἱ","μαθηταί","σου","εἰσιν","ἐν","τῷ","οἴκῳ","τοῦ","κυρίου"] },
+        { source: "Мои братья — в пустыне.", correct: ["οἱ","ἀδελφοί","μου","εἰσιν","ἐν","τῇ","ἐρήμῳ"] },
+        { source: "Пророк знает мытарей и ведёт их к судье.", correct: ["ὁ","προφήτης","γινώσκει","τοὺς","τελώνας","καὶ","ἄγει","αὐτοὺς","πρὸς","τὸν","κριτήν"] },
+        { source: "Через его слово вы имеете славу.", correct: ["διὰ","τοῦ","λόγου","αὐτοῦ","ἔχετε","δόξαν"] },
+        { source: "Из-за ваших детей вы знаете плохие дни.", correct: ["διὰ","τὰ","τέκνα","ὑμῶν","γινώσκετε","τὰς","κακὰς","ἡμέρας"] },
+        { source: "В наши дни мир зол.", correct: ["ἐν","ταῖς","ἡμέραις","ἡμῶν","ὁ","κόσμος","πονηρός","ἐστιν"] },
+        { source: "Бог знает наши души и освобождает их от смерти.", correct: ["ὁ","θεὸς","γινώσκει","τὰς","ψυχὰς","ἡμῶν","καὶ","λύει","αὐτὰς","ἀπὸ","τοῦ","θανάτου"] },
+        { source: "Ты — мой сын и мой ученик.", correct: ["σὺ","εἶ","ὁ","υἱός","μου","καὶ","ὁ","μαθητής","μου"] },
+        { source: "Мы — в Царстве Божием с твоими верными учениками.", correct: ["ἡμεῖς","ἐσμεν","ἐν","τῇ","βασιλεία","τοῦ","θεοῦ","μετὰ","τῶν","πιστῶν","μαθητῶν","σου"] },
+        { source: "Мы говорим тебе притчу, ты же говоришь нам другое слово.", correct: ["ἡμεῖς","λέγομέν","σοι","παραβολήν","σὺ","δὲ","λέγεις","ἡμῖν","ἄλλον","λόγον"] },
+        { source: "Путь плох, мы же ведём детей к Господу.", correct: ["ἡ","ὁδὸς","κακή","ἐστιν","ἡμεῖς","δὲ","ἄγομεν","τὰ","τέκνα","πρὸς","τὸν","κύριον"] },
+        { source: "Мой Господь несёт для вас дары, вы же пишете Ему плохое слово.", correct: ["ὁ","κύριός","μου","φέρει","ὑμῖν","δῶρα","ὑμεῖς","δὲ","γράφετε","αὐτῷ","κακὸν","λόγον"] },
+        { source: "Мои дома плохи, и ваши ученики уводят детей из него.", correct: ["οἱ","οἶκοι","μου","κακοί","εἰσιν","καὶ","οἱ","μαθηταί","σου","ἄγουσι","τὰ","τέκνα","ἐξ","αὐτοῦ"] },
+        { source: "Твои ученики ведут своих братьев ко мне.", correct: ["οἱ","μαθηταί","σου","ἄγουσι","τοὺς","ἀδελφοὺς","αὐτῶν","πρός","με"] },
+        { source: "Я вижу и знаю моих сыновей и веду их к Господу.", correct: ["ἐγὼ","βλέπω","καὶ","γινώσκω","τοὺς","υἱούς","μου","καὶ","ἄγω","αὐτοὺς","πρὸς","τὸν","κύριον"] },
+        { source: "Бог знает Свою Церковь и ведёт её из смерти в Своё Царство.", correct: ["ὁ","θεὸς","γινώσκει","τὴν","ἐκκλησίαν","αὐτοῦ","καὶ","ἄγει","αὐτὴν","ἐκ","τοῦ","θανάτου","εἰς","τὴν","βασιλείαν","αὐτοῦ"] },
+        { source: "Твои заповеди хороши и праведны и ведут нас в жизнь.", correct: ["αἱ","ἐντολαί","σου","ἀγαθαί","εἰσιν","καὶ","δίκαιαι","καὶ","ἄγουσιν","ἡμᾶς","εἰς","ζωήν"] },
+        { source: "Наш Господь посылает Своих апостолов к тебе.", correct: ["ὁ","κύριός","ἡμῶν","πέμπει","τοὺς","ἀποστόλους","αὐτοῦ","πρός","σε"] },
+        { source: "Мы посылаем наших слуг в ваши дома, вы же берёте от нас наши дары.", correct: ["ἡμεῖς","πέμπομεν","τοὺς","δούλους","ἡμῶν","εἰς","τοὺς","οἴκους","ὑμῶν","ὑμεῖς","δὲ","λαμβάνετε","παρ'","ἡμῶν","τὰ","δῶρα","ἡμῶν"] },
+        { source: "Вы — хорошие, а ваши ученики — плохие.", correct: ["ὑμεῖς","ἀγαθοί","ἐστε","οἱ","δὲ","μαθηταί","ὑμῶν","κακοί"] }
+    ],
+    el_to_ru: [
+        { source: "οἱ μαθηταί σου εἰσιν ἐν τῷ οἴκῳ τοῦ κυρίου.", correct: "Твои ученики в доме Господа." },
+        { source: "οἱ ἀδελφοί μου εἰσιν ἐν τῇ ἐρήμῳ.", correct: "Мои братья в пустыне." },
+        { source: "ὁ προφήτης γινώσκει τοὺς τελώνας καὶ ἄγει αὐτοὺς πρὸς τὸν κριτήν.", correct: "Пророк знает мытарей и ведёт их к судье." },
+        { source: "διὰ τοῦ λόγου αὐτοῦ ἔχετε δόξαν.", correct: "Через его слово вы имеете славу." },
+        { source: "διὰ τὰ τέκνα ὑμῶν γινώσκετε τὰς κακὰς ἡμέρας.", correct: "Из-за ваших детей вы знаете плохие дни." },
+        { source: "ἐν ταῖς ἡμέραις ἡμῶν ὁ κόσμος πονηρός ἐστιν.", correct: "В наши дни мир зол." },
+        { source: "ὁ θεὸς γινώσκει τὰς ψυχὰς ἡμῶν καὶ λύει αὐτὰς ἀπὸ τοῦ θανάτου.", correct: "Бог знает наши души и освобождает их от смерти." },
+        { source: "σὺ εἶ ὁ υἱός μου καὶ ὁ μαθητής μου.", correct: "Ты мой сын и мой ученик." },
+        { source: "ἡμεῖς ἐσμεν ἐν τῇ βασιλείᾳ τοῦ θεοῦ μετὰ τῶν πιστῶν μαθητῶν σου.", correct: "Мы в Царстве Божием с твоими верными учениками." },
+        { source: "ἡμεῖς λέγομέν σοι παραβολήν, σὺ δὲ λέγεις ἡμῖν ἄλλον λόγον.", correct: "Мы говорим тебе притчу, ты же говоришь нам другое слово." },
+        { source: "ἡ ὁδὸς κακή ἐστιν, ἡμεῖς δὲ ἄγομεν τὰ τέκνα πρὸς τὸν κύριον.", correct: "Путь плох, мы же ведём детей к Господу." },
+        { source: "ὁ κύριός μου φέρει ὑμῖν δῶρα, ὑμεῖς δὲ γράφετε αὐτῷ κακὸν λόγον.", correct: "Мой Господь несёт вам дары, вы же пишете Ему плохое слово." },
+        { source: "οἱ οἶκοι μου κακοί εἰσιν, καὶ οἱ μαθηταί σου ἄγουσι τὰ τέκνα ἐξ αὐτοῦ.", correct: "Мои дома плохи, и твои ученики уводят детей из него." },
+        { source: "οἱ μαθηταί σου ἄγουσι τοὺς ἀδελφοὺς αὐτῶν πρός με.", correct: "Твои ученики ведут своих братьев ко мне." },
+        { source: "ἐγὼ βλέπω καὶ γινώσκω τοὺς υἱούς μου καὶ ἄγω αὐτοὺς πρὸς τὸν κύριον.", correct: "Я вижу и знаю моих сыновей и веду их к Господу." },
+        { source: "ὁ θεὸς γινώσκει τὴν ἐκκλησίαν αὐτοῦ καὶ ἄγει αὐτὴν ἐκ τοῦ θανάτου εἰς τὴν βασιλείαν αὐτοῦ.", correct: "Бог знает Свою Церковь и ведёт её из смерти в Своё Царство." },
+        { source: "αἱ ἐντολαί σου ἀγαθαί εἰσιν καὶ δίκαιαι καὶ ἄγουσιν ἡμᾶς εἰς ζωήν.", correct: "Твои заповеди хороши и праведны и ведут нас в жизнь." },
+        { source: "ὁ κύριός ἡμῶν πέμπει τοὺς ἀποστόλους αὐτοῦ πρός σε.", correct: "Наш Господь посылает Своих апостолов к тебе." },
+        { source: "ἡμεῖς πέμπομεν τοὺς δούλους ἡμῶν εἰς τοὺς οἴκους ὑμῶν, ὑμεῖς δὲ λαμβάνετε παρ' ἡμῶν τὰ δῶρα ἡμῶν.", correct: "Мы посылаем наших слуг в ваши дома, вы же берёте от нас наши дары." },
+        { source: "ὑμεῖς ἀγαθοί ἐστε, οἱ δὲ μαθηταί ὑμῶν κακοί.", correct: "Вы хорошие, а ваши ученики плохие." }
+    ]
+},
     9: {
         title: "Указательные местоимения, αὐτός",
 grammar: `<b>1. Указательные местоимения οὗτος, αὕτη, τοῦτο (этот, эта, это)</b><br>
@@ -1897,53 +2023,52 @@ grammar: `<b>1. Указательные местоимения οὗτος, α�
         {form:"ἐκείνων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]}
     ]
 },
-        translation: {
-            ru_to_el: [
-                {source:"Эти пророки знают самого Господа.", correct:["οὗτοι","οἱ","προφῆται","γινώσκουσι","αὐτὸν","τὸν","κύριον"]},
-                {source:"Те же самые ученики знают Его и видят Его лицо.", correct:["οἱ","αὐτοὶ","μαθηταὶ","γινώσκουσι","αὐτόν","καὶ","βλέπουσι","τὸ","πρόσωπον","αὐτοῦ"]},
-                {source:"Те Церкви судят этих учителей и ведут их от греха в радость.", correct:["ἐκεῖναι","αἱ","ἐκκλησίαι","κρίνουσι","τούτους","τοὺς","διδασκάλους","καὶ","ἄγουσιν","αὐτοὺς","ἀπὸ","τῆς","ἁμαρτίας","εἰς","τὴν","χαράν"]},
-                {source:"Мы сами имеем этот грех в нашем сердце.", correct:["ἡμεῖς","αὐτοὶ","ἔχομεν","ταύτην","τὴν","ἁμαρτίαν","ἐν","τῇ","καρδίᾳ","ἡμῶν"]},
-                {source:"Благодаря (из-за) любви нашего Господа эти юноши и девы имеют радость в своих сердцах.", correct:["διὰ","τὴν","ἀγάπην","τοῦ","κυρίου","ἡμῶν","οὗτοι","οἱ","νεανίαι","καὶ","αὗται","αἱ","παρθένοι","ἔχουσι","χαράν","ἐν","ταῖς","καρδίαις","αὐτῶν"]},
-                {source:"Это — верные ученики пророка.", correct:["οὗτοί","εἰσιν","οἱ","πιστοὶ","μαθηταὶ","τοῦ","προφήτου"]},
-                {source:"Апостол сам крестит своих братьев и ведёт их к тебе.", correct:["ὁ","ἀπόστολος","αὐτὸς","βαπτίζει","τοὺς","ἀδελφοὺς","αὐτοῦ","καὶ","ἄγει","αὐτοὺς","πρός","σε"]},
-                {source:"Через это Евангелие мы имеем жизнь в небесах.", correct:["διὰ","τοῦτο","τὸ","εὐαγγέλιον","ἔχομεν","ζωὴν","ἐν","τοῖς","οὐρανοῖς"]},
-                {source:"Из-за этих учителей мы видим смерть в Церкви.", correct:["διὰ","τούτους","τοὺς","διδασκάλους","βλέπομεν","θάνατον","ἐν","τῇ","ἐκκλησίᾳ"]},
-                {source:"Он сам знает нас и от Него мы получаем это обещание и ту же самую радость.", correct:["αὐτὸς","γινώσκει","ἡμᾶς","καὶ","παρ'","αὐτοῦ","λαμβάνομεν","ταύτην","τὴν","ἐπαγγελίαν","καὶ","τὴν","αὐτὴν","χαράν"]},
-                {source:"Из-за этого же Евангелия мы сами посылаем этих мытарей к вам.", correct:["διὰ","τοῦτο","τὸ","εὐαγγέλιον","ἡμεῖς","αὐτοὶ","πέμπομεν","τούτους","τοὺς","τελώνας","πρὸς","ὑμᾶς"]},
-                {source:"Он посылает самого Господа в этот мир.", correct:["αὐτὸς","πέμπει","αὐτὸν","τὸν","κύριον","εἰς","τοῦτον","τὸν","κόσμον"]},
-                {source:"Я сам вижу этого справедливого судью, и братья его видят.", correct:["ἐγὼ","αὐτὸς","βλέπω","τοῦτον","τὸν","δίκαιον","κριτήν","καὶ","οἱ","ἀδελφοί","αὐτοῦ","βλέπουσιν"]},
-                {source:"Сейчас мы крестим тех учеников нашего Господа и посылаем их же в пустыню.", correct:["νῦν","ἡμεῖς","βαπτίζομεν","ἐκείνους","τοὺς","μαθητὰς","τοῦ","κυρίου","ἡμῶν","καὶ","πέμπομεν","αὐτοὺς","εἰς","τὴν","ἔρημον"]},
-                {source:"Мои ученики знают мой голос и приносят этих детей ко мне.", correct:["οἱ","μαθηταί","μου","γινώσκουσι","τὴν","φωνήν","μου","καὶ","φέρουσι","ταῦτα","τὰ","παιδία","πρός","με"]},
-                {source:"Мы — ученики Господа, а вы — ученики злого (господина).", correct:["ἡμεῖς","ἐσμεν","μαθηταὶ","τοῦ","κυρίου","ὑμεῖς","δὲ","μαθηταί","ἐστε","τοῦ","πονηροῦ"]},
-                {source:"Эта любовь ведёт наших детей в жизнь.", correct:["αὕτη","ἡ","ἀγάπη","ἄγει","τὰ","τέκνα","ἡμῶν","εἰς","ζωήν"]},
-                {source:"Любовь этих Церквей ведёт и других людей в радость.", correct:["ἡ","ἀγάπη","τούτων","τῶν","ἐκκλησιῶν","ἄγει","καὶ","τοὺς","ἄλλους","ἀνθρώπους","εἰς","χαράν"]},
-                {source:"Учителя этого мира имеют грех в своих сердцах и так учат людей.", correct:["οἱ","διδάσκαλοι","τούτου","τοῦ","κόσμου","ἔχουσι","ἁμαρτίαν","ἐν","ταῖς","καρδίαις","αὐτῶν","καὶ","οὕτως","διδάσκουσι","τοὺς","ἀνθρώπους"]},
-                {source:"Я знаю грех этих мытарей и посылаю их к самому Господу.", correct:["ἐγώ","γινώσκω","τὴν","ἁμαρτίαν","τούτων","τῶν","τελωνῶν","καὶ","πέμπω","αὐτοὺς","πρὸς","αὐτὸν","τὸν","κύριον"]}
-            ],
-            el_to_ru: [
-                {source:"οὗτοι οἱ προφῆται γινώσκουσι αὐτὸν τὸν κύριον.", correct:["Эти","пророки","знают","самого","Господа"]},
-                {source:"οἱ αὐτοὶ μαθηταὶ γινώσκουσι αὐτὸν καὶ βλέπουσι τὸ πρόσωπον αὐτοῦ.", correct:["Те","же","самые","ученики","знают","Его","и","видят","Его","лицо"]},
-                {source:"ἐκεῖναι αἱ ἐκκλησίαι κρίνουσι τούτους τοὺς διδασκάλους καὶ ἄγουσιν αὐτοὺς ἀπὸ τῆς ἁμαρτίας εἰς τὴν χαράν.", correct:["Те","Церкви","судят","этих","учителей","и","ведут","их","от","греха","в","радость"]},
-                {source:"ἡμεῖς αὐτοὶ ἔχομεν ταύτην τὴν ἁμαρτίαν ἐν τῇ καρδίᾳ ἡμῶν.", correct:["Мы","сами","имеем","этот","грех","в","нашем","сердце"]},
-                {source:"διὰ τὴν ἀγάπην τοῦ κυρίου ἡμῶν οὗτοι οἱ νεανίαι καὶ αὗται αἱ παρθένοι ἔχουσι χαράν ἐν ταῖς καρδίαις αὐτῶν.", correct:["Благодаря","любви","нашего","Господа","эти","юноши","и","эти","девы","имеют","радость","в","своих","сердцах"]},
-                {source:"οὗτοί εἰσιν οἱ πιστοὶ μαθηταὶ τοῦ προφήτου.", correct:["Это","верные","ученики","пророка"]},
-                {source:"ὁ ἀπόστολος αὐτὸς βαπτίζει τοὺς ἀδελφοὺς αὐτοῦ καὶ ἄγει αὐτοὺς πρός σε.", correct:["Апостол","сам","крестит","своих","братьев","и","ведёт","их","к","тебе"]},
-                {source:"διὰ τοῦτο τὸ εὐαγγέλιον ἔχομεν ζωὴν ἐν τοῖς οὐρανοῖς.", correct:["Через","это","Евангелие","мы","имеем","жизнь","в","небесах"]},
-                {source:"διὰ τούτους τοὺς διδασκάλους βλέπομεν θάνατον ἐν τῇ ἐκκλησίᾳ.", correct:["Из-за","этих","учителей","мы","видим","смерть","в","Церкви"]},
-                {source:"αὐτὸς γινώσκει ἡμᾶς καὶ παρ' αὐτοῦ λαμβάνομεν ταύτην τὴν ἐπαγγελίαν καὶ τὴν αὐτὴν χαράν.", correct:["Он","сам","знает","нас","и","от","Него","мы","получаем","это","обещание","и","ту","же","самую","радость"]},
-                {source:"διὰ τοῦτο τὸ εὐαγγέλιον ἡμεῖς αὐτοὶ πέμπομεν τούτους τοὺς τελώνας πρὸς ὑμᾶς.", correct:["Из-за","этого","же","Евангелия","мы","сами","посылаем","этих","мытарей","к","вам"]},
-                {source:"αὐτὸς πέμπει αὐτὸν τὸν κύριον εἰς τοῦτον τὸν κόσμον.", correct:["Он","посылает","самого","Господа","в","этот","мир"]},
-                {source:"ἐγὼ αὐτὸς βλέπω τοῦτον τὸν δίκαιον κριτήν, καὶ οἱ ἀδελφοὶ αὐτοῦ βλέπουσιν.", correct:["Я","сам","вижу","этого","справедливого","судью","и","братья","его","видят"]},
-                {source:"νῦν ἡμεῖς βαπτίζομεν ἐκείνους τοὺς μαθητὰς τοῦ κυρίου ἡμῶν καὶ πέμπομεν αὐτοὺς εἰς τὴν ἔρημον.", correct:["Сейчас","мы","крестим","тех","учеников","нашего","Господа","и","посылаем","их","в","пустыню"]},
-                {source:"οἱ μαθηταί μου γινώσκουσι τὴν φωνήν μου καὶ φέρουσι ταῦτα τὰ παιδία πρός με.", correct:["Мои","ученики","знают","мой","голос","и","приносят","этих","детей","ко","мне"]},
-                {source:"ἡμεῖς ἐσμεν μαθηταὶ τοῦ κυρίου, ὑμεῖς δὲ μαθηταί ἐστε τοῦ πονηροῦ.", correct:["Мы","ученики","Господа","а","вы","ученики","злого"]},
-                {source:"αὕτη ἡ ἀγάπη ἄγει τὰ τέκνα ἡμῶν εἰς ζωήν.", correct:["Эта","любовь","ведёт","наших","детей","в","жизнь"]},
-                {source:"ἡ ἀγάπη τούτων τῶν ἐκκλησιῶν ἄγει καὶ τοὺς ἄλλους ἀνθρώπους εἰς χαράν.", correct:["Любовь","этих","Церквей","ведёт","и","других","людей","в","радость"]},
-                {source:"οἱ διδάσκαλοι τούτου τοῦ κόσμου ἔχουσι ἁμαρτίαν ἐν ταῖς καρδίαις αὐτῶν καὶ οὕτως διδάσκουσι τοὺς ἀνθρώπους.", correct:["Учителя","этого","мира","имеют","грех","в","своих","сердцах","и","так","учат","людей"]},
-                {source:"ἐγώ γινώσκω τὴν ἁμαρτίαν τούτων τῶν τελωνῶν καὶ πέμπω αὐτοὺς πρὸς αὐτὸν τὸν κύριον.", correct:["Я","знаю","грех","этих","мытарей","и","посылаю","их","к","самому","Господу"]}
-            ]
-        }
-    },
+translation: {
+    ru_to_el: [
+        { source: "Эти пророки знают самого Господа.", correct: ["οὗτοι","οἱ","προφῆται","γινώσκουσι","αὐτὸν","τὸν","κύριον"] },
+        { source: "Те же самые ученики знают Его и видят Его лицо.", correct: ["οἱ","αὐτοὶ","μαθηταὶ","γινώσκουσι","αὐτόν","καὶ","βλέπουσι","τὸ","πρόσωπον","αὐτοῦ"] },
+        { source: "Те Церкви судят этих учителей и ведут их от греха в радость.", correct: ["ἐκεῖναι","αἱ","ἐκκλησίαι","κρίνουσι","τούτους","τοὺς","διδασκάλους","καὶ","ἄγουσιν","αὐτοὺς","ἀπὸ","τῆς","ἁμαρτίας","εἰς","τὴν","χαράν"] },
+        { source: "Мы сами имеем этот грех в нашем сердце.", correct: ["ἡμεῖς","αὐτοὶ","ἔχομεν","ταύτην","τὴν","ἁμαρτίαν","ἐν","τῇ","καρδίᾳ","ἡμῶν"] },
+        { source: "Благодаря (из-за) любви нашего Господа эти юноши и девы имеют радость в своих сердцах.", correct: ["διὰ","τὴν","ἀγάπην","τοῦ","κυρίου","ἡμῶν","οὗτοι","οἱ","νεανίαι","καὶ","αὗται","αἱ","παρθένοι","ἔχουσι","χαράν","ἐν","ταῖς","καρδίαις","αὐτῶν"] },
+        { source: "Это — верные ученики пророка.", correct: ["οὗτοί","εἰσιν","οἱ","πιστοὶ","μαθηταὶ","τοῦ","προφήτου"] },
+        { source: "Апостол сам крестит своих братьев и ведёт их к тебе.", correct: ["ὁ","ἀπόστολος","αὐτὸς","βαπτίζει","τοὺς","ἀδελφοὺς","αὐτοῦ","καὶ","ἄγει","αὐτοὺς","πρός","σε"] },
+        { source: "Через это Евангелие мы имеем жизнь в небесах.", correct: ["διὰ","τοῦτο","τὸ","εὐαγγέλιον","ἔχομεν","ζωὴν","ἐν","τοῖς","οὐρανοῖς"] },
+        { source: "Из-за этих учителей мы видим смерть в Церкви.", correct: ["διὰ","τούτους","τοὺς","διδασκάλους","βλέπομεν","θάνατον","ἐν","τῇ","ἐκκλησίᾳ"] },
+        { source: "Он сам знает нас и от Него мы получаем это обещание и ту же самую радость.", correct: ["αὐτὸς","γινώσκει","ἡμᾶς","καὶ","παρ'","αὐτοῦ","λαμβάνομεν","ταύτην","τὴν","ἐπαγγελίαν","καὶ","τὴν","αὐτὴν","χαράν"] },
+        { source: "Из-за этого же Евангелия мы сами посылаем этих мытарей к вам.", correct: ["διὰ","τοῦτο","τὸ","εὐαγγέλιον","ἡμεῖς","αὐτοὶ","πέμπομεν","τούτους","τοὺς","τελώνας","πρὸς","ὑμᾶς"] },
+        { source: "Он посылает самого Господа в этот мир.", correct: ["αὐτὸς","πέμπει","αὐτὸν","τὸν","κύριον","εἰς","τοῦτον","τὸν","κόσμον"] },
+        { source: "Я сам вижу этого справедливого судью, и братья его видят.", correct: ["ἐγὼ","αὐτὸς","βλέπω","τοῦτον","τὸν","δίκαιον","κριτήν","καὶ","οἱ","ἀδελφοί","αὐτοῦ","βλέπουσιν"] },
+        { source: "Сейчас мы крестим тех учеников нашего Господа и посылаем их же в пустыню.", correct: ["νῦν","ἡμεῖς","βαπτίζομεν","ἐκείνους","τοὺς","μαθητὰς","τοῦ","κυρίου","ἡμῶν","καὶ","πέμπομεν","αὐτοὺς","εἰς","τὴν","ἔρημον"] },
+        { source: "Мои ученики знают мой голос и приносят этих детей ко мне.", correct: ["οἱ","μαθηταί","μου","γινώσκουσι","τὴν","φωνήν","μου","καὶ","φέρουσι","ταῦτα","τὰ","παιδία","πρός","με"] },
+        { source: "Мы — ученики Господа, а вы — ученики злого (господина).", correct: ["ἡμεῖς","ἐσμεν","μαθηταὶ","τοῦ","κυρίου","ὑμεῖς","δὲ","μαθηταί","ἐστε","τοῦ","πονηροῦ"] },
+        { source: "Эта любовь ведёт наших детей в жизнь.", correct: ["αὕτη","ἡ","ἀγάπη","ἄγει","τὰ","τέκνα","ἡμῶν","εἰς","ζωήν"] },
+        { source: "Любовь этих Церквей ведёт и других людей в радость.", correct: ["ἡ","ἀγάπη","τούτων","τῶν","ἐκκλησιῶν","ἄγει","καὶ","τοὺς","ἄλλους","ἀνθρώπους","εἰς","χαράν"] },
+        { source: "Учителя этого мира имеют грех в своих сердцах и так учат людей.", correct: ["οἱ","διδάσκαλοι","τούτου","τοῦ","κόσμου","ἔχουσι","ἁμαρτίαν","ἐν","ταῖς","καρδίαις","αὐτῶν","καὶ","οὕτως","διδάσκουσι","τοὺς","ἀνθρώπους"] },
+        { source: "Я знаю грех этих мытарей и посылаю их к самому Господу.", correct: ["ἐγώ","γινώσκω","τὴν","ἁμαρτίαν","τούτων","τῶν","τελωνῶν","καὶ","πέμπω","αὐτοὺς","πρὸς","αὐτὸν","τὸν","κύριον"] }
+    ],
+    el_to_ru: [
+        { source: "οὗτοι οἱ προφῆται γινώσκουσι αὐτὸν τὸν κύριον.", correct: "Эти пророки знают самого Господа." },
+        { source: "οἱ αὐτοὶ μαθηταὶ γινώσκουσι αὐτὸν καὶ βλέπουσι τὸ πρόσωπον αὐτοῦ.", correct: "Те же самые ученики знают Его и видят Его лицо." },
+        { source: "ἐκεῖναι αἱ ἐκκλησίαι κρίνουσι τούτους τοὺς διδασκάλους καὶ ἄγουσιν αὐτοὺς ἀπὸ τῆς ἁμαρτίας εἰς τὴν χαράν.", correct: "Те Церкви судят этих учителей и ведут их от греха в радость." },
+        { source: "ἡμεῖς αὐτοὶ ἔχομεν ταύτην τὴν ἁμαρτίαν ἐν τῇ καρδίᾳ ἡμῶν.", correct: "Мы сами имеем этот грех в нашем сердце." },
+        { source: "διὰ τὴν ἀγάπην τοῦ κυρίου ἡμῶν οὗτοι οἱ νεανίαι καὶ αὗται αἱ παρθένοι ἔχουσι χαράν ἐν ταῖς καρδίαις αὐτῶν.", correct: "Благодаря любви нашего Господа эти юноши и девы имеют радость в своих сердцах." },
+        { source: "οὗτοί εἰσιν οἱ πιστοὶ μαθηταὶ τοῦ προφήτου.", correct: "Это верные ученики пророка." },
+        { source: "ὁ ἀπόστολος αὐτὸς βαπτίζει τοὺς ἀδελφοὺς αὐτοῦ καὶ ἄγει αὐτοὺς πρός σε.", correct: "Апостол сам крестит своих братьев и ведёт их к тебе." },
+        { source: "διὰ τοῦτο τὸ εὐαγγέλιον ἔχομεν ζωὴν ἐν τοῖς οὐρανοῖς.", correct: "Через это Евангелие мы имеем жизнь в небесах." },
+        { source: "διὰ τούτους τοὺς διδασκάλους βλέπομεν θάνατον ἐν τῇ ἐκκλησίᾳ.", correct: "Из-за этих учителей мы видим смерть в Церкви." },
+        { source: "αὐτὸς γινώσκει ἡμᾶς καὶ παρ' αὐτοῦ λαμβάνομεν ταύτην τὴν ἐπαγγελίαν καὶ τὴν αὐτὴν χαράν.", correct: "Он сам знает нас и от Него мы получаем это обещание и ту же самую радость." },
+        { source: "διὰ τοῦτο τὸ εὐαγγέλιον ἡμεῖς αὐτοὶ πέμπομεν τούτους τοὺς τελώνας πρὸς ὑμᾶς.", correct: "Из-за этого же Евангелия мы сами посылаем этих мытарей к вам." },
+        { source: "αὐτὸς πέμπει αὐτὸν τὸν κύριον εἰς τοῦτον τὸν κόσμον.", correct: "Он посылает самого Господа в этот мир." },
+        { source: "ἐγὼ αὐτὸς βλέπω τοῦτον τὸν δίκαιον κριτήν, καὶ οἱ ἀδελφοὶ αὐτοῦ βλέπουσιν.", correct: "Я сам вижу этого справедливого судью, и братья его видят." },
+        { source: "νῦν ἡμεῖς βαπτίζομεν ἐκείνους τοὺς μαθητὰς τοῦ κυρίου ἡμῶν καὶ πέμπομεν αὐτοὺς εἰς τὴν ἔρημον.", correct: "Сейчас мы крестим тех учеников нашего Господа и посылаем их в пустыню." },
+        { source: "οἱ μαθηταί μου γινώσκουσι τὴν φωνήν μου καὶ φέρουσι ταῦτα τὰ παιδία πρός με.", correct: "Мои ученики знают мой голос и приносят этих детей ко мне." },
+        { source: "ἡμεῖς ἐσμεν μαθηταὶ τοῦ κυρίου, ὑμεῖς δὲ μαθηταί ἐστε τοῦ πονηροῦ.", correct: "Мы ученики Господа, а вы ученики злого." },
+        { source: "αὕτη ἡ ἀγάπη ἄγει τὰ τέκνα ἡμῶν εἰς ζωήν.", correct: "Эта любовь ведёт наших детей в жизнь." },
+        { source: "ἡ ἀγάπη τούτων τῶν ἐκκλησιῶν ἄγει καὶ τοὺς ἄλλους ἀνθρώπους εἰς χαράν.", correct: "Любовь этих Церквей ведёт и других людей в радость." },
+        { source: "οἱ διδάσκαλοι τούτου τοῦ κόσμου ἔχουσι ἁμαρτίαν ἐν ταῖς καρδίαις αὐτῶν καὶ οὕτως διδάσκουσι τοὺς ἀνθρώπους.", correct: "Учителя этого мира имеют грех в своих сердцах и так учат людей." },
+        { source: "ἐγώ γινώσκω τὴν ἁμαρτίαν τούτων τῶν τελωνῶν καὶ πέμπω αὐτοὺς πρὸς αὐτὸν τὸν κύριον.", correct: "Я знаю грех этих мытарей и посылаю их к самому Господу." }
+    ]
+},
     10: {
         title: "Медио-пассивный залог",
         grammar: `<b>Спряжение λύομαι (я развязываюсь / меня развязывают):</b><br>
@@ -2006,47 +2131,45 @@ grammar: `<b>1. Указательные местоимения οὗτος, α�
         {form:"ἔρχονται", correct:"3-е л. мн.ч.", distractors:["1-е л. мн.ч.","2-е л. мн.ч.","3-е л. ед.ч."]}
     ]
 },
-        translation: {
-            ru_to_el: [
-                {source:"Эти церкви спасаемы Господом от смерти.", correct:["αὗται","αἱ","ἐκκλησίαι","σώζονται","ὑπὸ","τοῦ","κυρίου","ἀπὸ","τοῦ","θανάτου"]},
-                {source:"Я спасаюсь Им, и Он учит меня своим словом.", correct:["ἐγώ","σώζομαι","ὑπ'","αὐτοῦ","καὶ","αὐτὸς","διδάσκει","με","τῷ","λόγῳ","αὐτοῦ"]},
-                {source:"Мы становимся учениками апостола, а вы не слышите его голоса.", correct:["ἡμεῖς","γινόμεθα","μαθηταὶ","τοῦ","ἀποστόλου","ὑμεῖς","δὲ","οὐκ","ἀκούετε","τῆς","φωνῆς","αὐτοῦ"]},
-                {source:"Я — грешник, но наставляем апостолами Господа и имею Его обетования.", correct:["ἐγώ","εἰμι","ἁμαρτωλός","ἀλλὰ","διδασκόμενος","ὑπὸ","τῶν","ἀποστόλων","τοῦ","κυρίου","καὶ","ἔχω","τὰς","ἐπαγγελίας","αὐτοῦ"]},
-                {source:"Я — плохой слуга, но ты становишься моим учителем.", correct:["ἐγώ","εἰμι","κακὸς","δοῦλος","σὺ","δὲ","γίνῃ","μου","διδάσκαλος"]},
-                {source:"Злые люди говорят тем Церквам, что наши братья не видят лица Господа.", correct:["οἱ","πονηροὶ","ἄνθρωποι","λέγουσι","ἐκείναις","ταῖς","ἐκκλησίαις","ὅτι","οἱ","ἀδελφοί","ἡμῶν","οὐ","βλέπουσι","τὸ","πρόσωπον","τοῦ","κυρίου"]},
-                {source:"Мы знаем Господа, потому что получаем от Него хорошие дары и учимся у Него посредством притч.", correct:["ἡμεῖς","γινώσκομεν","τὸν","κύριον","ὅτι","λαμβάνομεν","παρ'","αὐτοῦ","καλὰ","δῶρα","καὶ","διδασκόμεθα","ὑπ'","αὐτοῦ","διὰ","τῶν","παραβολῶν"]},
-                {source:"Ты пишешь своим братьям, что ты преследуем злыми судьями.", correct:["σὺ","γράφεις","τοῖς","ἀδελφοῖς","σου","ὅτι","σὺ","διώκῃ","ὑπὸ","πονηρῶν","κριτῶν"]},
-                {source:"Он учит других и сам учится у этого апостола.", correct:["αὐτὸς","διδάσκει","τοὺς","ἄλλους","καὶ","αὐτὸς","διδάσκεται","ὑπὸ","τούτου","τοῦ","ἀποστόλου"]},
-                {source:"Этот ученик не отвечает тому пророку, потому что не знает его писаний.", correct:["οὗτος","ὁ","μαθητὴς","οὐκ","ἀποκρίνεται","ἐκείνῳ","τῷ","προφήτῃ","ὅτι","οὐ","γινώσκει","τὰς","γραφὰς","αὐτοῦ"]},
-                {source:"Ты говоришь той Церкви, что ты — плохой слуга.", correct:["σὺ","λέγεις","ἐκείνῃ","τῇ","ἐκκλησίᾳ","ὅτι","σὺ","εἶ","κακὸς","δοῦλος"]},
-                {source:"Вы пребываете в этом храме, но не являетесь учениками Господа.", correct:["ὑμεῖς","μένετε","ἐν","τούτῳ","τῷ","ἱερῷ","ἀλλὰ","οὐκ","ἐστέ","μαθηταὶ","τοῦ","κυρίου"]},
-                {source:"Мы не видим лиц этих мытарей и грешников.", correct:["ἡμεῖς","οὐ","βλέπομεν","τὰ","πρόσωπα","τούτων","τῶν","τελωνῶν","καὶ","ἁμαρτωλῶν"]},
-                {source:"В доме учеников нашего Господа мир и радость.", correct:["ἐν","τῷ","οἴκῳ","τῶν","μαθητῶν","τοῦ","κυρίου","ἡμῶν","εἰρήνη","καὶ","χαρά","ἐστιν"]},
-                {source:"Господь управляет этим миром при помощи своего слова.", correct:["ὁ","κύριος","ἄρχει","τούτου","τοῦ","κόσμου","τῷ","λόγῳ","αὐτοῦ"]},
-                {source:"Эти грешники не входят в Господень дом, а выходят в пустыню вместе с разбойниками.", correct:["οὗτοι","οἱ","ἁμαρτωλοὶ","οὐκ","εἰσέρχονται","εἰς","τὸν","οἶκον","τοῦ","κυρίου","ἀλλὰ","ἐξέρχονται","εἰς","τὴν","ἔρημον","μετὰ","τῶν","ληστῶν"]},
-                {source:"Эти писания пишутся Господом его верным Церквам через пророков.", correct:["αὗται","αἱ","γραφαὶ","γράφονται","ὑπὸ","τοῦ","κυρίου","ταῖς","πισταῖς","ἐκκλησίαις","αὐτοῦ","διὰ","τῶν","προφητῶν"]}
-            ],
-            el_to_ru: [
-                {source:"αὗται αἱ ἐκκλησίαι σώζονται ὑπὸ τοῦ κυρίου ἀπὸ τοῦ θανάτου.", correct:["Эти","церкви","спасаемы","Господом","от","смерти"]},
-                {source:"ἐγώ σώζομαι ὑπ' αὐτοῦ, καὶ αὐτὸς διδάσκει με τῷ λόγῳ αὐτοῦ.", correct:["Я","спасаюсь","Им","и","Он","учит","меня","своим","словом"]},
-                {source:"ἡμεῖς γινόμεθα μαθηταὶ τοῦ ἀποστόλου, ὑμεῖς δὲ οὐκ ἀκούετε τῆς φωνῆς αὐτοῦ.", correct:["Мы","становимся","учениками","апостола","а","вы","не","слышите","его","голоса"]},
-                {source:"ἐγώ εἰμι ἁμαρτωλός, ἀλλὰ διδασκόμενος ὑπὸ τῶν ἀποστόλων τοῦ κυρίου καὶ ἔχω τὰς ἐπαγγελίας αὐτοῦ.", correct:["Я","грешник","но","наставляем","апостолами","Господа","и","имею","Его","обетования"]},
-                {source:"ἐγώ εἰμι κακὸς δοῦλος, σὺ δὲ γίνῃ μου διδάσκαλος.", correct:["Я","плохой","слуга","а","ты","становишься","моим","учителем"]},
-                {source:"οἱ πονηροὶ ἄνθρωποι λέγουσι ἐκείναις ταῖς ἐκκλησίαις ὅτι οἱ ἀδελφοὶ ἡμῶν οὐ βλέπουσι τὸ πρόσωπον τοῦ κυρίου.", correct:["Злые","люди","говорят","тем","Церквам","что","наши","братья","не","видят","лица","Господа"]},
-                {source:"ἡμεῖς γινώσκομεν τὸν κύριον ὅτι λαμβάνομεν παρ' αὐτοῦ καλὰ δῶρα καὶ διδασκόμεθα ὑπ' αὐτοῦ διὰ τῶν παραβολῶν.", correct:["Мы","знаем","Господа","потому","что","получаем","от","Него","хорошие","дары","и","учимся","у","Него","посредством","притч"]},
-                {source:"σὺ γράφεις τοῖς ἀδελφοῖς σου ὅτι σὺ διώκῃ ὑπὸ πονηρῶν κριτῶν.", correct:["Ты","пишешь","своим","братьям","что","ты","преследуем","злыми","судьями"]},
-                {source:"αὐτὸς διδάσκει τοὺς ἄλλους καὶ αὐτὸς διδάσκεται ὑπὸ τούτου τοῦ ἀποστόλου.", correct:["Он","учит","других","и","сам","учится","у","этого","апостола"]},
-                {source:"οὗτος ὁ μαθητὴς οὐκ ἀποκρίνεται ἐκείνῳ τῷ προφήτῃ ὅτι οὐ γινώσκει τὰς γραφὰς αὐτοῦ.", correct:["Этот","ученик","не","отвечает","тому","пророку","потому","что","не","знает","его","писаний"]},
-                {source:"σὺ λέγεις ἐκείνῃ τῇ ἐκκλησίᾳ ὅτι σὺ εἶ κακὸς δοῦλος.", correct:["Ты","говоришь","той","Церкви","что","ты","плохой","слуга"]},
-                {source:"ὑμεῖς μένετε ἐν τούτῳ τῷ ἱερῷ, ἀλλὰ οὐκ ἐστέ μαθηταὶ τοῦ κυρίου.", correct:["Вы","пребываете","в","этом","храме","но","не","являетесь","учениками","Господа"]},
-                {source:"ἡμεῖς οὐ βλέπομεν τὰ πρόσωπα τούτων τῶν τελωνῶν καὶ ἁμαρτωλῶν.", correct:["Мы","не","видим","лица","этих","мытарей","и","грешников"]},
-                {source:"ἐν τῷ οἴκῳ τῶν μαθητῶν τοῦ κυρίου ἡμῶν εἰρήνη καὶ χαρά ἐστιν.", correct:["В","доме","учеников","нашего","Господа","мир","и","радость"]},
-                {source:"ὁ κύριος ἄρχει τούτου τοῦ κόσμου τῷ λόγῳ αὐτοῦ.", correct:["Господь","управляет","этим","миром","при","помощи","своего","слова"]},
-                {source:"οὗτοι οἱ ἁμαρτωλοὶ οὐκ εἰσέρχονται εἰς τὸν οἶκον τοῦ κυρίου, ἀλλὰ ἐξέρχονται εἰς τὴν ἔρημον μετὰ τῶν λῃστῶν.", correct:["Эти","грешники","не","входят","в","Господень","дом","а","выходят","в","пустыню","с","разбойниками"]},
-                {source:"αὗται αἱ γραφαὶ γράφονται ὑπὸ τοῦ κυρίου ταῖς πισταῖς ἐκκλησίαις αὐτοῦ διὰ τῶν προφητῶν.", correct:["Эти","писания","пишутся","Господом","Его","верным","Церквам","через","пророков"]}
-            ]
-        }
-    }
+translation: {
+    ru_to_el: [
+        { source: "Эти церкви спасаемы Господом от смерти.", correct: ["αὗται","αἱ","ἐκκλησίαι","σώζονται","ὑπὸ","τοῦ","κυρίου","ἀπὸ","τοῦ","θανάτου"] },
+        { source: "Я спасаюсь Им, и Он учит меня своим словом.", correct: ["ἐγώ","σώζομαι","ὑπ'","αὐτοῦ","καὶ","αὐτὸς","διδάσκει","με","τῷ","λόγῳ","αὐτοῦ"] },
+        { source: "Мы становимся учениками апостола, а вы не слышите его голоса.", correct: ["ἡμεῖς","γινόμεθα","μαθηταὶ","τοῦ","ἀποστόλου","ὑμεῖς","δὲ","οὐκ","ἀκούετε","τῆς","φωνῆς","αὐτοῦ"] },
+        { source: "Я — грешник, но наставляем апостолами Господа и имею Его обетования.", correct: ["ἐγώ","εἰμι","ἁμαρτωλός","ἀλλὰ","διδασκόμενος","ὑπὸ","τῶν","ἀποστόλων","τοῦ","κυρίου","καὶ","ἔχω","τὰς","ἐπαγγελίας","αὐτοῦ"] },
+        { source: "Я — плохой слуга, но ты становишься моим учителем.", correct: ["ἐγώ","εἰμι","κακὸς","δοῦλος","σὺ","δὲ","γίνῃ","μου","διδάσκαλος"] },
+        { source: "Злые люди говорят тем Церквам, что наши братья не видят лица Господа.", correct: ["οἱ","πονηροὶ","ἄνθρωποι","λέγουσι","ἐκείναις","ταῖς","ἐκκλησίαις","ὅτι","οἱ","ἀδελφοί","ἡμῶν","οὐ","βλέπουσι","τὸ","πρόσωπον","τοῦ","κυρίου"] },
+        { source: "Мы знаем Господа, потому что получаем от Него хорошие дары и учимся у Него посредством притч.", correct: ["ἡμεῖς","γινώσκομεν","τὸν","κύριον","ὅτι","λαμβάνομεν","παρ'","αὐτοῦ","καλὰ","δῶρα","καὶ","διδασκόμεθα","ὑπ'","αὐτοῦ","διὰ","τῶν","παραβολῶν"] },
+        { source: "Ты пишешь своим братьям, что ты преследуем злыми судьями.", correct: ["σὺ","γράφεις","τοῖς","ἀδελφοῖς","σου","ὅτι","σὺ","διώκῃ","ὑπὸ","πονηρῶν","κριτῶν"] },
+        { source: "Он учит других и сам учится у этого апостола.", correct: ["αὐτὸς","διδάσκει","τοὺς","ἄλλους","καὶ","αὐτὸς","διδάσκεται","ὑπὸ","τούτου","τοῦ","ἀποστόλου"] },
+        { source: "Этот ученик не отвечает тому пророку, потому что не знает его писаний.", correct: ["οὗτος","ὁ","μαθητὴς","οὐκ","ἀποκρίνεται","ἐκείνῳ","τῷ","προφήτῃ","ὅτι","οὐ","γινώσκει","τὰς","γραφὰς","αὐτοῦ"] },
+        { source: "Ты говоришь той Церкви, что ты — плохой слуга.", correct: ["σὺ","λέγεις","ἐκείνῃ","τῇ","ἐκκλησίᾳ","ὅτι","σὺ","εἶ","κακὸς","δοῦλος"] },
+        { source: "Вы пребываете в этом храме, но не являетесь учениками Господа.", correct: ["ὑμεῖς","μένετε","ἐν","τούτῳ","τῷ","ἱερῷ","ἀλλὰ","οὐκ","ἐστέ","μαθηταὶ","τοῦ","κυρίου"] },
+        { source: "Мы не видим лиц этих мытарей и грешников.", correct: ["ἡμεῖς","οὐ","βλέπομεν","τὰ","πρόσωπα","τούτων","τῶν","τελωνῶν","καὶ","ἁμαρτωλῶν"] },
+        { source: "В доме учеников нашего Господа мир и радость.", correct: ["ἐν","τῷ","οἴκῳ","τῶν","μαθητῶν","τοῦ","κυρίου","ἡμῶν","εἰρήνη","καὶ","χαρά","ἐστιν"] },
+        { source: "Господь управляет этим миром при помощи своего слова.", correct: ["ὁ","κύριος","ἄρχει","τούτου","τοῦ","κόσμου","τῷ","λόγῳ","αὐτοῦ"] },
+        { source: "Эти грешники не входят в Господень дом, а выходят в пустыню вместе с разбойниками.", correct: ["οὗτοι","οἱ","ἁμαρτωλοὶ","οὐκ","εἰσέρχονται","εἰς","τὸν","οἶκον","τοῦ","κυρίου","ἀλλὰ","ἐξέρχονται","εἰς","τὴν","ἔρημον","μετὰ","τῶν","ληστῶν"] },
+        { source: "Эти писания пишутся Господом его верным Церквам через пророков.", correct: ["αὗται","αἱ","γραφαὶ","γράφονται","ὑπὸ","τοῦ","κυρίου","ταῖς","πισταῖς","ἐκκλησίαις","αὐτοῦ","διὰ","τῶν","προφητῶν"] }
+    ],
+    el_to_ru: [
+        { source: "αὗται αἱ ἐκκλησίαι σώζονται ὑπὸ τοῦ κυρίου ἀπὸ τοῦ θανάτου.", correct: "Эти церкви спасаемы Господом от смерти." },
+        { source: "ἐγώ σώζομαι ὑπ' αὐτοῦ, καὶ αὐτὸς διδάσκει με τῷ λόγῳ αὐτοῦ.", correct: "Я спасаюсь Им, и Он учит меня своим словом." },
+        { source: "ἡμεῖς γινόμεθα μαθηταὶ τοῦ ἀποστόλου, ὑμεῖς δὲ οὐκ ἀκούετε τῆς φωνῆς αὐτοῦ.", correct: "Мы становимся учениками апостола, а вы не слышите его голоса." },
+        { source: "ἐγώ εἰμι ἁμαρτωλός, ἀλλὰ διδασκόμενος ὑπὸ τῶν ἀποστόλων τοῦ κυρίου καὶ ἔχω τὰς ἐπαγγελίας αὐτοῦ.", correct: "Я грешник, но наставляем апостолами Господа и имею Его обетования." },
+        { source: "ἐγώ εἰμι κακὸς δοῦλος, σὺ δὲ γίνῃ μου διδάσκαλος.", correct: "Я плохой слуга, но ты становишься моим учителем." },
+        { source: "οἱ πονηροὶ ἄνθρωποι λέγουσι ἐκείναις ταῖς ἐκκλησίαις ὅτι οἱ ἀδελφοὶ ἡμῶν οὐ βλέπουσι τὸ πρόσωπον τοῦ κυρίου.", correct: "Злые люди говорят тем Церквам, что наши братья не видят лица Господа." },
+        { source: "ἡμεῖς γινώσκομεν τὸν κύριον ὅτι λαμβάνομεν παρ' αὐτοῦ καλὰ δῶρα καὶ διδασκόμεθα ὑπ' αὐτοῦ διὰ τῶν παραβολῶν.", correct: "Мы знаем Господа, потому что получаем от Него хорошие дары и учимся у Него посредством притч." },
+        { source: "σὺ γράφεις τοῖς ἀδελφοῖς σου ὅτι σὺ διώκῃ ὑπὸ πονηρῶν κριτῶν.", correct: "Ты пишешь своим братьям, что ты преследуем злыми судьями." },
+        { source: "αὐτὸς διδάσκει τοὺς ἄλλους καὶ αὐτὸς διδάσκεται ὑπὸ τούτου τοῦ ἀποστόλου.", correct: "Он учит других и сам учится у этого апостола." },
+        { source: "οὗτος ὁ μαθητὴς οὐκ ἀποκρίνεται ἐκείνῳ τῷ προφήτῃ ὅτι οὐ γινώσκει τὰς γραφὰς αὐτοῦ.", correct: "Этот ученик не отвечает тому пророку, потому что не знает его писаний." },
+        { source: "σὺ λέγεις ἐκείνῃ τῇ ἐκκλησίᾳ ὅτι σὺ εἶ κακὸς δοῦλος.", correct: "Ты говоришь той Церкви, что ты плохой слуга." },
+        { source: "ὑμεῖς μένετε ἐν τούτῳ τῷ ἱερῷ, ἀλλὰ οὐκ ἐστέ μαθηταὶ τοῦ κυρίου.", correct: "Вы пребываете в этом храме, но не являетесь учениками Господа." },
+        { source: "ἡμεῖς οὐ βλέπομεν τὰ πρόσωπα τούτων τῶν τελωνῶν καὶ ἁμαρτωλῶν.", correct: "Мы не видим лиц этих мытарей и грешников." },
+        { source: "ἐν τῷ οἴκῳ τῶν μαθητῶν τοῦ κυρίου ἡμῶν εἰρήνη καὶ χαρά ἐστιν.", correct: "В доме учеников нашего Господа мир и радость." },
+        { source: "ὁ κύριος ἄρχει τούτου τοῦ κόσμου τῷ λόγῳ αὐτοῦ.", correct: "Господь управляет этим миром при помощи своего слова." },
+        { source: "οὗτοι οἱ ἁμαρτωλοὶ οὐκ εἰσέρχονται εἰς τὸν οἶκον τοῦ κυρίου, ἀλλὰ ἐξέρχονται εἰς τὴν ἔρημον μετὰ τῶν λῃστῶν.", correct: "Эти грешники не входят в Господень дом, а выходят в пустыню вместе с разбойниками." },
+        { source: "αὗται αἱ γραφαὶ γράφονται ὑπὸ τοῦ κυρίου ταῖς πισταῖς ἐκκλησίαις αὐτοῦ διὰ τῶν προφητῶν.", correct: "Эти писания пишутся Господом его верным Церквам через пророков." }
+    ]
 };
     
 // ============================================================
@@ -2255,124 +2378,7 @@ function renderMainMenu() {
 // ============================================================
 // СЛОВАРЬ ВСЕХ СЛОВ
 // ============================================================
-function showAllVocab() {
-    showSection('allVocabSection');
-    var container = document.getElementById('allVocabContent');
-    // Собираем все слова
-    var nouns = [], verbs = [], adjectives = [], prepositions = [], pronouns = [], adverbs = [], conjunctions = [], others = [];
-    for (var l = 3; l <= 10; l++) {
-        var data = getLessonData(l);
-        if (!data || !data.vocabulary) continue;
-        for (var i = 0; i < data.vocabulary.length; i++) {
-            var item = data.vocabulary[i];
-            var type = item.type || 'other';
-            var entry = {
-                greek: item.greek,
-                article: item.article || '',
-                translation: item.translation
-            };
-            switch (type) {
-                case 'noun': nouns.push(entry); break;
-                case 'verb': verbs.push(entry); break;
-                case 'adjective': adjectives.push(entry); break;
-                case 'preposition': prepositions.push(entry); break;
-                case 'pronoun': pronouns.push(entry); break;
-                case 'adverb': adverbs.push(entry); break;
-                case 'conjunction': conjunctions.push(entry); break;
-                default: others.push(entry);
-            }
-        }
-    }
-    // Убираем дубликаты (по греческому слову)
-    function unique(arr) {
-        var seen = {};
-        return arr.filter(function(item) {
-            var key = item.greek + '|' + item.article;
-            if (seen[key]) return false;
-            seen[key] = true;
-            return true;
-        });
-    }
-    nouns = unique(nouns);
-    verbs = unique(verbs);
-    adjectives = unique(adjectives);
-    prepositions = unique(prepositions);
-    pronouns = unique(pronouns);
-    adverbs = unique(adverbs);
-    conjunctions = unique(conjunctions);
-    others = unique(others);
 
-    function sortByGreek(a, b) { return a.greek.localeCompare(b.greek); }
-    nouns.sort(sortByGreek);
-    verbs.sort(sortByGreek);
-    adjectives.sort(sortByGreek);
-    prepositions.sort(sortByGreek);
-    pronouns.sort(sortByGreek);
-    adverbs.sort(sortByGreek);
-    conjunctions.sort(sortByGreek);
-    others.sort(sortByGreek);
-
-    var html = '';
-    if (nouns.length) {
-        html += '<div class="vocab-section"><h4>📌 Существительные</h4>';
-        for (var i = 0; i < nouns.length; i++) {
-            var art = nouns[i].article ? nouns[i].article + ' ' : '';
-            html += '<div class="word-item"><div class="word-row"><strong>' + art + nouns[i].greek + '</strong><span>' + nouns[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (verbs.length) {
-        html += '<div class="vocab-section"><h4>📌 Глаголы</h4>';
-        for (var i = 0; i < verbs.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + verbs[i].greek + '</strong><span>' + verbs[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (adjectives.length) {
-        html += '<div class="vocab-section"><h4>📌 Прилагательные</h4>';
-        for (var i = 0; i < adjectives.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + adjectives[i].greek + '</strong><span>' + adjectives[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (prepositions.length) {
-        html += '<div class="vocab-section"><h4>📌 Предлоги</h4>';
-        for (var i = 0; i < prepositions.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + prepositions[i].greek + '</strong><span>' + prepositions[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (pronouns.length) {
-        html += '<div class="vocab-section"><h4>📌 Местоимения</h4>';
-        for (var i = 0; i < pronouns.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + pronouns[i].greek + '</strong><span>' + pronouns[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (adverbs.length) {
-        html += '<div class="vocab-section"><h4>📌 Наречия</h4>';
-        for (var i = 0; i < adverbs.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + adverbs[i].greek + '</strong><span>' + adverbs[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (conjunctions.length) {
-        html += '<div class="vocab-section"><h4>📌 Союзы</h4>';
-        for (var i = 0; i < conjunctions.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + conjunctions[i].greek + '</strong><span>' + conjunctions[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (others.length) {
-        html += '<div class="vocab-section"><h4>📌 Прочее</h4>';
-        for (var i = 0; i < others.length; i++) {
-            html += '<div class="word-item"><div class="word-row"><strong>' + others[i].greek + '</strong><span>' + others[i].translation + '</span></div></div>';
-        }
-        html += '</div>';
-    }
-    if (html === '') html = '<p>Словарь пуст.</p>';
-    container.innerHTML = html;
-}
 
 // ============================================================
 // ПРОВЕРКА ВСЕХ СЛОВ (КАРТОЧКИ)
@@ -3648,6 +3654,122 @@ document.addEventListener('click', function(e) {
     // Иначе – закрываем все окна
     closeAllAnalysis();
 });
+        // ============================================================
+// ТЁМНАЯ / СВЕТЛАЯ ТЕМА
+// ============================================================
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    let btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    try { localStorage.setItem('greek_theme', theme); } catch(e) {}
+}
+
+function toggleTheme() {
+    let current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem('greek_theme'); } catch(e) {}
+    if (!saved) {
+        saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    applyTheme(saved);
+}
+
+// ============================================================
+// ПОИСК В СЛОВАРЕ ВСЕХ СЛОВ
+// ============================================================
+let allVocabCache = null;
+
+function buildAllVocabCache() {
+    let entries = [];
+    let seen = new Set();
+    for (let l = 1; l <= 10; l++) {
+        let data = getLessonData(l);
+        if (!data || !data.vocabulary) continue;
+        data.vocabulary.forEach(item => {
+            let key = item.greek + '|' + (item.article || '');
+            if (seen.has(key)) return;
+            seen.add(key);
+            entries.push({
+                greek: item.greek,
+                article: item.article || '',
+                translation: item.translation,
+                type: item.type || 'other',
+                lesson: l
+            });
+        });
+    }
+    entries.sort((a, b) => a.greek.localeCompare(b.greek));
+    return entries;
+}
+
+const TYPE_LABELS = {
+    noun: '📌 Существительные',
+    verb: '📌 Глаголы',
+    adjective: '📌 Прилагательные',
+    preposition: '📌 Предлоги',
+    pronoun: '📌 Местоимения',
+    adverb: '📌 Наречия',
+    conjunction: '📌 Союзы',
+    other: '📌 Прочее'
+};
+
+function renderVocabEntries(entries) {
+    let container = document.getElementById('allVocabContent');
+    if (!container) return;
+    if (entries.length === 0) {
+        container.innerHTML = '<div class="search-empty">Ничего не найдено 🤷</div>';
+        return;
+    }
+    let byType = {};
+    entries.forEach(e => {
+        if (!byType[e.type]) byType[e.type] = [];
+        byType[e.type].push(e);
+    });
+    let order = ['noun','verb','adjective','preposition','pronoun','adverb','conjunction','other'];
+    let html = '';
+    order.forEach(type => {
+        if (!byType[type] || byType[type].length === 0) return;
+        html += '<div class="vocab-section"><h4>' + (TYPE_LABELS[type] || type) + '</h4>';
+        byType[type].forEach(e => {
+            let art = e.article ? e.article + ' ' : '';
+            html += '<div class="word-item"><div class="word-row"><strong>' + art + e.greek + '</strong><span>' + e.translation + '</span></div></div>';
+        });
+        html += '</div>';
+    });
+    container.innerHTML = html || '<div class="search-empty">Ничего не найдено 🤷</div>';
+}
+
+function filterAllVocab() {
+    let input = document.getElementById('vocabSearchInput');
+    let clearBtn = document.getElementById('vocabSearchClear');
+    if (!input) return;
+    let query = input.value.trim().toLowerCase();
+    if (clearBtn) clearBtn.classList.toggle('show', query.length > 0);
+    if (!allVocabCache) allVocabCache = buildAllVocabCache();
+    if (!query) {
+        renderVocabEntries(allVocabCache);
+        return;
+    }
+    let filtered = allVocabCache.filter(e => {
+        let greekMatch = e.greek.toLowerCase().includes(query);
+        let ruMatch = e.translation.toLowerCase().includes(query);
+        return greekMatch || ruMatch;
+    });
+    renderVocabEntries(filtered);
+}
+
+function clearVocabSearch() {
+    let input = document.getElementById('vocabSearchInput');
+    if (input) input.value = '';
+    let clearBtn = document.getElementById('vocabSearchClear');
+    if (clearBtn) clearBtn.classList.remove('show');
+    renderVocabEntries(allVocabCache || buildAllVocabCache());
+}
+initTheme();        
 loadStats();
 renderMainMenu();
     
