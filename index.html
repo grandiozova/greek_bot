@@ -1103,6 +1103,7 @@ translation: {
         { source: "γινώσκουσι τοὺς νόμους καὶ διδάσκουσι τοὺς δούλους.", correct: "Они знают законы и учат слуг." },
         { source: "ὦ ἄνθρωπε, γινώσκεις τὸν νόμον.", correct: "О человек, ты знаешь закон." }
     ]
+    }
 },
     5: {
         title: "1-е склонение (женский род)",
@@ -1305,6 +1306,7 @@ translation: {
         { source: "λέγει καρδίας άνθρώπων παραβολήν καί νόμον.", correct: "Он говорит сердцам людей притчу и закон." },
         { source: "γράφει έκκλησία υίός άποστόλου.", correct: "Сын апостола пишет церкви." }
     ]
+    }
 },
     6: {
         title: "Прилагательные 1-2 склонения, артикль",
@@ -1433,6 +1435,7 @@ translation: {
         { source: "τοὺς ἀγαθούς λόγους λέγομεν τῇ ἐκκλησίᾳ, τὸ δὲ κακὸν γράφουσιν οἱ ἄνθρωποι.", correct: "Хорошие слова мы говорим Церкви, а плохое слово пишут люди." },
         { source: "αἱ καλαὶ παρθένοι βλέπουσι τὴν κακὴν ὁδόν.", correct: "Красивые девушки видят плохой путь." }
     ]
+    }
 },
     7: {
         title: "Существительные муж. рода 1-го скл., предлоги",
@@ -1584,6 +1587,7 @@ translation: {
         { source: "σὺ κακὸς εἶ, ἡ δὲ ἐκκλησία καλή.", correct: "Ты плох, Церковь хороша." },
         { source: "διὰ τοῦ λόγου τοῦ θεοῦ ὁ κύριος ἐγείρει τοὺς νεκρούς.", correct: "Через слово Божие Господь воскрешает мёртвых." }
     ]
+    }
 },
     8: {
 title: "Энклитики и проклитики, местоимения",
@@ -1927,6 +1931,7 @@ translation: {
         { source: "ἡμεῖς πέμπομεν τοὺς δούλους ἡμῶν εἰς τοὺς οἴκους ὑμῶν, ὑμεῖς δὲ λαμβάνετε παρ' ἡμῶν τὰ δῶρα ἡμῶν.", correct: "Мы посылаем наших слуг в ваши дома, вы же берёте от нас наши дары." },
         { source: "ὑμεῖς ἀγαθοί ἐστε, οἱ δὲ μαθηταί ὑμῶν κακοί.", correct: "Вы хорошие, а ваши ученики плохие." }
     ]
+    }
 },
     9: {
         title: "Указательные местоимения, αὐτός",
@@ -2068,6 +2073,7 @@ translation: {
         { source: "οἱ διδάσκαλοι τούτου τοῦ κόσμου ἔχουσι ἁμαρτίαν ἐν ταῖς καρδίαις αὐτῶν καὶ οὕτως διδάσκουσι τοὺς ἀνθρώπους.", correct: "Учителя этого мира имеют грех в своих сердцах и так учат людей." },
         { source: "ἐγώ γινώσκω τὴν ἁμαρτίαν τούτων τῶν τελωνῶν καὶ πέμπω αὐτοὺς πρὸς αὐτὸν τὸν κύριον.", correct: "Я знаю грех этих мытарей и посылаю их к самому Господу." }
     ]
+    }
 },
     10: {
         title: "Медио-пассивный залог",
@@ -2170,6 +2176,8 @@ translation: {
         { source: "οὗτοι οἱ ἁμαρτωλοὶ οὐκ εἰσέρχονται εἰς τὸν οἶκον τοῦ κυρίου, ἀλλὰ ἐξέρχονται εἰς τὴν ἔρημον μετὰ τῶν λῃστῶν.", correct: "Эти грешники не входят в Господень дом, а выходят в пустыню вместе с разбойниками." },
         { source: "αὗται αἱ γραφαὶ γράφονται ὑπὸ τοῦ κυρίου ταῖς πισταῖς ἐκκλησίαις αὐτοῦ διὰ τῶν προφητῶν.", correct: "Эти писания пишутся Господом его верным Церквам через пророков." }
     ]
+        }
+    }
 };
     
 // ============================================================
@@ -3742,7 +3750,15 @@ function renderVocabEntries(entries) {
     });
     container.innerHTML = html || '<div class="search-empty">Ничего не найдено 🤷</div>';
 }
-
+function showAllVocab() {
+    showSection('allVocabSection');
+    allVocabCache = buildAllVocabCache();
+    let input = document.getElementById('vocabSearchInput');
+    if (input) input.value = '';
+    let clearBtn = document.getElementById('vocabSearchClear');
+    if (clearBtn) clearBtn.classList.remove('show');
+    renderVocabEntries(allVocabCache);
+}
 function filterAllVocab() {
     let input = document.getElementById('vocabSearchInput');
     let clearBtn = document.getElementById('vocabSearchClear');
@@ -3769,7 +3785,25 @@ function clearVocabSearch() {
     if (clearBtn) clearBtn.classList.remove('show');
     renderVocabEntries(allVocabCache || buildAllVocabCache());
 }
-initTheme();        
+    function normalizeTranslationData() {
+    for (let key in LESSONS_DATA) {
+        let lesson = LESSONS_DATA[key];
+        if (!lesson.translation) continue;
+        ['ru_to_el', 'el_to_ru'].forEach(dir => {
+            if (!lesson.translation[dir]) return;
+            lesson.translation[dir].forEach(q => {
+                if (typeof q.correct === 'string') {
+                    q.correct = q.correct
+                        .replace(/[.,;:!?]+$/, '')
+                        .split(/\s+/)
+                        .filter(Boolean);
+                }
+            });
+        });
+    }
+}
+normalizeTranslationData();
+initTheme();
 loadStats();
 renderMainMenu();
     
