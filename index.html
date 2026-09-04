@@ -2943,22 +2943,32 @@ function clearChosen() {
 }
 
 function checkTranslationRu() {
+function checkTranslationRu() {
     let chosen = window._chosen || [];
     let q = window._trans_ru;
     if (!q) return;
     let corr = q.correct_sequence;
     let ok = chosen.length === corr.length && chosen.every((w,i) => w === corr[i]);
     let container = document.getElementById('exerciseQuestion');
-    if (ok) { stats.totalCorrect++; exerciseState.correct++; container.innerHTML = '<div class="feedback ok">✅ Верно!</div>'; } else {
+    if (ok) {
+        stats.totalCorrect++;
+        exerciseState.correct++;
+        container.innerHTML = `
+            <div class="feedback ok">✅ Верно! <strong>${corr.join(' ')}</strong></div>
+            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+        `;
+    } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: ' + corr.join(' ') + '</div>';
+        container.innerHTML = `
+            <div class="feedback fail">❌ Неверно. Правильный порядок: <strong>${corr.join(' ')}</strong></div>
+            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+        `;
     }
     saveStats();
-    exerciseState.index++;
-    setTimeout(showExercise, 1500);
+    // Убираем setTimeout
 }
 
 // ============================================================
@@ -3132,7 +3142,6 @@ function testTranslation() {
     }
     saveStats();
     testState.answered = true;
-    setTimeout(() => { testState.index++; showTest(); }, 1500);
 }
 
 function testPickWord(w) {
@@ -3172,7 +3181,6 @@ function testTranslationRu() {
     }
     saveStats();
     testState.answered = true;
-    setTimeout(() => { testState.index++; showTest(); }, 1500);
 }
 
 // ============================================================
@@ -3235,17 +3243,22 @@ function checkTranslationBuild() {
     if (ok) {
         s.correct++;
         stats.totalCorrect++;
-        container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
+        container.innerHTML = `
+            <div class="feedback ok">✅ Верно! <strong>${correct.join(' ')}</strong></div>
+            <button class="menu-btn primary" onclick="nextTranslation()">➡️ Далее</button>
+        `;
     } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.source, correct: correct.join(' '), your: chosen.join(' ') });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: <strong>' + correct.join(' ') + '</strong></div>';
+        container.innerHTML = `
+            <div class="feedback fail">❌ Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></div>
+            <button class="menu-btn primary" onclick="nextTranslation()">➡️ Далее</button>
+        `;
     }
     saveStats();
-    s.index++;
-    setTimeout(showTranslation, 1500);
+    // Убираем setTimeout
 }
 function startTranslation(type) {
     let data = getLessonData(currentLesson);
@@ -3338,31 +3351,34 @@ function transClear() {
 function checkExerciseTranslation(index) {
     let inp = document.getElementById('transInput');
     if (!inp) return;
-    let ans = inp.value.trim().toLowerCase();
+    let userAnswer = inp.value.trim().toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ');
     let q = exerciseState.questions[index];
     if (!q) {
         document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback fail">⚠️ Ошибка. Пожалуйста, начните упражнение заново.</div>';
         return;
     }
-    let ok = true;
-    for (let kw of q.keywords) {
-        if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
-    }
+    let correctAnswer = q.correct.toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ');
+    let ok = (userAnswer === correctAnswer);
     let container = document.getElementById('exerciseQuestion');
     if (ok) {
         stats.totalCorrect++;
         exerciseState.correct++;
-        container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
+        container.innerHTML = `
+            <div class="feedback ok">✅ Верно! <strong>${q.correct}</strong></div>
+            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+        `;
     } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
-        stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</div>';
+        stats.errors[lesson].push({ word: q.greek, correct: q.correct, your: inp.value.trim() });
+        container.innerHTML = `
+            <div class="feedback fail">❌ Неверно. Правильный перевод: <strong>${q.correct}</strong></div>
+            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+        `;
     }
     saveStats();
-    exerciseState.index++;
-    setTimeout(showExercise, 1500);
+    // Убираем setTimeout – переход только по кнопке
 }
 
 // ============================================================
