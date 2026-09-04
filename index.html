@@ -2,701 +2,1896 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏛️ Древнегреческий учебник в кармане (уроки 1–10)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Древнегреческий учебник в кармане: уроки 1–10, словарь, карточки, тесты и разбор «Отче наш».">
+    <meta name="theme-color" content="#FAF9FD" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
+    <title>Древнегреческий учебник в кармане (уроки 1–10)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300..700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
 <style>
-    :root {
-        --bg: #f7f2eb;
-        --app-bg: #ffffff;
-        --text: #2c2c2c;
-        --text-soft: #7a5f4b;
-        --text-dark: #3d2a1e;
-        --border: #e5d9cf;
-        --card-bg: #fcf9f6;
-        --card-border: #eee5dd;
-        --btn-bg: #f0eae4;
-        --btn-hover: #e0d5cb;
-        --primary: #b7a48b;
-        --primary-hover: #9e8a73;
-        --danger-bg: #d4b8b8;
-        --danger-text: #4a2e2e;
-        --word-item-bg: #ede7e0;
-        --word-item-hover: #e2d5c9;
-        --word-details-bg: #f9f6f2;
-        --table-border: #c9b9ab;
-        --grammar-bg: #f4eee8;
-        --ok-bg: #e0f0e0;
-        --ok-text: #1f5f2f;
-        --fail-bg: #f0e0e0;
-        --fail-text: #7a2e2e;
-        --input-border: #d9cec2;
-        --input-bg: #ffffff;
-        --chip-bg: #ede7e0;
-        --chip-hover: #d9cec2;
-        --build-bg: #f4eee8;
-        --build-border: #c9b9ab;
-        --token-bg: #b7a48b;
-        --correct-bg: #8fbc8f;
-        --correct-border: #5f8b5f;
-        --wrong-bg: #d4a0a0;
-        --wrong-border: #b06a6a;
-        --error-bg: #fcf1f1;
-        --shadow: rgba(0, 0, 0, 0.08);
-    }
+/* ============================================================
+   MATERIAL 3 (MATERIAL YOU) — ТОКЕНЫ ДИЗАЙН-СИСТЕМЫ
+   Тональные палитры выведены из seed-цвета #1A73E8 (чистый синий).
+   Тёмная тема — нейтральная почти-чёрная, с расширенными шагами тонов.
+   ============================================================ */
+:root {
+    /* --- reference typefaces --- */
+    --md-ref-typeface-plain: 'Noto Sans', system-ui, 'Segoe UI', sans-serif;
+    --md-ref-typeface-brand: 'Noto Sans', system-ui, 'Segoe UI', sans-serif;
+    --md-ref-typeface-greek: 'Noto Serif', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Times New Roman', serif;
 
-    [data-theme="dark"] {
-        --bg: #1a1613;
-        --app-bg: #24201c;
-        --text: #ece6dd;
-        --text-soft: #b8a894;
-        --text-dark: #f0e6d8;
-        --border: #3a332c;
-        --card-bg: #2c2620;
-        --card-border: #3a332c;
-        --btn-bg: #34302a;
-        --btn-hover: #423c33;
-        --primary: #a68f6b;
-        --primary-hover: #bfa87f;
-        --danger-bg: #5c3a3a;
-        --danger-text: #f0d6d6;
-        --word-item-bg: #322c25;
-        --word-item-hover: #423a30;
-        --word-details-bg: #201c18;
-        --table-border: #4a4238;
-        --grammar-bg: #221f1a;
-        --ok-bg: #1f3d24;
-        --ok-text: #a3d9ad;
-        --fail-bg: #3d2323;
-        --fail-text: #e0a3a3;
-        --input-border: #4a4238;
-        --input-bg: #201c18;
-        --chip-bg: #322c25;
-        --chip-hover: #423a30;
-        --build-bg: #221f1a;
-        --build-border: #4a4238;
-        --token-bg: #a68f6b;
-        --correct-bg: #3d6b45;
-        --correct-border: #5f8b5f;
-        --wrong-bg: #8b4a4a;
-        --wrong-border: #b06a6a;
-        --error-bg: #2e1f1f;
-        --shadow: rgba(0, 0, 0, 0.4);
-    }
+    /* --- shape scale --- */
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-large-increased: 20px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-extra-large-increased: 32px;
+    --md-sys-shape-corner-full: 9999px;
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
+    /* --- motion: easing --- */
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+    --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+    --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
+    /* --- motion: duration --- */
+    --md-sys-motion-duration-short1: 50ms;
+    --md-sys-motion-duration-short2: 100ms;
+    --md-sys-motion-duration-short3: 150ms;
+    --md-sys-motion-duration-short4: 200ms;
+    --md-sys-motion-duration-medium1: 250ms;
+    --md-sys-motion-duration-medium2: 300ms;
+    --md-sys-motion-duration-medium3: 350ms;
+    --md-sys-motion-duration-medium4: 400ms;
+    --md-sys-motion-duration-long1: 450ms;
+    --md-sys-motion-duration-long2: 500ms;
+    --md-sys-motion-duration-long3: 550ms;
+    --md-sys-motion-duration-long4: 600ms;
+
+    /* --- state layer opacities --- */
+    --md-sys-state-hover-opacity: 0.08;
+    --md-sys-state-focus-opacity: 0.10;
+    --md-sys-state-pressed-opacity: 0.10;
+    --md-sys-state-disabled-content-opacity: 0.38;
+    --md-sys-state-disabled-container-opacity: 0.12;
+
+    /* --- colour roles: light --- */
+    --md-sys-color-primary: #0B57D0;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #D3E3FD;
+    --md-sys-color-on-primary-container: #041E49;
+
+    --md-sys-color-secondary: #565E71;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-secondary-container: #DAE2F9;
+    --md-sys-color-on-secondary-container: #131C2B;
+
+    --md-sys-color-tertiary: #5B5891;
+    --md-sys-color-on-tertiary: #FFFFFF;
+    --md-sys-color-tertiary-container: #E3DFFF;
+    --md-sys-color-on-tertiary-container: #171634;
+
+    --md-sys-color-error: #BA1A1A;
+    --md-sys-color-on-error: #FFFFFF;
+    --md-sys-color-error-container: #FFDAD6;
+    --md-sys-color-on-error-container: #410002;
+
+    --md-sys-color-surface: #FAFAFD;
+    --md-sys-color-on-surface: #131316;
+    --md-sys-color-surface-variant: #E1E2EC;
+    --md-sys-color-on-surface-variant: #44474E;
+    --md-sys-color-surface-dim: #D9DAE0;
+    --md-sys-color-surface-bright: #FAFAFD;
+    --md-sys-color-surface-container-lowest: #FFFFFF;
+    --md-sys-color-surface-container-low: #F3F4F8;
+    --md-sys-color-surface-container: #EDEEF3;
+    --md-sys-color-surface-container-high: #E7E8EE;
+    --md-sys-color-surface-container-highest: #E1E3E9;
+
+    --md-sys-color-outline: #74777F;
+    --md-sys-color-outline-variant: #C4C6D0;
+    --md-sys-color-inverse-surface: #2F3033;
+    --md-sys-color-inverse-on-surface: #F1F0F4;
+    --md-sys-color-inverse-primary: #A8C7FA;
+    --md-sys-color-shadow: #000000;
+    --md-sys-color-scrim: #000000;
+
+    /* --- extended custom colour: «успех» (правильный ответ) --- */
+    --md-extended-color-success: #266C29;
+    --md-extended-color-on-success: #FFFFFF;
+    --md-extended-color-success-container: #ABF5A2;
+    --md-extended-color-on-success-container: #002204;
+
+    /* --- elevation (light) --- */
+    --md-sys-elevation-level0: none;
+    --md-sys-elevation-level1: 0px 1px 2px rgba(0,0,0,0.16), 0px 1px 3px 1px rgba(0,0,0,0.08);
+    --md-sys-elevation-level2: 0px 1px 2px rgba(0,0,0,0.16), 0px 2px 6px 2px rgba(0,0,0,0.08);
+    --md-sys-elevation-level3: 0px 1px 3px rgba(0,0,0,0.16), 0px 4px 8px 3px rgba(0,0,0,0.08);
+    --md-sys-elevation-level4: 0px 2px 3px rgba(0,0,0,0.16), 0px 6px 10px 4px rgba(0,0,0,0.08);
+    --md-sys-elevation-level5: 0px 4px 4px rgba(0,0,0,0.16), 0px 8px 12px 6px rgba(0,0,0,0.08);
+
+    color-scheme: light;
+}
+
+[data-theme="dark"] {
+    --md-sys-color-primary: #A8C7FA;
+    --md-sys-color-on-primary: #062E6F;
+    --md-sys-color-primary-container: #0842A0;
+    --md-sys-color-on-primary-container: #D3E3FD;
+
+    --md-sys-color-secondary: #BEC6DC;
+    --md-sys-color-on-secondary: #283141;
+    --md-sys-color-secondary-container: #3E4759;
+    --md-sys-color-on-secondary-container: #DAE2F9;
+
+    --md-sys-color-tertiary: #C5C0F0;
+    --md-sys-color-on-tertiary: #2D2A5D;
+    --md-sys-color-tertiary-container: #434074;
+    --md-sys-color-on-tertiary-container: #E3DFFF;
+
+    --md-sys-color-error: #FFB4AB;
+    --md-sys-color-on-error: #690005;
+    --md-sys-color-error-container: #93000A;
+    --md-sys-color-on-error-container: #FFDAD6;
+
+    /* нейтральная почти-чёрная база; шаги между уровнями увеличены,
+       чтобы карточки и панели явно отделялись от фона */
+    --md-sys-color-surface: #0E1116;
+    --md-sys-color-on-surface: #F3F4F8;
+    --md-sys-color-surface-variant: #44474E;
+    --md-sys-color-on-surface-variant: #C7CBD4;
+    --md-sys-color-surface-dim: #0E1116;
+    --md-sys-color-surface-bright: #343841;
+    --md-sys-color-surface-container-lowest: #090B0F;
+    --md-sys-color-surface-container-low: #171A20;
+    --md-sys-color-surface-container: #1B1F26;
+    --md-sys-color-surface-container-high: #262A33;
+    --md-sys-color-surface-container-highest: #313640;
+
+    --md-sys-color-outline: #A0A7B4;
+    --md-sys-color-outline-variant: #4A4E57;
+    --md-sys-color-inverse-surface: #E3E2E6;
+    --md-sys-color-inverse-on-surface: #2F3033;
+    --md-sys-color-inverse-primary: #0B57D0;
+
+    --md-extended-color-success: #90D889;
+    --md-extended-color-on-success: #00390A;
+    --md-extended-color-success-container: #0C5214;
+    --md-extended-color-on-success-container: #ABF5A2;
+
+    --md-sys-elevation-level1: 0px 1px 2px rgba(0,0,0,0.30), 0px 1px 3px 1px rgba(0,0,0,0.15);
+    --md-sys-elevation-level2: 0px 1px 2px rgba(0,0,0,0.30), 0px 2px 6px 2px rgba(0,0,0,0.15);
+    --md-sys-elevation-level3: 0px 1px 3px rgba(0,0,0,0.30), 0px 4px 8px 3px rgba(0,0,0,0.15);
+    --md-sys-elevation-level4: 0px 2px 3px rgba(0,0,0,0.30), 0px 6px 10px 4px rgba(0,0,0,0.15);
+    --md-sys-elevation-level5: 0px 4px 4px rgba(0,0,0,0.30), 0px 8px 12px 6px rgba(0,0,0,0.15);
+
+    color-scheme: dark;
+}
+
+/* ============================================================
+   БАЗА + ТИПОГРАФИЧЕСКАЯ ШКАЛА M3
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    font-family: var(--md-ref-typeface-plain);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    /* body-large */
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.03125rem;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+
+/* --- Material Symbols --- */
+.msym {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    flex-shrink: 0;
+    user-select: none;
+}
+.msym.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.msym.sm { font-size: 20px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+.msym.lg { font-size: 32px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 40; }
+
+/* --- греческий текст: полноценная поддержка политоники --- */
+.greek, .grammar-text table td:lang(el), [lang="grc"] {
+    font-family: var(--md-ref-typeface-greek);
+}
+
+/* --- шкала типографики --- */
+.md-display-large   { font-size: 3.5625rem; line-height: 4rem;     font-weight: 400; letter-spacing: -0.015625rem; }
+.md-display-medium  { font-size: 2.8125rem; line-height: 3.25rem;  font-weight: 400; letter-spacing: 0; }
+.md-display-small   { font-size: 2.25rem;   line-height: 2.75rem;  font-weight: 400; letter-spacing: 0; }
+.md-headline-large  { font-size: 2rem;      line-height: 2.5rem;   font-weight: 400; letter-spacing: 0; }
+.md-headline-medium { font-size: 1.75rem;   line-height: 2.25rem;  font-weight: 400; letter-spacing: 0; }
+.md-headline-small  { font-size: 1.5rem;    line-height: 2rem;     font-weight: 400; letter-spacing: 0; }
+.md-title-large     { font-size: 1.375rem;  line-height: 1.75rem;  font-weight: 400; letter-spacing: 0; }
+.md-title-medium    { font-size: 1rem;      line-height: 1.5rem;   font-weight: 500; letter-spacing: 0.009375rem; }
+.md-title-small     { font-size: 0.875rem;  line-height: 1.25rem;  font-weight: 500; letter-spacing: 0.00625rem; }
+.md-body-large      { font-size: 1rem;      line-height: 1.5rem;   font-weight: 400; letter-spacing: 0.03125rem; }
+.md-body-medium     { font-size: 0.875rem;  line-height: 1.25rem;  font-weight: 400; letter-spacing: 0.015625rem; }
+.md-body-small      { font-size: 0.75rem;   line-height: 1rem;     font-weight: 400; letter-spacing: 0.025rem; }
+.md-label-large     { font-size: 0.875rem;  line-height: 1.25rem;  font-weight: 500; letter-spacing: 0.00625rem; }
+.md-label-medium    { font-size: 0.75rem;   line-height: 1rem;     font-weight: 500; letter-spacing: 0.03125rem; }
+.md-label-small     { font-size: 0.6875rem; line-height: 1rem;     font-weight: 500; letter-spacing: 0.03125rem; }
+
+h1, h2, h3, h4 { font-weight: 400; color: var(--md-sys-color-on-surface); }
+h2 { font-size: 1.75rem; line-height: 2.25rem; letter-spacing: 0; }
+h3 { font-size: 1.375rem; line-height: 1.75rem; letter-spacing: 0; }
+h4 { font-size: 1rem; line-height: 1.5rem; font-weight: 500; letter-spacing: 0.009375rem; }
+b, strong { font-weight: 600; }
+
+a { color: var(--md-sys-color-primary); }
+
+::selection { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
+
+/* --- фокус: видимое кольцо по спецификации M3 --- */
+:focus-visible {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   КАРКАС ПРИЛОЖЕНИЯ
+   ============================================================ */
+:root {
+    --app-bar-height: 64px;
+    --nav-bar-height: 80px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-top: env(safe-area-inset-top, 0px);
+}
+
+.md-content {
+    padding-top: calc(var(--app-bar-height) + var(--safe-top));
+    /* +88px — запас, чтобы последний элемент списка не оказался под FAB */
+    padding-bottom: calc(var(--nav-bar-height) + var(--safe-bottom) + 88px);
+    min-height: 100dvh;
+}
+
+.app {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 8px 16px 0;
+}
+
+/* ============================================================
+   TOP APP BAR (small)
+   ============================================================ */
+.md-top-app-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    height: calc(var(--app-bar-height) + var(--safe-top));
+    padding: var(--safe-top) 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+/* on-scroll: контейнерный тон + тень (поведение M3 «scrolled») */
+.md-top-app-bar.scrolled {
+    background: var(--md-sys-color-surface-container);
+    box-shadow: var(--md-sys-elevation-level2);
+}
+.md-top-app-bar__title {
+    flex: 1;
+    min-width: 0;
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    padding: 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+}
+.md-top-app-bar__leading { width: 48px; display: flex; justify-content: center; }
+.md-top-app-bar__leading:empty { width: 12px; }
+
+/* ============================================================
+   ICON BUTTON (standard / filled tonal)
+   ============================================================ */
+.md-icon-button {
+    position: relative;
+    isolation: isolate;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    border-radius: var(--md-sys-shape-corner-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-icon-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.md-icon-button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.md-icon-button:focus-visible::before { opacity: var(--md-sys-state-focus-opacity); }
+.md-icon-button:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.md-icon-button--tonal {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+/* ============================================================
+   NAVIGATION BAR (bottom)
+   ============================================================ */
+.md-nav-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    height: calc(var(--nav-bar-height) + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
+    background: var(--md-sys-color-surface-container);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    box-shadow: var(--md-sys-elevation-level2);
+    transition: background-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.md-nav-item {
+    flex: 1;
+    max-width: 160px;
+    height: var(--nav-bar-height);
+    padding: 12px 0 16px;
+    border: 0;
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+}
+.md-nav-item__indicator {
+    position: relative;
+    isolation: isolate;
+    width: 64px;
+    height: 32px;
+    border-radius: var(--md-sys-shape-corner-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: background-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+.md-nav-item__indicator::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-on-surface);
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.md-nav-item:hover .md-nav-item__indicator::before { opacity: var(--md-sys-state-hover-opacity); }
+.md-nav-item:active .md-nav-item__indicator::before { opacity: var(--md-sys-state-pressed-opacity); }
+.md-nav-item__label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+}
+.md-nav-item.active { color: var(--md-sys-color-on-surface); }
+.md-nav-item.active .md-nav-item__indicator {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+.md-nav-item.active .msym { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+/* ============================================================
+   FAB (extended, контекстный)
+   ============================================================ */
+.md-fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(var(--nav-bar-height) + var(--safe-bottom) + 16px);
+    z-index: 19;
+    min-height: 56px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-large);
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    box-shadow: var(--md-sys-elevation-level3);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    overflow: hidden;
+    isolation: isolate;
+    -webkit-tap-highlight-color: transparent;
+    transition: box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized),
+                opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-fab::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.md-fab:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.md-fab:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.md-fab:hover { box-shadow: var(--md-sys-elevation-level4); }
+.md-fab.hidden-fab {
+    transform: scale(0.6);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ============================================================
+   RIPPLE (state layer + всплеск нажатия)
+   ============================================================ */
+.md-ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    background: currentColor;
+    opacity: 0.12;
+    pointer-events: none;
+    animation: md-ripple-in var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized-decelerate) forwards;
+}
+@keyframes md-ripple-in {
+    to { transform: scale(1); opacity: 0; }
+}
+
+/* ============================================================
+   КНОПКИ M3
+   .menu-btn            → filled tonal button
+   .menu-btn.primary    → filled button
+   .menu-btn.danger     → error-tonal button
+   .menu-btn.outlined   → outlined button
+   .menu-btn.text       → text button
+   ============================================================ */
+.menu-btn,
+.md-button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 40px;
+    padding: 10px 24px;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                border-radius var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+}
+.menu-btn::before,
+.md-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.menu-btn:hover::before, .md-button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.menu-btn:focus-visible::before, .md-button:focus-visible::before { opacity: var(--md-sys-state-focus-opacity); }
+.menu-btn:active, .md-button:active { border-radius: var(--md-sys-shape-corner-medium); }
+.menu-btn:disabled, .md-button:disabled {
+    background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+    color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.menu-btn:disabled::before, .md-button:disabled::before { opacity: 0; }
+
+.menu-btn.primary, .md-button--filled {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+.menu-btn.primary:hover, .md-button--filled:hover { box-shadow: var(--md-sys-elevation-level1); }
+
+.menu-btn.danger, .md-button--danger {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+}
+.menu-btn.danger-outlined {
+    background: transparent;
+    color: var(--md-sys-color-error);
+    border: 1px solid var(--md-sys-color-outline);
+    padding: 9px 23px;
+}
+.menu-btn.outlined, .md-button--outlined {
+    background: transparent;
+    color: var(--md-sys-color-primary);
+    border: 1px solid var(--md-sys-color-outline);
+    padding: 9px 23px;
+}
+.menu-btn.text, .md-button--text {
+    background: transparent;
+    color: var(--md-sys-color-primary);
+    padding: 10px 12px;
+}
+.menu-btn.elevated, .md-button--elevated {
+    background: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-primary);
+    box-shadow: var(--md-sys-elevation-level1);
+}
+.menu-btn.elevated:hover, .md-button--elevated:hover { box-shadow: var(--md-sys-elevation-level2); }
+.menu-btn .msym, .md-button .msym { font-size: 18px; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
+
+/* сетка кнопок / действий */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    margin: 16px 0;
+}
+.md-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+/* ============================================================
+   СПИСОК УРОКОВ — M3 list item (внутри карточки)
+   ============================================================ */
+.lesson-list {
+    display: flex;
+    flex-direction: column;
+}
+.lesson-item {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    min-height: 72px;
+    padding: 12px 8px 12px 4px;
+    border: 0;
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    border-radius: var(--md-sys-shape-corner-large);
+    -webkit-tap-highlight-color: transparent;
+}
+.lesson-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-on-surface);
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.lesson-item:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.lesson-item:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.lesson-item__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+.lesson-item__text { flex: 1; min-width: 0; }
+.lesson-item__headline, .lesson-item__supporting,
+.md-feature-card__title, .md-feature-card__body { display: block; }
+.lesson-item__headline {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.03125rem;
+}
+.lesson-item__supporting {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.lesson-item__trailing { color: var(--md-sys-color-on-surface-variant); }
+.md-divider {
+    height: 1px;
+    border: 0;
+    background: var(--md-sys-color-outline-variant);
+    margin: 0;
+}
+.decor-line { height: 1px; border: 0; background: var(--md-sys-color-outline-variant); margin: 24px 0; }
+
+/* ============================================================
+   КАРТОЧКИ M3
+   ============================================================ */
+.card {
+    background: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: background-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.card--elevated {
+    background: var(--md-sys-color-surface-container-low);
+    box-shadow: var(--md-sys-elevation-level1);
+}
+.card--outlined {
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+.card h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    color: var(--md-sys-color-on-surface);
+}
+.card h3 .msym { color: var(--md-sys-color-primary); }
+.card > p { color: var(--md-sys-color-on-surface-variant); }
+
+/* featured card («Отче наш») */
+.md-feature-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 20px;
+    border: 0;
+    text-align: left;
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 16px;
+    -webkit-tap-highlight-color: transparent;
+}
+.md-feature-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.md-feature-card__text { flex: 1; min-width: 0; }
+.md-feature-card__body { color: var(--md-sys-color-on-surface-variant); }
+.md-feature-card__chevron { color: var(--md-sys-color-on-surface-variant); }
+.md-feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.md-feature-card:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.md-feature-card:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.md-feature-card__icon .msym { font-size: 24px; }
+.md-feature-card__title { font-size: 1rem; font-weight: 500; line-height: 1.5rem; }
+.md-feature-card__body { font-size: 0.875rem; line-height: 1.25rem; opacity: 0.85; }
+
+/* ============================================================
+   TABS (primary, scrollable, sliding indicator)
+   ============================================================ */
+.tab-bar {
+    position: relative;
+    display: flex;
+    gap: 0;
+    margin: 0 -16px 16px;
+    padding: 0 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--md-sys-color-surface-variant);
+    scroll-behavior: smooth;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-bar button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    flex: 0 0 auto;
+    min-width: 76px;
+    height: 48px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.tab-bar button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.tab-bar button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.tab-bar button:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.tab-bar button.active { color: var(--md-sys-color-primary); }
+.tab-bar button .msym { font-size: 20px; }
+.tab-bar button.active .msym { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
+.md-tabs__indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    border-radius: 3px 3px 0 0;
+    background: var(--md-sys-color-primary);
+    transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized),
+                width var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+    pointer-events: none;
+}
+
+/* ============================================================
+   SEARCH BAR M3
+   ============================================================ */
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 56px;
+    padding: 0 16px;
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-full);
+    margin-bottom: 16px;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.search-box:focus-within { box-shadow: var(--md-sys-elevation-level1); }
+.search-box .search-icon { color: var(--md-sys-color-on-surface-variant); }
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface);
+}
+.search-box input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+.search-clear {
+    display: none;
+    width: 40px;
+    height: 40px;
+    margin-right: -8px;
+    border: 0;
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    border-radius: var(--md-sys-shape-corner-full);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+.search-clear.show { display: inline-flex; }
+.search-clear:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+.search-empty {
+    text-align: center;
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 32px 16px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+/* ============================================================
+   TEXT FIELD (outlined)
+   ============================================================ */
+.input-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 16px 0;
+}
+.input-group input {
+    flex: 1;
+    min-width: 180px;
+    height: 56px;
+    padding: 0 16px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface);
+    transition: border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.input-group input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+.input-group input:focus {
+    outline: none;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-primary);
+}
+.input-group button {
+    min-height: 56px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.input-group button:hover { box-shadow: var(--md-sys-elevation-level1); }
+
+/* ============================================================
+   CHIPS M3
+   ============================================================ */
+.word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+}
+.word-bank .chip {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 32px;
+    padding: 6px 16px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-small);
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 0.9375rem;
+    line-height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+                opacity var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+}
+.word-bank .chip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.word-bank .chip:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.word-bank .chip.picked {
+    background: var(--md-sys-color-secondary-container);
+    border-color: transparent;
+    color: var(--md-sys-color-on-secondary-container);
+    opacity: 0.45;
+    transform: scale(0.94);
+    cursor: default;
+}
+
+/* область сборки предложения */
+.build-area {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-height: 64px;
+    margin: 16px 0;
+    padding: 12px 16px;
+    border: 1px dashed var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-surface-container-lowest);
+    transition: border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.build-area:empty::before {
+    content: 'Выберите слова по порядку';
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.875rem;
+    letter-spacing: 0.015625rem;
+}
+.build-area .token {
+    min-height: 32px;
+    padding: 6px 16px;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 0.9375rem;
+    line-height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    animation: md-token-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes md-token-in {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ============================================================
+   ВОПРОС / ВАРИАНТЫ ОТВЕТА
+   ============================================================ */
+.question {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 16px;
+}
+.question b, .question .greek { font-weight: 600; }
+.question .greek { font-family: var(--md-ref-typeface-greek); }
+.md-prompt-strong {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--md-sys-color-on-surface);
+}
+.md-prompt-ru {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--md-sys-color-on-surface);
+}
+.options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin: 16px 0;
+}
+.option-btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 56px;
+    padding: 12px 20px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                border-radius var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+}
+.option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.option-btn:hover:not(:disabled)::before { opacity: var(--md-sys-state-hover-opacity); }
+.option-btn:active:not(:disabled) { border-radius: var(--md-sys-shape-corner-medium); }
+.options--greek .option-btn {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.0625rem;
+    letter-spacing: 0;
+}
+.option-btn:disabled { cursor: default; }
+.option-btn:disabled:not(.correct):not(.wrong) { opacity: 0.38; }
+.option-btn.correct {
+    background: var(--md-extended-color-success-container);
+    color: var(--md-extended-color-on-success-container);
+    border-color: transparent;
+    animation: md-answer-pop var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-emphasized);
+}
+.option-btn.wrong {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    border-color: transparent;
+    animation: md-answer-shake var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-standard);
+}
+@keyframes md-answer-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+@keyframes md-answer-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(2px); }
+}
+
+/* ============================================================
+   ОБРАТНАЯ СВЯЗЬ (результат ответа)
+   ============================================================ */
+.feedback {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    margin: 16px 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes md-feedback-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.feedback strong { font-family: var(--md-ref-typeface-greek); }
+.feedback.ok {
+    background: var(--md-extended-color-success-container);
+    color: var(--md-extended-color-on-success-container);
+}
+.feedback.fail {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+}
+.feedback::before {
+    font-family: 'Material Symbols Rounded';
+    font-size: 20px;
+    line-height: 1.25rem;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    flex-shrink: 0;
+}
+.feedback.ok::before { content: 'check_circle'; }
+.feedback.fail::before { content: 'cancel'; }
+
+/* индикатор прогресса упражнения */
+.md-progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+.progress-text, .md-progress-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface-variant);
+    white-space: nowrap;
+}
+.md-linear-progress {
+    flex: 1;
+    height: 4px;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-secondary-container);
+    overflow: hidden;
+}
+.md-linear-progress__bar {
+    height: 100%;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    transition: width var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized);
+}
+
+/* ============================================================
+   СПИСКИ СЛОВ
+   ============================================================ */
+.word-list { display: flex; flex-direction: column; }
+.word-item {
+    border-radius: var(--md-sys-shape-corner-medium);
+    overflow: hidden;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.word-item + .word-item { margin-top: 2px; }
+.word-item .word-row {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    padding: 8px 16px;
+    user-select: none;
+}
+.word-item.clickable .word-row { cursor: pointer; }
+.word-item.clickable .word-row::after {
+    content: 'expand_more';
+    font-family: 'Material Symbols Rounded';
+    font-size: 20px;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+.word-item.clickable.open .word-row::after { transform: rotate(180deg); }
+.word-item .word-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-on-surface);
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.word-item.clickable .word-row:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.word-item .word-row strong {
+    font-family: var(--md-ref-typeface-greek);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: var(--md-sys-color-on-surface);
+}
+.word-item .word-row > span {
+    /* перевод всегда прижат к правому краю, чтобы строка читалась как список */
+    margin-left: auto;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    color: var(--md-sys-color-on-surface-variant);
+    text-align: right;
+}
+.word-details {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    padding: 0 16px;
+    background: var(--md-sys-color-surface-container-high);
+    transition: max-height var(--md-sys-motion-duration-long1) var(--md-sys-motion-easing-emphasized),
+                padding var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized),
+                opacity var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.word-details.open {
+    max-height: 720px;
+    padding: 12px 16px 16px;
+    opacity: 1;
+}
+.vocab-section { margin-bottom: 8px; }
+.vocab-section h4 {
+    padding: 16px 16px 8px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    color: var(--md-sys-color-primary);
+}
+
+/* ============================================================
+   ТАБЛИЦЫ (склонения, грамматика)
+   ============================================================ */
+.md-table-scroll { overflow-x: auto; margin: 12px 0; }
+.word-details table, .grammar-text table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin: 8px 0;
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-medium);
+    overflow: hidden;
+}
+.word-details td, .word-details th,
+.grammar-text td, .grammar-text th {
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    padding: 10px 12px;
+    text-align: center;
+    color: var(--md-sys-color-on-surface);
+}
+.word-details th, .grammar-text th {
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+    text-transform: uppercase;
+}
+.word-details tr:last-child td, .grammar-text tr:last-child td { border-bottom: 0; }
+
+.grammar-text {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface);
+}
+.grammar-text b { color: var(--md-sys-color-on-surface); }
+.grammar-text > table { display: table; }
+
+/* ============================================================
+   КАРТОЧКИ ДЛЯ ЗАУЧИВАНИЯ (flashcards)
+   ============================================================ */
+.flashcard-area { text-align: center; padding: 8px 0; }
+.md-flashcard {
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    padding: 40px 24px;
+    margin: 8px 0 24px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: md-card-in var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes md-card-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.flashcard-word {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 2.8125rem;
+    line-height: 3.25rem;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface);
+    word-break: break-word;
+}
+.flashcard-translation {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: var(--md-sys-color-primary);
+    animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.flashcard-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.flashcard-buttons button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 48px;
+    padding: 12px 24px;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-radius var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+}
+.flashcard-buttons button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.flashcard-buttons button:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.flashcard-buttons button:active { border-radius: var(--md-sys-shape-corner-medium); }
+.flashcard-buttons .show { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.flashcard-buttons .know { background: var(--md-extended-color-success-container); color: var(--md-extended-color-on-success-container); }
+.flashcard-buttons .dontknow { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+
+/* ============================================================
+   СТАТИСТИКА / ОШИБКИ
+   ============================================================ */
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-row .msym { color: var(--md-sys-color-on-surface-variant); }
+.stat-row__label { flex: 1; font-size: 1rem; line-height: 1.5rem; }
+.stat-row__value {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    color: var(--md-sys-color-primary);
+    font-variant-numeric: tabular-nums;
+}
+.md-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.md-stat-tile {
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-large);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.md-stat-tile__value {
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+    color: var(--md-sys-color-on-surface);
+    font-variant-numeric: tabular-nums;
+}
+.md-stat-tile__label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03125rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.md-subhead {
+    padding: 16px 0 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    color: var(--md-sys-color-primary);
+}
+.error-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    margin: 4px 0;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.error-item strong { font-family: var(--md-ref-typeface-greek); color: var(--md-extended-color-success); }
+.error-item .msym { color: var(--md-sys-color-error); }
+.clear-btn {
+    min-height: 40px;
+    padding: 9px 23px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    background: transparent;
+    color: var(--md-sys-color-error);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.00625rem;
+    cursor: pointer;
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.clear-btn:hover { background: color-mix(in srgb, var(--md-sys-color-error) 8%, transparent); }
+.md-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 16px;
+    text-align: center;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.md-empty-state .msym {
+    font-size: 48px;
+    color: var(--md-sys-color-outline);
+    margin-bottom: 8px;
+}
+
+
+/* ============================================================
+   «ОТЧЕ НАШ»
+   ============================================================ */
+.prayer-verse {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.prayer-verse:last-child { border-bottom: 0; }
+.prayer-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.prayer-word {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 4px 10px;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.prayer-word:hover { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
+.prayer-word.selected { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.prayer-russian {
+    margin-left: 4px;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.prayer-transcription {
+    margin-left: 4px;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-style: italic;
+    color: var(--md-sys-color-outline);
+}
+.prayer-analysis {
+    display: none;
+    margin: 12px 0 4px;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.prayer-analysis strong { font-family: var(--md-ref-typeface-greek); font-size: 1.0625rem; }
+
+/* ============================================================
+   SNACKBAR M3
+   ============================================================ */
+.md-snackbar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--nav-bar-height) + var(--safe-bottom) + 16px);
+    z-index: 40;
+    min-height: 48px;
+    max-width: min(560px, calc(100vw - 32px));
+    padding: 14px 16px;
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    box-shadow: var(--md-sys-elevation-level3);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transform: translate(-50%, 16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized),
+                opacity var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.md-snackbar.show { transform: translate(-50%, 0); opacity: 1; }
+
+/* ============================================================
+   DIALOG M3 (basic)
+   ============================================================ */
+.md-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.md-scrim.show { opacity: 1; pointer-events: auto; }
+.md-dialog {
+    width: min(560px, 100%);
+    max-height: 80dvh;
+    overflow-y: auto;
+    padding: 24px;
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    box-shadow: var(--md-sys-elevation-level3);
+    transform: scale(0.85);
+    opacity: 0;
+    transition: transform var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-emphasized),
+                opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-scrim.show .md-dialog { transform: scale(1); opacity: 1; }
+.md-dialog__icon {
+    display: flex;
+    justify-content: center;
+    color: var(--md-sys-color-secondary);
+    margin-bottom: 16px;
+}
+.md-dialog__headline {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    text-align: center;
+    margin-bottom: 16px;
+}
+.md-dialog__body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    color: var(--md-sys-color-on-surface-variant);
+    text-align: center;
+    margin-bottom: 24px;
+}
+.md-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   ЭКРАНЫ И ПЕРЕХОДЫ
+   ============================================================ */
+.section { display: none; }
+.section.active {
+    display: block;
+    animation: md-screen-in var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes md-screen-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+#lessonSection .section.active { animation: md-tab-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate); }
+@keyframes md-tab-in {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+.hidden { display: none !important; }
+.center { text-align: center; }
+.mt-12 { margin-top: 12px; }
+.mb-12 { margin-bottom: 12px; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.back-btn { display: none; }
+.md-sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============================================================
+   АДАПТИВНОСТЬ
+   ============================================================ */
+@media (max-width: 600px) {
+    :root { --app-bar-height: 56px; --nav-bar-height: 72px; }
+    .app { padding: 8px 12px 0; }
+    .md-top-app-bar__title { font-size: 1.125rem; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .options { grid-template-columns: 1fr; }
+    .card { padding: 16px; border-radius: var(--md-sys-shape-corner-large); }
+    .flashcard-word { font-size: 2rem; line-height: 2.5rem; }
+    .flashcard-translation { font-size: 1.25rem; line-height: 1.75rem; }
+    .question { font-size: 1.125rem; line-height: 1.5rem; }
+    .md-prompt-strong { font-size: 1.5rem; line-height: 2rem; }
+    .md-fab { right: 12px; }
+    .md-fab .md-fab__label { display: none; }
+    .md-fab { padding: 0 16px; width: 56px; justify-content: center; }
+    .word-details td, .word-details th,
+    .grammar-text td, .grammar-text th { padding: 8px 6px; font-size: 0.8125rem; }
+    .md-nav-item__label { font-size: 0.6875rem; }
+    .tab-bar { margin: 0 -12px 16px; }
+}
+
+/* Широкое окно (expanded): navigation bar превращается в navigation rail */
+@media (min-width: 905px) {
+    :root { --nav-bar-height: 0px; --rail-width: 88px; }
+    .app { padding: 16px 24px 0; }
+    .md-content { padding-left: var(--rail-width); padding-bottom: 88px; }
+    .md-top-app-bar { left: var(--rail-width); }
+    .md-nav-bar {
+        top: 0;
+        bottom: 0;
+        right: auto;
+        width: var(--rail-width);
+        height: 100%;
+        padding: 0;
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+        background: var(--md-sys-color-surface);
+        box-shadow: none;
+        z-index: 25;
+    }
+    .md-nav-item {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: none;
+        height: auto;
         padding: 0;
     }
-    body {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        padding: 16px;
-        display: flex;
-        justify-content: center;
-        transition: background 0.3s ease, color 0.3s ease;
-    }
-    .app {
-        max-width: 950px;
-        width: 100%;
-        background: var(--app-bg);
-        border-radius: 32px;
-        box-shadow: 0 12px 40px var(--shadow);
-        padding: 24px 20px;
-        transition: background 0.3s ease;
-    }
-    h1 {
-        font-size: 28px;
-        color: var(--text-dark);
-        border-bottom: 2px solid var(--border);
-        padding-bottom: 14px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-    h1 .title-text {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-    h1 small {
-        font-size: 28px;
-        font-weight: 400;
-        color: var(--text-dark);
-    }
-    .theme-toggle {
-        background: var(--btn-bg);
-        border: 2px solid var(--border);
-        border-radius: 999px;
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.2s;
-        flex-shrink: 0;
-    }
-    .theme-toggle:hover {
-        background: var(--btn-hover);
-        transform: scale(1.08);
-    }
-    .menu-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin: 16px 0;
-    }
-    .menu-btn {
-        background: var(--btn-bg);
-        border: 0;
-        border-radius: 8px;
-        padding: 14px 12px;
-        font-size: 15px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: 0.15s;
-        text-align: center;
-        color: var(--text);
-    }
-    .menu-btn:hover {
-        background: var(--btn-hover);
-        transform: translateY(-2px);
-    }
-    .menu-btn.primary {
-        background: var(--primary);
-        color: #fff;
-    }
-    .menu-btn.primary:hover {
-        background: var(--primary-hover);
-    }
-    .menu-btn.danger {
-        background: var(--danger-bg);
-        color: var(--danger-text);
-    }
-    .back-btn {
-        background: 0;
-        border: 0;
-        color: var(--text-soft);
-        font-size: 15px;
-        cursor: pointer;
-        margin-bottom: 14px;
-    }
-    .back-btn:hover {
-        text-decoration: underline;
-    }
-    .section {
-        display: none;
-    }
-    .section.active {
-        display: block;
-        animation: fade 0.25s ease;
-    }
-    @keyframes fade {
-        0% { opacity: 0.3; }
-        100% { opacity: 1; }
-    }
-    .card {
-        background: var(--card-bg);
-        border-radius: 18px;
-        padding: 20px 18px;
-        margin-bottom: 18px;
-        border: 1px solid var(--card-border);
-    }
-    .card h3 {
-        margin-bottom: 10px;
-        color: var(--text-dark);
-        font-size: 18px;
-    }
-    .word-list {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-    .search-box {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--input-bg);
-        border: 2px solid var(--input-border);
-        border-radius: 12px;
-        padding: 10px 14px;
-        margin-bottom: 14px;
-    }
-    .search-box input {
-        border: 0;
-        outline: none;
-        background: transparent;
-        font-size: 16px;
-        flex: 1;
-        color: var(--text);
-    }
-    .search-box .search-icon {
-        font-size: 16px;
-        opacity: 0.6;
-    }
-    .search-clear {
-        background: none;
-        border: 0;
-        cursor: pointer;
-        font-size: 16px;
-        opacity: 0.5;
-        display: none;
-    }
-    .search-clear.show { display: block; }
-    .search-empty {
-        text-align: center;
-        color: var(--text-soft);
-        padding: 20px;
-        font-size: 15px;
-    }
-    .word-item {
-        background: var(--word-item-bg);
-        border-radius: 8px;
-        font-size: 15px;
-        overflow: hidden;
-    }
-    .word-item .word-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 14px;
-        cursor: pointer;
-        user-select: none;
-    }
-    .word-item .word-row:hover {
-        background: var(--word-item-hover);
-    }
-    .word-item .word-row strong {
-        font-weight: 600;
-        color: var(--text-dark);
-    }
-    .word-details {
-        overflow: hidden;
-        max-height: 0;
-        transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-        padding: 0 14px;
-        background: var(--word-details-bg);
-        border-radius: 0 0 8px 8px;
-        opacity: 0;
-    }
-    .word-details.open {
-        max-height: 600px;
-        padding: 8px 14px 12px;
-        opacity: 1;
-    }
-    .word-details table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-        margin: 0;
-    }
-    .word-details td, .word-details th {
-        border: 1px solid var(--table-border);
-        padding: 4px 8px;
-        text-align: center;
-        color: var(--text);
-    }
-    .word-details th {
-        background: var(--word-item-bg);
-    }
-    .grammar-text {
-        font-size: 15px;
-        line-height: 1.7;
-        background: var(--grammar-bg);
-        padding: 16px 18px;
-        border-radius: 14px;
-        border-left: 4px solid var(--primary);
-        color: var(--text);
-    }
-    .grammar-text table {
-        border-collapse: collapse;
-        margin: 10px 0;
-        width: 100%;
-        font-size: 14px;
-    }
-    .grammar-text td, .grammar-text th {
-        border: 1px solid var(--table-border);
-        padding: 6px 10px;
-        text-align: center;
-    }
-    .question {
-        font-size: 19px;
-        font-weight: 500;
-        margin-bottom: 16px;
-    }
-    .options {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin: 10px 0;
-    }
-    .option-btn {
-        background: var(--btn-bg);
-        border: 2px solid transparent;
-        border-radius: 8px;
-        padding: 10px 22px;
-        font-size: 17px;
-        cursor: pointer;
-        transition: 0.1s;
-        flex: 1;
-        text-align: center;
-        color: var(--text);
-    }
-    .option-btn:hover {
-        background: var(--btn-hover);
-        border-color: var(--primary);
-    }
-    .option-btn.correct {
-        background: var(--correct-bg);
-        color: #fff;
-        border-color: var(--correct-border);
-    }
-    .option-btn.wrong {
-        background: var(--wrong-bg);
-        color: #fff;
-        border-color: var(--wrong-border);
-    }
-    .feedback {
-        padding: 14px 18px;
-        border-radius: 14px;
-        margin: 14px 0;
-        font-weight: 500;
-    }
-    .feedback.ok {
-        background: var(--ok-bg);
-        color: var(--ok-text);
-    }
-    .feedback.fail {
-        background: var(--fail-bg);
-        color: var(--fail-text);
-    }
-    .input-group {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin: 10px 0;
-    }
-    .input-group input {
-        flex: 1;
-        padding: 10px 16px;
-        border-radius: 8px;
-        border: 2px solid var(--input-border);
-        font-size: 17px;
-        background: var(--input-bg);
-        color: var(--text);
-        min-width: 180px;
-    }
-    .input-group button {
-        padding: 10px 24px;
-        border: 0;
-        border-radius: 8px;
-        background: var(--primary);
-        color: #fff;
-        font-size: 17px;
-        cursor: pointer;
-    }
-    .input-group button:hover {
-        background: var(--primary-hover);
-    }
-    .word-bank {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin: 10px 0;
-    }
-    .word-bank .chip {
-        background: var(--chip-bg);
-        color: var(--text);
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-size: 17px;
-        cursor: pointer;
-        border: 2px solid transparent;
-        user-select: none;
-    }
-    .word-bank .chip:hover {
-        background: var(--chip-hover);
-        transform: scale(1.02);
-    }
-    .word-bank .chip.picked {
-        background: var(--primary);
-        color: #fff;
-        opacity: 0.5;
-        transform: scale(0.95);
-        cursor: default;
-    }
-    .build-area {
-        background: var(--build-bg);
-        padding: 10px 16px;
-        border-radius: 8px;
-        min-height: 44px;
-        margin: 10px 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        border: 2px dashed var(--build-border);
-    }
-    .build-area .token {
-        background: var(--token-bg);
-        color: #fff;
-        padding: 4px 14px;
-        border-radius: 8px;
-        font-size: 17px;
-    }
-    .tab-bar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin: 12px 0;
-    }
-    .tab-bar button {
-        flex: 1;
-        min-width: 80px;
-        padding: 10px 8px;
-        border: 0;
-        border-radius: 8px;
-        background: var(--btn-bg);
-        color: var(--text);
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
-    .tab-bar button.active {
-        background: var(--primary);
-        color: #fff;
-    }
-    .tab-bar button:hover {
-        background: var(--btn-hover);
-    }
-    .flashcard-area {
-        text-align: center;
-        padding: 20px 0;
-    }
-    .flashcard-word {
-        font-size: 40px;
-        font-weight: 600;
-        color: var(--text-dark);
-        margin: 20px 0;
-    }
-    .flashcard-translation {
-        font-size: 28px;
-        color: var(--text-soft);
-        margin: 16px 0;
-    }
-    .flashcard-buttons {
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-top: 20px;
-    }
-    .flashcard-buttons button {
-        padding: 12px 32px;
-        border: 0;
-        border-radius: 8px;
-        font-size: 18px;
-        cursor: pointer;
-    }
-    .flashcard-buttons .show {
-        background: var(--primary);
-        color: #fff;
-    }
-    .flashcard-buttons .know {
-        background: var(--correct-bg);
-        color: #fff;
-    }
-    .flashcard-buttons .dontknow {
-        background: var(--wrong-bg);
-        color: #fff;
-    }
-    .stat-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid var(--card-border);
-    }
-    .stat-row:last-child {
-        border-bottom: none;
-    }
-    .lesson-badge {
-        background: var(--text-dark);
-        color: var(--app-bg);
-        padding: 2px 14px;
-        border-radius: 8px;
-        font-size: 14px;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-    .error-item {
-        background: var(--error-bg);
-        padding: 8px 14px;
-        border-radius: 8px;
-        margin: 4px 0;
-        border-left: 4px solid var(--wrong-bg);
-        color: var(--text);
-    }
-    .clear-btn {
-        background: none;
-        border: 1px solid var(--wrong-bg);
-        border-radius: 8px;
-        padding: 6px 18px;
-        color: var(--fail-text);
-        cursor: pointer;
-        font-size: 14px;
-        margin-top: 8px;
-    }
-    .clear-btn:hover {
-        background: var(--wrong-bg);
-        color: #fff;
-    }
-    .vocab-section {
-        margin-bottom: 16px;
-    }
-    .vocab-section h4 {
-        background: var(--word-item-bg);
-        padding: 6px 12px;
-        border-radius: 8px;
-        margin-bottom: 6px;
-        color: var(--text-dark);
-    }
-    .vocab-section .word-item {
-        margin-left: 8px;
-    }
-    .hidden { display: none !important; }
-    .center { text-align: center; }
-    .mt-12 { margin-top: 12px; }
-    .mb-12 { margin-bottom: 12px; }
-    .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .progress-text { font-size: 14px; color: var(--text-soft); }
-    .decor-line { border: none; border-top: 2px solid var(--border); margin: 20px 0; }
-    [id^="analysis-"] {
-        transition: opacity 0.3s ease;
-    }
-    @media (max-width: 600px) {
-        .app { padding: 16px 12px; }
-        .menu-grid { grid-template-columns: 1fr; }
-        .options { flex-direction: column; }
-        .option-btn { width: 100%; }
-        .input-group input { min-width: 140px; }
-        .tab-bar button { min-width: 60px; font-size: 13px; padding: 8px 6px; }
-        .flashcard-word { font-size: 30px; }
-        .flashcard-translation { font-size: 22px; }
-        h1 { font-size: 22px; }
-        h1 small { font-size: 22px; }
-    }
-    @media (max-width: 600px) {
-        .app { padding: 12px 8px; }
-        .word-item .word-row { padding: 8px 10px; font-size: 16px; }
-        .menu-btn { padding: 12px 8px; font-size: 14px; }
-        .tab-bar button { min-width: 50px; font-size: 12px; padding: 8px 4px; }
-        .flashcard-word { font-size: 28px; }
-        .flashcard-translation { font-size: 20px; }
-        .option-btn { padding: 12px 16px; font-size: 16px; }
-        .input-group input { font-size: 16px; padding: 10px 12px; min-width: 120px; }
-        .input-group button { padding: 10px 16px; font-size: 16px; }
-        .build-area .token { font-size: 15px; padding: 4px 10px; }
-        .word-bank .chip { padding: 6px 12px; font-size: 15px; }
-        .grammar-text { font-size: 14px; padding: 12px 14px; }
-        .grammar-text table { font-size: 12px; }
-        .grammar-text td, .grammar-text th { padding: 4px 6px; }
-    }
+    .md-snackbar { left: calc(50% + var(--rail-width) / 2); bottom: 24px; }
+    .md-fab { bottom: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
 </style>
-</head>
 <body>
+
+<!-- ============ TOP APP BAR ============ -->
+<header class="md-top-app-bar" id="topAppBar">
+    <div class="md-top-app-bar__leading" id="appBarLeading"></div>
+    <h1 class="md-top-app-bar__title" id="appBarTitle">Древнегреческий</h1>
+    <button class="md-icon-button" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Сменить тему" title="Сменить тему">
+        <span class="msym" id="themeToggleIcon">dark_mode</span>
+    </button>
+</header>
+
+<main class="md-content" id="mdContent">
 <div class="app" id="app">
 
-<h1>
-    <span class="title-text">🏛️ <small>Древнегреческий учебник в кармане (уроки 1–10)</small></span>
-    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
-</h1>
-
-<!-- Главное меню -->
+<!-- ============ УРОКИ (главный экран) ============ -->
 <div id="mainMenu" class="section active">
-    <p style="margin-bottom:14px;color:#4a3728;">Выберите урок:</p>
-    <div class="menu-grid" id="lessonGrid"></div>
-    <hr class="decor-line">
-    <div class="menu-grid" style="grid-template-columns:1fr 1fr 1fr;">
-        <button class="menu-btn" onclick="showAllVocab()">📚 Словарь всех слов</button>
-        <button class="menu-btn primary" onclick="startAllFlashcards()">📇 Проверка всех слов</button>
-        <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
-        <button class="menu-btn" onclick="showErrors()">🔄 Ошибки</button>
-        <button class="menu-btn danger" onclick="clearAllProgress()">🗑️ Сброс прогресса</button>
-        <button class="menu-btn primary" onclick="showPrayer()">📜 Отче наш</button>
+    <button class="md-feature-card" onclick="showPrayer()">
+        <span class="md-feature-card__icon"><span class="msym">local_library</span></span>
+        <span class="md-feature-card__text">
+            <span class="md-feature-card__title">Отче наш — Πάτερ ἡμῶν</span>
+            <span class="md-feature-card__body">Пословный разбор с транскрипцией</span>
+        </span>
+        <span class="md-feature-card__chevron msym">chevron_right</span>
+    </button>
+
+    <div class="card">
+        <h3><span class="msym">menu_book</span>Уроки 1–10</h3>
+        <div class="lesson-list" id="lessonGrid"></div>
     </div>
 </div>
 
-<!-- Словарь всех слов -->
+<!-- ============ СЛОВАРЬ ВСЕХ СЛОВ ============ -->
 <div id="allVocabSection" class="section">
-    <button class="back-btn" onclick="goToMain()">← Назад</button>
+    <div class="search-box">
+        <span class="msym search-icon">search</span>
+        <input type="text" id="vocabSearchInput" placeholder="Поиск по-гречески или по-русски" oninput="filterAllVocab()" aria-label="Поиск по словарю">
+        <button class="search-clear" id="vocabSearchClear" onclick="clearVocabSearch()" aria-label="Очистить поиск">
+            <span class="msym sm">close</span>
+        </button>
+    </div>
     <div class="card">
-        <h3>📚 Словарь всех слов (уроки 1–10)</h3>
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="vocabSearchInput" placeholder="Поиск по-гречески или по-русски..." oninput="filterAllVocab()">
-            <button class="search-clear" id="vocabSearchClear" onclick="clearVocabSearch()">✕</button>
-        </div>
         <div id="allVocabContent"></div>
     </div>
 </div>
 
-<!-- Проверка всех слов (карточки) -->
+<!-- ============ ПРОВЕРКА ВСЕХ СЛОВ (КАРТОЧКИ) ============ -->
 <div id="allFlashcardsSection" class="section">
-    <button class="back-btn" onclick="goToMain()">← Назад</button>
-    <div class="card"><h3>📇 Проверка всех слов</h3><div id="allFlashcardContainer" class="flashcard-area"></div></div>
-</div>
-
-<!-- Урок -->
-<div id="lessonSection" class="section">
-    <button class="back-btn" onclick="goToMain()">← Назад</button>
-    <h2 id="lessonTitle" style="margin-bottom:4px;"></h2>
-    <div class="lesson-badge" id="lessonBadge">Урок 3</div>
-    <div class="tab-bar">
-        <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')">📚 Грамматика</button>
-        <button data-part="vocab" onclick="switchLessonPart('vocab')">📖 Словарь</button>
-        <button data-part="exercise" onclick="switchLessonPart('exercise')">🔤 Упражнения</button>
-        <button data-part="flashcards" onclick="switchLessonPart('flashcards')">📇 Карточки</button>
-        <button data-part="test" onclick="startTest()">📝 Тест (10)</button>
-        <button data-part="translation" onclick="switchLessonPart('translation')">🌍 Перевод</button>
-    </div>
-    <div id="partGrammar" class="section active"><div class="card"><h3>Грамматика</h3><div class="grammar-text" id="grammarContent"></div></div></div>
-    <div id="partVocab" class="section"><div class="card"><h3>Словарь урока</h3><div class="word-list" id="vocabList"></div></div></div>
-    <div id="partExercise" class="section"><div class="card"><h3>Упражнения</h3><div id="exerciseButtons"></div><div id="exerciseQuestion" style="margin-top:16px;"></div></div></div>
-    <div id="partFlashcards" class="section"><div class="card"><h3>📇 Карточки</h3><div id="flashcardContainer" class="flashcard-area"><p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button></div></div></div>
-    <div id="partTranslation" class="section"><div class="card"><h3>🌍 Перевод</h3><div id="translationButtons"></div><div id="translationQuestion" style="margin-top:16px;"></div></div></div>
-
-    <!-- Навигация между уроками (внизу) -->
-    <div id="lessonNav" style="margin-top: 16px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-        <button class="menu-btn" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex: 1; min-width: 120px;">⬅️ Предыдущий урок</button>
-        <button class="menu-btn" onclick="goToMain()" style="flex: 0.5; min-width: 100px;">🏠 Меню</button>
-        <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex: 1; min-width: 120px;">Следующий урок ➡️</button>
-    </div>
-</div>
-
-<!-- Статистика -->
-<div id="statsSection" class="section"><button class="back-btn" onclick="goToMain()">← Назад</button><div class="card"><h3>📊 Статистика</h3><div id="statsContent"></div></div></div>
-
-<!-- Ошибки -->
-<div id="errorsSection" class="section"><button class="back-btn" onclick="goToMain()">← Назад</button><div class="card"><h3>🔄 Ошибки</h3><div id="errorsContent"></div></div></div>
-
-<!-- Тест -->
-<div id="testSection" class="section"><button class="back-btn" onclick="cancelTest()">← Выйти</button><div class="card"><h3>📝 Тест</h3><div id="testContainer"></div></div></div>
-<!-- Отче наш -->
-<div id="prayerSection" class="section">
-    <button class="back-btn" onclick="goToMain()">← Назад</button>
     <div class="card">
-        <h3>📜 Отче наш (Πάτερ ἡμῶν)</h3>
-        <div id="prayerContent"></div>
-        <div id="prayerExercise" style="margin-top:20px;"></div>
+        <h3><span class="msym">style</span>Проверка всех слов</h3>
+        <div id="allFlashcardContainer" class="flashcard-area"></div>
     </div>
 </div>
-    
+
+<!-- ============ УРОК ============ -->
+<div id="lessonSection" class="section">
+    <h2 id="lessonTitle" class="mb-12"></h2>
+
+    <div class="tab-bar" id="lessonTabs" role="tablist">
+        <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')" role="tab"><span class="msym">school</span>Грамматика</button>
+        <button data-part="vocab" onclick="switchLessonPart('vocab')" role="tab"><span class="msym">dictionary</span>Словарь</button>
+        <button data-part="exercise" onclick="switchLessonPart('exercise')" role="tab"><span class="msym">edit_note</span>Упражнения</button>
+        <button data-part="flashcards" onclick="switchLessonPart('flashcards')" role="tab"><span class="msym">style</span>Карточки</button>
+        <button data-part="test" onclick="startTest()" role="tab"><span class="msym">quiz</span>Тест</button>
+        <button data-part="translation" onclick="switchLessonPart('translation')" role="tab"><span class="msym">translate</span>Перевод</button>
+        <div class="md-tabs__indicator" id="lessonTabsIndicator"></div>
+    </div>
+
+    <div id="partGrammar" class="section active"><div class="card"><div class="grammar-text" id="grammarContent"></div></div></div>
+    <div id="partVocab" class="section"><div class="card"><div class="word-list" id="vocabList"></div></div></div>
+    <div id="partExercise" class="section"><div class="card"><div class="md-button-row" id="exerciseButtons"></div><div id="exerciseQuestion"></div></div></div>
+    <div id="partFlashcards" class="section"><div class="card"><div id="flashcardContainer" class="flashcard-area"></div></div></div>
+    <div id="partTranslation" class="section"><div class="card"><div class="md-button-row" id="translationButtons"></div><div id="translationQuestion"></div></div></div>
+
+    <div class="md-button-row" id="lessonNav" style="margin-top:24px;">
+        <button class="menu-btn outlined" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex:1;min-width:140px;"><span class="msym">arrow_back</span>Предыдущий</button>
+        <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex:1;min-width:140px;">Следующий<span class="msym">arrow_forward</span></button>
+    </div>
+</div>
+
+<!-- ============ ПРОГРЕСС ============ -->
+<div id="statsSection" class="section">
+    <div class="card">
+        <h3><span class="msym">insights</span>Ваш прогресс</h3>
+        <div id="statsContent"></div>
+    </div>
+    <div class="card">
+        <h3><span class="msym">settings_backup_restore</span>Управление данными</h3>
+        <p class="md-body-medium">Сброс удалит статистику ответов и список ошибок. Отменить это действие нельзя.</p>
+        <div class="md-button-row">
+            <button class="menu-btn danger-outlined" onclick="clearAllProgress()"><span class="msym">delete_sweep</span>Сбросить прогресс</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ ОШИБКИ ============ -->
+<div id="errorsSection" class="section">
+    <div class="card">
+        <h3><span class="msym">rule</span>Работа над ошибками</h3>
+        <div id="errorsContent"></div>
+    </div>
+</div>
+
+<!-- ============ ТЕСТ ============ -->
+<div id="testSection" class="section">
+    <div class="card">
+        <h3><span class="msym">quiz</span>Тест</h3>
+        <div id="testContainer"></div>
+    </div>
+</div>
+
+<!-- ============ ОТЧЕ НАШ ============ -->
+<div id="prayerSection" class="section">
+    <div class="card">
+        <h3><span class="msym">local_library</span>Πάτερ ἡμῶν</h3>
+        <div id="prayerContent"></div>
+    </div>
+    <div class="card">
+        <h3><span class="msym">edit_note</span>Упражнения</h3>
+        <div id="prayerExercise"></div>
+    </div>
+</div>
+
+</div>
+</main>
+
+<!-- ============ NAVIGATION BAR ============ -->
+<nav class="md-nav-bar" id="navBar" aria-label="Основная навигация">
+    <button class="md-nav-item active" data-dest="lessons" onclick="navigateTo('lessons')">
+        <span class="md-nav-item__indicator"><span class="msym">menu_book</span></span>
+        <span class="md-nav-item__label">Уроки</span>
+    </button>
+    <button class="md-nav-item" data-dest="vocab" onclick="navigateTo('vocab')">
+        <span class="md-nav-item__indicator"><span class="msym">dictionary</span></span>
+        <span class="md-nav-item__label">Словарь</span>
+    </button>
+    <button class="md-nav-item" data-dest="cards" onclick="navigateTo('cards')">
+        <span class="md-nav-item__indicator"><span class="msym">style</span></span>
+        <span class="md-nav-item__label">Карточки</span>
+    </button>
+    <button class="md-nav-item" data-dest="progress" onclick="navigateTo('progress')">
+        <span class="md-nav-item__indicator"><span class="msym">insights</span></span>
+        <span class="md-nav-item__label">Прогресс</span>
+    </button>
+</nav>
+
+<!-- ============ FAB ============ -->
+<button class="md-fab" id="mainFab" onclick="onFabClick()">
+    <span class="msym" id="mainFabIcon">play_arrow</span>
+    <span class="md-fab__label" id="mainFabLabel">Продолжить</span>
+</button>
+
+<!-- ============ SNACKBAR ============ -->
+<div class="md-snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+<!-- ============ DIALOG ============ -->
+<div class="md-scrim" id="dialogScrim" onclick="if(event.target===this) mdDialogClose(false)">
+    <div class="md-dialog" role="alertdialog" aria-modal="true" aria-labelledby="dialogHeadline">
+        <div class="md-dialog__icon"><span class="msym lg" id="dialogIcon">delete</span></div>
+        <div class="md-dialog__headline" id="dialogHeadline"></div>
+        <div class="md-dialog__body" id="dialogBody"></div>
+        <div class="md-dialog__actions">
+            <button class="menu-btn text" onclick="mdDialogClose(false)">Отмена</button>
+            <button class="menu-btn primary" id="dialogConfirmBtn" onclick="mdDialogClose(true)">Удалить</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -2375,10 +3570,156 @@ function loadStats() {
 }
 function saveStats() { localStorage.setItem('greek_stats', JSON.stringify(stats)); }
 
+// ============================================================
+// M3 SHELL: top app bar, navigation bar, FAB
+// ============================================================
+let currentSectionId = 'mainMenu';
+let currentLessonPart = 'grammar';
+let titleFadeTimer = null;
+
+// Метаданные экранов: заголовок app bar, активная точка навигации,
+// действие кнопки «назад» (null → кнопка скрыта).
+const SCREEN_META = {
+    mainMenu:             { title: 'Древнегреческий', dest: 'lessons',  back: null },
+    allVocabSection:      { title: 'Словарь',         dest: 'vocab',    back: null },
+    allFlashcardsSection: { title: 'Проверка слов',   dest: 'cards',    back: null },
+    statsSection:         { title: 'Прогресс',        dest: 'progress', back: null },
+    lessonSection:        { title: 'Урок',            dest: 'lessons',  back: 'lessons' },
+    testSection:          { title: 'Тест',            dest: null,       back: 'test' },
+    errorsSection:        { title: 'Ошибки',          dest: 'progress', back: 'progress' },
+    prayerSection:        { title: 'Отче наш',        dest: 'lessons',  back: 'lessons' }
+};
+
+const DEST_SECTION = {
+    lessons:  'mainMenu',
+    vocab:    'allVocabSection',
+    cards:    'allFlashcardsSection',
+    progress: 'statsSection'
+};
+
+// Контекстный FAB — главное действие текущего экрана
+const FAB_CONFIG = {
+    mainMenu:             { icon: 'play_arrow',  label: 'Продолжить' },
+    allVocabSection:      { icon: 'search',      label: 'Поиск' },
+    allFlashcardsSection: { icon: 'restart_alt', label: 'Заново' },
+    lessonSection:        { icon: 'quiz',        label: 'Тест' },
+    prayerSection:        { icon: 'translate',   label: 'Упражнение' }
+};
+
 function showSection(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     let t = document.getElementById(id);
     if (t) t.classList.add('active');
+    currentSectionId = id;
+    // Внутренние вкладки урока сбрасываются вместе со всеми .section — восстанавливаем
+    if (id === 'lessonSection') restoreLessonPart();
+    updateShell();
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+}
+
+function updateShell() {
+    let meta = SCREEN_META[currentSectionId] || { title: 'Древнегреческий', dest: null, back: null };
+
+    // --- заголовок ---
+    let titleEl = document.getElementById('appBarTitle');
+    if (titleEl) {
+        let title = meta.title;
+        if (currentSectionId === 'lessonSection') {
+            let d = getLessonData(currentLesson);
+            title = d ? 'Урок ' + currentLesson : 'Урок';
+        }
+        if (titleEl.textContent !== title) {
+            // мягкая замена заголовка; быстрые переходы подряд не должны гонять таймеры
+            clearTimeout(titleFadeTimer);
+            titleEl.style.opacity = '0';
+            titleFadeTimer = setTimeout(() => { titleEl.style.opacity = '1'; }, 100);
+            titleEl.textContent = title;
+        }
+    }
+
+    // --- кнопка «назад» ---
+    let leading = document.getElementById('appBarLeading');
+    if (leading) {
+        if (meta.back) {
+            if (!leading.firstChild) {
+                leading.innerHTML = '<button class="md-icon-button" onclick="goBack()" aria-label="Назад"><span class="msym">arrow_back</span></button>';
+            }
+        } else {
+            leading.innerHTML = '';
+        }
+    }
+
+    // --- активная точка навигации ---
+    document.querySelectorAll('.md-nav-item').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-dest') === meta.dest);
+    });
+
+    // --- контекстный FAB ---
+    let fab = document.getElementById('mainFab');
+    let cfg = FAB_CONFIG[currentSectionId];
+    if (fab) {
+        if (cfg && !(currentSectionId === 'lessonSection' && (currentLesson === 1 || currentLesson === 2))) {
+            fab.classList.remove('hidden-fab');
+            document.getElementById('mainFabIcon').textContent = cfg.icon;
+            document.getElementById('mainFabLabel').textContent = cfg.label;
+            fab.setAttribute('aria-label', cfg.label);
+        } else {
+            fab.classList.add('hidden-fab');
+        }
+    }
+}
+
+function navigateTo(dest) {
+    let id = DEST_SECTION[dest];
+    if (!id) return;
+    if (dest === 'lessons') { goToMain(); return; }
+    if (dest === 'progress') { showStats(); return; }
+    if (dest === 'vocab') {
+        // возвращаясь в словарь, сохраняем набранный запрос
+        if (allVocabCache) { showSection(id); filterAllVocab(); }
+        else showAllVocab();
+        return;
+    }
+    if (dest === 'cards') {
+        // не сбрасываем начатую колоду при переключении разделов
+        if (allFlashcardState.total && allFlashcardState.index < allFlashcardState.total) {
+            showSection(id);
+            showAllFlashcard();
+        } else {
+            startAllFlashcards();
+        }
+        return;
+    }
+    showSection(id);
+}
+
+function goBack() {
+    let meta = SCREEN_META[currentSectionId];
+    if (!meta || !meta.back) return;
+    if (meta.back === 'test') { cancelTest(); return; }
+    navigateTo(meta.back);
+}
+
+function onFabClick() {
+    switch (currentSectionId) {
+        case 'mainMenu':             continueLesson(); break;
+        case 'allVocabSection':      focusVocabSearch(); break;
+        case 'allFlashcardsSection': startAllFlashcards(); break;
+        case 'lessonSection':        startTest(); break;
+        case 'prayerSection':        startPrayerTranslate(); break;
+    }
+}
+
+function continueLesson() {
+    let last = 1;
+    try { last = parseInt(localStorage.getItem('greek_last_lesson'), 10) || 1; } catch (e) {}
+    if (!getLessonData(last)) last = 1;
+    openLesson(last);
+}
+
+function focusVocabSearch() {
+    let input = document.getElementById('vocabSearchInput');
+    if (input) { input.focus(); input.select(); }
 }
 
 function goToMain() { showSection('mainMenu'); renderMainMenu(); }
@@ -2387,16 +3728,119 @@ function renderMainMenu() {
     let grid = document.getElementById('lessonGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    // Меняем 3 на 1, чтобы отображались уроки 1–10
+    let last = 1;
+    try { last = parseInt(localStorage.getItem('greek_last_lesson'), 10) || 0; } catch (e) {}
     for (let l = 1; l <= 10; l++) {
         let data = getLessonData(l);
         if (!data) continue;
+        if (grid.children.length) grid.appendChild(Object.assign(document.createElement('hr'), { className: 'md-divider' }));
         let btn = document.createElement('button');
-        btn.className = 'menu-btn';
-        btn.textContent = '📖 Урок ' + l + ': ' + data.title;
+        btn.className = 'lesson-item';
+        btn.innerHTML =
+            '<span class="lesson-item__avatar">' + l + '</span>' +
+            '<span class="lesson-item__text">' +
+                '<span class="lesson-item__headline">' + data.title + '</span>' +
+                '<span class="lesson-item__supporting">' + describeLesson(l, data) + '</span>' +
+            '</span>' +
+            '<span class="lesson-item__trailing msym">' + (l === last ? 'resume' : 'chevron_right') + '</span>';
         btn.onclick = (function(lesson) { return function() { openLesson(lesson); }; })(l);
         grid.appendChild(btn);
     }
+}
+
+// Подпись урока: сколько слов и какие материалы доступны
+function describeLesson(l, data) {
+    let bits = [];
+    if (data.vocabulary && data.vocabulary.length) bits.push(data.vocabulary.length + ' ' + pluralRu(data.vocabulary.length, 'слово', 'слова', 'слов'));
+    let exCount = 0;
+    if (data.exercises) for (let k in data.exercises) if (data.exercises[k] && data.exercises[k].length) exCount += data.exercises[k].length;
+    if (exCount) bits.push(exCount + ' ' + pluralRu(exCount, 'упражнение', 'упражнения', 'упражнений'));
+    return bits.length ? bits.join(' · ') : 'Теория';
+}
+
+function pluralRu(n, one, few, many) {
+    let m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+    return many;
+}
+
+// ============================================================
+// M3: ripple, snackbar, dialog, progress
+// ============================================================
+const RIPPLE_TARGETS = '.menu-btn, .md-button, .option-btn, .md-icon-button, .lesson-item, .md-fab, .md-feature-card, .tab-bar button, .flashcard-buttons button, .word-bank .chip, .prayer-word, .clear-btn, .input-group button, .md-nav-item';
+
+document.addEventListener('pointerdown', function (e) {
+    let host = e.target.closest && e.target.closest(RIPPLE_TARGETS);
+    if (!host || host.disabled) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // у navigation item всплеск живёт внутри «пилюли» индикатора
+    if (host.classList.contains('md-nav-item')) host = host.querySelector('.md-nav-item__indicator') || host;
+    let rect = host.getBoundingClientRect();
+    let size = Math.max(rect.width, rect.height) * 2;
+    let ripple = document.createElement('span');
+    ripple.className = 'md-ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    host.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+});
+
+let snackbarTimer = null;
+function showToast(message, icon) {
+    let bar = document.getElementById('snackbar');
+    if (!bar) return;
+    bar.innerHTML = (icon ? '<span class="msym sm">' + icon + '</span>' : '') + '<span>' + message + '</span>';
+    bar.classList.add('show');
+    clearTimeout(snackbarTimer);
+    snackbarTimer = setTimeout(() => bar.classList.remove('show'), 4000);
+}
+
+let dialogResolve = null;
+function mdDialog(opts) {
+    return new Promise(resolve => {
+        dialogResolve = resolve;
+        document.getElementById('dialogIcon').textContent = opts.icon || 'help';
+        document.getElementById('dialogHeadline').textContent = opts.headline || '';
+        document.getElementById('dialogBody').textContent = opts.body || '';
+        let confirmBtn = document.getElementById('dialogConfirmBtn');
+        confirmBtn.textContent = opts.confirm || 'ОК';
+        confirmBtn.className = opts.danger === false ? 'menu-btn primary' : 'menu-btn danger';
+        document.getElementById('dialogScrim').classList.add('show');
+    });
+}
+function mdDialogClose(result) {
+    document.getElementById('dialogScrim').classList.remove('show');
+    if (dialogResolve) { dialogResolve(result); dialogResolve = null; }
+}
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.getElementById('dialogScrim').classList.contains('show')) mdDialogClose(false);
+});
+
+// Заголовок прогресса упражнения: линейный индикатор + счётчик
+function progressHead(label, done, total) {
+    let pct = total ? Math.round((done / total) * 100) : 0;
+    return '<div class="md-progress-head">' +
+        '<div class="md-linear-progress" role="progressbar" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100">' +
+            '<div class="md-linear-progress__bar" style="width:' + pct + '%"></div>' +
+        '</div>' +
+        '<span class="md-progress-label">' + label + '</span>' +
+    '</div>';
+}
+
+// Пустое состояние списка
+function emptyState(icon, text, hint) {
+    return '<div class="md-empty-state"><span class="msym">' + icon + '</span>' +
+        '<div class="md-title-medium">' + text + '</div>' +
+        (hint ? '<div class="md-body-medium">' + hint + '</div>' : '') + '</div>';
+}
+
+// Экран результата серии упражнений
+function resultBlock(correct, total, title) {
+    let p = total ? Math.round((correct / total) * 100) : 0;
+    return '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '"><span>' + title +
+        '<br>Результат: ' + correct + ' из ' + total + ' (' + p + '%)</span></div>';
 }
 
 // ============================================================
@@ -2425,7 +3869,7 @@ function startAllFlashcards() {
         }
     }
     if (allWords.length === 0) {
-        container.innerHTML = '<p>Нет слов.</p>';
+        container.innerHTML = emptyState('inbox', 'Слов пока нет');
         return;
     }
     var shuffled = shuffle(allWords);
@@ -2443,17 +3887,21 @@ function showAllFlashcard() {
     var s = allFlashcardState;
     var container = document.getElementById('allFlashcardContainer');
     if (s.index >= s.total) {
-        var p = Math.round((s.correct / s.total) * 100);
-        container.innerHTML = '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Проверка завершена!<br>Знаю: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startAllFlashcards()">🔄 Повторить</button><button class="menu-btn" onclick="goToMain()">🔙 В главное</button>';
+        container.innerHTML = resultBlock(s.correct, s.total, 'Проверка завершена') +
+            '<div class="md-button-row" style="justify-content:center;">' +
+            '<button class="menu-btn primary" onclick="startAllFlashcards()"><span class="msym">restart_alt</span>Повторить</button>' +
+            '<button class="menu-btn outlined" onclick="goToMain()"><span class="msym">home</span>К урокам</button></div>';
         return;
     }
     var w = s.words[s.index];
-    var html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Слово ' + (s.index + 1) + ' из ' + s.total + '</div>';
-    html += '<div class="flashcard-word">' + (w.article ? w.article + ' ' : '') + w.greek + '</div>';
+    var html = progressHead('Слово ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
+    html += '<div class="md-flashcard"><div class="flashcard-word">' + (w.article ? w.article + ' ' : '') + w.greek + '</div>';
+    if (s.revealed) html += '<div class="flashcard-translation">' + w.translation + '</div>';
+    html += '</div>';
     if (s.revealed) {
-        html += '<div class="flashcard-translation">' + w.translation + '</div><div class="flashcard-buttons"><button class="know" onclick="allFlashcardAnswer(true)">✅ Знаю</button><button class="dontknow" onclick="allFlashcardAnswer(false)">❌ Не знаю</button></div>';
+        html += '<div class="flashcard-buttons"><button class="know" onclick="allFlashcardAnswer(true)"><span class="msym">check</span>Знаю</button><button class="dontknow" onclick="allFlashcardAnswer(false)"><span class="msym">close</span>Не знаю</button></div>';
     } else {
-        html += '<div class="flashcard-buttons"><button class="show" onclick="allFlashcardReveal()">👁️ Показать перевод</button></div>';
+        html += '<div class="flashcard-buttons"><button class="show" onclick="allFlashcardReveal()"><span class="msym">visibility</span>Показать перевод</button></div>';
     }
     container.innerHTML = html;
 }
@@ -2487,10 +3935,11 @@ function openLesson(lesson) {
     currentLesson = lesson;
     let data = getLessonData(lesson);
     if (!data) return;
+    try { localStorage.setItem('greek_last_lesson', String(lesson)); } catch (e) {}
     document.getElementById('lessonTitle').textContent = data.title;
-    document.getElementById('lessonBadge').textContent = 'Урок ' + lesson;
+    currentLessonPart = 'grammar';
     showSection('lessonSection');
-    updateNavButtons(lesson); 
+    updateNavButtons(lesson);
 
     // ===== СКРЫВАЕМ/ПОКАЗЫВАЕМ ВКЛАДКИ ДЛЯ УРОКОВ 1–2 =====
     let isIntroLesson = (lesson === 1 || lesson === 2);
@@ -2536,7 +3985,7 @@ function openLesson(lesson) {
             }
 let detailsHtml = '';
 if (item.declension_forms) {
-    detailsHtml = '<div class="word-details">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div>';
+    detailsHtml = '<div class="word-details"><div class="md-table-scroll">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div></div>';
 }
             div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
             container.appendChild(div);
@@ -2555,33 +4004,36 @@ if (item.declension_forms) {
     }
     if (hasExercises) {
         let types = [
-            { key: 'declension_fill', label: '📐 Склонение' },
-            { key: 'translate_greek_to_russian', label: '🇬🇷→🇷🇺 Перевод' },
-            { key: 'translate_russian_to_greek', label: '🇷🇺→🇬🇷 Перевод' },
-            { key: 'case_number', label: '🎯 Падеж/число' },
-            { key: 'agreement', label: '🔗 Согласование' },
-            { key: 'attribute_vs_predicate', label: '⚖️ Атрибут/предикатив' },
-            { key: 'substantivation', label: '📌 Субстантивация' },
-            { key: 'article_fill', label: '🔤 Артикль' }
+            { key: 'declension_fill', label: 'Склонение', icon: 'account_tree' },
+            { key: 'translate_greek_to_russian', label: 'Греческий → русский', icon: 'translate' },
+            { key: 'translate_russian_to_greek', label: 'Русский → греческий', icon: 'g_translate' },
+            { key: 'case_number', label: 'Падеж и число', icon: 'target' },
+            { key: 'agreement', label: 'Согласование', icon: 'link' },
+            { key: 'attribute_vs_predicate', label: 'Атрибут / предикатив', icon: 'balance' },
+            { key: 'substantivation', label: 'Субстантивация', icon: 'push_pin' },
+            { key: 'article_fill', label: 'Артикль', icon: 'abc' }
         ];
         types.forEach(t => {
             if (data.exercises[t.key] && data.exercises[t.key].length > 0) {
                 let b = document.createElement('button');
                 b.className = 'menu-btn';
-                b.textContent = t.label;
+                b.innerHTML = '<span class="msym">' + t.icon + '</span>' + t.label;
                 b.onclick = (function(type) { return function() { startExercise(type); }; })(t.key);
                 btnContainer.appendChild(b);
             }
         });
-        if (btnContainer.children.length === 0) btnContainer.innerHTML = '<p>Нет упражнений.</p>';
+        if (btnContainer.children.length === 0) btnContainer.innerHTML = emptyState('edit_off', 'Упражнений нет');
     } else {
-        btnContainer.innerHTML = '<p>Упражнений нет.</p>';
+        btnContainer.innerHTML = emptyState('edit_off', 'Упражнений нет', 'Для этого урока упражнения ещё не подготовлены');
     }
     document.getElementById('exerciseQuestion').innerHTML = '';
 
     // Карточки
     document.getElementById('flashcardContainer').innerHTML =
-        '<p>Нажмите «Начать карточки».</p><button class="menu-btn primary" onclick="startFlashcards()">▶️ Начать карточки</button>';
+        '<div class="md-empty-state"><span class="msym">style</span>' +
+        '<div class="md-title-medium">Карточки урока</div>' +
+        '<div class="md-body-medium">Переворачивайте карточку и отмечайте, знаете ли вы слово</div></div>' +
+        '<button class="menu-btn primary" onclick="startFlashcards()"><span class="msym">play_arrow</span>Начать карточки</button>';
     flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
 
     // Перевод
@@ -2593,20 +4045,20 @@ if (item.declension_forms) {
         if (hasRu) {
             let b = document.createElement('button');
             b.className = 'menu-btn primary';
-            b.textContent = '🇷🇺→🇬🇷';
+            b.innerHTML = '<span class="msym">g_translate</span>Русский &rarr; греческий';
             b.onclick = function() { startTranslation('ru_to_el'); };
             transContainer.appendChild(b);
         }
         if (hasEl) {
             let b = document.createElement('button');
-            b.className = 'menu-btn primary';
-            b.textContent = '🇬🇷→🇷🇺';
+            b.className = 'menu-btn';
+            b.innerHTML = '<span class="msym">translate</span>Греческий &rarr; русский';
             b.onclick = function() { startTranslation('el_to_ru'); };
             transContainer.appendChild(b);
         }
-        if (!hasRu && !hasEl) transContainer.innerHTML = '<p>Нет упражнений на перевод.</p>';
+        if (!hasRu && !hasEl) transContainer.innerHTML = emptyState('translate', 'Упражнений на перевод нет');
     } else {
-        transContainer.innerHTML = '<p>Нет упражнений на перевод.</p>';
+        transContainer.innerHTML = emptyState('translate', 'Упражнений на перевод нет');
     }
     document.getElementById('translationQuestion').innerHTML = '';
 
@@ -2614,10 +4066,34 @@ if (item.declension_forms) {
     switchLessonPart('grammar');
 }
 
+// Индикатор вкладок скользит под активной вкладкой (M3 primary tabs)
+function moveTabIndicator() {
+    let bar = document.getElementById('lessonTabs');
+    let ind = document.getElementById('lessonTabsIndicator');
+    if (!bar || !ind) return;
+    let active = bar.querySelector('button.active');
+    if (!active) { ind.style.width = '0'; return; }
+    ind.style.width = active.offsetWidth + 'px';
+    ind.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+    // держим активную вкладку в поле зрения (Element.scrollTo есть не везде)
+    let left = Math.max(0, active.offsetLeft - (bar.clientWidth - active.offsetWidth) / 2);
+    if (typeof bar.scrollTo === 'function') bar.scrollTo({ left: left, behavior: 'smooth' });
+    else bar.scrollLeft = left;
+}
+
+// Возврат на экран урока восстанавливает выбранную вкладку
+function restoreLessonPart() {
+    let target = document.getElementById('part' + currentLessonPart.charAt(0).toUpperCase() + currentLessonPart.slice(1));
+    if (target) target.classList.add('active');
+    requestAnimationFrame(moveTabIndicator);
+}
+
 function switchLessonPart(part) {
-    document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+    currentLessonPart = part;
+    document.querySelectorAll('.tab-bar button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
     let activeTab = document.querySelector('.tab-bar button[data-part="' + part + '"]');
-    if (activeTab) activeTab.classList.add('active');
+    if (activeTab) { activeTab.classList.add('active'); activeTab.setAttribute('aria-selected', 'true'); }
+    moveTabIndicator();
 
     document.querySelectorAll('#lessonSection .section').forEach(s => s.classList.remove('active'));
     let target = document.getElementById('part' + part.charAt(0).toUpperCase() + part.slice(1));
@@ -2634,18 +4110,18 @@ function switchLessonPart(part) {
                 if (hasRu) {
                     let b = document.createElement('button');
                     b.className = 'menu-btn primary';
-                    b.textContent = '🇷🇺→🇬🇷';
+                    b.innerHTML = '<span class="msym">g_translate</span>Русский &rarr; греческий';
                     b.onclick = function() { startTranslation('ru_to_el'); };
                     container.appendChild(b);
                 }
                 if (hasEl) {
                     let b = document.createElement('button');
-                    b.className = 'menu-btn primary';
-                    b.textContent = '🇬🇷→🇷🇺';
+                    b.className = 'menu-btn';
+                    b.innerHTML = '<span class="msym">translate</span>Греческий &rarr; русский';
                     b.onclick = function() { startTranslation('el_to_ru'); };
                     container.appendChild(b);
                 }
-                if (!hasRu && !hasEl) container.innerHTML = '<p>Нет упражнений на перевод.</p>';
+                if (!hasRu && !hasEl) container.innerHTML = emptyState('translate', 'Упражнений на перевод нет');
             }
         }
     }
@@ -2781,7 +4257,11 @@ if (forms.singular && forms.singular["1"] !== undefined) {
 
 function toggleDeclension(el) {
     let details = el.querySelector('.word-details');
-    if (details) details.classList.toggle('open');
+    if (!details) return;
+    let opening = !details.classList.contains('open');
+    details.classList.toggle('open', opening);
+    el.classList.toggle('open', opening);   // разворачивает стрелку chevron
+    el.setAttribute('aria-expanded', opening ? 'true' : 'false');
 }
 
 // ============================================================
@@ -2825,55 +4305,54 @@ function getCaseName(caseKey) {
 function showExercise() {
     let s = exerciseState;
     if (s.index >= s.total) {
-        let p = Math.round((s.correct / s.total) * 100);
         document.getElementById('exerciseQuestion').innerHTML =
-            '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Упражнение завершено!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div>' +
-            '<button class="menu-btn primary" onclick="startExercise(\'' + s.type + '\')">🔄 Ещё раз</button>';
+            resultBlock(s.correct, s.total, 'Упражнение завершено') +
+            '<button class="menu-btn primary" onclick="startExercise(\'' + s.type + '\')"><span class="msym">restart_alt</span>Ещё раз</button>';
         return;
     }
     let q = s.questions[s.index];
     let container = document.getElementById('exerciseQuestion');
-    let html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', упражнение ' + (s.index + 1) + ' из ' + s.total + '</div>';
+    let html = progressHead('Упражнение ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
 
     if (s.type === 'declension_fill') {
         let caseName = getCaseName(q.case);
         let wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
-        html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <b>' + wordDisplay + '</b></div><div class="options">';
+        html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <span class="greek">' + wordDisplay + '</span></div><div class="options options--greek">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
 } else if (s.type === 'translate_greek_to_russian') {
     let idx = s.index;
-    html += '<div class="question">Переведите на русский:</div><div style="font-size:24px;text-align:center;margin:12px 0;">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Введите перевод..." onkeydown="if(event.key===\'Enter\'){checkExerciseTranslation(' + idx + ');}"><button type="button" onclick="checkExerciseTranslation(' + idx + ')">✅ Проверить</button></div>';
+    html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){checkExerciseTranslation(' + idx + ');}"><button type="button" onclick="checkExerciseTranslation(' + idx + ')"><span class="msym">check</span>Проверить</button></div>';
 } else if (s.type === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
-        html += '<div class="question">Переведите на греческий (выберите слова по порядку):</div><div style="font-size:20px;text-align:center;margin:12px 0;">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
+        html += '<div class="question">Переведите на греческий</div><div class="md-prompt-ru">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
         for (let w of words) html += '<span class="chip" onclick="pickWord(\'' + w + '\')">' + w + '</span>';
-        html += '</div><button class="menu-btn primary" onclick="checkTranslationRu()">✅ Готово</button> <button class="menu-btn" onclick="clearChosen()">↩️ Очистить</button>';
+        html += '</div><div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationRu()"><span class="msym">check</span>Готово</button><button class="menu-btn text" onclick="clearChosen()"><span class="msym">undo</span>Очистить</button></div>';
         window._trans_ru = q;
         window._chosen = [];
     } else if (s.type === 'case_number') {
-        html += '<div class="question">Определите падеж и число для формы: <b>' + q.form + '</b></div><div class="options">';
+        html += '<div class="question">Определите падеж и число для формы: <span class="greek">' + q.form + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'agreement') {
-        html += '<div class="question">Вставьте прилагательное <b>' + q.adjective + '</b> в правильной форме:<br>' + q.article + ' ____ ' + q.noun + '</div><div class="options">';
+        html += '<div class="question">Вставьте прилагательное <span class="greek">' + q.adjective + '</span> в правильной форме:<br><span class="greek">' + q.article + ' ____ ' + q.noun + '</span></div><div class="options options--greek">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'attribute_vs_predicate') {
-        html += '<div class="question">Определите, атрибутив или предикатив:<br><b>' + q.phrase + '</b></div><div class="options">';
+        html += '<div class="question">Определите, атрибутив или предикатив:<br><span class="greek">' + q.phrase + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'substantivation') {
-        html += '<div class="question">Что означает:<br><b>' + q.phrase + '</b> ?</div><div class="options">';
+        html += '<div class="question">Что означает:<br><span class="greek">' + q.phrase + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'article_fill') {
-        html += '<div class="question">Вставьте правильную форму артикля:<br>____ ' + q.noun + '</div><div class="options">';
+        html += '<div class="question">Вставьте правильную форму артикля:<br><span class="greek">____ ' + q.noun + '</span></div><div class="options options--greek">';
         let opts = shuffle([q.correct_article].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + o + '\',\'' + q.correct_article + '\')">' + o + '</button>';
         html += '</div>';
@@ -2911,12 +4390,12 @@ function checkTranslation() {
         if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
     }
     let container = document.getElementById('exerciseQuestion');
-    if (ok) { stats.totalCorrect++; exerciseState.correct++; container.innerHTML = '<div class="feedback ok">✅ Верно!</div>'; } else {
+    if (ok) { stats.totalCorrect++; exerciseState.correct++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</div>';
+        container.innerHTML = '<div class="feedback fail"><span>Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</span></div>';
     }
     saveStats();
     exerciseState.index++;
@@ -2953,8 +4432,8 @@ function checkTranslationRu() {
         stats.totalCorrect++;
         exerciseState.correct++;
         container.innerHTML = `
-            <div class="feedback ok">✅ Верно! <strong>${corr.join(' ')}</strong></div>
-            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+            <div class="feedback ok"><span>Верно! <strong>${corr.join(' ')}</strong></span></div>
+            <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
         `;
     } else {
         stats.totalWrong++;
@@ -2962,8 +4441,8 @@ function checkTranslationRu() {
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
         container.innerHTML = `
-            <div class="feedback fail">❌ Неверно. Правильный порядок: <strong>${corr.join(' ')}</strong></div>
-            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+            <div class="feedback fail"><span>Неверно. Правильный порядок: <strong>${corr.join(' ')}</strong></span></div>
+            <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
         `;
     }
     saveStats();
@@ -2991,16 +4470,19 @@ function showFlashcard() {
     let container = document.getElementById('flashcardContainer');
     if (s.index >= s.total) {
         let p = Math.round((s.correct / s.total) * 100);
-        container.innerHTML = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + '</div><div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Карточки завершены!<br>Знаю: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startFlashcards()">🔄 Повторить</button>';
+        container.innerHTML = resultBlock(s.correct, s.total, 'Карточки завершены') +
+            '<button class="menu-btn primary" onclick="startFlashcards()"><span class="msym">restart_alt</span>Повторить</button>';
         return;
     }
     let w = s.words[s.index];
-    let html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', карточка ' + (s.index + 1) + ' из ' + s.total + '</div>';
-    html += '<div class="flashcard-word">' + (w.article ? w.article + ' ' : '') + w.greek + '</div>';
+    let html = progressHead('Карточка ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
+    html += '<div class="md-flashcard"><div class="flashcard-word">' + (w.article ? w.article + ' ' : '') + w.greek + '</div>';
+    if (s.revealed) html += '<div class="flashcard-translation">' + w.translation + '</div>';
+    html += '</div>';
     if (s.revealed) {
-        html += '<div class="flashcard-translation">' + w.translation + '</div><div class="flashcard-buttons"><button class="know" onclick="flashAnswer(true)">✅ Знаю</button><button class="dontknow" onclick="flashAnswer(false)">❌ Не знаю</button></div>';
+        html += '<div class="flashcard-buttons"><button class="know" onclick="flashAnswer(true)"><span class="msym">check</span>Знаю</button><button class="dontknow" onclick="flashAnswer(false)"><span class="msym">close</span>Не знаю</button></div>';
     } else {
-        html += '<div class="flashcard-buttons"><button class="show" onclick="flashReveal()">👁️ Показать перевод</button></div>';
+        html += '<div class="flashcard-buttons"><button class="show" onclick="flashReveal()"><span class="msym">visibility</span>Показать перевод</button></div>';
     }
     container.innerHTML = html;
 }
@@ -3031,11 +4513,12 @@ function startTest() {
     let all = [];
     let types = ['declension_fill','translate_greek_to_russian','translate_russian_to_greek','case_number','agreement','attribute_vs_predicate','substantivation','article_fill'];
     for (let t of types) {
-        let qs = data.exercises[t] || [];
+        let qs = (data.exercises && data.exercises[t]) || [];
         for (let q of qs) { q._type = t; all.push(q); }
     }
-    if (all.length === 0) { alert('Нет вопросов.'); return; }
-    testState = { questions: shuffle(all).slice(0, 10), index: 0, correct: 0, total: 10, answered: false };
+    if (all.length === 0) { showToast('Для этого урока вопросов пока нет', 'info'); return; }
+    let picked = shuffle(all).slice(0, 10);
+    testState = { questions: picked, index: 0, correct: 0, total: picked.length, answered: false };
     showSection('testSection');
     showTest();
 }
@@ -3043,54 +4526,60 @@ function startTest() {
 function cancelTest() {
     testState = { questions: [], index: 0, correct: 0, total: 0, answered: false };
     showSection('lessonSection');
-    switchLessonPart('exercise');
+    switchLessonPart(currentLessonPart === 'test' ? 'exercise' : currentLessonPart);
 }
 
 function showTest() {
     let s = testState;
     if (s.index >= s.total) {
-        let p = Math.round((s.correct / s.total) * 100);
         document.getElementById('testContainer').innerHTML =
-            '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + '</div><div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Тест завершён!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div><button class="menu-btn primary" onclick="startTest()">🔄 Повторить</button><button class="menu-btn" onclick="cancelTest()">🔙 Назад</button>';
+            resultBlock(s.correct, s.total, 'Тест завершён') +
+            '<div class="md-button-row">' +
+            '<button class="menu-btn primary" onclick="startTest()"><span class="msym">restart_alt</span>Повторить</button>' +
+            '<button class="menu-btn outlined" onclick="cancelTest()"><span class="msym">arrow_back</span>К уроку</button></div>';
         return;
     }
     let q = s.questions[s.index];
     let container = document.getElementById('testContainer');
-    let html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', вопрос ' + (s.index + 1) + ' из ' + s.total + '</div>';
+    let html = progressHead('Вопрос ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     let t = q._type;
 
     if (t === 'declension_fill' || t === 'case_number' || t === 'agreement' ||
         t === 'attribute_vs_predicate' || t === 'substantivation' || t === 'article_fill') {
         let text = '';
+        let greekOpts = false;
         if (t === 'declension_fill') {
             let caseName = getCaseName(q.case);
             let wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
-            text = 'Вставьте форму для <b>' + caseName + '</b> для слова <b>' + wordDisplay + '</b>';
+            text = 'Вставьте форму для <b>' + caseName + '</b> для слова <span class="greek">' + wordDisplay + '</span>';
+            greekOpts = true;
         } else if (t === 'case_number') {
-            text = 'Определите падеж и число: <b>' + q.form + '</b>';
+            text = 'Определите падеж и число: <span class="greek">' + q.form + '</span>';
         } else if (t === 'agreement') {
-            text = 'Вставьте прилагательное <b>' + q.adjective + '</b>: ' + q.article + ' ____ ' + q.noun;
+            text = 'Вставьте прилагательное <span class="greek">' + q.adjective + '</span>: <span class="greek">' + q.article + ' ____ ' + q.noun + '</span>';
+            greekOpts = true;
         } else if (t === 'attribute_vs_predicate') {
-            text = 'Атрибутив или предикатив? <b>' + q.phrase + '</b>';
+            text = 'Атрибутив или предикатив? <span class="greek">' + q.phrase + '</span>';
         } else if (t === 'substantivation') {
-            text = 'Что означает? <b>' + q.phrase + '</b>';
+            text = 'Что означает? <span class="greek">' + q.phrase + '</span>';
         } else if (t === 'article_fill') {
-            text = 'Вставьте артикль: ____ ' + q.noun;
+            text = 'Вставьте артикль: <span class="greek">____ ' + q.noun + '</span>';
+            greekOpts = true;
         }
         let corr = q.correct || q.correct_article;
         let opts = shuffle([corr].concat(q.distractors));
-        html += '<div class="question">' + text + '</div><div class="options">';
+        html += '<div class="question">' + text + '</div><div class="options' + (greekOpts ? ' options--greek' : '') + '">';
         for (let o of opts) html += '<button class="option-btn" onclick="testAnswer(\'' + o + '\',\'' + corr + '\')">' + o + '</button>';
         html += '</div>';
     } else if (t === 'translate_greek_to_russian') {
-        html += '<div class="question">Переведите: <b>' + q.greek + '</b></div><div class="input-group"><input type="text" id="testTransInput" placeholder="Введите перевод..."><button onclick="testTranslation()">✅ Проверить</button></div>';
+        html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="testTransInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){testTranslation();}"><button onclick="testTranslation()"><span class="msym">check</span>Проверить</button></div>';
         window._test_q = q;
     } else if (t === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
-        html += '<div class="question">Переведите на греческий (выберите слова по порядку):<br>' + q.russian + '</div>';
+        html += '<div class="question">Переведите на греческий</div><div class="md-prompt-ru">' + q.russian + '</div>';
         html += '<div class="build-area" id="testBuildArea"></div><div class="word-bank" id="testWordBank">';
         for (let w of words) html += '<span class="chip" onclick="testPickWord(\'' + w + '\')">' + w + '</span>';
-        html += '</div><button class="menu-btn primary" onclick="testTranslationRu()">✅ Готово</button> <button class="menu-btn" onclick="testClearChosen()">↩️ Очистить</button>';
+        html += '</div><div class="md-button-row"><button class="menu-btn primary" onclick="testTranslationRu()"><span class="msym">check</span>Готово</button><button class="menu-btn text" onclick="testClearChosen()"><span class="msym">undo</span>Очистить</button></div>';
         window._test_ru = q;
         window._test_chosen = [];
     } else {
@@ -3115,8 +4604,8 @@ function testAnswer(sel, corr) {
     stats.totalCorrect += ok ? 1 : 0;
     saveStats();
     let container = document.getElementById('testContainer');
-    if (ok) container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
-    else container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильный ответ: <strong>' + corr + '</strong></div>';
+    if (ok) container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>';
+    else container.innerHTML = '<div class="feedback fail"><span>Неверно. Правильный ответ: <strong>' + corr + '</strong></span></div>';
     setTimeout(() => { testState.index++; showTest(); }, 1500);
 }
 
@@ -3132,12 +4621,12 @@ function testTranslation() {
         if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
     }
     let container = document.getElementById('testContainer');
-    if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok">✅ Верно!</div>'; } else {
+    if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</div>';
+        container.innerHTML = '<div class="feedback fail"><span>Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</span></div>';
     }
     saveStats();
     testState.answered = true;
@@ -3171,12 +4660,12 @@ function testTranslationRu() {
     let corr = q.correct_sequence;
     let ok = chosen.length === corr.length && chosen.every((w,i) => w === corr[i]);
     let container = document.getElementById('testContainer');
-    if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok">✅ Верно!</div>'; } else {
+    if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
-        container.innerHTML = '<div class="feedback fail">❌ Неверно. Правильно: ' + corr.join(' ') + '</div>';
+        container.innerHTML = '<div class="feedback fail"><span>Неверно. Правильно: <strong>' + corr.join(' ') + '</strong></span></div>';
     }
     saveStats();
     testState.answered = true;
@@ -3187,43 +4676,93 @@ function testTranslationRu() {
 // ============================================================
 function showStats() {
     showSection('statsSection');
-    document.getElementById('statsContent').innerHTML =
-        '<div class="stat-row"><span>✅ Правильных:</span><span>' + stats.totalCorrect + '</span></div>' +
-        '<div class="stat-row"><span>❌ Неправильных:</span><span>' + stats.totalWrong + '</span></div>' +
-        '<div class="stat-row"><span>📚 Уроков с ошибками:</span><span>' + Object.keys(stats.errors).length + '</span></div>';
+    let total = stats.totalCorrect + stats.totalWrong;
+    let accuracy = total ? Math.round((stats.totalCorrect / total) * 100) : 0;
+    let errLessons = Object.keys(stats.errors).length;
+    let errCount = 0;
+    for (let k in stats.errors) errCount += (stats.errors[k] || []).length;
+
+    let html = '';
+    if (total === 0) {
+        html = emptyState('rocket_launch', 'Пока нет ответов',
+            'Пройдите упражнение или тест — статистика появится здесь');
+    } else {
+        html =
+            '<div class="md-stat-grid">' +
+                '<div class="md-stat-tile"><span class="md-stat-tile__value">' + accuracy + '%</span>' +
+                    '<span class="md-stat-tile__label">Точность</span></div>' +
+                '<div class="md-stat-tile"><span class="md-stat-tile__value">' + total + '</span>' +
+                    '<span class="md-stat-tile__label">Всего ответов</span></div>' +
+            '</div>' +
+            progressHead(stats.totalCorrect + ' из ' + total, stats.totalCorrect, total) +
+            '<div class="stat-row"><span class="msym">check_circle</span>' +
+                '<span class="stat-row__label">Правильных</span>' +
+                '<span class="stat-row__value">' + stats.totalCorrect + '</span></div>' +
+            '<div class="stat-row"><span class="msym">cancel</span>' +
+                '<span class="stat-row__label">Неправильных</span>' +
+                '<span class="stat-row__value">' + stats.totalWrong + '</span></div>' +
+            '<div class="stat-row"><span class="msym">menu_book</span>' +
+                '<span class="stat-row__label">Уроков с ошибками</span>' +
+                '<span class="stat-row__value">' + errLessons + '</span></div>';
+        if (errCount) {
+            html += '<div class="md-button-row"><button class="menu-btn" onclick="showErrors()">' +
+                '<span class="msym">rule</span>Разобрать ошибки (' + errCount + ')</button></div>';
+        }
+    }
+    document.getElementById('statsContent').innerHTML = html;
 }
 
 function showErrors() {
     showSection('errorsSection');
     let content = document.getElementById('errorsContent');
     let err = stats.errors;
-    if (!err || Object.keys(err).length === 0) { content.innerHTML = '<p>🎉 Ошибок нет!</p>'; return; }
+    if (!err || Object.keys(err).length === 0) {
+        content.innerHTML = emptyState('task_alt', 'Ошибок нет', 'Отличная работа — разбирать пока нечего');
+        return;
+    }
     let html = '';
     for (let lesson of Object.keys(err)) {
         let items = err[lesson];
-        html += '<div style="margin-bottom:12px;"><strong>Урок ' + lesson + '</strong></div>';
+        html += '<div class="md-subhead">Урок ' + lesson + '</div>';
         for (let e of items) {
-            html += '<div class="error-item">' + e.word + ' → правильно: <strong>' + e.correct + '</strong>, вы: ' + e.your + '</div>';
+            html += '<div class="error-item"><span class="msym sm">error</span><span>' + e.word +
+                ' → правильно: <strong>' + e.correct + '</strong><br>ваш ответ: ' + e.your + '</span></div>';
         }
     }
-    html += '<button class="clear-btn" onclick="clearErrors()">🗑️ Очистить ошибки</button>';
+    html += '<button class="clear-btn" onclick="clearErrors()"><span class="msym sm">delete_sweep</span>Очистить ошибки</button>';
     content.innerHTML = html;
 }
 
 function clearErrors() {
-    if (confirm('Удалить ошибки?')) {
+    mdDialog({
+        icon: 'delete_sweep',
+        danger: true,
+        headline: 'Очистить список ошибок?',
+        body: 'Разбор ошибок будет удалён. Общая статистика ответов сохранится.',
+        confirm: 'Очистить'
+    }).then(ok => {
+        if (!ok) return;
         stats.errors = {};
         saveStats();
         showErrors();
-    }
+        showToast('Список ошибок очищен', 'delete_sweep');
+    });
 }
 
 function clearAllProgress() {
-    if (confirm('Сбросить всю статистику?')) {
+    mdDialog({
+        icon: 'restart_alt',
+        danger: true,
+        headline: 'Сбросить прогресс?',
+        body: 'Статистика ответов и список ошибок будут удалены безвозвратно.',
+        confirm: 'Сбросить'
+    }).then(ok => {
+        if (!ok) return;
         stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
         saveStats();
-        goToMain();
-    }
+        showStats();
+        showToast('Прогресс сброшен', 'restart_alt');
+    });
 }
 
 // ============================================================
@@ -3243,8 +4782,8 @@ function checkTranslationBuild() {
         s.correct++;
         stats.totalCorrect++;
         container.innerHTML = `
-            <div class="feedback ok">✅ Верно! <strong>${correct.join(' ')}</strong></div>
-            <button class="menu-btn primary" onclick="nextTranslation()">➡️ Далее</button>
+            <div class="feedback ok"><span>Верно! <strong>${correct.join(' ')}</strong></span></div>
+            <button class="menu-btn primary" onclick="nextTranslation()">Далее<span class="msym">arrow_forward</span></button>
         `;
     } else {
         stats.totalWrong++;
@@ -3252,8 +4791,8 @@ function checkTranslationBuild() {
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.source, correct: correct.join(' '), your: chosen.join(' ') });
         container.innerHTML = `
-            <div class="feedback fail">❌ Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></div>
-            <button class="menu-btn primary" onclick="nextTranslation()">➡️ Далее</button>
+            <div class="feedback fail"><span>Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></span></div>
+            <button class="menu-btn primary" onclick="nextTranslation()">Далее<span class="msym">arrow_forward</span></button>
         `;
     }
     saveStats();
@@ -3282,13 +4821,13 @@ function showTranslation() {
     if (s.index >= s.total) {
         let p = Math.round((s.correct / s.total) * 100);
         document.getElementById('translationQuestion').innerHTML =
-            '<div class="feedback ' + (p >= 70 ? 'ok' : 'fail') + '">🏁 Упражнение завершено!<br>Правильно: ' + s.correct + ' из ' + s.total + ' (' + p + '%)</div>' +
-            '<button class="menu-btn primary" onclick="startTranslation(\'' + s.type + '\')">🔄 Ещё раз</button>';
+            resultBlock(s.correct, s.total, 'Упражнение завершено') +
+            '<button class="menu-btn primary" onclick="startTranslation(\'' + s.type + '\')"><span class="msym">restart_alt</span>Ещё раз</button>';
         return;
     }
     let q = s.questions[s.index];
     let container = document.getElementById('translationQuestion');
-    let html = '<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Урок ' + currentLesson + ', перевод ' + (s.index + 1) + ' из ' + s.total + '</div>';
+    let html = progressHead('Перевод ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     html += '<div class="question">' + q.source + '</div>';
 
     // Собираем все слова: правильные + лишние (из словаря урока)
@@ -3321,8 +4860,8 @@ function showTranslation() {
         html += '<span class="chip" onclick="transPickWord(\'' + w.replace(/'/g, "\\'") + '\')">' + w + '</span>';
     }
     html += '</div>';
-    html += '<button class="menu-btn primary" onclick="checkTranslationBuild()">✅ Проверить</button> ';
-    html += '<button class="menu-btn" onclick="transClear()">↩️ Очистить</button>';
+    html += '<div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationBuild()"><span class="msym">check</span>Проверить</button>';
+    html += '<button class="menu-btn text" onclick="transClear()"><span class="msym">undo</span>Очистить</button></div>';
 
     container.innerHTML = html;
     translationState.chosen = [];
@@ -3353,7 +4892,7 @@ function checkExerciseTranslation(index) {
     let ans = inp.value.trim().toLowerCase();
     let q = exerciseState.questions[index];
     if (!q) {
-        document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback fail">⚠️ Ошибка. Пожалуйста, начните упражнение заново.</div>';
+        document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback fail"><span>Что-то пошло не так. Начните упражнение заново.</span></div>';
         return;
     }
     let ok = true;
@@ -3365,8 +4904,8 @@ function checkExerciseTranslation(index) {
         stats.totalCorrect++;
         exerciseState.correct++;
         container.innerHTML = `
-            <div class="feedback ok">✅ Верно! <strong>${q.keywords.join(', ')}</strong></div>
-            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+            <div class="feedback ok"><span>Верно! <strong>${q.keywords.join(', ')}</strong></span></div>
+            <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
         `;
     } else {
         stats.totalWrong++;
@@ -3374,8 +4913,8 @@ function checkExerciseTranslation(index) {
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.greek, correct: q.keywords.join(', '), your: ans });
         container.innerHTML = `
-            <div class="feedback fail">❌ Неверно. Ключевые слова: <strong>${q.keywords.join(', ')}</strong></div>
-            <button class="menu-btn primary" onclick="nextExercise()">➡️ Далее</button>
+            <div class="feedback fail"><span>Неверно. Ключевые слова: <strong>${q.keywords.join(', ')}</strong></span></div>
+            <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
         `;
     }
     saveStats();
@@ -3430,56 +4969,11 @@ function updateNavButtons(lesson) {
     let prevBtn = document.getElementById('prevLessonBtn');
     let nextBtn = document.getElementById('nextLessonBtn');
     
-    if (prevBtn) {
-        if (lesson <= 1) {  // было <= 3
-            prevBtn.style.opacity = '0.5';
-            prevBtn.style.cursor = 'not-allowed';
-        } else {
-            prevBtn.style.opacity = '1';
-            prevBtn.style.cursor = 'pointer';
-        }
-    }
-    
-    if (nextBtn) {
-        if (lesson >= 10) {
-            nextBtn.style.opacity = '0.5';
-            nextBtn.style.cursor = 'not-allowed';
-        } else {
-            nextBtn.style.opacity = '1';
-            nextBtn.style.cursor = 'pointer';
-        }
-    }
+    if (prevBtn) prevBtn.disabled = (lesson <= 1);
+    if (nextBtn) nextBtn.disabled = (lesson >= 10);
 }
 
-function showToast(message) {
-    let existing = document.querySelector('.toast-message');
-    if (existing) existing.remove();
-    
-    let toast = document.createElement('div');
-    toast.className = 'toast-message';
-    toast.textContent = message;
-    Object.assign(toast.style, {
-        position: 'fixed',
-        bottom: '30px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: '#3d2a1e',
-        color: '#fff',
-        padding: '12px 24px',
-        borderRadius: '12px',
-        fontSize: '16px',
-        zIndex: '9999',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-        transition: 'opacity 0.3s ease',
-        opacity: '1'
-    });
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-    }, 2000);
-}
+/* Тосты рисует M3 snackbar — см. showToast() выше в блоке «M3: ripple, snackbar, dialog» */
 // ============================================================
 // ФУНКЦИИ ДЛЯ "ОТЧЕ НАШ"
 // ============================================================
@@ -3494,24 +4988,21 @@ function showPrayer() {
     
 function renderPrayerText() {
     const container = document.getElementById('prayerContent');
-    let html = '<div style="margin-bottom:20px;">';
+    let html = '<p class="md-body-medium mb-12">Нажмите на любое слово, чтобы увидеть разбор формы.</p>';
     PRAYER_DATA.verses.forEach((verse, verseIdx) => {
-        // Строка с греческими словами (кликабельными)
-        html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;padding:6px 0;border-bottom:1px solid #eee;">`;
+        html += `<div class="prayer-verse">`;
+        html += `<div class="prayer-line">`;
         verse.words.forEach((word, wordIdx) => {
-            html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" style="cursor:pointer;background:var(--chip-bg);padding:2px 8px;border-radius:4px;font-size:18px;"transition:0.1s;" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
+            html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" role="button" tabindex="0" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
         });
         html += `</div>`;
-        // Русский перевод
-        html += `<div style="margin-left:12px;color:#5f4a38;font-size:15px;margin-bottom:2px;">${verse.russian}</div>`;
-        // Транскрипция (эразмово произношение)
+        html += `<div class="prayer-russian">${verse.russian}</div>`;
         if (verse.transcription) {
-            html += `<div style="margin-left:12px;color:#7a5f4b;font-size:14px;font-style:italic;margin-bottom:6px;">${verse.transcription}</div>`;
+            html += `<div class="prayer-transcription">${verse.transcription}</div>`;
         }
-        // Контейнер для анализа слова (появляется по клику)
-        html += `<div id="analysis-${verseIdx}" style="background:#f4eee8;padding:8px 12px;border-radius:8px;margin:6px 0 12px 12px;display:none;border-left:3px solid #b7a48b;"></div>`;
+        html += `<div id="analysis-${verseIdx}" class="prayer-analysis"></div>`;
+        html += `</div>`;
     });
-    html += '</div>';
     container.innerHTML = html;
 }
 
@@ -3529,19 +5020,23 @@ function showWordAnalysis(verseIdx, wordIdx) {
     });
 
     // Показываем и заполняем (без кнопки!)
+    // подсветка активного слова
+    document.querySelectorAll('.prayer-word.selected').forEach(el => el.classList.remove('selected'));
+    let wordEl = document.querySelector(`.prayer-word[data-verse="${verseIdx}"][data-word="${wordIdx}"]`);
+    if (wordEl) wordEl.classList.add('selected');
+
     analysisDiv.style.display = 'block';
     analysisDiv.innerHTML = `
         <strong>${word.greek}</strong> — ${word.translation}<br>
-        <span style="font-size:14px;color:#4a3728;">${word.analysis}</span>
+        <span>${word.analysis}</span>
     `;
 }
 
 function renderPrayerExercise() {
     const container = document.getElementById('prayerExercise');
-    let html = `<h4 style="margin:12px 0;">📝 Упражнения</h4>`;
-    html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-        <button class="menu-btn" onclick="startPrayerFill()">🔤 Заполни пропуски</button>
-        <button class="menu-btn primary" onclick="startPrayerTranslate()">🌍 Перевод на греческий</button>
+    let html = `<div class="md-button-row" style="margin-top:0;">
+        <button class="menu-btn" onclick="startPrayerFill()"><span class="msym">edit</span>Заполни пропуски</button>
+        <button class="menu-btn primary" onclick="startPrayerTranslate()"><span class="msym">translate</span>Перевод на греческий</button>
     </div>`;
     html += `<div id="prayerExerciseQuestion"></div>`;
     container.innerHTML = html;
@@ -3594,8 +5089,8 @@ function showPrayerExerciseQuestion() {
     const container = document.getElementById('prayerExerciseQuestion');
     if (state.index >= state.total) {
         let p = Math.round((state.correct / state.total) * 100);
-        container.innerHTML = `<div class="feedback ${p>=70?'ok':'fail'}">🏁 Упражнение завершено!<br>Правильно: ${state.correct} из ${state.total} (${p}%)</div>
-            <button class="menu-btn primary" onclick="startPrayer${state.type==='fill'?'Fill':'Translate'}()">🔄 Ещё раз</button>`;
+        container.innerHTML = resultBlock(state.correct, state.total, 'Упражнение завершено') +
+            `<button class="menu-btn primary" onclick="startPrayer${state.type==='fill'?'Fill':'Translate'}()"><span class="msym">restart_alt</span>Ещё раз</button>`;
         return;
     }
     const q = state.questions[state.index];
@@ -3606,10 +5101,10 @@ function showPrayerExerciseQuestion() {
             return w;
         });
         const text = displayWords.join(' ');
-        let html = `<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Вопрос ${state.index+1} из ${state.total}</div>`;
-        html += `<div style="font-size:18px;margin-bottom:8px;">${text}</div>`;
-        html += `<div style="font-size:15px;color:#5f4a38;margin-bottom:12px;">${q.russian}</div>`;
-        html += `<div class="options">`;
+        let html = progressHead(`Вопрос ${state.index+1} из ${state.total}`, state.index, state.total);
+        html += `<div class="question">${text}</div>`;
+        html += `<div class="prayer-russian mb-12">${q.russian}</div>`;
+        html += `<div class="options options--greek">`;
         const opts = shuffle([q.correct, ...q.distractors]);
         opts.forEach(opt => {
             html += `<button class="option-btn" onclick="prayerFillAnswer('${opt}', '${q.correct}')">${opt}</button>`;
@@ -3617,17 +5112,17 @@ function showPrayerExerciseQuestion() {
         html += `</div>`;
         container.innerHTML = html;
     } else if (state.type === 'translate') {
-        let html = `<div style="margin-bottom:8px;font-size:14px;color:#7a5f4b;">Вопрос ${state.index+1} из ${state.total}</div>`;
-        html += `<div style="font-size:18px;margin-bottom:8px;">${q.russian}</div>`;
-        html += `<div style="font-size:15px;color:#5f4a38;margin-bottom:12px;">Соберите греческий перевод из слов:</div>`;
+        let html = progressHead(`Вопрос ${state.index+1} из ${state.total}`, state.index, state.total);
+        html += `<div class="question">${q.russian}</div>`;
+        html += `<div class="prayer-russian mb-12">Соберите греческий перевод из слов</div>`;
         html += `<div class="build-area" id="prayerBuildArea"></div>`;
         html += `<div class="word-bank" id="prayerWordBank">`;
         q.pool.forEach(w => {
             html += `<span class="chip" onclick="prayerPickWord('${w}')">${w}</span>`;
         });
         html += `</div>`;
-        html += `<button class="menu-btn primary" onclick="prayerCheckTranslate()">✅ Проверить</button>`;
-        html += `<button class="menu-btn" onclick="prayerClearTranslate()">↩️ Очистить</button>`;
+        html += `<div class="md-button-row"><button class="menu-btn primary" onclick="prayerCheckTranslate()"><span class="msym">check</span>Проверить</button>`;
+        html += `<button class="menu-btn text" onclick="prayerClearTranslate()"><span class="msym">undo</span>Очистить</button></div>`;
         container.innerHTML = html;
         prayerExerciseState.chosen = [];
     }
@@ -3682,10 +5177,10 @@ function prayerCheckTranslate() {
     if (ok) {
         state.correct++;
         stats.totalCorrect++;
-        container.innerHTML = '<div class="feedback ok">✅ Верно!</div>';
+        container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>';
     } else {
         stats.totalWrong++;
-        container.innerHTML = `<div class="feedback fail">❌ Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></div>`;
+        container.innerHTML = `<div class="feedback fail"><span>Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></span></div>`;
     }
     saveStats();
     state.index++;
@@ -3710,8 +5205,16 @@ document.addEventListener('click', function(e) {
 // ============================================================
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
+    let icon = document.getElementById('themeToggleIcon');
+    if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
     let btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    if (btn) btn.setAttribute('aria-label', theme === 'dark' ? 'Светлая тема' : 'Тёмная тема');
+    // строка состояния браузера следует за поверхностью M3
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+    let meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    meta.content = theme === 'dark' ? '#0E1116' : '#FAF9FD';
+    document.head.appendChild(meta);
     try { localStorage.setItem('greek_theme', theme); } catch(e) {}
 }
 
@@ -3758,21 +5261,21 @@ function buildAllVocabCache() {
 }
 
 const TYPE_LABELS = {
-    noun: '📌 Существительные',
-    verb: '📌 Глаголы',
-    adjective: '📌 Прилагательные',
-    preposition: '📌 Предлоги',
-    pronoun: '📌 Местоимения',
-    adverb: '📌 Наречия',
-    conjunction: '📌 Союзы',
-    other: '📌 Прочее'
+    noun: 'Существительные',
+    verb: 'Глаголы',
+    adjective: 'Прилагательные',
+    preposition: 'Предлоги',
+    pronoun: 'Местоимения',
+    adverb: 'Наречия',
+    conjunction: 'Союзы',
+    other: 'Прочее'
 };
 
 function renderVocabEntries(entries) {
     let container = document.getElementById('allVocabContent');
     if (!container) return;
     if (entries.length === 0) {
-        container.innerHTML = '<div class="search-empty">Ничего не найдено 🤷</div>';
+        container.innerHTML = emptyState('search_off', 'Ничего не найдено', 'Попробуйте другое слово или его часть');
         return;
     }
     let byType = {};
@@ -3791,7 +5294,7 @@ function renderVocabEntries(entries) {
         });
         html += '</div>';
     });
-    container.innerHTML = html || '<div class="search-empty">Ничего не найдено 🤷</div>';
+    container.innerHTML = html || emptyState('search_off', 'Ничего не найдено', 'Попробуйте другое слово или его часть');
 }
 function showAllVocab() {
     showSection('allVocabSection');
@@ -3849,6 +5352,25 @@ normalizeTranslationData();
 initTheme();
 loadStats();
 renderMainMenu();
+updateShell();
+
+// Top app bar получает контейнерный тон при прокрутке (поведение M3 «on scroll»)
+window.addEventListener('scroll', function () {
+    let bar = document.getElementById('topAppBar');
+    if (bar) bar.classList.toggle('scrolled', window.scrollY > 4);
+}, { passive: true });
+
+// Индикатор вкладок пересчитывается после загрузки шрифтов и при ресайзе
+window.addEventListener('resize', moveTabIndicator);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveTabIndicator);
+
+// Клавиатурная активация слов молитвы (они не <button>, но интерактивны)
+document.addEventListener('keydown', function (e) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('prayer-word')) {
+        e.preventDefault();
+        e.target.click();
+    }
+});
     
 </script>
 <script>
