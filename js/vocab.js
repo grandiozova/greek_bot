@@ -87,7 +87,16 @@ function highlightWord(sentence, entry) {
     }
     return sentence;
 }
-
+// keywords — это список слов для проверки ответа, а не готовое предложение;
+// склеиваем их в подобие фразы: пробелы вместо запятых, заглавная буква, точка.
+function formatKeywordsAsSentence(keywords) {
+    if (!keywords) return keywords;
+    let text = Array.isArray(keywords) ? keywords.join(' ').trim() : String(keywords).trim();
+    if (!text) return text;
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    if (!/[.!?]$/.test(text)) text += '.';
+    return text;
+}
 // Ищем до maxCount подлинных примеров в упражнениях урока, к которому относится слово.
 function findUsageExamples(entry, maxCount) {
     if (entry._examples) return entry._examples;
@@ -110,12 +119,11 @@ function findUsageExamples(entry, maxCount) {
                 if (Array.isArray(q.correct)) tryAdd(q.correct.join(' '), q.source);
             });
         }
-        if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
-            data.exercises.translate_greek_to_russian.forEach(q => {
-                let ru = Array.isArray(q.keywords) ? q.keywords.join(', ') : q.keywords;
-                tryAdd(q.greek, ru);
-            });
-        }
+if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
+    data.exercises.translate_greek_to_russian.forEach(q => {
+        tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
+    });
+}
     }
     entry._examples = examples;
     return examples;
