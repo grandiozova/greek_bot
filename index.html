@@ -83,20 +83,37 @@
     <h2 id="lessonTitle" class="mb-12"></h2>
 
     <div class="tab-bar" id="lessonTabs" role="tablist">
-        <button class="active" data-part="grammar" onclick="switchLessonPart('grammar')" role="tab"><span class="msym">school</span>Грамматика</button>
-        <button data-part="vocab" onclick="switchLessonPart('vocab')" role="tab"><span class="msym">dictionary</span>Словарь</button>
+        <button class="active" data-part="material" onclick="switchLessonPart('material')" role="tab"><span class="msym">school</span>Материал</button>
         <button data-part="exercise" onclick="switchLessonPart('exercise')" role="tab"><span class="msym">edit_note</span>Упражнения</button>
-        <button data-part="flashcards" onclick="switchLessonPart('flashcards')" role="tab"><span class="msym">style</span>Карточки</button>
         <button data-part="test" onclick="startTest()" role="tab"><span class="msym">quiz</span>Тест</button>
-        <button data-part="translation" onclick="switchLessonPart('translation')" role="tab"><span class="msym">translate</span>Перевод</button>
         <div class="md-tabs__indicator" id="lessonTabsIndicator"></div>
     </div>
 
-    <div id="partGrammar" class="section active"><div class="card"><div class="grammar-text" id="grammarContent"></div></div></div>
-    <div id="partVocab" class="section"><div class="card"><div class="word-list" id="vocabList"></div></div></div>
-    <div id="partExercise" class="section"><div class="card"><div class="md-button-row" id="exerciseButtons"></div><div id="exerciseQuestion"></div></div></div>
-    <div id="partFlashcards" class="section"><div class="card"><div id="flashcardContainer" class="flashcard-area"></div></div></div>
-    <div id="partTranslation" class="section"><div class="card"><div class="md-button-row" id="translationButtons"></div><div id="translationQuestion"></div></div></div>
+    <!-- Материал урока: грамматика, под ней словарь -->
+    <div id="partMaterial" class="section active">
+        <div class="card">
+            <h3><span class="msym">school</span>Грамматика</h3>
+            <div class="grammar-text" id="grammarContent"></div>
+        </div>
+        <div class="card" id="lessonVocabCard">
+            <h3><span class="msym">dictionary</span>Словарь урока</h3>
+            <div class="word-list" id="vocabList"></div>
+        </div>
+    </div>
+
+    <!-- Все упражнения урока: выбор сверху, запущенное — под ним -->
+    <div id="partExercise" class="section">
+        <div class="card">
+            <h3><span class="msym">edit_note</span>Упражнения</h3>
+            <div id="drillGroups"></div>
+        </div>
+        <div class="card hidden" id="drillStage">
+            <h3><span class="msym" id="drillStageIcon">edit_note</span><span id="drillStageTitle"></span></h3>
+            <div id="exerciseQuestion"></div>
+            <div id="flashcardContainer" class="flashcard-area hidden"></div>
+            <div id="translationQuestion" class="hidden"></div>
+        </div>
+    </div>
 
     <div class="md-button-row" id="lessonNav" style="margin-top:24px;">
         <button class="menu-btn outlined" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex:1;min-width:140px;"><span class="msym">arrow_back</span>Предыдущий</button>

@@ -2,7 +2,7 @@
 // M3 SHELL: top app bar, navigation bar, FAB
 // ============================================================
 let currentSectionId = 'mainMenu';
-let currentLessonPart = 'grammar';
+let currentLessonPart = 'material';
 let titleFadeTimer = null;
 
 // Метаданные экранов: заголовок app bar, активная точка навигации,

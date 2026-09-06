@@ -1,49 +1,158 @@
 // ============================================================
 // ОТКРЫТИЕ УРОКА И ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
 // ============================================================
+// Экран урока — две вкладки плюс тест: «Материал» (грамматика, под ней словарь)
+// и «Упражнения», куда сведены все виды тренировки, включая карточки и перевод.
+
+// Каталог упражнений урока. kind говорит, чем запускать и в какой контейнер
+// рисовать: exercise → exercises.js, translation → translation.js,
+// flashcards → flashcards.js. Группы задают порядок и подписи в списке выбора.
+const LESSON_DRILL_GROUPS = [
+    {
+        label: 'Формы и грамматика',
+        drills: [
+            { kind: 'exercise', key: 'declension_fill', label: 'Склонение', icon: 'account_tree' },
+            { kind: 'exercise', key: 'case_number', label: 'Падеж и число', icon: 'target' },
+            { kind: 'exercise', key: 'agreement', label: 'Согласование', icon: 'link' },
+            { kind: 'exercise', key: 'attribute_vs_predicate', label: 'Атрибут / предикатив', icon: 'balance' },
+            { kind: 'exercise', key: 'substantivation', label: 'Субстантивация', icon: 'push_pin' },
+            { kind: 'exercise', key: 'article_fill', label: 'Артикль', icon: 'abc' }
+        ]
+    },
+    {
+        // Короткие словосочетания из упражнений урока и целые предложения из
+        // учебника — разные задания, поэтому в подписях они разведены явно.
+        label: 'Перевод',
+        drills: [
+            { kind: 'exercise', key: 'translate_greek_to_russian', label: 'Фразы: греческий → русский', icon: 'translate' },
+            { kind: 'exercise', key: 'translate_russian_to_greek', label: 'Фразы: русский → греческий', icon: 'g_translate' },
+            { kind: 'translation', key: 'el_to_ru', label: 'Предложения: греческий → русский', icon: 'translate' },
+            { kind: 'translation', key: 'ru_to_el', label: 'Предложения: русский → греческий', icon: 'g_translate' }
+        ]
+    },
+    {
+        label: 'Слова',
+        drills: [
+            { kind: 'flashcards', key: 'flashcards', label: 'Карточки', icon: 'style' }
+        ]
+    }
+];
+
+// Контейнер на «сцене» под выбранное упражнение — по одному на вид.
+const DRILL_BOXES = { exercise: 'exerciseQuestion', translation: 'translationQuestion', flashcards: 'flashcardContainer' };
+
+let currentDrill = null;
+
+function lessonDrillAvailable(data, drill) {
+    if (drill.kind === 'exercise') return !!(data.exercises && data.exercises[drill.key] && data.exercises[drill.key].length);
+    if (drill.kind === 'translation') return !!(data.translation && data.translation[drill.key] && data.translation[drill.key].length);
+    if (drill.kind === 'flashcards') return !!(data.vocabulary && data.vocabulary.length);
+    return false;
+}
+
+function findLessonDrill(kind, key) {
+    for (let group of LESSON_DRILL_GROUPS) {
+        for (let d of group.drills) if (d.kind === kind && d.key === key) return d;
+    }
+    return null;
+}
+
+// Список выбора: группа без единого доступного упражнения не показывается.
+function renderLessonDrills(data) {
+    let box = document.getElementById('drillGroups');
+    if (!box) return;
+    let parts = [];
+    LESSON_DRILL_GROUPS.forEach(group => {
+        let available = group.drills.filter(d => lessonDrillAvailable(data, d));
+        if (available.length === 0) return;
+        parts.push('<div class="drill-group"><h4 class="drill-group__label">', group.label, '</h4><div class="md-button-row">');
+        available.forEach(d => {
+            parts.push(
+                '<button class="menu-btn" data-drill="', d.kind, ':', d.key, '"',
+                ' onclick="startLessonDrill(\'', d.kind, '\',\'', d.key, '\')">',
+                '<span class="msym">', d.icon, '</span>', d.label,
+                '</button>'
+            );
+        });
+        parts.push('</div></div>');
+    });
+    box.innerHTML = parts.length
+        ? parts.join('')
+        : emptyState('edit_off', 'Упражнений нет', 'Для этого урока упражнения ещё не подготовлены');
+}
+
+// Сцена пуста, пока упражнение не выбрано: заголовок карточки называет то,
+// что запущено, и без выбора ему нечего показывать.
+function resetLessonDrill() {
+    currentDrill = null;
+    let stage = document.getElementById('drillStage');
+    if (stage) stage.classList.add('hidden');
+    Object.keys(DRILL_BOXES).forEach(kind => {
+        let el = document.getElementById(DRILL_BOXES[kind]);
+        if (el) { el.innerHTML = ''; el.classList.add('hidden'); }
+    });
+    document.querySelectorAll('#drillGroups .menu-btn').forEach(b => b.classList.remove('primary'));
+    flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
+}
+
+function startLessonDrill(kind, key) {
+    let data = getLessonData(currentLesson);
+    let drill = findLessonDrill(kind, key);
+    if (!data || !drill) return;
+    currentDrill = kind + ':' + key;
+
+    document.querySelectorAll('#drillGroups .menu-btn').forEach(b => {
+        b.classList.toggle('primary', b.getAttribute('data-drill') === currentDrill);
+    });
+
+    let stage = document.getElementById('drillStage');
+    if (stage) stage.classList.remove('hidden');
+    let icon = document.getElementById('drillStageIcon');
+    if (icon) icon.textContent = drill.icon;
+    let title = document.getElementById('drillStageTitle');
+    if (title) title.textContent = drill.label;
+
+    Object.keys(DRILL_BOXES).forEach(k => {
+        let el = document.getElementById(DRILL_BOXES[k]);
+        if (!el) return;
+        el.innerHTML = '';
+        el.classList.toggle('hidden', k !== kind);
+    });
+
+    if (kind === 'exercise') startExercise(key);
+    else if (kind === 'translation') startTranslation(key);
+    else if (kind === 'flashcards') startFlashcards();
+
+    if (stage && stage.scrollIntoView) {
+        try { stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
+    }
+}
+
 function openLesson(lesson) {
     currentLesson = lesson;
     let data = getLessonData(lesson);
     if (!data) return;
     try { localStorage.setItem('greek_last_lesson', String(lesson)); } catch (e) {}
     document.getElementById('lessonTitle').textContent = data.title;
-    currentLessonPart = 'grammar';
+    currentLessonPart = 'material';
     showSection('lessonSection');
     updateNavButtons(lesson);
 
-    // ===== СКРЫВАЕМ/ПОКАЗЫВАЕМ ВКЛАДКИ ДЛЯ УРОКОВ 1–2 =====
+    // Уроки 1–2 — это алфавит и правила чтения: тренировать в них нечего,
+    // остаётся одна вкладка с материалом.
     let isIntroLesson = (lesson === 1 || lesson === 2);
-    let tabButtons = document.querySelectorAll('.tab-bar button');
-    let tabMapping = {
-        'grammar': 'partGrammar',
-        'vocab': 'partVocab',
-        'exercise': 'partExercise',
-        'flashcards': 'partFlashcards',
-        'test': 'partTest',
-        'translation': 'partTranslation'
-    };
-    // Скрываем или показываем каждую вкладку
-    tabButtons.forEach(btn => {
+    document.querySelectorAll('#lessonTabs button').forEach(btn => {
         let part = btn.getAttribute('data-part');
-        // Для уроков 1–2 показываем только грамматику и словарь
-        if (isIntroLesson) {
-            if (part === 'grammar' || part === 'vocab') {
-                btn.style.display = ''; // показываем
-            } else {
-                btn.style.display = 'none'; // скрываем
-            }
-        } else {
-            btn.style.display = ''; // показываем все
-        }
+        btn.style.display = (isIntroLesson && part !== 'material') ? 'none' : '';
     });
-
-    document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tab-bar button[data-part="grammar"]').classList.add('active');
 
     document.getElementById('grammarContent').innerHTML = data.grammar || '';
 
+    // Словарь урока — под грамматикой, на той же вкладке
     let container = document.getElementById('vocabList');
     container.innerHTML = '';
+    let vocabCard = document.getElementById('lessonVocabCard');
+    if (vocabCard) vocabCard.classList.toggle('hidden', !(data.vocabulary && data.vocabulary.length));
     if (data.vocabulary) {
         data.vocabulary.forEach(item => {
             let article = item.article ? item.article + ' ' : '';
@@ -53,87 +162,20 @@ function openLesson(lesson) {
                 div.classList.add('clickable');
                 div.onclick = function(el) { return function() { toggleDeclension(el); }; }(div);
             }
-let detailsHtml = '';
-if (item.declension_forms) {
-    detailsHtml = '<div class="word-details"><div class="md-table-scroll">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div></div>';
-}
+            let detailsHtml = '';
+            if (item.declension_forms) {
+                detailsHtml = '<div class="word-details"><div class="md-table-scroll">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div></div>';
+            }
             div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
             container.appendChild(div);
         });
     }
 
-    // Упражнения
-    let btnContainer = document.getElementById('exerciseButtons');
-    btnContainer.innerHTML = '';
-    let hasExercises = false;
-    if (data.exercises) {
-        let keys = Object.keys(data.exercises);
-        for (let k of keys) {
-            if (data.exercises[k] && data.exercises[k].length > 0) { hasExercises = true; break; }
-        }
-    }
-    if (hasExercises) {
-        let types = [
-            { key: 'declension_fill', label: 'Склонение', icon: 'account_tree' },
-            { key: 'translate_greek_to_russian', label: 'Греческий → русский', icon: 'translate' },
-            { key: 'translate_russian_to_greek', label: 'Русский → греческий', icon: 'g_translate' },
-            { key: 'case_number', label: 'Падеж и число', icon: 'target' },
-            { key: 'agreement', label: 'Согласование', icon: 'link' },
-            { key: 'attribute_vs_predicate', label: 'Атрибут / предикатив', icon: 'balance' },
-            { key: 'substantivation', label: 'Субстантивация', icon: 'push_pin' },
-            { key: 'article_fill', label: 'Артикль', icon: 'abc' }
-        ];
-        types.forEach(t => {
-            if (data.exercises[t.key] && data.exercises[t.key].length > 0) {
-                let b = document.createElement('button');
-                b.className = 'menu-btn';
-                b.innerHTML = '<span class="msym">' + t.icon + '</span>' + t.label;
-                b.onclick = (function(type) { return function() { startExercise(type); }; })(t.key);
-                btnContainer.appendChild(b);
-            }
-        });
-        if (btnContainer.children.length === 0) btnContainer.innerHTML = emptyState('edit_off', 'Упражнений нет');
-    } else {
-        btnContainer.innerHTML = emptyState('edit_off', 'Упражнений нет', 'Для этого урока упражнения ещё не подготовлены');
-    }
-    document.getElementById('exerciseQuestion').innerHTML = '';
+    // Упражнения: список выбора и пустая сцена
+    renderLessonDrills(data);
+    resetLessonDrill();
 
-    // Карточки
-    document.getElementById('flashcardContainer').innerHTML =
-        '<div class="md-empty-state"><span class="msym">style</span>' +
-        '<div class="md-title-medium">Карточки урока</div>' +
-        '<div class="md-body-medium">Переворачивайте карточку и отмечайте, знаете ли вы слово</div></div>' +
-        '<button class="menu-btn primary" onclick="startFlashcards()"><span class="msym">play_arrow</span>Начать карточки</button>';
-    flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
-
-    // Перевод
-    let transContainer = document.getElementById('translationButtons');
-    transContainer.innerHTML = '';
-    if (data.translation) {
-        let hasRu = data.translation.ru_to_el && data.translation.ru_to_el.length > 0;
-        let hasEl = data.translation.el_to_ru && data.translation.el_to_ru.length > 0;
-        if (hasRu) {
-            let b = document.createElement('button');
-            b.className = 'menu-btn primary';
-            b.innerHTML = '<span class="msym">g_translate</span>Русский &rarr; греческий';
-            b.onclick = function() { startTranslation('ru_to_el'); };
-            transContainer.appendChild(b);
-        }
-        if (hasEl) {
-            let b = document.createElement('button');
-            b.className = 'menu-btn';
-            b.innerHTML = '<span class="msym">translate</span>Греческий &rarr; русский';
-            b.onclick = function() { startTranslation('el_to_ru'); };
-            transContainer.appendChild(b);
-        }
-        if (!hasRu && !hasEl) transContainer.innerHTML = emptyState('translate', 'Упражнений на перевод нет');
-    } else {
-        transContainer.innerHTML = emptyState('translate', 'Упражнений на перевод нет');
-    }
-    document.getElementById('translationQuestion').innerHTML = '';
-
-    // Переключаем на грамматику
-    switchLessonPart('grammar');
+    switchLessonPart('material');
 }
 
 // Индикатор вкладок скользит под активной вкладкой (M3 primary tabs)
@@ -160,43 +202,15 @@ function restoreLessonPart() {
 
 function switchLessonPart(part) {
     currentLessonPart = part;
-    document.querySelectorAll('.tab-bar button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-    let activeTab = document.querySelector('.tab-bar button[data-part="' + part + '"]');
+    document.querySelectorAll('#lessonTabs button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+    let activeTab = document.querySelector('#lessonTabs button[data-part="' + part + '"]');
     if (activeTab) { activeTab.classList.add('active'); activeTab.setAttribute('aria-selected', 'true'); }
     moveTabIndicator();
 
     document.querySelectorAll('#lessonSection .section').forEach(s => s.classList.remove('active'));
     let target = document.getElementById('part' + part.charAt(0).toUpperCase() + part.slice(1));
     if (target) target.classList.add('active');
-
-    if (part === 'flashcards' && flashcardState.words.length === 0) startFlashcards();
-    if (part === 'translation') {
-        let data = getLessonData(currentLesson);
-        if (data.translation) {
-            let hasRu = data.translation.ru_to_el && data.translation.ru_to_el.length > 0;
-            let hasEl = data.translation.el_to_ru && data.translation.el_to_ru.length > 0;
-            let container = document.getElementById('translationButtons');
-            if (container.innerHTML.trim() === '') {
-                if (hasRu) {
-                    let b = document.createElement('button');
-                    b.className = 'menu-btn primary';
-                    b.innerHTML = '<span class="msym">g_translate</span>Русский &rarr; греческий';
-                    b.onclick = function() { startTranslation('ru_to_el'); };
-                    container.appendChild(b);
-                }
-                if (hasEl) {
-                    let b = document.createElement('button');
-                    b.className = 'menu-btn';
-                    b.innerHTML = '<span class="msym">translate</span>Греческий &rarr; русский';
-                    b.onclick = function() { startTranslation('el_to_ru'); };
-                    container.appendChild(b);
-                }
-                if (!hasRu && !hasEl) container.innerHTML = emptyState('translate', 'Упражнений на перевод нет');
-            }
-        }
-    }
 }
-
 
 // ============================================================
 // НАВИГАЦИЯ МЕЖДУ УРОКАМИ
