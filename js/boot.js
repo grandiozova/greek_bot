@@ -10,6 +10,10 @@ function normalizeTranslationData() {
             if (!lesson.translation[dir]) return;
             lesson.translation[dir].forEach(q => {
                 if (typeof q.correct === 'string') {
+                    // Связный текст ответа нужен словарю: он показывает эти же
+                    // предложения как примеры употребления слова. Сохраняем его
+                    // до разбора на слова — иначе восстановить пунктуацию нечем.
+                    q.correctText = q.correct;
                     q.correct = q.correct
                         .replace(/[.,;:!?]+$/, '')
                         .split(/\s+/)

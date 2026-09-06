@@ -119,11 +119,15 @@ function highlightWord(sentence, entry) {
     return sentence;
 }
 
-// keywords — это список слов для проверки ответа, а не готовое предложение;
-// склеиваем их в подобие фразы: пробелы вместо запятых, заглавная буква, точка.
-function formatKeywordsAsSentence(keywords) {
-    if (!keywords) return keywords;
-    let parts = Array.isArray(keywords) ? keywords : String(keywords).split(',');
+// Русский ответ приходит сюда в трёх видах: готовым предложением, списком
+// keywords для проверки ответа и — после normalizeTranslationData() из boot.js —
+// массивом слов прямо в данных урока. Массив нельзя подставлять в разметку как
+// есть: его toString() склеивает слова запятыми, и в примере вместо
+// «Я раб, а ты господин.» появляется «Я,раб,,а,ты,господин».
+function asSentence(value) {
+    if (!value) return value;
+    if (typeof value === 'string') return value;
+    let parts = Array.isArray(value) ? value : String(value).split(',');
     parts = parts.map(p => String(p).trim()).filter(Boolean);
     let text = parts.join(' ');
     if (!text) return text;
@@ -176,16 +180,17 @@ function findUsageExamples(entry, maxCount) {
     lessons.forEach(l => {
         let data = getLessonData(l);
         if (!data || !data.translation) return;
-        (data.translation.el_to_ru || []).forEach(q => tryAdd(q.source, q.correct));
+        // correctText — исходное предложение, сохранённое до разбора на слова.
+        (data.translation.el_to_ru || []).forEach(q => tryAdd(q.source, asSentence(q.correctText || q.correct)));
         (data.translation.ru_to_el || []).forEach(q => {
-            if (Array.isArray(q.correct)) tryAdd(q.correct.join(' ') + endPunctFrom(q.source), q.source);
+            if (Array.isArray(q.correct)) tryAdd(q.correct.join(' ') + endPunctFrom(q.source), asSentence(q.source));
         });
     });
     lessons.forEach(l => {
         let data = getLessonData(l);
         if (!data || !data.exercises || !data.exercises.translate_greek_to_russian) return;
         data.exercises.translate_greek_to_russian.forEach(q => {
-            tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
+            tryAdd(q.greek, asSentence(q.keywords));
         });
     });
     entry._examples = examples;
