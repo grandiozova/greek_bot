@@ -2,6 +2,7 @@
 // ПОИСК В СЛОВАРЕ ВСЕХ СЛОВ
 // ============================================================
 let allVocabCache = null;
+let vocabById = new Map();
 
 // Урок 1 — это названия букв (ἄλφα, βῆτα…), а не лексика: в словарь он не идёт.
 // Со второго урока начинаются настоящие слова — артикли и предлоги.
@@ -10,6 +11,8 @@ const VOCAB_FIRST_LESSON = 2;
 function buildAllVocabCache() {
     let entries = [];
     let seen = new Set();
+    vocabById = new Map();
+    let idCounter = 0;
     let lessons = Object.keys(LESSONS_DATA)
         .map(Number)
         .filter(n => n >= VOCAB_FIRST_LESSON)
@@ -21,13 +24,17 @@ function buildAllVocabCache() {
             let key = item.greek + '|' + (item.article || '');
             if (seen.has(key)) return;
             seen.add(key);
-            entries.push({
+            let entry = {
+                id: idCounter++,
                 greek: item.greek,
                 article: item.article || '',
                 translation: item.translation,
                 type: item.type || 'other',
-                lesson: l
-            });
+                lesson: l,
+                declension_forms: item.declension_forms || null
+            };
+            entries.push(entry);
+            vocabById.set(entry.id, entry);
         });
     }
     entries.sort((a, b) => a.greek.localeCompare(b.greek));
@@ -44,6 +51,113 @@ const TYPE_LABELS = {
     conjunction: 'Союзы',
     other: 'Прочее'
 };
+
+// ------------------------------------------------------------
+// Примеры употребления: ищем подлинные предложения из упражнений
+// и переводов того же урока, где встречается слово (в любой форме).
+// ------------------------------------------------------------
+
+// Базовая форма + все словоформы слова — по ним ищем совпадения в предложениях.
+function getWordSearchForms(entry) {
+    let forms = new Set();
+    let lemma = (entry.greek || '').split(',')[0].split('(')[0].trim();
+    if (lemma.length > 1) forms.add(lemma);
+    if (entry.declension_forms) {
+        (function walk(obj) {
+            if (!obj) return;
+            if (typeof obj === 'string') {
+                if (obj.length > 1) forms.add(obj);
+                return;
+            }
+            if (typeof obj === 'object') Object.values(obj).forEach(walk);
+        })(entry.declension_forms);
+    }
+    return Array.from(forms);
+}
+
+// Выделяем найденную форму слова жирным прямо в тексте примера.
+function highlightWord(sentence, entry) {
+    if (!sentence) return sentence;
+    let forms = getWordSearchForms(entry).sort((a, b) => b.length - a.length);
+    for (let f of forms) {
+        let idx = sentence.indexOf(f);
+        if (idx !== -1) {
+            return sentence.slice(0, idx) + '<strong>' + sentence.slice(idx, idx + f.length) + '</strong>' + sentence.slice(idx + f.length);
+        }
+    }
+    return sentence;
+}
+
+// Ищем до maxCount подлинных примеров в упражнениях урока, к которому относится слово.
+function findUsageExamples(entry, maxCount) {
+    if (entry._examples) return entry._examples;
+    maxCount = maxCount || 3;
+    let examples = [];
+    let data = getLessonData(entry.lesson);
+    if (data) {
+        let forms = getWordSearchForms(entry);
+        let seen = new Set();
+        function tryAdd(greek, russian) {
+            if (!greek || !russian || examples.length >= maxCount) return;
+            if (seen.has(greek)) return;
+            if (!forms.some(f => greek.includes(f))) return;
+            seen.add(greek);
+            examples.push({ greek: greek, russian: russian });
+        }
+        if (data.translation) {
+            (data.translation.el_to_ru || []).forEach(q => tryAdd(q.source, q.correct));
+            (data.translation.ru_to_el || []).forEach(q => {
+                if (Array.isArray(q.correct)) tryAdd(q.correct.join(' '), q.source);
+            });
+        }
+        if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
+            data.exercises.translate_greek_to_russian.forEach(q => {
+                let ru = Array.isArray(q.keywords) ? q.keywords.join(', ') : q.keywords;
+                tryAdd(q.greek, ru);
+            });
+        }
+    }
+    entry._examples = examples;
+    return examples;
+}
+
+function renderVocabExamplesHtml(entry) {
+    let examples = findUsageExamples(entry, 3);
+    if (examples.length === 0) {
+        return '<div class="vocab-examples-empty">Готовых примеров для этого слова пока не нашлось —' +
+            ' оно из ' + entry.lesson + '-го урока, загляните в его упражнения на перевод.</div>';
+    }
+    let parts = ['<div class="vocab-examples">'];
+    examples.forEach(ex => {
+        parts.push(
+            '<div class="vocab-example">',
+                '<div class="vocab-example__greek">', highlightWord(ex.greek, entry), '</div>',
+                '<div class="vocab-example__ru">', ex.russian, '</div>',
+            '</div>'
+        );
+    });
+    parts.push('</div>');
+    return parts.join('');
+}
+
+// Разворачивает/сворачивает блок примеров под словом; примеры считаются один раз и кешируются в entry._examples.
+function toggleVocabExamples(id) {
+    let entry = vocabById.get(id);
+    if (!entry) return;
+    let row = document.querySelector('.word-item[data-vocab-id="' + id + '"]');
+    if (!row) return;
+    let header = row.querySelector('.word-row');
+    let details = row.querySelector('.word-details');
+    if (!details) return;
+    let opening = !details.classList.contains('open');
+    if (opening && !details.dataset.loaded) {
+        details.innerHTML = renderVocabExamplesHtml(entry);
+        details.dataset.loaded = '1';
+    }
+    details.classList.toggle('open', opening);
+    row.classList.toggle('open', opening);
+    if (header) header.setAttribute('aria-expanded', opening ? 'true' : 'false');
+}
 
 function renderVocabEntries(entries) {
     let container = document.getElementById('allVocabContent');
@@ -64,8 +178,15 @@ function renderVocabEntries(entries) {
         parts.push('<div class="vocab-section"><h4>', TYPE_LABELS[type] || type, '</h4>');
         byType[type].forEach(e => {
             let art = e.article ? e.article + ' ' : '';
-            parts.push('<div class="word-item"><div class="word-row"><strong>', art, e.greek,
-                '</strong><span>', e.translation, '</span></div></div>');
+            parts.push(
+                '<div class="word-item" data-vocab-id="', e.id, '">',
+                    '<div class="word-row" onclick="toggleVocabExamples(', e.id, ')" role="button" tabindex="0" aria-expanded="false">',
+                        '<strong>', art, e.greek, '</strong><span>', e.translation, '</span>',
+                        '<span class="msym vocab-chevron">expand_more</span>',
+                    '</div>',
+                    '<div class="word-details"></div>',
+                '</div>'
+            );
         });
         parts.push('</div>');
     });

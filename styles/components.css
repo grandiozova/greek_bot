@@ -517,3 +517,94 @@
     to   { transform: scale(1);   opacity: 1; }
 }
 
+/* ============================================================
+   ПРИМЕРЫ УПОТРЕБЛЕНИЯ В СЛОВАРЕ + «В СЛОВОСОЧЕТАНИИ» В КАРТОЧКАХ
+   Добавить в конец styles/components.css.
+   Использует только уже существующие в проекте M3-токены.
+   ============================================================ */
+
+/* --- строка слова в общем словаре: делаем явно кликабельной --- */
+.word-item .word-row {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: var(--md-sys-shape-corner-medium);
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.word-item .word-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.word-item .word-row:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.word-item .word-row:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+
+.word-item .vocab-chevron {
+    margin-left: auto;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 20px;
+    transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+.word-item.open .vocab-chevron { transform: rotate(180deg); }
+
+/* --- выезжающий блок примеров --- */
+.word-item .word-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+.word-item .word-details.open { max-height: 600px; }
+
+.vocab-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 4px 12px;
+}
+.vocab-example {
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: var(--md-sys-shape-corner-medium);
+    padding: 10px 14px;
+}
+.vocab-example__greek {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.0625rem;
+    line-height: 1.5rem;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 4px;
+}
+.vocab-example__greek strong {
+    color: var(--md-sys-color-primary);
+    font-weight: 600;
+}
+.vocab-example__ru {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.vocab-examples-empty {
+    padding: 4px 4px 14px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+/* --- «Показать в словосочетании» на карточках --- */
+.flashcard-context-btn {
+    margin: 12px auto 0;
+    display: flex;
+}
+.flashcard-context {
+    margin: 10px auto 0;
+    max-width: 420px;
+    animation: md-token-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.flashcard-context .vocab-example {
+    background: var(--md-sys-color-surface-container-high);
+}

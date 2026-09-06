@@ -14,6 +14,7 @@ function startAllFlashcards() {
                 greek: item.greek,
                 article: item.article || '',
                 translation: item.translation,
+                declension_forms: item.declension_forms || null,
                 lesson: l
             });
         }
@@ -49,6 +50,7 @@ function showAllFlashcard() {
     if (s.revealed) html += '<div class="flashcard-translation">' + w.translation + '</div>';
     html += '</div>';
     if (s.revealed) {
+        html += flashcardContextBlockHtml(w);
         html += '<div class="flashcard-buttons"><button class="know" onclick="allFlashcardAnswer(true)"><span class="msym">check</span>Знаю</button><button class="dontknow" onclick="allFlashcardAnswer(false)"><span class="msym">close</span>Не знаю</button></div>';
     } else {
         html += '<div class="flashcard-buttons"><button class="show" onclick="allFlashcardReveal()"><span class="msym">visibility</span>Показать перевод</button></div>';
@@ -88,7 +90,13 @@ function startFlashcards() {
         return;
     }
     let words = shuffle(data.vocabulary.map(item => {
-        return { greek: item.greek, article: item.article || '', translation: item.translation };
+        return {
+            greek: item.greek,
+            article: item.article || '',
+            translation: item.translation,
+            declension_forms: item.declension_forms || null,
+            lesson: currentLesson
+        };
     }));
     flashcardState = { words: words, index: 0, revealed: false, correct: 0, total: words.length };
     showFlashcard();
@@ -109,6 +117,7 @@ function showFlashcard() {
     if (s.revealed) html += '<div class="flashcard-translation">' + w.translation + '</div>';
     html += '</div>';
     if (s.revealed) {
+        html += flashcardContextBlockHtml(w);
         html += '<div class="flashcard-buttons"><button class="know" onclick="flashAnswer(true)"><span class="msym">check</span>Знаю</button><button class="dontknow" onclick="flashAnswer(false)"><span class="msym">close</span>Не знаю</button></div>';
     } else {
         html += '<div class="flashcard-buttons"><button class="show" onclick="flashReveal()"><span class="msym">visibility</span>Показать перевод</button></div>';
@@ -132,3 +141,31 @@ function flashAnswer(know) {
     showFlashcard();
 }
 
+// ------------------------------------------------------------
+// «Показать в словосочетании» — берём то же слово в подлинном
+// примере из упражнений урока (findUsageExamples определена в
+// vocab.js; к моменту клика все скрипты уже загружены).
+// ------------------------------------------------------------
+function flashcardContextBlockHtml(word) {
+    if (typeof findUsageExamples !== 'function') return '';
+    let examples = findUsageExamples(word, 1);
+    if (!examples.length) return '';
+    let exampleHtml = '<div class="vocab-example">' +
+        '<div class="vocab-example__greek">' + highlightWord(examples[0].greek, word) + '</div>' +
+        '<div class="vocab-example__ru">' + examples[0].russian + '</div>' +
+    '</div>';
+    return (
+        '<button type="button" class="menu-btn outlined flashcard-context-btn" onclick="toggleFlashcardContext(this)">' +
+            '<span class="msym">account_tree</span>Показать в словосочетании' +
+        '</button>' +
+        '<div class="flashcard-context" style="display:none;">' + exampleHtml + '</div>'
+    );
+}
+
+function toggleFlashcardContext(btn) {
+    let block = btn.nextElementSibling;
+    if (!block) return;
+    let show = block.style.display === 'none';
+    block.style.display = show ? 'block' : 'none';
+    btn.classList.toggle('active', show);
+}
