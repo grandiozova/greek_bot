@@ -168,12 +168,18 @@ function startLessonDrill(kind, key) {
 // РАЗМЕТКА ГРАММАТИКИ
 // ============================================================
 // Грамматика лежит в data/lessons.js одним потоком, где абзацы разделены
-// парами <br>, заголовки — это <b> в начале строки, а списки — строки с «•».
-// Отступы такой разметки задаёт количество <br> подряд, поэтому ритм гуляет,
-// а перенос строки списка уезжает под маркер. Разбираем поток на настоящие
-// блоки при отрисовке: содержимое остаётся нетронутым, а вертикальные отступы
-// начинает задавать CSS. Содержимое data/lessons.js при этом не трогаем.
-const GRAMMAR_TABLE_RE = /<table[\s\S]*?<\/table>/gi;
+// парами <br>, заголовки — это <b> в начале строки, а списки — то строки с «•»,
+// то честный <ul>. Отступы такой разметки задаёт количество <br> подряд, поэтому
+// ритм гуляет, перенос строки списка уезжает под маркер, а <ul> без <br> вокруг
+// склеивает абзац до себя, себя и абзац после в одно месиво без отступов.
+// Разбираем поток на настоящие блоки при отрисовке: содержимое остаётся
+// нетронутым, а вертикальные отступы начинает задавать CSS.
+// Содержимое data/lessons.js при этом не трогаем.
+// Готовые блочные элементы разметки: таблицы и списки, набранные тегами, а не
+// строками с «•». Их нельзя резать по <br> и нельзя оставлять внутри абзаца —
+// вынимаем целиком и ставим на место как самостоятельные элементы. Вложенных
+// списков и таблиц в учебнике нет; появятся — этот разбор их не поймёт.
+const GRAMMAR_LIFT_RE = /<(table|ul|ol)\b[\s\S]*?<\/\1>/gi;
 const GRAMMAR_BLOCK_RE = /(?:<br\s*\/?>\s*){2,}/i;
 // Заголовок — строка, которая целиком состоит из одного <b>…</b>: и «3. Личные
 // местоимения», и подзаголовок «Единственное число:» перед таблицей. Внутри
@@ -181,23 +187,33 @@ const GRAMMAR_BLOCK_RE = /(?:<br\s*\/?>\s*){2,}/i;
 // бы за заголовок. Жирное начало с продолжением в той же строке
 // («<b>Примечание:</b> в косвенных падежах…») остаётся обычным абзацем.
 const GRAMMAR_HEAD_RE = /^<b>((?:(?!<\/b>)[\s\S])*)<\/b>$/i;
-// U+0001 в учебном тексте не встречается — им и метим место изъятой таблицы
-const TABLE_MARK = '\u0001';
+// U+0001 в учебном тексте не встречается — им и метим место вынутого элемента
+const LIFT_MARK = '\u0001';
+
+// Вынутый элемент возвращается на место самостоятельным блоком: таблица — в
+// полосе горизонтальной прокрутки, список — с тем же классом, что и список,
+// собранный из строк с «•». Без класса он достался бы глобальному сбросу
+// `* { margin: 0; padding: 0 }` и остался бы вовсе без отступов и маркеров.
+function grammarLiftedHtml(html) {
+    if (/^<table/i.test(html)) return '<div class="md-table-scroll">' + html + '</div>';
+    if (/^<(ul|ol)\b[^>]*\bclass=/i.test(html)) return html;
+    return html.replace(/^<(ul|ol)\b/i, '<$1 class="grammar-list"');
+}
 
 function renderGrammarHtml(html) {
     if (!html) return '';
-    // Таблицы прячем первыми: внутри них <br> и «•» ничего не разделяют.
-    let tables = [];
-    let text = String(html).replace(GRAMMAR_TABLE_RE, m => TABLE_MARK + (tables.push(m) - 1) + TABLE_MARK);
+    // Таблицы и списки прячем первыми: внутри них <br> и «•» ничего не разделяют.
+    let lifted = [];
+    let text = String(html).replace(GRAMMAR_LIFT_RE, m => LIFT_MARK + (lifted.push(m) - 1) + LIFT_MARK);
 
     let out = [];
     text.split(GRAMMAR_BLOCK_RE).forEach(block => {
         block = block.trim();
         if (!block) return;
-        // Таблица внутри блока — самостоятельный элемент, а не строка абзаца,
-        // и каждая едет в своей горизонтальной прокрутке.
-        block.split(new RegExp(TABLE_MARK + '(\\d+)' + TABLE_MARK)).forEach((piece, i) => {
-            if (i % 2) { out.push('<div class="md-table-scroll">' + tables[+piece] + '</div>'); return; }
+        // Вынутый элемент внутри блока — сам себе блок, а не строка абзаца:
+        // текст до него и текст после становятся отдельными абзацами.
+        block.split(new RegExp(LIFT_MARK + '(\\d+)' + LIFT_MARK)).forEach((piece, i) => {
+            if (i % 2) { out.push(grammarLiftedHtml(lifted[+piece])); return; }
             // <br> по краям куска только и делали, что рисовали отступ — он теперь на CSS
             let chunk = piece.replace(/^(?:\s*<br\s*\/?>)+/i, '').replace(/(?:<br\s*\/?>\s*)+$/i, '').trim();
             if (chunk) out.push(grammarBlockHtml(chunk));
@@ -346,10 +362,9 @@ function switchLessonPart(part) {
 // ============================================================
 // СВАЙП МЕЖДУ РАЗДЕЛАМИ УРОКА
 // ============================================================
-// На сенсорном экране горизонтальный жест переключает вкладки урока.
-// «Тест» в этот ряд не входит: он уводит на другой экран, и промахнуться
-// пальцем в него — не то же самое, что промахнуться вкладкой.
-const SWIPE_PARTS = ['material', 'exercise'];
+// На сенсорном экране горизонтальный жест переключает вкладки урока. Ряд —
+// это сами вкладки в порядке разметки, «Тест» в том числе: свайп нажимает ту
+// вкладку, к которой пришёл, и делает ровно то же, что палец по ней.
 const SWIPE_MIN_DISTANCE = 64;   // px по горизонтали
 const SWIPE_MAX_SLOPE = 0.5;     // |dy| / |dx|: наклонный жест — это прокрутка
 // Внутри прокручиваемого вбок (таблицы склонений, сама панель вкладок) и в полях
@@ -384,16 +399,26 @@ function initLessonSwipe() {
     }, { passive: true });
 }
 
-function swipeLessonPart(step) {
-    let parts = SWIPE_PARTS.filter(p => {
-        let tab = document.querySelector('#lessonTabs button[data-part="' + p + '"]');
-        return tab && tab.style.display !== 'none';
+// Вкладки, доступные жесту: у вводных уроков «Упражнения» и «Тест» скрыты
+// (openLesson прячет их через style.display), листать по ним нечего.
+function lessonSwipeTabs() {
+    let tabs = [];
+    document.querySelectorAll('#lessonTabs button[data-part]').forEach(tab => {
+        if (tab.style.display !== 'none') tabs.push(tab);
     });
-    let i = parts.indexOf(currentLessonPart);
+    return tabs;
+}
+
+function swipeLessonPart(step) {
+    let tabs = lessonSwipeTabs();
+    let i = -1;
+    tabs.forEach((tab, n) => { if (tab.getAttribute('data-part') === currentLessonPart) i = n; });
     if (i < 0) return;              // список разделов: листать нечего
-    let next = parts[i + step];
+    let next = tabs[i + step];
     if (!next) return;              // с краю ряда жест ничего не делает
-    switchLessonPart(next);
+    // Нажимаем саму вкладку, а не зовём switchLessonPart: у «Теста» на вкладке
+    // висит startTest(), и свайп обязан делать то же, что нажатие.
+    next.click();
 }
 
 // ============================================================
