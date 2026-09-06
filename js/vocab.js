@@ -53,40 +53,68 @@ const TYPE_LABELS = {
 };
 
 // ------------------------------------------------------------
-// Примеры употребления: ищем подлинные предложения из упражнений
-// и переводов того же урока, где встречается слово (в любой форме).
+// Примеры употребления: ищем подлинные предложения из переводов и упражнений
+// курса, где слово встречается в любой из своих форм.
 // ------------------------------------------------------------
 
-// Артикли — не считаются "содержательным" словом при проверке на тривиальность.
-const ARTICLE_FORMS = new Set(['ὁ','ἡ','τό','τὸ','οἱ','αἱ','τά','τὰ','τόν','τὸν','τήν','τὴν','τοῦ','τῆς','τῷ','τῇ','τῶν','τοῖς','ταῖς','τούς','τοὺς','τάς','τὰς']);
+// Ударение в живом тексте «плавает»: острое на последнем слоге переходит в тупое
+// перед следующим словом (ἀγαθός → ἀγαθοὺς λόγους), а энклитика навешивает на
+// предыдущее слово второе ударение (λόγος ἐστίν). Поэтому при поиске словоформы
+// ударения снимаем; придыхания и йоту подписную оставляем — они различают слова.
+const GREEK_ACCENTS = /[\u0300\u0301\u0342]/g;
+function foldAccents(s) {
+    return String(s).normalize('NFD').replace(GREEK_ACCENTS, '').normalize('NFC');
+}
+
+// Слово — буквы с диакритикой плюс апостроф элизии (ἀλλ', ὑπ'). Сравниваем
+// именно слова целиком: подстрокой ἐκ находится внутри ἐκκλησίαι, а οὐ — внутри
+// οὐρανόν, и словарь показывал такие «примеры» как употребление предлога.
+const GREEK_WORD_SOURCE = "[\\p{L}\\p{M}'\u2019]+";
+function tokenizeGreek(text) {
+    return (String(text).match(new RegExp(GREEK_WORD_SOURCE, 'gu')) || []).map(foldAccents);
+}
+
+// Артикли не считаются «содержательным» словом при проверке на тривиальность.
+const ARTICLE_FORMS = new Set(['ὁ','ἡ','τό','οἱ','αἱ','τά','τόν','τήν','τοῦ','τῆς','τῷ','τῇ','τῶν','τοῖς','ταῖς','τούς','τάς'].map(foldAccents));
+
+// Подвижное ν записано в данных как λύουσι(ν), ἐστί(ν); в предложениях оно
+// встречается и с ν, и без него — в поиск идут оба варианта.
+function addSearchForm(form, out) {
+    if (!form) return;
+    out.add(foldAccents(form));
+    if (form.indexOf('(') !== -1) {
+        out.add(foldAccents(form.replace(/[()]/g, '')));
+        out.add(foldAccents(form.replace(/\([^)]*\)/g, '')));
+    }
+}
 
 // Базовая форма + все словоформы слова — по ним ищем совпадения в предложениях.
 function getWordSearchForms(entry) {
     let forms = new Set();
-    let lemma = (entry.greek || '').split(',')[0].split('(')[0].trim();
-    if (lemma.length > 1) forms.add(lemma);
+    addSearchForm((entry.greek || '').split(',')[0].split('(')[0].trim(), forms);
     if (entry.declension_forms) {
         (function walk(obj) {
             if (!obj) return;
             if (typeof obj === 'string') {
-                if (obj.length > 1) forms.add(obj);
+                addSearchForm(obj, forms);
                 return;
             }
             if (typeof obj === 'object') Object.values(obj).forEach(walk);
         })(entry.declension_forms);
     }
-    return Array.from(forms);
+    forms.delete('');
+    return forms;
 }
 
 // Выделяем найденную форму слова жирным прямо в тексте примера.
 function highlightWord(sentence, entry) {
     if (!sentence) return sentence;
-    let forms = getWordSearchForms(entry).sort((a, b) => b.length - a.length);
-    for (let f of forms) {
-        let idx = sentence.indexOf(f);
-        if (idx !== -1) {
-            return sentence.slice(0, idx) + '<strong>' + sentence.slice(idx, idx + f.length) + '</strong>' + sentence.slice(idx + f.length);
-        }
+    let forms = getWordSearchForms(entry);
+    let re = new RegExp(GREEK_WORD_SOURCE, 'gu');
+    let m;
+    while ((m = re.exec(sentence)) !== null) {
+        if (!forms.has(foldAccents(m[0]))) continue;
+        return sentence.slice(0, m.index) + '<strong>' + m[0] + '</strong>' + sentence.slice(m.index + m[0].length);
     }
     return sentence;
 }
@@ -104,49 +132,62 @@ function formatKeywordsAsSentence(keywords) {
     return text;
 }
 
-// "Тривиальный" пример — это фраза, которая после отбрасывания артикля
-// совпадает с самой леммой слова (т.е. это не пример употребления,
-// а просто повтор словарной статьи). Такие примеры не показываем.
+// "Тривиальный" пример — фраза из одного знаменательного слова (артикль не в
+// счёт) или дословный повтор словарной статьи: ἡ ὥρα, τῷ Χριστῷ, λύουσι(ν).
+// Это не употребление слова, а сама словарная форма — показывать её незачем.
 function isTrivialExample(greek, entry) {
-    let lemma = (entry.greek || '').split(',')[0].split('(')[0].trim();
-    let stripped = greek.trim().replace(/[.,;·!?]+$/, '');
-    let tokens = stripped.split(/\s+/).filter(Boolean);
-    if (tokens.length && ARTICLE_FORMS.has(tokens[0])) tokens.shift();
-    if (tokens.length === 0) return true;
-    let rest = tokens.join(' ');
-    return rest === lemma || tokens.length === 1;
+    let lemma = foldAccents((entry.greek || '').split(',')[0].split('(')[0].trim());
+    let content = tokenizeGreek(String(greek).replace(/\([^)]*\)/g, ''))
+        .filter(t => !ARTICLE_FORMS.has(t));
+    if (content.length <= 1) return true;
+    return content.join(' ') === lemma;
 }
 
-// Ищем до maxCount подлинных примеров в упражнениях урока, к которому относится слово.
+// Слова из ru_to_el лежат россыпью — это фишки для сборки предложения, и точки
+// в конце у них нет. Ставим её сами, повторяя знак из русского оригинала.
+function endPunctFrom(russian) {
+    let m = /([.!?])\s*$/.exec(String(russian || ''));
+    return m ? m[1] : '.';
+}
+
+// Ищем до maxCount подлинных примеров по всему курсу: сначала в уроке самого
+// слова, потом в остальных — иначе половина словаря остаётся без примеров,
+// потому что слово вводится в одном уроке, а в предложениях живёт в следующих.
+// Связные предложения из переводов идут раньше фраз из упражнений: там
+// попадаются огрызки вроде «τῷ Χριστῷ», годные для зубрёжки, но не для примера.
 function findUsageExamples(entry, maxCount) {
     if (entry._examples) return entry._examples;
     maxCount = maxCount || 3;
     let examples = [];
-    let data = getLessonData(entry.lesson);
-    if (data) {
-        let forms = getWordSearchForms(entry);
-        let seen = new Set();
-        function tryAdd(greek, russian) {
-            if (!greek || !russian || examples.length >= maxCount) return;
-            if (isTrivialExample(greek, entry)) return;
-            let normKey = greek.trim().replace(/[.!?]+$/, '');
-            if (seen.has(normKey)) return;
-            if (!forms.some(f => greek.includes(f))) return;
-            seen.add(normKey);
-            examples.push({ greek: greek, russian: russian });
-        }
-        if (data.translation) {
-            (data.translation.el_to_ru || []).forEach(q => tryAdd(q.source, q.correct));
-            (data.translation.ru_to_el || []).forEach(q => {
-                if (Array.isArray(q.correct)) tryAdd(q.correct.join(' '), q.source);
-            });
-        }
-        if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
-            data.exercises.translate_greek_to_russian.forEach(q => {
-                tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
-            });
-        }
+    let forms = getWordSearchForms(entry);
+    let seen = new Set();
+    function tryAdd(greek, russian) {
+        if (!greek || !russian || examples.length >= maxCount) return;
+        let tokens = tokenizeGreek(greek);
+        if (!tokens.some(t => forms.has(t))) return;
+        if (isTrivialExample(greek, entry)) return;
+        let key = tokens.join(' ');
+        if (seen.has(key)) return;
+        seen.add(key);
+        examples.push({ greek: greek, russian: russian });
     }
+    let rest = Object.keys(LESSONS_DATA).map(Number).sort((a, b) => a - b).filter(n => n !== entry.lesson);
+    let lessons = [entry.lesson].concat(rest);
+    lessons.forEach(l => {
+        let data = getLessonData(l);
+        if (!data || !data.translation) return;
+        (data.translation.el_to_ru || []).forEach(q => tryAdd(q.source, q.correct));
+        (data.translation.ru_to_el || []).forEach(q => {
+            if (Array.isArray(q.correct)) tryAdd(q.correct.join(' ') + endPunctFrom(q.source), q.source);
+        });
+    });
+    lessons.forEach(l => {
+        let data = getLessonData(l);
+        if (!data || !data.exercises || !data.exercises.translate_greek_to_russian) return;
+        data.exercises.translate_greek_to_russian.forEach(q => {
+            tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
+        });
+    });
     entry._examples = examples;
     return examples;
 }
@@ -166,17 +207,7 @@ function tryGetForm(declension_forms, path) {
 }
 
 function generateFallbackExample(entry) {
-    let art = entry.article ? entry.article + ' ' : '';
-    let lemma = (entry.greek || '').split(',')[0].split('(')[0].trim();
     let firstGloss = (entry.translation || '').split(',')[0].trim();
-    let gloss = firstGloss.charAt(0).toUpperCase() + firstGloss.slice(1);
-    if (!/[.!?]$/.test(gloss)) gloss += '.';
-
-    if (entry.type === 'noun' || entry.type === 'pronoun') {
-        // Именная фраза "артикль + слово" — грамматически безопасно:
-        // это не выдуманное предложение, а само слово в словарной форме.
-        return { greek: art + lemma + '.', russian: gloss, generated: true };
-    }
 
     if (entry.type === 'adjective' && entry.declension_forms) {
         let form = tryGetForm(entry.declension_forms, ['masculine', 'singular', 'nom']);
@@ -188,8 +219,9 @@ function generateFallbackExample(entry) {
         if (form) return { greek: 'ἐγώ ' + form + '.', russian: 'Я ' + firstGloss + '.', generated: true };
     }
 
-    // Предлоги, союзы, наречия — без надёжной падежной формы в данных
-    // фразу не строим, чтобы не научить ошибке.
+    // Существительные и местоимения тут не обслуживаем: «артикль + слово» —
+    // это одно слово, а не пример. Предлоги, союзы и наречия — без надёжной
+    // падежной формы в данных фразу не строим, чтобы не научить ошибке.
     return null;
 }
 
