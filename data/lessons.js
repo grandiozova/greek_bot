@@ -79,18 +79,18 @@ const LESSONS_DATA = {
         • Энклитики – безударные слова, примыкающие к предыдущему слову (например, μου, σου).<br>
         • Проклитики – безударные слова, примыкающие к последующему (например, ὁ, ἡ, οἱ, αἱ, εἰς, ἐκ, ἐν, οὐ).`,
         vocabulary: [
-            {greek:"ὁ", translation:"определённый артикль м.р.", type:"other"},
-            {greek:"ἡ", translation:"определённый артикль ж.р.", type:"other"},
-            {greek:"τό", translation:"определённый артикль ср.р.", type:"other"},
-            {greek:"οἱ", translation:"определённый артикль м.р. мн.ч.", type:"other"},
-            {greek:"αἱ", translation:"определённый артикль ж.р. мн.ч.", type:"other"},
-            {greek:"τά", translation:"определённый артикль ср.р. мн.ч.", type:"other"},
-            {greek:"εἰς", translation:"предлог «в» (с Acc.)", type:"other"},
-            {greek:"ἐκ", translation:"предлог «из» (с Gen.)", type:"other"},
-            {greek:"ἐν", translation:"предлог «в» (с Dat.)", type:"other"},
-            {greek:"οὐ", translation:"отрицание «не» (перед согласными)", type:"other"},
-            {greek:"οὐκ", translation:"отрицание «не» (перед гласными)", type:"other"},
-            {greek:"οὐχ", translation:"отрицание «не» (перед густым придыханием)", type:"other"}
+            {greek:"ὁ", translation:"определённый артикль м.р.", type:"article"},
+            {greek:"ἡ", translation:"определённый артикль ж.р.", type:"article"},
+            {greek:"τό", translation:"определённый артикль ср.р.", type:"article"},
+            {greek:"οἱ", translation:"определённый артикль м.р. мн.ч.", type:"article"},
+            {greek:"αἱ", translation:"определённый артикль ж.р. мн.ч.", type:"article"},
+            {greek:"τά", translation:"определённый артикль ср.р. мн.ч.", type:"article"},
+            {greek:"εἰς", translation:"в, во (куда; с Acc.)", type:"preposition"},
+            {greek:"ἐκ", translation:"из (с Gen.)", type:"preposition"},
+            {greek:"ἐν", translation:"в, внутри (где; с Dat.)", type:"preposition"},
+            {greek:"οὐ", translation:"не (перед согласными)", type:"particle"},
+            {greek:"οὐκ", translation:"не (перед гласными)", type:"particle"},
+            {greek:"οὐχ", translation:"не (перед густым придыханием)", type:"particle"}
         ],
         exercises: {},
         translation: {}
@@ -307,7 +307,9 @@ grammar: `<b>1. Общие сведения о склонении</b><br>
             {greek:"θάνατος", article:"ὁ", translation:"смерть", type:"noun", declension_forms:{singular:{nom:"θάνατος",gen:"θανάτου",dat:"θανάτῳ",acc:"θάνατον",voc:"θάνατε"},plural:{nom:"θάνατοι",gen:"θανάτων",dat:"θανάτοις",acc:"θανάτους",voc:"θάνατοι"}}},
             {greek:"υἱός", article:"ὁ", translation:"сын", type:"noun", declension_forms:{singular:{nom:"υἱός",gen:"υἱοῦ",dat:"υἱῷ",acc:"υἱόν",voc:"υἱέ"},plural:{nom:"υἱοί",gen:"υἱῶν",dat:"υἱοῖς",acc:"υἱούς",voc:"υἱοί"}}},
             {greek:"ἀπόστολος", article:"ὁ", translation:"апостол", type:"noun", declension_forms:{singular:{nom:"ἀπόστολος",gen:"ἀποστόλου",dat:"ἀποστόλῳ",acc:"ἀπόστολον",voc:"ἀπόστολε"},plural:{nom:"ἀπόστολοι",gen:"ἀποστόλων",dat:"ἀποστόλοις",acc:"ἀποστόλους",voc:"ἀπόστολοι"}}},
-            {greek:"Χριστός", article:"ὁ", translation:"Христос", type:"noun", declension_forms:{singular:{nom:"Χριστός",gen:"Χριστοῦ",dat:"Χριστῷ",acc:"Χριστόν",voc:"Χριστέ"},plural:{nom:"Χριστοί",gen:"Χριστῶν",dat:"Χριστοῖς",acc:"Χριστούς",voc:"Χριστοί"}}}
+            {greek:"Χριστός", article:"ὁ", translation:"Христос", type:"noun", declension_forms:{singular:{nom:"Χριστός",gen:"Χριστοῦ",dat:"Χριστῷ",acc:"Χριστόν",voc:"Χριστέ"},plural:{nom:"Χριστοί",gen:"Χριστῶν",dat:"Χριστοῖς",acc:"Χριστούς",voc:"Χριστοί"}}},
+            {greek:"Ἰησοῦς", article:"ὁ", translation:"Иисус", type:"noun", declension_forms:{singular:{nom:"Ἰησοῦς",gen:"Ἰησοῦ",dat:"Ἰησοῦ",acc:"Ἰησοῦν",voc:"Ἰησοῦ"}}},
+            {greek:"καί", translation:"и, а также", type:"conjunction"}
         ],
         exercises: {
             declension_fill: [
@@ -686,11 +688,16 @@ grammar: `<b>1. Прилагательные 1-2 склонения</b><br>
             {greek:"ἀγαθός, ή, όν", translation:"хороший (-ая, -ее)", type:"adjective", declension_forms:{masculine:{singular:{nom:"ἀγαθός",gen:"ἀγαθοῦ",dat:"ἀγαθῷ",acc:"ἀγαθόν",voc:"ἀγαθέ"},plural:{nom:"ἀγαθοί",gen:"ἀγαθῶν",dat:"ἀγαθοῖς",acc:"ἀγαθούς",voc:"ἀγαθοί"}},feminine:{singular:{nom:"ἀγαθή",gen:"ἀγαθῆς",dat:"ἀγαθῇ",acc:"ἀγαθήν",voc:"ἀγαθή"},plural:{nom:"ἀγαθαί",gen:"ἀγαθῶν",dat:"ἀγαθαῖς",acc:"ἀγαθάς",voc:"ἀγαθαί"}},neuter:{singular:{nom:"ἀγαθόν",gen:"ἀγαθοῦ",dat:"ἀγαθῷ",acc:"ἀγαθόν",voc:"ἀγαθόν"},plural:{nom:"ἀγαθά",gen:"ἀγαθῶν",dat:"ἀγαθοῖς",acc:"ἀγαθά",voc:"ἀγαθά"}}}},
             {greek:"ἄλλος, η, ο", translation:"другой (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"ἄλλος",gen:"ἄλλου",dat:"ἄλλῳ",acc:"ἄλλον",voc:"ἄλλε"},plural:{nom:"ἄλλοι",gen:"ἄλλων",dat:"ἄλλοις",acc:"ἄλλους",voc:"ἄλλοι"}},feminine:{singular:{nom:"ἄλλη",gen:"ἄλλης",dat:"ἄλλῃ",acc:"ἄλλην",voc:"ἄλλη"},plural:{nom:"ἄλλαι",gen:"ἄλλων",dat:"ἄλλαις",acc:"ἄλλας",voc:"ἄλλαι"}},neuter:{singular:{nom:"ἄλλο",gen:"ἄλλου",dat:"ἄλλῳ",acc:"ἄλλο",voc:"ἄλλο"},plural:{nom:"ἄλλα",gen:"ἄλλων",dat:"ἄλλοις",acc:"ἄλλα",voc:"ἄλλα"}}}},
             {greek:"δίκαιος, α, ον", translation:"справедливый, праведный (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"δίκαιος",gen:"δικαίου",dat:"δικαίῳ",acc:"δίκαιον",voc:"δίκαιε"},plural:{nom:"δίκαιοι",gen:"δικαίων",dat:"δικαίοις",acc:"δικαίους",voc:"δίκαιοι"}},feminine:{singular:{nom:"δικαία",gen:"δικαίας",dat:"δικαίᾳ",acc:"δικαίαν",voc:"δικαία"},plural:{nom:"δικαῖαι",gen:"δικαίων",dat:"δικαίαις",acc:"δικαίας",voc:"δικαῖαι"}},neuter:{singular:{nom:"δίκαιον",gen:"δικαίου",dat:"δικαίῳ",acc:"δίκαιον",voc:"δίκαιον"},plural:{nom:"δίκαια",gen:"δικαίων",dat:"δικαίοις",acc:"δίκαια",voc:"δίκαια"}}}},
+            {greek:"ἐγείρω", translation:"воскрешаю, поднимаю", type:"verb", declension_forms:{singular:{"1":"ἐγείρω","2":"ἐγείρεις","3":"ἐγείρει"},plural:{"1":"ἐγείρομεν","2":"ἐγείρετε","3":"ἐγείρουσι(ν)"}}},
+            {greek:"ἔρημος", article:"ἡ", translation:"пустыня (ж.р. по 2-му склонению)", type:"noun", declension_forms:{singular:{nom:"ἔρημος",gen:"ἐρήμου",dat:"ἐρήμῳ",acc:"ἔρημον"},plural:{nom:"ἔρημοι",gen:"ἐρήμων",dat:"ἐρήμοις",acc:"ἐρήμους"}}},
             {greek:"ἔσχατος, η, ον", translation:"последний (-ая, -ее)", type:"adjective", declension_forms:{masculine:{singular:{nom:"ἔσχατος",gen:"ἐσχάτου",dat:"ἐσχάτῳ",acc:"ἔσχατον",voc:"ἔσχατε"},plural:{nom:"ἔσχατοι",gen:"ἐσχάτων",dat:"ἐσχάτοις",acc:"ἐσχάτους",voc:"ἔσχατοι"}},feminine:{singular:{nom:"ἐσχάτη",gen:"ἐσχάτης",dat:"ἐσχάτῃ",acc:"ἐσχάτην",voc:"ἐσχάτη"},plural:{nom:"ἔσχαται",gen:"ἐσχάτων",dat:"ἐσχάταις",acc:"ἐσχάτας",voc:"ἔσχαται"}},neuter:{singular:{nom:"ἔσχατον",gen:"ἐσχάτου",dat:"ἐσχάτῳ",acc:"ἔσχατον",voc:"ἔσχατον"},plural:{nom:"ἔσχατα",gen:"ἐσχάτων",dat:"ἐσχάτοις",acc:"ἔσχατα",voc:"ἔσχατα"}}}},
             {greek:"κακός, ή, όν", translation:"плохой, злой (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"κακός",gen:"κακοῦ",dat:"κακῷ",acc:"κακόν",voc:"κακέ"},plural:{nom:"κακοί",gen:"κακῶν",dat:"κακοῖς",acc:"κακούς",voc:"κακοί"}},feminine:{singular:{nom:"κακή",gen:"κακῆς",dat:"κακῇ",acc:"κακήν",voc:"κακή"},plural:{nom:"κακαί",gen:"κακῶν",dat:"κακαῖς",acc:"κακάς",voc:"κακαί"}},neuter:{singular:{nom:"κακόν",gen:"κακοῦ",dat:"κακῷ",acc:"κακόν",voc:"κακόν"},plural:{nom:"κακά",gen:"κακῶν",dat:"κακοῖς",acc:"κακά",voc:"κακά"}}}},
             {greek:"καλός, ή, όν", translation:"хороший, красивый (-ая, -ее/-ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"καλός",gen:"καλοῦ",dat:"καλῷ",acc:"καλόν",voc:"καλέ"},plural:{nom:"καλοί",gen:"καλῶν",dat:"καλοῖς",acc:"καλούς",voc:"καλοί"}},feminine:{singular:{nom:"καλή",gen:"καλῆς",dat:"καλῇ",acc:"καλήν",voc:"καλή"},plural:{nom:"καλαί",gen:"καλῶν",dat:"καλαῖς",acc:"καλάς",voc:"καλαί"}},neuter:{singular:{nom:"καλόν",gen:"καλοῦ",dat:"καλῷ",acc:"καλόν",voc:"καλόν"},plural:{nom:"καλά",gen:"καλῶν",dat:"καλοῖς",acc:"καλά",voc:"καλά"}}}},
+            {greek:"κύριος", article:"ὁ", translation:"господин, Господь", type:"noun", declension_forms:{singular:{nom:"κύριος",gen:"κυρίου",dat:"κυρίῳ",acc:"κύριον",voc:"κύριε"},plural:{nom:"κύριοι",gen:"κυρίων",dat:"κυρίοις",acc:"κυρίους",voc:"κύριοι"}}},
             {greek:"μικρός, ά, όν", translation:"маленький (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"μικρός",gen:"μικροῦ",dat:"μικρῷ",acc:"μικρόν",voc:"μικρέ"},plural:{nom:"μικροί",gen:"μικρῶν",dat:"μικροῖς",acc:"μικρούς",voc:"μικροί"}},feminine:{singular:{nom:"μικρά",gen:"μικρᾶς",dat:"μικρᾷ",acc:"μικράν",voc:"μικρά"},plural:{nom:"μικραί",gen:"μικρῶν",dat:"μικραῖς",acc:"μικράς",voc:"μικραί"}},neuter:{singular:{nom:"μικρόν",gen:"μικροῦ",dat:"μικρῷ",acc:"μικρόν",voc:"μικρόν"},plural:{nom:"μικρά",gen:"μικρῶν",dat:"μικροῖς",acc:"μικρά",voc:"μικρά"}}}},
             {greek:"νεκρός, ά, όν", translation:"мёртвый (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"νεκρός",gen:"νεκροῦ",dat:"νεκρῷ",acc:"νεκρόν",voc:"νεκρέ"},plural:{nom:"νεκροί",gen:"νεκρῶν",dat:"νεκροῖς",acc:"νεκρούς",voc:"νεκροί"}},feminine:{singular:{nom:"νεκρά",gen:"νεκρᾶς",dat:"νεκρᾷ",acc:"νεκράν",voc:"νεκρά"},plural:{nom:"νεκραί",gen:"νεκρῶν",dat:"νεκραῖς",acc:"νεκράς",voc:"νεκραί"}},neuter:{singular:{nom:"νεκρόν",gen:"νεκροῦ",dat:"νεκρῷ",acc:"νεκρόν",voc:"νεκρόν"},plural:{nom:"νεκρά",gen:"νεκρῶν",dat:"νεκροῖς",acc:"νεκρά",voc:"νεκρά"}}}},
+            {greek:"ὁδός", article:"ἡ", translation:"дорога, путь (ж.р. по 2-му склонению)", type:"noun", declension_forms:{singular:{nom:"ὁδός",gen:"ὁδοῦ",dat:"ὁδῷ",acc:"ὁδόν"},plural:{nom:"ὁδοί",gen:"ὁδῶν",dat:"ὁδοῖς",acc:"ὁδούς"}}},
+            {greek:"παρθένος", article:"ἡ", translation:"дева, девушка (ж.р. по 2-му склонению)", type:"noun", declension_forms:{singular:{nom:"παρθένος",gen:"παρθένου",dat:"παρθένῳ",acc:"παρθένον"},plural:{nom:"παρθένοι",gen:"παρθένων",dat:"παρθένοις",acc:"παρθένους"}}},
             {greek:"πιστός, ή, όν", translation:"верный (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"πιστός",gen:"πιστοῦ",dat:"πιστῷ",acc:"πιστόν",voc:"πιστέ"},plural:{nom:"πιστοί",gen:"πιστῶν",dat:"πιστοῖς",acc:"πιστούς",voc:"πιστοί"}},feminine:{singular:{nom:"πιστή",gen:"πιστῆς",dat:"πιστῇ",acc:"πιστήν",voc:"πιστή"},plural:{nom:"πισταί",gen:"πιστῶν",dat:"πισταῖς",acc:"πιστάς",voc:"πισταί"}},neuter:{singular:{nom:"πιστόν",gen:"πιστοῦ",dat:"πιστῷ",acc:"πιστόν",voc:"πιστόν"},plural:{nom:"πιστά",gen:"πιστῶν",dat:"πιστοῖς",acc:"πιστά",voc:"πιστά"}}}},
             {greek:"πρῶτος, η, ον", translation:"первый (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"πρῶτος",gen:"πρώτου",dat:"πρώτῳ",acc:"πρῶτον",voc:"πρῶτε"},plural:{nom:"πρῶτοι",gen:"πρώτων",dat:"πρώτοις",acc:"πρώτους",voc:"πρῶτοι"}},feminine:{singular:{nom:"πρώτη",gen:"πρώτης",dat:"πρώτῃ",acc:"πρώτην",voc:"πρώτη"},plural:{nom:"πρῶται",gen:"πρώτων",dat:"πρώταις",acc:"πρώτας",voc:"πρῶται"}},neuter:{singular:{nom:"πρῶτον",gen:"πρώτου",dat:"πρώτῳ",acc:"πρῶτον",voc:"πρῶτον"},plural:{nom:"πρῶτα",gen:"πρώτων",dat:"πρώτοις",acc:"πρῶτα",voc:"πρῶτα"}}}}
         ],
@@ -795,15 +802,24 @@ grammar: `<b>1. Существительные мужского рода 1-го 
 • В Dat. Pl. ударение падает на третий слог от конца: προφήταις, νεανίαις.`,
         vocabulary: [
             {greek:"ἄγγελος", article:"ὁ", translation:"ангел, вестник", type:"noun", declension_forms:{singular:{nom:"ἄγγελος",gen:"ἀγγέλου",dat:"ἀγγέλῳ",acc:"ἄγγελον",voc:"ἄγγελε"},plural:{nom:"ἄγγελοι",gen:"ἀγγέλων",dat:"ἀγγέλοις",acc:"ἀγγέλους",voc:"ἄγγελοι"}}},
+            {greek:"ἄγω", translation:"веду", type:"verb", declension_forms:{singular:{"1":"ἄγω","2":"ἄγεις","3":"ἄγει"},plural:{"1":"ἄγομεν","2":"ἄγετε","3":"ἄγουσι(ν)"}}},
+            {greek:"ἀπό", translation:"от (с Gen.)", type:"preposition"},
+            {greek:"βάλλω", translation:"бросаю", type:"verb", declension_forms:{singular:{"1":"βάλλω","2":"βάλλεις","3":"βάλλει"},plural:{"1":"βάλλομεν","2":"βάλλετε","3":"βάλλουσι(ν)"}}},
             {greek:"βαπτιστής", article:"ὁ", translation:"креститель", type:"noun", declension_forms:{singular:{nom:"βαπτιστής",gen:"βαπτιστοῦ",dat:"βαπτιστῇ",acc:"βαπτιστήν",voc:"βαπτιστά"},plural:{nom:"βαπτισταί",gen:"βαπτιστῶν",dat:"βαπτισταῖς",acc:"βαπτιστάς",voc:"βαπτισταί"}}},
+            {greek:"διά", translation:"через, сквозь (с Gen.); из-за, ради (с Acc.)", type:"preposition"},
             {greek:"θεός", article:"ὁ", translation:"Бог", type:"noun", declension_forms:{singular:{nom:"θεός",gen:"θεοῦ",dat:"θεῷ",acc:"θεόν",voc:"θεέ"},plural:{nom:"θεοί",gen:"θεῶν",dat:"θεοῖς",acc:"θεούς",voc:"θεοί"}}},
             {greek:"κόσμος", article:"ὁ", translation:"мир, вселенная", type:"noun", declension_forms:{singular:{nom:"κόσμος",gen:"κόσμου",dat:"κόσμῳ",acc:"κόσμον",voc:"κόσμε"},plural:{nom:"κόσμοι",gen:"κόσμων",dat:"κόσμοις",acc:"κόσμους",voc:"κόσμοι"}}},
             {greek:"λίθος", article:"ὁ", translation:"камень", type:"noun", declension_forms:{singular:{nom:"λίθος",gen:"λίθου",dat:"λίθῳ",acc:"λίθον",voc:"λίθε"},plural:{nom:"λίθοι",gen:"λίθων",dat:"λίθοις",acc:"λίθους",voc:"λίθοι"}}},
             {greek:"μαθητής", article:"ὁ", translation:"ученик", type:"noun", declension_forms:{singular:{nom:"μαθητής",gen:"μαθητοῦ",dat:"μαθητῇ",acc:"μαθητήν",voc:"μαθητά"},plural:{nom:"μαθηταί",gen:"μαθητῶν",dat:"μαθηταῖς",acc:"μαθητάς",voc:"μαθηταί"}}},
+            {greek:"μένω", translation:"остаюсь, пребываю", type:"verb", declension_forms:{singular:{"1":"μένω","2":"μένεις","3":"μένει"},plural:{"1":"μένομεν","2":"μένετε","3":"μένουσι(ν)"}}},
+            {greek:"μετά", translation:"с, вместе с (с Gen.); после (с Acc.)", type:"preposition"},
             {greek:"νεανίας", article:"ὁ", translation:"юноша", type:"noun", declension_forms:{singular:{nom:"νεανίας",gen:"νεανίου",dat:"νεανίᾳ",acc:"νεανίαν",voc:"νεανία"},plural:{nom:"νεανίαι",gen:"νεανιῶν",dat:"νεανίαις",acc:"νεανίας",voc:"νεανίαι"}}},
             {greek:"οὐρανός", article:"ὁ", translation:"небо", type:"noun", declension_forms:{singular:{nom:"οὐρανός",gen:"οὐρανοῦ",dat:"οὐρανῷ",acc:"οὐρανόν",voc:"οὐρανέ"},plural:{nom:"οὐρανοί",gen:"οὐρανῶν",dat:"οὐρανοῖς",acc:"οὐρανούς",voc:"οὐρανοί"}}},
+            {greek:"πέμπω", translation:"посылаю", type:"verb", declension_forms:{singular:{"1":"πέμπω","2":"πέμπεις","3":"πέμπει"},plural:{"1":"πέμπομεν","2":"πέμπετε","3":"πέμπουσι(ν)"}}},
+            {greek:"πρός", translation:"к (с Acc.)", type:"preposition"},
             {greek:"προφήτης", article:"ὁ", translation:"пророк", type:"noun", declension_forms:{singular:{nom:"προφήτης",gen:"προφήτου",dat:"προφήτῃ",acc:"προφήτην",voc:"προφῆτα"},plural:{nom:"προφῆται",gen:"προφητῶν",dat:"προφήταις",acc:"προφήτας",voc:"προφῆται"}}},
-            {greek:"τέκνον", article:"τό", translation:"ребенок, дитя", type:"noun", declension_forms:{singular:{nom:"τέκνον",gen:"τέκνου",dat:"τέκνῳ",acc:"τέκνον",voc:"τέκνον"},plural:{nom:"τέκνα",gen:"τέκνων",dat:"τέκνοις",acc:"τέκνα",voc:"τέκνα"}}}
+            {greek:"τέκνον", article:"τό", translation:"ребенок, дитя", type:"noun", declension_forms:{singular:{nom:"τέκνον",gen:"τέκνου",dat:"τέκνῳ",acc:"τέκνον",voc:"τέκνον"},plural:{nom:"τέκνα",gen:"τέκνων",dat:"τέκνοις",acc:"τέκνα",voc:"τέκνα"}}},
+            {greek:"φέρω", translation:"несу, приношу", type:"verb", declension_forms:{singular:{"1":"φέρω","2":"φέρεις","3":"φέρει"},plural:{"1":"φέρομεν","2":"φέρετε","3":"φέρουσι(ν)"}}}
         ],
         exercises: {
     declension_fill: [
@@ -1090,7 +1106,7 @@ grammar: `<b>1. Энклитики и проклитики</b><br>
   {
     greek: "δέ",
     translation: "же, а, но",
-    type: "other"
+    type: "particle"
   },
   {
     greek: "δεσπότης",
@@ -1308,8 +1324,20 @@ grammar: `<b>1. Указательные местоимения οὗτος, α�
   <i>ἐκεῖνα</i> — «то» (вещи/дела)<br>
 • Указательные местоимения часто используются для связи предложений в тексте.`,
         vocabulary: [
+            {greek:"ἀγάπη", article:"ἡ", translation:"любовь", type:"noun", declension_forms:{singular:{nom:"ἀγάπη",gen:"ἀγάπης",dat:"ἀγάπῃ",acc:"ἀγάπην",voc:"ἀγάπη"},plural:{nom:"ἀγάπαι",gen:"ἀγαπῶν",dat:"ἀγάπαις",acc:"ἀγάπας",voc:"ἀγάπαι"}}},
+            {greek:"ἁμαρτία", article:"ἡ", translation:"грех", type:"noun", declension_forms:{singular:{nom:"ἁμαρτία",gen:"ἁμαρτίας",dat:"ἁμαρτίᾳ",acc:"ἁμαρτίαν",voc:"ἁμαρτία"},plural:{nom:"ἁμαρτίαι",gen:"ἁμαρτιῶν",dat:"ἁμαρτίαις",acc:"ἁμαρτίας",voc:"ἁμαρτίαι"}}},
+            {greek:"βαπτίζω", translation:"крещу", type:"verb", declension_forms:{singular:{"1":"βαπτίζω","2":"βαπτίζεις","3":"βαπτίζει"},plural:{"1":"βαπτίζομεν","2":"βαπτίζετε","3":"βαπτίζουσι(ν)"}}},
+            {greek:"διδάσκαλος", article:"ὁ", translation:"учитель", type:"noun", declension_forms:{singular:{nom:"διδάσκαλος",gen:"διδασκάλου",dat:"διδασκάλῳ",acc:"διδάσκαλον",voc:"διδάσκαλε"},plural:{nom:"διδάσκαλοι",gen:"διδασκάλων",dat:"διδασκάλοις",acc:"διδασκάλους",voc:"διδάσκαλοι"}}},
+            {greek:"ἐκεῖνος, ἐκείνη, ἐκεῖνο", translation:"тот, та, то", type:"pronoun", declension_forms:{masculine:{singular:{nom:"ἐκεῖνος",gen:"ἐκείνου",dat:"ἐκείνῳ",acc:"ἐκεῖνον"},plural:{nom:"ἐκεῖνοι",gen:"ἐκείνων",dat:"ἐκείνοις",acc:"ἐκείνους"}},feminine:{singular:{nom:"ἐκείνη",gen:"ἐκείνης",dat:"ἐκείνῃ",acc:"ἐκείνην"},plural:{nom:"ἐκεῖναι",gen:"ἐκείνων",dat:"ἐκείναις",acc:"ἐκείνας"}},neuter:{singular:{nom:"ἐκεῖνο",gen:"ἐκείνου",dat:"ἐκείνῳ",acc:"ἐκεῖνο"},plural:{nom:"ἐκεῖνα",gen:"ἐκείνων",dat:"ἐκείνοις",acc:"ἐκεῖνα"}}}},
+            {greek:"ἐπαγγελία", article:"ἡ", translation:"обещание, обетование", type:"noun", declension_forms:{singular:{nom:"ἐπαγγελία",gen:"ἐπαγγελίας",dat:"ἐπαγγελίᾳ",acc:"ἐπαγγελίαν",voc:"ἐπαγγελία"},plural:{nom:"ἐπαγγελίαι",gen:"ἐπαγγελιῶν",dat:"ἐπαγγελίαις",acc:"ἐπαγγελίας",voc:"ἐπαγγελίαι"}}},
+            {greek:"εὐαγγέλιον", article:"τό", translation:"Евангелие, благая весть", type:"noun", declension_forms:{singular:{nom:"εὐαγγέλιον",gen:"εὐαγγελίου",dat:"εὐαγγελίῳ",acc:"εὐαγγέλιον",voc:"εὐαγγέλιον"},plural:{nom:"εὐαγγέλια",gen:"εὐαγγελίων",dat:"εὐαγγελίοις",acc:"εὐαγγέλια",voc:"εὐαγγέλια"}}},
+            {greek:"κρίνω", translation:"сужу", type:"verb", declension_forms:{singular:{"1":"κρίνω","2":"κρίνεις","3":"κρίνει"},plural:{"1":"κρίνομεν","2":"κρίνετε","3":"κρίνουσι(ν)"}}},
+            {greek:"νῦν", translation:"теперь, сейчас", type:"adverb"},
             {greek:"οὗτος, αὕτη, τοῦτο", translation:"этот, эта, это", type:"pronoun", declension_forms:{masculine:{singular:{nom:"οὗτος",gen:"τούτου",dat:"τούτῳ",acc:"τοῦτον"},plural:{nom:"οὗτοι",gen:"τούτων",dat:"τούτοις",acc:"τούτους"}},feminine:{singular:{nom:"αὕτη",gen:"ταύτης",dat:"ταύτῃ",acc:"ταύτην"},plural:{nom:"αὗται",gen:"ταύτων",dat:"ταύταις",acc:"ταύτας"}},neuter:{singular:{nom:"τοῦτο",gen:"τούτου",dat:"τούτῳ",acc:"τοῦτο"},plural:{nom:"ταῦτα",gen:"τούτων",dat:"τούτοις",acc:"ταῦτα"}}}},
-            {greek:"ἐκεῖνος, ἐκείνη, ἐκεῖνο", translation:"тот, та, то", type:"pronoun", declension_forms:{masculine:{singular:{nom:"ἐκεῖνος",gen:"ἐκείνου",dat:"ἐκείνῳ",acc:"ἐκεῖνον"},plural:{nom:"ἐκεῖνοι",gen:"ἐκείνων",dat:"ἐκείνοις",acc:"ἐκείνους"}},feminine:{singular:{nom:"ἐκείνη",gen:"ἐκείνης",dat:"ἐκείνῃ",acc:"ἐκείνην"},plural:{nom:"ἐκεῖναι",gen:"ἐκείνων",dat:"ἐκείναις",acc:"ἐκείνας"}},neuter:{singular:{nom:"ἐκεῖνο",gen:"ἐκείνου",dat:"ἐκείνῳ",acc:"ἐκεῖνο"},plural:{nom:"ἐκεῖνα",gen:"ἐκείνων",dat:"ἐκείνοις",acc:"ἐκεῖνα"}}}}
+            {greek:"οὕτως", translation:"так, таким образом", type:"adverb"},
+            {greek:"πονηρός, ά, όν", translation:"дурной, плохой, порочный (-ая, -ое)", type:"adjective", declension_forms:{masculine:{singular:{nom:"πονηρός",gen:"πονηροῦ",dat:"πονηρῷ",acc:"πονηρόν",voc:"πονηρέ"},plural:{nom:"πονηροί",gen:"πονηρῶν",dat:"πονηροῖς",acc:"πονηρούς",voc:"πονηροί"}},feminine:{singular:{nom:"πονηρά",gen:"πονηρᾶς",dat:"πονηρᾷ",acc:"πονηράν",voc:"πονηρά"},plural:{nom:"πονηραί",gen:"πονηρῶν",dat:"πονηραῖς",acc:"πονηράς",voc:"πονηραί"}},neuter:{singular:{nom:"πονηρόν",gen:"πονηροῦ",dat:"πονηρῷ",acc:"πονηρόν",voc:"πονηρόν"},plural:{nom:"πονηρά",gen:"πονηρῶν",dat:"πονηροῖς",acc:"πονηρά",voc:"πονηρά"}}}},
+            {greek:"πρόσωπον", article:"τό", translation:"лицо", type:"noun", declension_forms:{singular:{nom:"πρόσωπον",gen:"προσώπου",dat:"προσώπῳ",acc:"πρόσωπον",voc:"πρόσωπον"},plural:{nom:"πρόσωπα",gen:"προσώπων",dat:"προσώποις",acc:"πρόσωπα",voc:"πρόσωπα"}}},
+            {greek:"χαρά", article:"ἡ", translation:"радость", type:"noun", declension_forms:{singular:{nom:"χαρά",gen:"χαρᾶς",dat:"χαρᾷ",acc:"χαράν",voc:"χαρά"},plural:{nom:"χαραί",gen:"χαρῶν",dat:"χαραῖς",acc:"χαράς",voc:"χαραί"}}}
         ],
         exercises: {
     declension_fill: [
@@ -1400,13 +1428,23 @@ translation: {
         <tr><td>3-е</td><td>λύεται</td><td>λύονται</td></tr></table><br>
         <b>Отложительные глаголы:</b> имеют медио-пассивные формы с активным значением (ἔρχομαι — прихожу).`,
         vocabulary: [
+            {greek:"ἀκούω + Gen.", translation:"слышу (кого, что)", type:"verb", declension_forms:{singular:{"1":"ἀκούω","2":"ἀκούεις","3":"ἀκούει"},plural:{"1":"ἀκούομεν","2":"ἀκούετε","3":"ἀκούουσι(ν)"}}},
+            {greek:"ἁμαρτωλός", article:"ὁ", translation:"грешник", type:"noun", declension_forms:{singular:{nom:"ἁμαρτωλός",gen:"ἁμαρτωλοῦ",dat:"ἁμαρτωλῷ",acc:"ἁμαρτωλόν",voc:"ἁμαρτωλέ"},plural:{nom:"ἁμαρτωλοί",gen:"ἁμαρτωλῶν",dat:"ἁμαρτωλοῖς",acc:"ἁμαρτωλούς",voc:"ἁμαρτωλοί"}}},
             {greek:"ἀπέρχομαι (dep.)", translation:"отхожу, ухожу", type:"verb", declension_forms:{singular:{"1":"ἀπέρχομαι","2":"ἀπέρχῃ","3":"ἀπέρχεται"},plural:{"1":"ἀπερχόμεθα","2":"ἀπέρχεσθε","3":"ἀπέρχονται"}}},
             {greek:"ἀποκρίνομαι (dep.)", translation:"отвечаю", type:"verb", declension_forms:{singular:{"1":"ἀποκρίνομαι","2":"ἀποκρίνῃ","3":"ἀποκρίνεται"},plural:{"1":"ἀποκρινόμεθα","2":"ἀποκρίνεσθε","3":"ἀποκρίνονται"}}},
+            {greek:"ἄρχομαι", translation:"начинаю", type:"verb", declension_forms:{singular:{"1":"ἄρχομαι","2":"ἄρχῃ","3":"ἄρχεται"},plural:{"1":"ἀρχόμεθα","2":"ἄρχεσθε","3":"ἄρχονται"}}},
+            {greek:"ἄρχω + Gen.", translation:"управляю (чем)", type:"verb", declension_forms:{singular:{"1":"ἄρχω","2":"ἄρχεις","3":"ἄρχει"},plural:{"1":"ἄρχομεν","2":"ἄρχετε","3":"ἄρχουσι(ν)"}}},
             {greek:"γίνομαι (dep.) + Nom.", translation:"становлюсь, делаюсь", type:"verb", declension_forms:{singular:{"1":"γίνομαι","2":"γίνῃ","3":"γίνεται"},plural:{"1":"γινόμεθα","2":"γίνεσθε","3":"γίνονται"}}},
+            {greek:"διέρχομαι (dep.)", translation:"прохожу (через)", type:"verb", declension_forms:{singular:{"1":"διέρχομαι","2":"διέρχῃ","3":"διέρχεται"},plural:{"1":"διερχόμεθα","2":"διέρχεσθε","3":"διέρχονται"}}},
+            {greek:"διώκω", translation:"гоню, преследую", type:"verb", declension_forms:{singular:{"1":"διώκω","2":"διώκεις","3":"διώκει"},plural:{"1":"διώκομεν","2":"διώκετε","3":"διώκουσι(ν)"}}},
             {greek:"εἰσέρχομαι (dep.)", translation:"вхожу", type:"verb", declension_forms:{singular:{"1":"εἰσέρχομαι","2":"εἰσέρχῃ","3":"εἰσέρχεται"},plural:{"1":"εἰσερχόμεθα","2":"εἰσέρχεσθε","3":"εἰσέρχονται"}}},
             {greek:"ἐξέρχομαι (dep.)", translation:"выхожу", type:"verb", declension_forms:{singular:{"1":"ἐξέρχομαι","2":"ἐξέρχῃ","3":"ἐξέρχεται"},plural:{"1":"ἐξερχόμεθα","2":"ἐξέρχεσθε","3":"ἐξέρχονται"}}},
             {greek:"ἔρχομαι (dep.)", translation:"прихожу", type:"verb", declension_forms:{singular:{"1":"ἔρχομαι","2":"ἔρχῃ","3":"ἔρχεται"},plural:{"1":"ἐρχόμεθα","2":"ἔρχεσθε","3":"ἔρχονται"}}},
-            {greek:"πορεύομαι (dep.)", translation:"иду", type:"verb", declension_forms:{singular:{"1":"πορεύομαι","2":"πορεύῃ","3":"πορεύεται"},plural:{"1":"πορευόμεθα","2":"πορεύεσθε","3":"πορεύονται"}}}
+            {greek:"λῃστής", article:"ὁ", translation:"разбойник", type:"noun", declension_forms:{singular:{nom:"λῃστής",gen:"λῃστοῦ",dat:"λῃστῇ",acc:"λῃστήν",voc:"λῃστά"},plural:{nom:"λῃσταί",gen:"λῃστῶν",dat:"λῃσταῖς",acc:"λῃστάς",voc:"λῃσταί"}}},
+            {greek:"ὅτι", translation:"что, потому что", type:"conjunction"},
+            {greek:"πορεύομαι (dep.)", translation:"иду", type:"verb", declension_forms:{singular:{"1":"πορεύομαι","2":"πορεύῃ","3":"πορεύεται"},plural:{"1":"πορευόμεθα","2":"πορεύεσθε","3":"πορεύονται"}}},
+            {greek:"σώζω", translation:"спасаю", type:"verb", declension_forms:{singular:{"1":"σώζω","2":"σώζεις","3":"σώζει"},plural:{"1":"σώζομεν","2":"σώζετε","3":"σώζουσι(ν)"}}},
+            {greek:"ὑπό", translation:"кем, чем (с Gen., в страдательном обороте); под (с Acc.)", type:"preposition"}
         ],
         exercises: {
     declension_fill: [

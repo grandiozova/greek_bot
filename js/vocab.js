@@ -45,12 +45,69 @@ const TYPE_LABELS = {
     noun: 'Существительные',
     verb: 'Глаголы',
     adjective: 'Прилагательные',
-    preposition: 'Предлоги',
     pronoun: 'Местоимения',
     adverb: 'Наречия',
+    preposition: 'Предлоги',
     conjunction: 'Союзы',
+    particle: 'Частицы',
+    article: 'Артикли',
     other: 'Прочее'
 };
+
+// Порядок частей речи — один и тот же в разделах словаря, в фильтре и в карточках.
+const VOCAB_TYPE_ORDER = ['noun','verb','adjective','pronoun','adverb','preposition','conjunction','particle','article','other'];
+
+// ------------------------------------------------------------
+// Фильтр по части речи: чипы над списком словаря и над карточками.
+// 'all' — без фильтра.
+// ------------------------------------------------------------
+let vocabTypeFilter = 'all';
+
+function getAllVocab() {
+    if (!allVocabCache) allVocabCache = buildAllVocabCache();
+    return allVocabCache;
+}
+
+function vocabTypeCounts() {
+    let counts = {};
+    getAllVocab().forEach(e => { counts[e.type] = (counts[e.type] || 0) + 1; });
+    return counts;
+}
+
+function filterVocabByType(entries, type) {
+    return (!type || type === 'all') ? entries : entries.filter(e => e.type === type);
+}
+
+// Чипы строятся по данным: часть речи без слов чипа не получает.
+function renderTypeChips(containerId, active, handler) {
+    let box = document.getElementById(containerId);
+    if (!box) return;
+    let counts = vocabTypeCounts();
+    let types = ['all'].concat(VOCAB_TYPE_ORDER.filter(t => counts[t]));
+    let total = getAllVocab().length;
+    box.innerHTML = types.map(t => {
+        let label = t === 'all' ? 'Все' : TYPE_LABELS[t];
+        let count = t === 'all' ? total : counts[t];
+        let on = (active || 'all') === t;
+        return '<button type="button" class="filter-chip" aria-pressed="' + (on ? 'true' : 'false') + '"' +
+            ' onclick="' + handler + '(\'' + t + '\')">' +
+            '<span class="filter-chip__body">' +
+                '<span class="msym filter-chip__check">check</span>' + label +
+                '<span class="filter-chip__count">' + count + '</span>' +
+            '</span></button>';
+    }).join('');
+    // выбранная часть речи может оказаться за краем прокрутки — подтягиваем её в кадр
+    let activeChip = box.querySelector('.filter-chip[aria-pressed="true"]');
+    if (activeChip && activeChip.scrollIntoView) {
+        try { activeChip.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {}
+    }
+}
+
+function setVocabType(type) {
+    vocabTypeFilter = type || 'all';
+    renderTypeChips('vocabTypeChips', vocabTypeFilter, 'setVocabType');
+    applyVocabFilter();
+}
 
 // ------------------------------------------------------------
 // Примеры употребления: ищем подлинные предложения из переводов и упражнений
@@ -159,14 +216,17 @@ function endPunctFrom(russian) {
 // потому что слово вводится в одном уроке, а в предложениях живёт в следующих.
 // Связные предложения из переводов идут раньше фраз из упражнений: там
 // попадаются огрызки вроде «τῷ Χριστῷ», годные для зубрёжки, но не для примера.
+// Кешируем всегда полный набор и отдаём срез: карточкам нужен один пример,
+// словарю — три, а слово у них теперь одно и то же (общий кеш словаря).
 function findUsageExamples(entry, maxCount) {
-    if (entry._examples) return entry._examples;
     maxCount = maxCount || 3;
+    if (entry._examples) return entry._examples.slice(0, maxCount);
+    let cap = Math.max(maxCount, 3);
     let examples = [];
     let forms = getWordSearchForms(entry);
     let seen = new Set();
     function tryAdd(greek, russian) {
-        if (!greek || !russian || examples.length >= maxCount) return;
+        if (!greek || !russian || examples.length >= cap) return;
         let tokens = tokenizeGreek(greek);
         if (!tokens.some(t => forms.has(t))) return;
         if (isTrivialExample(greek, entry)) return;
@@ -290,9 +350,8 @@ function renderVocabEntries(entries) {
         if (!byType[e.type]) byType[e.type] = [];
         byType[e.type].push(e);
     });
-    let order = ['noun','verb','adjective','preposition','pronoun','adverb','conjunction','other'];
     let parts = [];
-    order.forEach(type => {
+    VOCAB_TYPE_ORDER.forEach(type => {
         if (!byType[type] || byType[type].length === 0) return;
         parts.push('<div class="vocab-section"><h4>', TYPE_LABELS[type] || type, '</h4>');
         byType[type].forEach(e => {
@@ -314,11 +373,13 @@ function renderVocabEntries(entries) {
 }
 function showAllVocab() {
     showSection('allVocabSection');
-    if (!allVocabCache) allVocabCache = buildAllVocabCache();
+    getAllVocab();
     let input = document.getElementById('vocabSearchInput');
     if (input) input.value = '';
     let clearBtn = document.getElementById('vocabSearchClear');
     if (clearBtn) clearBtn.classList.remove('show');
+    vocabTypeFilter = 'all';
+    renderTypeChips('vocabTypeChips', vocabTypeFilter, 'setVocabType');
     renderVocabEntries(allVocabCache);
 }
 // oninput летит на каждый символ; перерисовку словаря сводим к одной на кадр
@@ -334,17 +395,15 @@ function applyVocabFilter() {
     if (!input) return;
     let query = input.value.trim().toLowerCase();
     if (clearBtn) clearBtn.classList.toggle('show', query.length > 0);
-    if (!allVocabCache) allVocabCache = buildAllVocabCache();
-    if (!query) {
-        renderVocabEntries(allVocabCache);
-        return;
+    let entries = filterVocabByType(getAllVocab(), vocabTypeFilter);
+    if (query) {
+        entries = entries.filter(e => {
+            let greekMatch = e.greek.toLowerCase().includes(query);
+            let ruMatch = e.translation.toLowerCase().includes(query);
+            return greekMatch || ruMatch;
+        });
     }
-    let filtered = allVocabCache.filter(e => {
-        let greekMatch = e.greek.toLowerCase().includes(query);
-        let ruMatch = e.translation.toLowerCase().includes(query);
-        return greekMatch || ruMatch;
-    });
-    renderVocabEntries(filtered);
+    renderVocabEntries(entries);
 }
 
 function clearVocabSearch() {
@@ -352,6 +411,5 @@ function clearVocabSearch() {
     if (input) input.value = '';
     let clearBtn = document.getElementById('vocabSearchClear');
     if (clearBtn) clearBtn.classList.remove('show');
-    if (!allVocabCache) allVocabCache = buildAllVocabCache();
-    renderVocabEntries(allVocabCache);
+    renderVocabEntries(filterVocabByType(getAllVocab(), vocabTypeFilter));
 }

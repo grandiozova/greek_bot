@@ -57,5 +57,6 @@
     .md-nav-item__label { font-size: 0.6875rem; letter-spacing: 0.0125rem; }
     .md-nav-item__indicator { width: 56px; }
     .tab-bar { margin: 0 -12px 16px; }
+    .chip-set { margin: 0 -12px 8px; padding: 0 12px; }
 }
 

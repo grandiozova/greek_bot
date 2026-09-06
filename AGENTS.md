@@ -24,33 +24,33 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ## Project layout
 
 ```
-index.html           251  <head>, разметка, порядок загрузки
+index.html           253  <head>, разметка, порядок загрузки
 styles/
   tokens.css           164  :root и [data-theme=dark] — все переменные
   base.css             322  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
-  components.css       519  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  components.css       701  кнопки, list item урока, карточки, табы, search bar, text field, chips
   screens.css          522  вопрос/варианты, обратная связь, списки слов, таблицы, flashcards, статистика, «Отче наш»
   dialogs.css           88  snackbar, dialog
   layout.css            61  переходы экранов, утилиты, адаптивность (nav rail)
   settings.css         120  segmented button темы, список лицензий
 data/
-  lessons.js         1,495  const LESSONS_DATA
+  lessons.js         1,537  const LESSONS_DATA
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
 js/
   core.js              109  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
-  ui.js                 78  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
-  shell.js             200  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
+  ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
+  shell.js             195  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              74  режимы темы, applyTheme, initTheme
   lesson.js            252  openLesson, вкладки, переходы между уроками
   declension.js        137  generateDeclensionTable, аккордеон
   exercises.js         182  упражнения урока
-  flashcards.js        135  карточки: общие и урока
+  flashcards.js        161  карточки: общие и урока
   test.js              164  тест
   translation.js       155  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
   prayer.js            224  «Отче наш»: разбор и упражнения
-  vocab.js             117  общий словарь и поиск
+  vocab.js             409  общий словарь, поиск, фильтр по частям речи
   settings.js           27  showSettings, renderLicenses
   boot.js               61  normalizeTranslationData, init*, глобальные слушатели
 ```
@@ -83,6 +83,8 @@ Structural facts worth knowing before editing:
 - `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` (`js/shell.js`) drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
 - Functions call freely across files — they are all globals on `window`, and every file is loaded before anything runs. There is no import graph to keep in sync; the only ordering rule is the one about `boot.js` above.
 - Top-level `let` and `const` bindings — state (`stats`, `testState`, `allFlashcardState`, …) *and* the data (`LESSONS_DATA`, `PRAYER_DATA`, `LICENSES`) — are **not** on `window`; splitting the data into their own files did not change this, because `const` at the top level of a classic script never creates a window property. `function` declarations *are* on `window`. So a harness can call `window.openLesson(3)` but must reach data through `window.eval('LESSONS_DATA')`. Test through the DOM, not through `window.someState`.
+- **The dictionary and the flashcards share one cache.** `buildAllVocabCache()` (`js/vocab.js`) collects the vocabulary of every lesson ≥ `VOCAB_FIRST_LESSON` (lesson 1 is the letter names, not words), de-duplicates it and serves both screens; `startAllFlashcards(type)` builds its deck from there, not from `LESSONS_DATA` directly. A card and a dictionary entry are therefore literally the same object — which is why `findUsageExamples()` caches the full set in `entry._examples` and slices it, instead of caching whatever count the first caller asked for.
+- **Part of speech is a filter, not just a heading.** `item.type` in `data/lessons.js` drives the dictionary's section headings, the `.filter-chip` row above both screens, and which words go into a flashcard deck. The permitted values are listed in `VOCAB_TYPE_ORDER` and `TYPE_LABELS` (`js/vocab.js`): `noun`, `verb`, `adjective`, `pronoun`, `adverb`, `preposition`, `conjunction`, `particle`, `article`, `other`. A new type must go into both lists, or its words fall into «Прочее» and get no chip.
 - Progress is `localStorage` only: `greek_stats`, `greek_theme`, `greek_last_lesson`. All reads/writes must stay wrapped in `try/catch` — they throw in private-mode Safari.
 
 ## Design: Material 3 (Material You) — mandatory
@@ -124,6 +126,7 @@ Legacy class names were kept to avoid rewriting every generated HTML string. The
 | `.card` | filled card |
 | `.option-btn` | outlined button with `correct` / `wrong` answer states |
 | `.word-bank .chip` | suggestion chip |
+| `.filter-chip` | filter chip (ряд `.chip-set` над словарём и карточками) |
 | `.tab-bar` | scrollable primary tabs with sliding indicator (`moveTabIndicator()`) |
 | `.search-box` | search bar |
 | `.input-group input` | outlined text field |

@@ -1,36 +1,27 @@
 // ============================================================
 // ПРОВЕРКА ВСЕХ СЛОВ (КАРТОЧКИ)
 // ============================================================
-function startAllFlashcards() {
+// Колода — словарь целиком либо одна часть речи: type это ключ из
+// VOCAB_TYPE_ORDER либо 'all'. Без аргумента повторяем текущий набор,
+// поэтому «Заново» и «Повторить» не сбрасывают выбранный фильтр.
+function startAllFlashcards(type) {
+    if (type === undefined || type === null) type = allFlashcardState.type || 'all';
     showSection('allFlashcardsSection');
     var container = document.getElementById('allFlashcardContainer');
-    var allWords = [];
-    for (var l = 3; l <= 10; l++) {
-        var data = getLessonData(l);
-        if (!data || !data.vocabulary) continue;
-        for (var i = 0; i < data.vocabulary.length; i++) {
-            var item = data.vocabulary[i];
-            allWords.push({
-                greek: item.greek,
-                article: item.article || '',
-                translation: item.translation,
-                declension_forms: item.declension_forms || null,
-                lesson: l
-            });
-        }
-    }
+    var allWords = filterVocabByType(getAllVocab(), type);
+    renderTypeChips('flashcardTypeChips', type, 'startAllFlashcards');
+    var titleEl = document.getElementById('allFlashcardTitle');
+    if (titleEl) titleEl.textContent = type === 'all' ? 'Проверка всех слов' : TYPE_LABELS[type];
+    allFlashcardState = {
+        words: [], index: 0, revealed: false, correct: 0, total: 0, type: type
+    };
     if (allWords.length === 0) {
         container.innerHTML = emptyState('inbox', 'Слов пока нет');
         return;
     }
     var shuffled = shuffle(allWords);
-    allFlashcardState = {
-        words: shuffled,
-        index: 0,
-        revealed: false,
-        correct: 0,
-        total: shuffled.length
-    };
+    allFlashcardState.words = shuffled;
+    allFlashcardState.total = shuffled.length;
     showAllFlashcard();
 }
 

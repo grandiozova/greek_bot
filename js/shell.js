@@ -30,7 +30,7 @@ const DEST_SECTION = {
 // Контекстный FAB — главное действие текущего экрана
 const FAB_CONFIG = {
     mainMenu:             { icon: 'play_arrow',  label: 'Продолжить' },
-    allVocabSection:      { icon: 'search',      label: 'Поиск' },
+    allVocabSection:      { icon: 'style',       label: 'Повторить' },
     allFlashcardsSection: { icon: 'restart_alt', label: 'Заново' },
     lessonSection:        { icon: 'quiz',        label: 'Тест' },
     prayerSection:        { icon: 'translate',   label: 'Упражнение' }
@@ -136,7 +136,7 @@ function goBack() {
 function onFabClick() {
     switch (currentSectionId) {
         case 'mainMenu':             continueLesson(); break;
-        case 'allVocabSection':      focusVocabSearch(); break;
+        case 'allVocabSection':      startAllFlashcards(vocabTypeFilter); break;
         case 'allFlashcardsSection': startAllFlashcards(); break;
         case 'lessonSection':        startTest(); break;
         case 'prayerSection':        startPrayerTranslate(); break;
@@ -148,11 +148,6 @@ function continueLesson() {
     try { last = parseInt(localStorage.getItem('greek_last_lesson'), 10) || 1; } catch (e) {}
     if (!getLessonData(last)) last = 1;
     openLesson(last);
-}
-
-function focusVocabSearch() {
-    let input = document.getElementById('vocabSearchInput');
-    if (input) { input.focus(); input.select(); }
 }
 
 function goToMain() { showSection('mainMenu'); renderMainMenu(); }

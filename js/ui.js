@@ -1,14 +1,16 @@
 // ============================================================
 // M3: ripple, snackbar, dialog, progress
 // ============================================================
-const RIPPLE_TARGETS = '.menu-btn, .md-button, .option-btn, .md-icon-button, .lesson-item, .md-fab, .md-feature-card, .tab-bar button, .flashcard-buttons button, .word-bank .chip, .prayer-word, .clear-btn, .input-group button, .md-nav-item';
+const RIPPLE_TARGETS = '.menu-btn, .md-button, .option-btn, .md-icon-button, .lesson-item, .md-fab, .md-feature-card, .tab-bar button, .flashcard-buttons button, .word-bank .chip, .filter-chip, .prayer-word, .clear-btn, .input-group button, .md-nav-item';
 
 document.addEventListener('pointerdown', function (e) {
     let host = e.target.closest && e.target.closest(RIPPLE_TARGETS);
     if (!host || host.disabled) return;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    // у navigation item всплеск живёт внутри «пилюли» индикатора
+    // у navigation item всплеск живёт внутри «пилюли» индикатора,
+    // у filter chip — внутри самой «пилюли», а не в области касания 48dp
     if (host.classList.contains('md-nav-item')) host = host.querySelector('.md-nav-item__indicator') || host;
+    else if (host.classList.contains('filter-chip')) host = host.querySelector('.filter-chip__body') || host;
     let rect = host.getBoundingClientRect();
     let size = Math.max(rect.width, rect.height) * 2;
     let ripple = document.createElement('span');
