@@ -57,6 +57,9 @@ const TYPE_LABELS = {
 // и переводов того же урока, где встречается слово (в любой форме).
 // ------------------------------------------------------------
 
+// Артикли — не считаются "содержательным" словом при проверке на тривиальность.
+const ARTICLE_FORMS = new Set(['ὁ','ἡ','τό','τὸ','οἱ','αἱ','τά','τὰ','τόν','τὸν','τήν','τὴν','τοῦ','τῆς','τῷ','τῇ','τῶν','τοῖς','ταῖς','τούς','τοὺς','τάς','τὰς']);
+
 // Базовая форма + все словоформы слова — по ним ищем совпадения в предложениях.
 function getWordSearchForms(entry) {
     let forms = new Set();
@@ -87,6 +90,7 @@ function highlightWord(sentence, entry) {
     }
     return sentence;
 }
+
 // keywords — это список слов для проверки ответа, а не готовое предложение;
 // склеиваем их в подобие фразы: пробелы вместо запятых, заглавная буква, точка.
 function formatKeywordsAsSentence(keywords) {
@@ -99,6 +103,20 @@ function formatKeywordsAsSentence(keywords) {
     if (!/[.!?]$/.test(text)) text += '.';
     return text;
 }
+
+// "Тривиальный" пример — это фраза, которая после отбрасывания артикля
+// совпадает с самой леммой слова (т.е. это не пример употребления,
+// а просто повтор словарной статьи). Такие примеры не показываем.
+function isTrivialExample(greek, entry) {
+    let lemma = (entry.greek || '').split(',')[0].split('(')[0].trim();
+    let stripped = greek.trim().replace(/[.,;·!?]+$/, '');
+    let tokens = stripped.split(/\s+/).filter(Boolean);
+    if (tokens.length && ARTICLE_FORMS.has(tokens[0])) tokens.shift();
+    if (tokens.length === 0) return true;
+    let rest = tokens.join(' ');
+    return rest === lemma || tokens.length === 1;
+}
+
 // Ищем до maxCount подлинных примеров в упражнениях урока, к которому относится слово.
 function findUsageExamples(entry, maxCount) {
     if (entry._examples) return entry._examples;
@@ -110,9 +128,11 @@ function findUsageExamples(entry, maxCount) {
         let seen = new Set();
         function tryAdd(greek, russian) {
             if (!greek || !russian || examples.length >= maxCount) return;
-            if (seen.has(greek)) return;
+            if (isTrivialExample(greek, entry)) return;
+            let normKey = greek.trim().replace(/[.!?]+$/, '');
+            if (seen.has(normKey)) return;
             if (!forms.some(f => greek.includes(f))) return;
-            seen.add(greek);
+            seen.add(normKey);
             examples.push({ greek: greek, russian: russian });
         }
         if (data.translation) {
@@ -121,19 +141,71 @@ function findUsageExamples(entry, maxCount) {
                 if (Array.isArray(q.correct)) tryAdd(q.correct.join(' '), q.source);
             });
         }
-if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
-    data.exercises.translate_greek_to_russian.forEach(q => {
-        tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
-    });
-}
+        if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
+            data.exercises.translate_greek_to_russian.forEach(q => {
+                tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
+            });
+        }
     }
     entry._examples = examples;
     return examples;
 }
 
+// ------------------------------------------------------------
+// Автогенерация примера, когда подлинных не нашлось. Строим
+// ТОЛЬКО то, в чём уверены грамматически (форма реально есть
+// в данных урока) — иначе рискуем показать неверный греческий.
+// ------------------------------------------------------------
+function tryGetForm(declension_forms, path) {
+    let node = declension_forms;
+    for (let key of path) {
+        if (!node || typeof node !== 'object') return null;
+        node = node[key];
+    }
+    return typeof node === 'string' ? node : null;
+}
+
+function generateFallbackExample(entry) {
+    let art = entry.article ? entry.article + ' ' : '';
+    let lemma = (entry.greek || '').split(',')[0].split('(')[0].trim();
+    let firstGloss = (entry.translation || '').split(',')[0].trim();
+    let gloss = firstGloss.charAt(0).toUpperCase() + firstGloss.slice(1);
+    if (!/[.!?]$/.test(gloss)) gloss += '.';
+
+    if (entry.type === 'noun' || entry.type === 'pronoun') {
+        // Именная фраза "артикль + слово" — грамматически безопасно:
+        // это не выдуманное предложение, а само слово в словарной форме.
+        return { greek: art + lemma + '.', russian: gloss, generated: true };
+    }
+
+    if (entry.type === 'adjective' && entry.declension_forms) {
+        let form = tryGetForm(entry.declension_forms, ['masculine', 'singular', 'nom']);
+        if (form) return { greek: 'ὁ ἄνθρωπος ' + form + '.', russian: 'Человек ' + firstGloss + '.', generated: true };
+    }
+
+    if (entry.type === 'verb' && entry.declension_forms) {
+        let form = tryGetForm(entry.declension_forms, ['singular', '1']);
+        if (form) return { greek: 'ἐγώ ' + form + '.', russian: 'Я ' + firstGloss + '.', generated: true };
+    }
+
+    // Предлоги, союзы, наречия — без надёжной падежной формы в данных
+    // фразу не строим, чтобы не научить ошибке.
+    return null;
+}
+
 function renderVocabExamplesHtml(entry) {
     let examples = findUsageExamples(entry, 3);
     if (examples.length === 0) {
+        let fallback = generateFallbackExample(entry);
+        if (fallback) {
+            return '<div class="vocab-examples">' +
+                '<div class="vocab-example vocab-example--generated">' +
+                    '<div class="vocab-example__greek">' + highlightWord(fallback.greek, entry) + '</div>' +
+                    '<div class="vocab-example__ru">' + fallback.russian + '</div>' +
+                    '<div class="vocab-example__note">пример составлен автоматически</div>' +
+                '</div>' +
+            '</div>';
+        }
         return '<div class="vocab-examples-empty">Готовых примеров для этого слова пока не нашлось —' +
             ' оно из ' + entry.lesson + '-го урока, загляните в его упражнения на перевод.</div>';
     }
