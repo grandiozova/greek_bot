@@ -13,6 +13,7 @@ An Ancient Greek learning web app, published to GitHub Pages.
 | Lesson content | `data/*.js` | Vocabulary, grammar, exercises, prayer, licences. |
 | Logic | `js/*.js` | Fifteen files, one per feature area. |
 | Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
+| Source textbook | `reference/machen-nt-greek/` | The book the lessons come from, as text. Reference only — never loaded by the app. See "Source textbook" below. |
 
 There is no backend and no build step. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
 
@@ -71,6 +72,7 @@ Whatever you touch, it is almost always one file:
 | A screen's look | `styles/screens.css` |
 | Responsive / nav rail | `styles/layout.css` |
 | **Lesson content** | `data/lessons.js` — **do not touch** unless the task is explicitly about content |
+| Finding content in the textbook | `reference/machen-nt-greek/INDEX.md` — then the lesson file it points to |
 | A new dependency's licence | `data/licenses.js` |
 | Behaviour | the matching `js/*.js` — the table above says which |
 | A new screen | `index.html` markup **+** `SCREEN_META`/`DEST_SECTION`/`FAB_CONFIG` in `js/shell.js` |
@@ -149,6 +151,28 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 - **Theme** is a three-way choice — `system` / `light` / `dark` — stored in `greek_theme` as the *mode*, never as the resolved colour. Storing the resolved value is what breaks "follow the system": the app would pin whatever the OS happened to be on first run. `system` stays live via a `matchMedia` listener. A value written by an older build (`light`/`dark`) is still read as a valid manual choice.
 - **Licenses** come from the `LICENSES` array; add an entry when you add a dependency. The course material is listed last because it is a copyright statement, not an open licence.
 - The nav bar now holds **five** destinations — the M3 maximum. A sixth needs a different pattern, not a sixth item.
+
+## Source textbook
+
+`reference/machen-nt-greek/` holds the book the lessons are built from — Machen's
+*New Testament Greek for Beginners* in the Russian Bible Society edition (33 lessons,
+241 pages), extracted from its PDF as Markdown plus two JSON vocabulary files.
+Start at `reference/machen-nt-greek/INDEX.md`; the rules are in its `README.md`.
+
+It is **reference material only**. Nothing there is loaded by the app, precached by
+`sw.js`, or listed in `index.html` — do not wire it in.
+
+The Greek there **is polytonic and can be copied** — but check one thing first.
+The source PDF is a scan whose OCR layer had lost every breathing and circumflex;
+the marks were restored by re-OCRing the 600-dpi page images with an ancient-Greek
+model and accepting a form only where two independent readings agreed. That covers
+13 560 of 14 267 Greek words (95%). The remaining 707 are left in their original,
+accent-less form and are all listed in `reference/machen-nt-greek/restoration-report.md`.
+
+So: if a word is not in that report, its polytonic form is verified — use it. If it is,
+restore the form yourself (against NA28/SBLGNT, or the verified lessons 1–10 already in
+`data/lessons.js`). A vowel-initial word with no breathing is always unverified — that
+is the visible tell. Russian text, page numbers and structure are reliable throughout.
 
 ## Offline shell
 
