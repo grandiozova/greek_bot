@@ -91,7 +91,9 @@ function highlightWord(sentence, entry) {
 // склеиваем их в подобие фразы: пробелы вместо запятых, заглавная буква, точка.
 function formatKeywordsAsSentence(keywords) {
     if (!keywords) return keywords;
-    let text = Array.isArray(keywords) ? keywords.join(' ').trim() : String(keywords).trim();
+    let parts = Array.isArray(keywords) ? keywords : String(keywords).split(',');
+    parts = parts.map(p => String(p).trim()).filter(Boolean);
+    let text = parts.join(' ');
     if (!text) return text;
     text = text.charAt(0).toUpperCase() + text.slice(1);
     if (!/[.!?]$/.test(text)) text += '.';
