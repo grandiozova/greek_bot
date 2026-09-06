@@ -52,8 +52,10 @@
     .md-fab { right: 12px; }
     .md-fab .md-fab__label { display: none; }
     .md-fab { padding: 0 16px; width: 56px; justify-content: center; }
+    /* Колонки не ужимаем до нечитаемого: если не влезает — таблица прокручивается */
     .word-details td, .word-details th,
-    .grammar-text td, .grammar-text th { padding: 8px 6px; font-size: 0.8125rem; }
+    .grammar-text td, .grammar-text th { padding: 8px 10px; font-size: 0.8125rem; }
+    .grammar-h { margin-top: 24px; }
     .md-nav-item__label { font-size: 0.6875rem; letter-spacing: 0.0125rem; }
     .md-nav-item__indicator { width: 56px; }
     .tab-bar { margin: 0 -12px 16px; }

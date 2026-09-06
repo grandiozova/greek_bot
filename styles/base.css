@@ -16,6 +16,10 @@ body {
     letter-spacing: 0.03125rem;
     min-height: 100vh;
     min-height: 100dvh;
+    /* Вбок не ездит вся страница — ездит только то, что для этого сделано
+       (.md-table-scroll, .tab-bar, .chip-set). clip, а не hidden: hidden сделал
+       бы body контейнером прокрутки и сломал бы window.scrollY у app bar. */
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     transition: background-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
                 color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);

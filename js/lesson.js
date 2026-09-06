@@ -164,6 +164,79 @@ function startLessonDrill(kind, key) {
     else if (kind === 'flashcards') startFlashcards();
 }
 
+// ============================================================
+// РАЗМЕТКА ГРАММАТИКИ
+// ============================================================
+// Грамматика лежит в data/lessons.js одним потоком, где абзацы разделены
+// парами <br>, заголовки — это <b> в начале строки, а списки — строки с «•».
+// Отступы такой разметки задаёт количество <br> подряд, поэтому ритм гуляет,
+// а перенос строки списка уезжает под маркер. Разбираем поток на настоящие
+// блоки при отрисовке: содержимое остаётся нетронутым, а вертикальные отступы
+// начинает задавать CSS. Содержимое data/lessons.js при этом не трогаем.
+const GRAMMAR_TABLE_RE = /<table[\s\S]*?<\/table>/gi;
+const GRAMMAR_BLOCK_RE = /(?:<br\s*\/?>\s*){2,}/i;
+// Заголовок — строка, которая целиком состоит из одного <b>…</b>: и «3. Личные
+// местоимения», и подзаголовок «Единственное число:» перед таблицей. Внутри
+// содержимого не должно быть </b>, иначе «<b>раз</b> и <b>два</b>» тоже сошло
+// бы за заголовок. Жирное начало с продолжением в той же строке
+// («<b>Примечание:</b> в косвенных падежах…») остаётся обычным абзацем.
+const GRAMMAR_HEAD_RE = /^<b>((?:(?!<\/b>)[\s\S])*)<\/b>$/i;
+// U+0001 в учебном тексте не встречается — им и метим место изъятой таблицы
+const TABLE_MARK = '\u0001';
+
+function renderGrammarHtml(html) {
+    if (!html) return '';
+    // Таблицы прячем первыми: внутри них <br> и «•» ничего не разделяют.
+    let tables = [];
+    let text = String(html).replace(GRAMMAR_TABLE_RE, m => TABLE_MARK + (tables.push(m) - 1) + TABLE_MARK);
+
+    let out = [];
+    text.split(GRAMMAR_BLOCK_RE).forEach(block => {
+        block = block.trim();
+        if (!block) return;
+        // Таблица внутри блока — самостоятельный элемент, а не строка абзаца,
+        // и каждая едет в своей горизонтальной прокрутке.
+        block.split(new RegExp(TABLE_MARK + '(\\d+)' + TABLE_MARK)).forEach((piece, i) => {
+            if (i % 2) { out.push('<div class="md-table-scroll">' + tables[+piece] + '</div>'); return; }
+            // <br> по краям куска только и делали, что рисовали отступ — он теперь на CSS
+            let chunk = piece.replace(/^(?:\s*<br\s*\/?>)+/i, '').replace(/(?:<br\s*\/?>\s*)+$/i, '').trim();
+            if (chunk) out.push(grammarBlockHtml(chunk));
+        });
+    });
+    return out.join('');
+}
+
+function grammarBlockHtml(chunk) {
+    let out = '';
+    let para = [], list = [];
+    let flushPara = () => { if (para.length) { out += '<div class="grammar-p">' + para.join('<br>') + '</div>'; para = []; } };
+    let flushList = () => {
+        if (!list.length) return;
+        out += '<ul class="grammar-list">' + list.map(i => '<li>' + i + '</li>').join('') + '</ul>';
+        list = [];
+    };
+
+    chunk.split(/<br\s*\/?>/i).forEach(line => {
+        line = line.trim();
+        if (!line) return;
+        let head = line.match(GRAMMAR_HEAD_RE);
+        if (head) {
+            // Заголовку нужен воздух сверху, которого у строки абзаца быть не может
+            flushList(); flushPara();
+            out += '<h4 class="grammar-h">' + head[1] + '</h4>';
+        } else if (/^•/.test(line)) {
+            flushPara();
+            list.push(line.replace(/^•\s*/, ''));
+        } else {
+            flushList();
+            para.push(line);
+        }
+    });
+    flushList();
+    flushPara();
+    return out;
+}
+
 // Возврат с экрана упражнения — на вкладку «Упражнения» того же урока.
 function closeLessonDrill() {
     resetLessonDrill();
@@ -190,7 +263,7 @@ function openLesson(lesson) {
         btn.style.display = (isIntroLesson && part !== 'material') ? 'none' : '';
     });
 
-    document.getElementById('grammarContent').innerHTML = data.grammar || '';
+    document.getElementById('grammarContent').innerHTML = renderGrammarHtml(data.grammar);
 
     // Словарь урока — под грамматикой, на той же вкладке
     let container = document.getElementById('vocabList');

@@ -247,7 +247,15 @@
 /* ============================================================
    ТАБЛИЦЫ (склонения, грамматика)
    ============================================================ */
-.md-table-scroll { overflow-x: auto; margin: 12px 0; }
+/* Таблица шире экрана едет по горизонтали внутри своей полосы, а не тянет
+   за собой страницу: overscroll-behavior обрывает цепочку прокрутки на ней. */
+.md-table-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    margin: 16px 0;
+}
 .word-details table, .grammar-text table {
     width: 100%;
     border-collapse: collapse;
@@ -258,13 +266,21 @@
     border-radius: var(--md-sys-shape-corner-medium);
     overflow: hidden;
 }
+/* Внутри полосы прокрутки таблица занимает всю ширину, но не обязана в неё
+   влезать: width:100% сжимал бы колонки до нечитаемого вместо прокрутки. */
+.md-table-scroll table { width: auto; min-width: 100%; margin: 0; }
 .word-details td, .word-details th,
 .grammar-text td, .grammar-text th {
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
     padding: 10px 12px;
-    text-align: center;
+    text-align: left;
     color: var(--md-sys-color-on-surface);
 }
+/* Внутри полосы прокрутки ячейки не переносятся. Иначе колонка «Перевод»,
+   которой на экране всё равно не видно, сжимается и растит строку до трёх
+   строк текста: у самой широкой таблицы строка была 117px вместо 37px.
+   Ширины это почти не меняет — лишние пиксели уезжают в прокрутку. */
+.md-table-scroll td, .md-table-scroll th { white-space: nowrap; }
 .word-details th, .grammar-text th {
     background: var(--md-sys-color-surface-container-high);
     color: var(--md-sys-color-on-surface-variant);
@@ -280,9 +296,34 @@
     line-height: 1.625rem;
     letter-spacing: 0.03125rem;
     color: var(--md-sys-color-on-surface);
+    overflow-wrap: break-word;
 }
 .grammar-text b { color: var(--md-sys-color-on-surface); }
-.grammar-text > table { display: table; }
+
+/* Ритм материала. Разметку на блоки собирает renderGrammarHtml() (js/lesson.js);
+   отступы задаёт этот блок, а не число <br> подряд в data/lessons.js. */
+.grammar-h {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.009375rem;
+    color: var(--md-sys-color-on-surface);
+    margin: 28px 0 8px;
+}
+.grammar-text > .grammar-h:first-child { margin-top: 0; }
+.grammar-p { margin: 0 0 12px; }
+.grammar-text > :last-child { margin-bottom: 0; }
+/* Маркер снаружи: вторая строка пункта встаёт под текст, а не под «•» */
+.grammar-list {
+    margin: 0 0 12px;
+    padding-left: 24px;
+    list-style: disc outside;
+}
+.grammar-list li { margin-bottom: 4px; }
+.grammar-list li:last-child { margin-bottom: 0; }
+.grammar-list li::marker { color: var(--md-sys-color-primary); }
+/* Заголовок сразу после таблицы или списка не липнет к ним */
+.md-table-scroll + .grammar-h, .grammar-list + .grammar-h { margin-top: 24px; }
 
 /* ============================================================
    КАРТОЧКИ ДЛЯ ЗАУЧИВАНИЯ (flashcards)
