@@ -2,7 +2,7 @@
 // M3 SHELL: top app bar, navigation bar, FAB
 // ============================================================
 let currentSectionId = 'mainMenu';
-let currentLessonPart = 'material';
+let currentLessonPart = 'menu';
 let titleFadeTimer = null;
 
 // Метаданные экранов: заголовок app bar, активная точка навигации,
@@ -13,6 +13,7 @@ const SCREEN_META = {
     allFlashcardsSection: { title: 'Проверка слов',   dest: 'cards',    back: null },
     statsSection:         { title: 'Прогресс',        dest: 'progress', back: null },
     lessonSection:        { title: 'Урок',            dest: 'lessons',  back: 'lessons' },
+    drillSection:         { title: 'Упражнение',      dest: 'lessons',  back: 'lesson' },
     testSection:          { title: 'Тест',            dest: null,       back: 'test' },
     errorsSection:        { title: 'Ошибки',          dest: 'progress', back: 'progress' },
     prayerSection:        { title: 'Отче наш',        dest: 'lessons',  back: 'lessons' },
@@ -60,6 +61,9 @@ function updateShell() {
             let d = getLessonData(currentLesson);
             title = d ? 'Урок ' + currentLesson : 'Урок';
         }
+        // На экране упражнения заголовок называет само упражнение — его карточка
+        // единственная на экране, и повторять «Урок N» здесь нечем помочь.
+        if (currentSectionId === 'drillSection' && currentDrill) title = currentDrill.label;
         if (titleEl.textContent !== title) {
             // мягкая замена заголовка; быстрые переходы подряд не должны гонять таймеры
             clearTimeout(titleFadeTimer);
@@ -127,9 +131,17 @@ function navigateTo(dest) {
 }
 
 function goBack() {
+    // Урок теперь двухуровневый: из раздела «назад» ведёт к списку разделов,
+    // и только с него — к списку уроков.
+    if (currentSectionId === 'lessonSection' && currentLessonPart !== 'menu') {
+        switchLessonPart('menu');
+        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+        return;
+    }
     let meta = SCREEN_META[currentSectionId];
     if (!meta || !meta.back) return;
     if (meta.back === 'test') { cancelTest(); return; }
+    if (meta.back === 'lesson') { closeLessonDrill(); return; }
     navigateTo(meta.back);
 }
 

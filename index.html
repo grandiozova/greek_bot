@@ -82,15 +82,24 @@
 <div id="lessonSection" class="section">
     <h2 id="lessonTitle" class="mb-12"></h2>
 
-    <div class="tab-bar" id="lessonTabs" role="tablist">
-        <button class="active" data-part="material" onclick="switchLessonPart('material')" role="tab"><span class="msym">school</span>Материал</button>
+    <!-- Панель вкладок появляется только внутри раздела: на самом уроке
+         разделы предлагаются списком (#partMenu). -->
+    <div class="tab-bar hidden" id="lessonTabs" role="tablist">
+        <button data-part="material" onclick="switchLessonPart('material')" role="tab"><span class="msym">school</span>Материал</button>
         <button data-part="exercise" onclick="switchLessonPart('exercise')" role="tab"><span class="msym">edit_note</span>Упражнения</button>
         <button data-part="test" onclick="startTest()" role="tab"><span class="msym">quiz</span>Тест</button>
         <div class="md-tabs__indicator" id="lessonTabsIndicator"></div>
     </div>
 
+    <!-- Разделы урока списком — это первое, что видно при открытии урока -->
+    <div id="partMenu" class="section active">
+        <div class="card">
+            <div class="lesson-list" id="lessonPartMenu"></div>
+        </div>
+    </div>
+
     <!-- Материал урока: грамматика, под ней словарь -->
-    <div id="partMaterial" class="section active">
+    <div id="partMaterial" class="section">
         <div class="card">
             <h3><span class="msym">school</span>Грамматика</h3>
             <div class="grammar-text" id="grammarContent"></div>
@@ -101,23 +110,27 @@
         </div>
     </div>
 
-    <!-- Все упражнения урока: выбор сверху, запущенное — под ним -->
+    <!-- Все упражнения урока: список выбора, само упражнение — отдельным экраном -->
     <div id="partExercise" class="section">
         <div class="card">
             <h3><span class="msym">edit_note</span>Упражнения</h3>
             <div id="drillGroups"></div>
-        </div>
-        <div class="card hidden" id="drillStage">
-            <h3><span class="msym" id="drillStageIcon">edit_note</span><span id="drillStageTitle"></span></h3>
-            <div id="exerciseQuestion"></div>
-            <div id="flashcardContainer" class="flashcard-area hidden"></div>
-            <div id="translationQuestion" class="hidden"></div>
         </div>
     </div>
 
     <div class="md-button-row" id="lessonNav" style="margin-top:24px;">
         <button class="menu-btn outlined" id="prevLessonBtn" onclick="goToPrevLesson()" style="flex:1;min-width:140px;"><span class="msym">arrow_back</span>Предыдущий</button>
         <button class="menu-btn primary" id="nextLessonBtn" onclick="goToNextLesson()" style="flex:1;min-width:140px;">Следующий<span class="msym">arrow_forward</span></button>
+    </div>
+</div>
+
+<!-- ============ УПРАЖНЕНИЕ УРОКА (отдельный экран) ============ -->
+<div id="drillSection" class="section">
+    <div class="card">
+        <h3><span class="msym" id="drillStageIcon">edit_note</span><span id="drillStageTitle"></span></h3>
+        <div id="exerciseQuestion"></div>
+        <div id="flashcardContainer" class="flashcard-area hidden"></div>
+        <div id="translationQuestion" class="hidden"></div>
     </div>
 </div>
 

@@ -99,7 +99,9 @@ function showFlashcard() {
     if (s.index >= s.total) {
         let p = Math.round((s.correct / s.total) * 100);
         container.innerHTML = resultBlock(s.correct, s.total, 'Карточки завершены') +
-            '<button class="menu-btn primary" onclick="startFlashcards()"><span class="msym">restart_alt</span>Повторить</button>';
+            '<div class="md-button-row">' +
+            '<button class="menu-btn primary" onclick="startFlashcards()"><span class="msym">restart_alt</span>Повторить</button>' +
+            '<button class="menu-btn outlined" onclick="closeLessonDrill()"><span class="msym">arrow_back</span>К упражнениям</button></div>';
         return;
     }
     let w = s.words[s.index];

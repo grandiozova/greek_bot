@@ -55,7 +55,9 @@ function showTranslation() {
         let p = Math.round((s.correct / s.total) * 100);
         document.getElementById('translationQuestion').innerHTML =
             resultBlock(s.correct, s.total, 'Упражнение завершено') +
-            '<button class="menu-btn primary" onclick="startTranslation(\'' + s.type + '\')"><span class="msym">restart_alt</span>Ещё раз</button>';
+            '<div class="md-button-row">' +
+            '<button class="menu-btn primary" onclick="startTranslation(\'' + s.type + '\')"><span class="msym">restart_alt</span>Ещё раз</button>' +
+            '<button class="menu-btn outlined" onclick="closeLessonDrill()"><span class="msym">arrow_back</span>К упражнениям</button></div>';
         return;
     }
     let q = s.questions[s.index];

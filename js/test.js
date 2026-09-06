@@ -1,15 +1,26 @@
 // ============================================================
 // ТЕСТ
 // ============================================================
-function startTest() {
-    let data = getLessonData(currentLesson);
-    if (!data) return;
+const TEST_TYPES = ['declension_fill','translate_greek_to_russian','translate_russian_to_greek','case_number','agreement','attribute_vs_predicate','substantivation','article_fill'];
+
+// Пул вопросов теста. Список разделов урока спрашивает только его размер,
+// поэтому сбор вынесен из startTest — чтобы обе стороны считали одинаково.
+function collectTestQuestions(data) {
     let all = [];
-    let types = ['declension_fill','translate_greek_to_russian','translate_russian_to_greek','case_number','agreement','attribute_vs_predicate','substantivation','article_fill'];
-    for (let t of types) {
+    if (!data) return all;
+    for (let t of TEST_TYPES) {
         let qs = (data.exercises && data.exercises[t]) || [];
         for (let q of qs) { q._type = t; all.push(q); }
     }
+    return all;
+}
+
+function countTestQuestions(data) { return collectTestQuestions(data).length; }
+
+function startTest() {
+    let data = getLessonData(currentLesson);
+    if (!data) return;
+    let all = collectTestQuestions(data);
     if (all.length === 0) { showToast('Для этого урока вопросов пока нет', 'info'); return; }
     let picked = shuffle(all).slice(0, 10);
     testState = { questions: picked, index: 0, correct: 0, total: picked.length, answered: false };
@@ -20,7 +31,7 @@ function startTest() {
 function cancelTest() {
     testState = { questions: [], index: 0, correct: 0, total: 0, answered: false };
     showSection('lessonSection');
-    switchLessonPart(currentLessonPart === 'test' ? 'exercise' : currentLessonPart);
+    switchLessonPart(currentLessonPart || 'menu');
 }
 
 function showTest() {

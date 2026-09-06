@@ -1,8 +1,11 @@
 // ============================================================
 // ОТКРЫТИЕ УРОКА И ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
 // ============================================================
-// Экран урока — две вкладки плюс тест: «Материал» (грамматика, под ней словарь)
-// и «Упражнения», куда сведены все виды тренировки, включая карточки и перевод.
+// Экран урока — три уровня. Открытый урок показывает список своих разделов
+// (#partMenu, часть 'menu'): «Материал» (грамматика, под ней словарь),
+// «Упражнения» и «Тест». Панель вкладок появляется только внутри раздела —
+// на первом уровне переключать нечего, а список объясняет, что там есть.
+// Выбранное упражнение уходит на собственный экран (#drillSection).
 
 // Каталог упражнений урока. kind говорит, чем запускать и в какой контейнер
 // рисовать: exercise → exercises.js, translation → translation.js,
@@ -57,6 +60,52 @@ function findLessonDrill(kind, key) {
     return null;
 }
 
+function countLessonDrills(data) {
+    let n = 0;
+    LESSON_DRILL_GROUPS.forEach(g => g.drills.forEach(d => { if (lessonDrillAvailable(data, d)) n++; }));
+    return n;
+}
+
+// Пункт списка-меню: тот же M3 list item, что и в списке уроков, только в
+// «аватаре» иконка, а не номер.
+function menuItemHtml(icon, label, hint, onclick) {
+    return '<button class="lesson-item' + (hint ? '' : ' lesson-item--single') + '" onclick="' + onclick + '">' +
+        '<span class="lesson-item__avatar"><span class="msym">' + icon + '</span></span>' +
+        '<span class="lesson-item__text">' +
+            '<span class="lesson-item__headline">' + label + '</span>' +
+            (hint ? '<span class="lesson-item__supporting">' + hint + '</span>' : '') +
+        '</span>' +
+        '<span class="lesson-item__trailing msym">chevron_right</span>' +
+    '</button>';
+}
+
+// Разделы урока списком. Уроки 1–2 — алфавит и правила чтения: тренировать
+// в них нечего, остаётся один пункт.
+function renderLessonMenu(data, isIntroLesson) {
+    let box = document.getElementById('lessonPartMenu');
+    if (!box) return;
+    let items = [];
+
+    let words = (data.vocabulary && data.vocabulary.length) || 0;
+    items.push(menuItemHtml('school', 'Материал',
+        words ? 'Грамматика и ' + words + ' ' + pluralRu(words, 'слово', 'слова', 'слов') : 'Грамматика урока',
+        "switchLessonPart('material')"));
+
+    if (!isIntroLesson) {
+        let drills = countLessonDrills(data);
+        if (drills) {
+            items.push(menuItemHtml('edit_note', 'Упражнения',
+                drills + ' ' + pluralRu(drills, 'вид', 'вида', 'видов') + ' тренировки',
+                "switchLessonPart('exercise')"));
+        }
+        if (countTestQuestions(data)) {
+            items.push(menuItemHtml('quiz', 'Тест', 'Случайные вопросы по уроку', 'startTest()'));
+        }
+    }
+
+    box.innerHTML = items.join('<hr class="md-divider">');
+}
+
 // Список выбора: группа без единого доступного упражнения не показывается.
 function renderLessonDrills(data) {
     let box = document.getElementById('drillGroups');
@@ -65,14 +114,11 @@ function renderLessonDrills(data) {
     LESSON_DRILL_GROUPS.forEach(group => {
         let available = group.drills.filter(d => lessonDrillAvailable(data, d));
         if (available.length === 0) return;
-        parts.push('<div class="drill-group"><h4 class="drill-group__label">', group.label, '</h4><div class="md-button-row">');
-        available.forEach(d => {
-            parts.push(
-                '<button class="menu-btn" data-drill="', d.kind, ':', d.key, '"',
-                ' onclick="startLessonDrill(\'', d.kind, '\',\'', d.key, '\')">',
-                '<span class="msym">', d.icon, '</span>', d.label,
-                '</button>'
-            );
+        parts.push('<div class="drill-group"><h4 class="drill-group__label">', group.label, '</h4><div class="lesson-list">');
+        available.forEach((d, i) => {
+            if (i) parts.push('<hr class="md-divider">');
+            parts.push(menuItemHtml(d.icon, d.label, null,
+                'startLessonDrill(\'' + d.kind + '\',\'' + d.key + '\')'));
         });
         parts.push('</div></div>');
     });
@@ -81,32 +127,24 @@ function renderLessonDrills(data) {
         : emptyState('edit_off', 'Упражнений нет', 'Для этого урока упражнения ещё не подготовлены');
 }
 
-// Сцена пуста, пока упражнение не выбрано: заголовок карточки называет то,
-// что запущено, и без выбора ему нечего показывать.
+// Экран упражнения пуст, пока упражнение не выбрано.
 function resetLessonDrill() {
     currentDrill = null;
-    let stage = document.getElementById('drillStage');
-    if (stage) stage.classList.add('hidden');
     Object.keys(DRILL_BOXES).forEach(kind => {
         let el = document.getElementById(DRILL_BOXES[kind]);
         if (el) { el.innerHTML = ''; el.classList.add('hidden'); }
     });
-    document.querySelectorAll('#drillGroups .menu-btn').forEach(b => b.classList.remove('primary'));
     flashcardState = { words: [], index: 0, revealed: false, correct: 0, total: 0 };
 }
 
+// Упражнение — отдельный экран: список выбора остаётся нетронутым позади,
+// «назад» из app bar возвращает к нему (SCREEN_META.drillSection).
 function startLessonDrill(kind, key) {
     let data = getLessonData(currentLesson);
     let drill = findLessonDrill(kind, key);
     if (!data || !drill) return;
-    currentDrill = kind + ':' + key;
+    currentDrill = drill;
 
-    document.querySelectorAll('#drillGroups .menu-btn').forEach(b => {
-        b.classList.toggle('primary', b.getAttribute('data-drill') === currentDrill);
-    });
-
-    let stage = document.getElementById('drillStage');
-    if (stage) stage.classList.remove('hidden');
     let icon = document.getElementById('drillStageIcon');
     if (icon) icon.textContent = drill.icon;
     let title = document.getElementById('drillStageTitle');
@@ -119,13 +157,19 @@ function startLessonDrill(kind, key) {
         el.classList.toggle('hidden', k !== kind);
     });
 
+    showSection('drillSection');
+
     if (kind === 'exercise') startExercise(key);
     else if (kind === 'translation') startTranslation(key);
     else if (kind === 'flashcards') startFlashcards();
+}
 
-    if (stage && stage.scrollIntoView) {
-        try { stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
-    }
+// Возврат с экрана упражнения — на вкладку «Упражнения» того же урока.
+function closeLessonDrill() {
+    resetLessonDrill();
+    currentLessonPart = 'exercise';
+    showSection('lessonSection');
+    switchLessonPart('exercise');
 }
 
 function openLesson(lesson) {
@@ -134,7 +178,7 @@ function openLesson(lesson) {
     if (!data) return;
     try { localStorage.setItem('greek_last_lesson', String(lesson)); } catch (e) {}
     document.getElementById('lessonTitle').textContent = data.title;
-    currentLessonPart = 'material';
+    currentLessonPart = 'menu';
     showSection('lessonSection');
     updateNavButtons(lesson);
 
@@ -171,11 +215,12 @@ function openLesson(lesson) {
         });
     }
 
-    // Упражнения: список выбора и пустая сцена
+    // Разделы урока и список упражнений внутри вкладки «Упражнения»
+    renderLessonMenu(data, isIntroLesson);
     renderLessonDrills(data);
     resetLessonDrill();
 
-    switchLessonPart('material');
+    switchLessonPart('menu');
 }
 
 // Индикатор вкладок скользит под активной вкладкой (M3 primary tabs)
@@ -193,23 +238,89 @@ function moveTabIndicator() {
     else bar.scrollLeft = left;
 }
 
+function lessonPartPanel(part) {
+    return document.getElementById('part' + part.charAt(0).toUpperCase() + part.slice(1));
+}
+
+// Панель вкладок нужна только внутри раздела: на списке разделов ей нечего
+// показывать, а лишний ряд вкладок над меню только сбивает с толку.
+function updateLessonTabsVisibility() {
+    let bar = document.getElementById('lessonTabs');
+    if (bar) bar.classList.toggle('hidden', currentLessonPart === 'menu');
+}
+
 // Возврат на экран урока восстанавливает выбранную вкладку
 function restoreLessonPart() {
-    let target = document.getElementById('part' + currentLessonPart.charAt(0).toUpperCase() + currentLessonPart.slice(1));
+    updateLessonTabsVisibility();
+    let target = lessonPartPanel(currentLessonPart);
     if (target) target.classList.add('active');
     requestAnimationFrame(moveTabIndicator);
 }
 
 function switchLessonPart(part) {
     currentLessonPart = part;
+    updateLessonTabsVisibility();
     document.querySelectorAll('#lessonTabs button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
     let activeTab = document.querySelector('#lessonTabs button[data-part="' + part + '"]');
     if (activeTab) { activeTab.classList.add('active'); activeTab.setAttribute('aria-selected', 'true'); }
     moveTabIndicator();
 
     document.querySelectorAll('#lessonSection .section').forEach(s => s.classList.remove('active'));
-    let target = document.getElementById('part' + part.charAt(0).toUpperCase() + part.slice(1));
+    let target = lessonPartPanel(part);
     if (target) target.classList.add('active');
+}
+
+// ============================================================
+// СВАЙП МЕЖДУ РАЗДЕЛАМИ УРОКА
+// ============================================================
+// На сенсорном экране горизонтальный жест переключает вкладки урока.
+// «Тест» в этот ряд не входит: он уводит на другой экран, и промахнуться
+// пальцем в него — не то же самое, что промахнуться вкладкой.
+const SWIPE_PARTS = ['material', 'exercise'];
+const SWIPE_MIN_DISTANCE = 64;   // px по горизонтали
+const SWIPE_MAX_SLOPE = 0.5;     // |dy| / |dx|: наклонный жест — это прокрутка
+// Внутри прокручиваемого вбок (таблицы склонений, сама панель вкладок) и в полях
+// ввода жест принадлежит элементу, а не навигации.
+const SWIPE_BLOCKERS = '.md-table-scroll, .tab-bar, .chip-set, input, textarea';
+
+let lessonSwipe = null;
+
+function initLessonSwipe() {
+    let host = document.getElementById('lessonSection');
+    if (!host) return;
+    host.addEventListener('touchstart', function (e) {
+        if (!e.touches || e.touches.length !== 1) { lessonSwipe = null; return; }
+        let t = e.touches[0];
+        let blocked = !!(e.target && e.target.closest && e.target.closest(SWIPE_BLOCKERS));
+        lessonSwipe = { x: t.clientX, y: t.clientY, blocked: blocked };
+    }, { passive: true });
+
+    host.addEventListener('touchmove', function (e) {
+        // Второй палец — это масштабирование, а не листание.
+        if (e.touches && e.touches.length > 1) lessonSwipe = null;
+    }, { passive: true });
+
+    host.addEventListener('touchend', function (e) {
+        let s = lessonSwipe;
+        lessonSwipe = null;
+        if (!s || s.blocked || !e.changedTouches || e.changedTouches.length !== 1) return;
+        let t = e.changedTouches[0];
+        let dx = t.clientX - s.x, dy = t.clientY - s.y;
+        if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dy) > Math.abs(dx) * SWIPE_MAX_SLOPE) return;
+        swipeLessonPart(dx < 0 ? 1 : -1);
+    }, { passive: true });
+}
+
+function swipeLessonPart(step) {
+    let parts = SWIPE_PARTS.filter(p => {
+        let tab = document.querySelector('#lessonTabs button[data-part="' + p + '"]');
+        return tab && tab.style.display !== 'none';
+    });
+    let i = parts.indexOf(currentLessonPart);
+    if (i < 0) return;              // список разделов: листать нечего
+    let next = parts[i + step];
+    if (!next) return;              // с краю ряда жест ничего не делает
+    switchLessonPart(next);
 }
 
 // ============================================================

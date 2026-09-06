@@ -24,11 +24,11 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ## Project layout
 
 ```
-index.html           270  <head>, разметка, порядок загрузки
+index.html           283  <head>, разметка, порядок загрузки
 styles/
   tokens.css           164  :root и [data-theme=dark] — все переменные
   base.css             322  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
-  components.css       715  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  components.css       723  кнопки, list item урока, карточки, табы, search bar, text field, chips
   screens.css          522  вопрос/варианты, обратная связь, списки слов, таблицы, flashcards, статистика, «Отче наш»
   dialogs.css           88  snackbar, dialog
   layout.css            61  переходы экранов, утилиты, адаптивность (nav rail)
@@ -40,19 +40,19 @@ data/
 js/
   core.js              109  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
-  shell.js             195  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
+  shell.js             207  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              74  режимы темы, applyTheme, initTheme
-  lesson.js            266  openLesson, вкладки «Материал»/«Упражнения», выбор упражнения, переходы между уроками
+  lesson.js            377  openLesson, меню разделов урока, вкладки, свайп, выбор и экран упражнения
   declension.js        137  generateDeclensionTable, аккордеон
   exercises.js         182  упражнения урока
   flashcards.js        161  карточки: общие и урока
-  test.js              164  тест
+  test.js              175  тест
   translation.js       155  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
   prayer.js            224  «Отче наш»: разбор и упражнения
   vocab.js             409  общий словарь, поиск, фильтр по частям речи
   settings.js           27  showSettings, renderLicenses
-  boot.js               61  normalizeTranslationData, init*, глобальные слушатели
+  boot.js               66  normalizeTranslationData, init*, глобальные слушатели
 ```
 
 **Load order is the contract.** Three rules, all enforced only by the order of tags in `index.html`:
@@ -80,7 +80,9 @@ Whatever you touch, it is almost always one file:
 Structural facts worth knowing before editing:
 
 - Screens are `div.section`; `showSection(id)` (`js/shell.js`) clears `.active` from **all** `.section` elements, including the lesson's inner tab panels — which is why `restoreLessonPart()` (`js/lesson.js`) exists. Keep that invariant if you touch navigation.
-- **The lesson screen is two tabs plus the test.** `#partMaterial` holds the grammar card with the lesson's vocabulary card under it; `#partExercise` holds every drill there is. A drill is one entry in `LESSON_DRILL_GROUPS` (`js/lesson.js`) with a `kind` that says what runs it and where it draws: `exercise` → `startExercise()` into `#exerciseQuestion`, `translation` → `startTranslation()` into `#translationQuestion`, `flashcards` → `startFlashcards()` into `#flashcardContainer`. `startLessonDrill()` shows the one container the chosen drill needs and clears the other two, so the three renderers keep their own ids and none of them had to change. Adding a drill means one entry in that catalogue — plus an availability rule in `lessonDrillAvailable()` if it is not an `exercises`/`translation` key. The tab names map to panel ids by capitalisation (`material` → `partMaterial`), which is what `switchLessonPart()` and `restoreLessonPart()` rely on.
+- **The lesson is three levels deep, not one.** Opening a lesson lands on `#partMenu` — its sections offered as a list of M3 list items (`renderLessonMenu()`), not on the material. Choosing one calls `switchLessonPart()`, which reveals the tab bar; `#lessonTabs` carries `.hidden` while the part is `'menu'`, so the tabs exist only inside a section, where there is something to switch between. The part names map to panel ids by capitalisation (`material` → `partMaterial`, `menu` → `partMenu`), which is what `switchLessonPart()` and `restoreLessonPart()` rely on, and `'menu'` is a part like any other — that is why `currentLessonPart` starts as `'menu'`. Back is a step **up**, not out: `goBack()` (`js/shell.js`) turns a section back into the menu, and only from the menu does it leave for the lesson list.
+- **`#partMaterial` holds the grammar card with the lesson's vocabulary card under it; `#partExercise` holds only the list of drills.** A drill is one entry in `LESSON_DRILL_GROUPS` (`js/lesson.js`) with a `kind` that says what runs it and where it draws: `exercise` → `startExercise()` into `#exerciseQuestion`, `translation` → `startTranslation()` into `#translationQuestion`, `flashcards` → `startFlashcards()` into `#flashcardContainer`. Those three containers live on **`#drillSection`, a screen of its own** — a chosen drill is a page, not a card appended under the list. `startLessonDrill()` shows the one container the chosen drill needs, clears the other two and calls `showSection('drillSection')`, so the three renderers keep their own ids and none of them had to change; `closeLessonDrill()` is the way back, and every drill's result block offers it. The app bar titles that screen from `currentDrill.label`, which is why `currentDrill` holds the drill **object**. Adding a drill means one entry in that catalogue — plus an availability rule in `lessonDrillAvailable()` if it is not an `exercises`/`translation` key.
+- **Horizontal swipe switches lesson sections on touch screens.** `initLessonSwipe()` (`js/lesson.js`, called from `boot.js`) listens on `#lessonSection` and moves along `SWIPE_PARTS` — the panel tabs only. «Тест» is deliberately not in that row: it leaves for another screen, and a mis-aimed finger should not start one. A gesture is ignored when it is short, more vertical than horizontal, multi-touch, or started inside something that scrolls sideways itself (`SWIPE_BLOCKERS` — declension tables, the tab bar, chip rows, inputs). Both ends of the row are dead ends; the gesture never wraps.
 - `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` (`js/shell.js`) drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
 - Functions call freely across files — they are all globals on `window`, and every file is loaded before anything runs. There is no import graph to keep in sync; the only ordering rule is the one about `boot.js` above.
 - Top-level `let` and `const` bindings — state (`stats`, `testState`, `allFlashcardState`, …) *and* the data (`LESSONS_DATA`, `PRAYER_DATA`, `LICENSES`) — are **not** on `window`; splitting the data into their own files did not change this, because `const` at the top level of a classic script never creates a window property. `function` declarations *are* on `window`. So a harness can call `window.openLesson(3)` but must reach data through `window.eval('LESSONS_DATA')`. Test through the DOM, not through `window.someState`.

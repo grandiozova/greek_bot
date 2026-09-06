@@ -41,7 +41,9 @@ function showExercise() {
     if (s.index >= s.total) {
         document.getElementById('exerciseQuestion').innerHTML =
             resultBlock(s.correct, s.total, 'Упражнение завершено') +
-            '<button class="menu-btn primary" onclick="startExercise(\'' + s.type + '\')"><span class="msym">restart_alt</span>Ещё раз</button>';
+            '<div class="md-button-row">' +
+            '<button class="menu-btn primary" onclick="startExercise(\'' + s.type + '\')"><span class="msym">restart_alt</span>Ещё раз</button>' +
+            '<button class="menu-btn outlined" onclick="closeLessonDrill()"><span class="msym">arrow_back</span>К упражнениям</button></div>';
         return;
     }
     let q = s.questions[s.index];

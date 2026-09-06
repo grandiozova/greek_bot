@@ -28,6 +28,7 @@ initTheme();
 loadStats();
 renderMainMenu();
 updateShell();
+initLessonSwipe();
 
 // Top app bar получает контейнерный тон при прокрутке (поведение M3 «on scroll»)
 // Класс на app bar переключаем не чаще кадра — иначе запись в DOM на каждый тик скролла

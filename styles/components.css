@@ -90,8 +90,9 @@
 .menu-btn.elevated:hover, .md-button--elevated:hover { box-shadow: var(--md-sys-elevation-level2); }
 .menu-btn .msym, .md-button .msym { font-size: 18px; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20; }
 
-/* выбор упражнения: подписанные группы кнопок */
+/* выбор упражнения: подписанные группы пунктов меню */
 .drill-group + .drill-group { margin-top: 8px; }
+.drill-group + .drill-group .drill-group__label { padding-top: 16px; }
 .drill-group__label {
     padding: 8px 4px 0;
     font-size: 0.875rem;
@@ -141,6 +142,8 @@
     border-radius: var(--md-sys-shape-corner-large);
     -webkit-tap-highlight-color: transparent;
 }
+/* однострочный list item (M3): без вспомогательного текста высота меньше */
+.lesson-item--single { min-height: 56px; }
 .lesson-item::before {
     content: '';
     position: absolute;
@@ -164,6 +167,11 @@
     font-size: 0.875rem;
     font-weight: 500;
     flex-shrink: 0;
+}
+/* тот же «аватар», но с иконкой вместо номера — меню разделов урока и упражнений */
+.lesson-item__avatar .msym {
+    font-size: 20px;
+    font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20;
 }
 .lesson-item__text { flex: 1; min-width: 0; }
 .lesson-item__headline, .lesson-item__supporting,
