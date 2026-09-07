@@ -463,8 +463,11 @@
     padding: 0;
     border: 0;
     border-radius: var(--md-sys-shape-corner-full);
-    background: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-on-secondary-container);
+    /* Filled icon button, а не tonal: тональные роли (*-container) почти
+       сливаются с surface-container-high карточки — 1.06:1 в светлой теме и
+       1.00:1 в «Сепии». primary даёт 5.2–8.4:1 во всех трёх темах. */
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
     cursor: pointer;
     isolation: isolate;
     overflow: hidden;

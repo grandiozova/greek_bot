@@ -78,6 +78,20 @@
 }
 .license-item a:hover { text-decoration: underline; }
 .license-item a .msym { font-size: 16px; }
+/* Мобильные экраны: 4 пункта (Системная/Светлая/Тёмная/Сепия) не
+   помещаются с подписями — прячем текст, оставляем только иконки.
+   Текст остаётся в разметке и слышен скринридерам — font-size: 0
+   убирает подпись только визуально, а не из DOM. */
+@media (max-width: 420px) {
+    .md-segmented button {
+        gap: 0;
+        padding: 0 4px;
+        font-size: 0;
+    }
+    .md-segmented button .msym {
+        font-size: 20px;
+    }
+}
 
 /* Широкое окно (expanded): navigation bar превращается в navigation rail */
 @media (min-width: 905px) {

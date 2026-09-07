@@ -1,7 +1,7 @@
 // ============================================================
 // ФУНКЦИИ ДЛЯ ПЕРЕВОДА
 // ============================================================
-
+ 
 function checkTranslationBuild() {
     let s = translationState;
     if (s.index >= s.total) return;
@@ -44,11 +44,12 @@ function startTranslation(type) {
         index: 0,
         correct: 0,
         total: qs.length,
-        chosen: []
+        chosen: [],
+        chosenIdx: []
     };
     showTranslation();
 }
-
+ 
 function showTranslation() {
     let s = translationState;
     if (s.index >= s.total) {
@@ -64,7 +65,7 @@ function showTranslation() {
     let container = document.getElementById('translationQuestion');
     let html = progressHead('Перевод ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     html += '<div class="question">' + q.source + '</div>';
-
+ 
     // Собираем все слова: правильные + лишние (из словаря урока)
     let lessonData = getLessonData(currentLesson);
     let vocabWords = lessonData.vocabulary ? lessonData.vocabulary.map(v => v.greek) : [];
@@ -88,39 +89,72 @@ function showTranslation() {
         let chosenExtras = shuffle(extras).slice(0, 4);
         allWords = shuffle([...correctWords, ...chosenExtras]);
     }
-
+ 
+    // Каждому чипу — свой индекс. Это важно, если одно и то же слово (например, «καί»)
+    // встречается в банке слов несколько раз: индекс однозначно связывает конкретный
+    // чип с конкретным токеном в поле сборки, чтобы удаление работало точно.
+    translationState.allWords = allWords;
+ 
     html += '<div class="build-area" id="transBuildArea"></div>';
     html += '<div class="word-bank" id="transWordBank">';
-    for (let w of allWords) {
-        html += '<span class="chip" onclick="transPickWord(\'' + escArg(w) + '\')">' + w + '</span>';
-    }
+    allWords.forEach((w, idx) => {
+        html += '<span class="chip" data-chip-idx="' + idx + '" onclick="transPickWord(\'' + escArg(w) + '\', ' + idx + ')">' + w + '</span>';
+    });
     html += '</div>';
     html += '<div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationBuild()"><span class="msym">check</span>Проверить</button>';
     html += '<button class="menu-btn text" onclick="transClear()"><span class="msym">undo</span>Очистить</button></div>';
-
+ 
     container.innerHTML = html;
     translationState.chosen = [];
+    translationState.chosenIdx = [];
 }
-
-function transPickWord(w) {
-    translationState.chosen.push(w);
-    let bank = document.getElementById('transWordBank');
-    bank.querySelectorAll('.chip').forEach(c => {
-        if (c.textContent === w && !c.classList.contains('picked')) c.classList.add('picked');
-    });
+ 
+function transPickWord(w, idx) {
+    let s = translationState;
+    s.chosen.push(w);
+    if (!s.chosenIdx) s.chosenIdx = [];
+    s.chosenIdx.push(idx);
+ 
+    let chip = document.querySelector('#transWordBank .chip[data-chip-idx="' + idx + '"]');
+    if (chip) chip.classList.add('picked');
+ 
     let area = document.getElementById('transBuildArea');
     let t = document.createElement('span');
     t.className = 'token';
     t.textContent = w;
+    t.setAttribute('data-chip-idx', idx);
+    t.title = 'Нажмите, чтобы убрать слово';
+    t.setAttribute('role', 'button');
+    t.setAttribute('tabindex', '0');
+    t.onclick = function () { transRemoveToken(idx); };
+    t.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); transRemoveToken(idx); } };
     area.appendChild(t);
 }
-
+ 
+// Убирает ровно то слово, по чипу которого кликнули — остальные токены не трогает.
+function transRemoveToken(idx) {
+    let s = translationState;
+    if (!s.chosenIdx) return;
+    let pos = s.chosenIdx.indexOf(idx);
+    if (pos === -1) return;
+    s.chosenIdx.splice(pos, 1);
+    s.chosen.splice(pos, 1);
+ 
+    let area = document.getElementById('transBuildArea');
+    let tokenEl = area && area.querySelector('.token[data-chip-idx="' + idx + '"]');
+    if (tokenEl) tokenEl.remove();
+ 
+    let chip = document.querySelector('#transWordBank .chip[data-chip-idx="' + idx + '"]');
+    if (chip) chip.classList.remove('picked');
+}
+ 
 function transClear() {
     translationState.chosen = [];
+    translationState.chosenIdx = [];
     document.getElementById('transBuildArea').innerHTML = '';
     document.getElementById('transWordBank').querySelectorAll('.chip').forEach(c => c.classList.remove('picked'));
 }
-
+ 
 function checkExerciseTranslation(index) {
     let inp = document.getElementById('transInput');
     if (!inp) return;
@@ -154,4 +188,4 @@ function checkExerciseTranslation(index) {
     saveStats();
     // setTimeout убираем
 }
-
+ 
