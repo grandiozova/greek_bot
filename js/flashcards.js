@@ -174,8 +174,8 @@ const CARD_DECKS = {
 };
 
 const CARD_CASE = {
-    nom: 'Nominativus', gen: 'Genitivus', dat: 'Dativus',
-    acc: 'Accusativus', voc: 'Vocativus'
+    nom: 'Nom.', gen: 'Gen.', dat: 'Dat.',
+    acc: 'Acc.', voc: 'Voc.'
 };
 const CARD_GENDER_RU = { m: 'муж. р.', f: 'жен. р.', n: 'ср. р.' };
 
