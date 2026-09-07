@@ -29,12 +29,12 @@ styles/
   tokens.css           164  :root и [data-theme=dark] — все переменные
   base.css             326  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
   components.css       723  кнопки, list item урока, карточки, табы, search bar, text field, chips
-  screens.css          563  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards, статистика, «Отче наш»
+  screens.css          648  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш»
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
   settings.css         120  segmented button темы, список лицензий
 data/
-  lessons.js         1,537  const LESSONS_DATA
+  lessons.js         1,699  const LESSONS_DATA
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
 js/
@@ -42,10 +42,10 @@ js/
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
   shell.js             207  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              74  режимы темы, applyTheme, initTheme
-  lesson.js            475  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  lesson.js            474  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
   declension.js        137  generateDeclensionTable, аккордеон
-  exercises.js         182  упражнения урока
-  flashcards.js        161  карточки: общие и урока
+  exercises.js         186  упражнения урока
+  flashcards.js        374  карточки: общие и урока, оборот карточки с тренировкой форм
   test.js              175  тест
   translation.js       155  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
@@ -89,6 +89,7 @@ Structural facts worth knowing before editing:
 - `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` (`js/shell.js`) drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
 - Functions call freely across files — they are all globals on `window`, and every file is loaded before anything runs. There is no import graph to keep in sync; the only ordering rule is the one about `boot.js` above.
 - Top-level `let` and `const` bindings — state (`stats`, `testState`, `allFlashcardState`, …) *and* the data (`LESSONS_DATA`, `PRAYER_DATA`, `LICENSES`) — are **not** on `window`; splitting the data into their own files did not change this, because `const` at the top level of a classic script never creates a window property. `function` declarations *are* on `window`. So a harness can call `window.openLesson(3)` but must reach data through `window.eval('LESSONS_DATA')`. Test through the DOM, not through `window.someState`.
+- **Формы слова тренируются на обороте карточки, а не отдельным упражнением.** `declension_fill` больше не значится в `LESSON_DRILL_GROUPS`: круглая кнопка в углу карточки (появляется только после «Показать перевод») переворачивает её и запускает тот же вопрос о форме с теми же `.option-btn`. Вопросы собирает `cardDeclensionQuestions()` (`js/flashcards.js`) из двух источников — авторских `exercises.declension_fill` урока про это же слово (их дистракторы продуманы вручную, и их же берёт «Тест», поэтому данные не осиротели) и остальной парадигмы из `declension_forms`. Ключи генерируемых форм намеренно совпадают с авторскими (`gen_sg`, `2pl`, `nom_pl_m`, `dat_sg_f`), иначе один и тот же падеж попадёт в колоду дважды. Результат кешируется в `word._declQuestions` — тем же приёмом, что `entry._examples`. Ответ перерисовывает только `#cardDeclension`, а не всю карточку: иначе анимация переворота проигрывалась бы на каждый вариант.
 - **The dictionary and the flashcards share one cache.** `buildAllVocabCache()` (`js/vocab.js`) collects the vocabulary of every lesson ≥ `VOCAB_FIRST_LESSON` (lesson 1 is the letter names, not words), de-duplicates it and serves both screens; `startAllFlashcards(type)` builds its deck from there, not from `LESSONS_DATA` directly. A card and a dictionary entry are therefore literally the same object — which is why `findUsageExamples()` caches the full set in `entry._examples` and slices it, instead of caching whatever count the first caller asked for.
 - **Part of speech is a filter, not just a heading.** `item.type` in `data/lessons.js` drives the dictionary's section headings, the `.filter-chip` row above both screens, and which words go into a flashcard deck. The permitted values are listed in `VOCAB_TYPE_ORDER` and `TYPE_LABELS` (`js/vocab.js`): `noun`, `verb`, `adjective`, `pronoun`, `adverb`, `preposition`, `conjunction`, `particle`, `article`, `other`. A new type must go into both lists, or its words fall into «Прочее» and get no chip.
 - Progress is `localStorage` only: `greek_stats`, `greek_theme`, `greek_last_lesson`. All reads/writes must stay wrapped in `try/catch` — they throw in private-mode Safari.

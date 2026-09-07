@@ -711,11 +711,11 @@
 
 /* --- «Показать в словосочетании» на карточках --- */
 .flashcard-context-btn {
-    margin: 12px auto 0;
+    margin: 0 auto;
     display: flex;
 }
 .flashcard-context {
-    margin: 10px auto 0;
+    margin: 12px auto 0;
     max-width: 420px;
     animation: md-token-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
 }

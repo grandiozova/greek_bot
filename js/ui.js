@@ -1,7 +1,7 @@
 // ============================================================
 // M3: ripple, snackbar, dialog, progress
 // ============================================================
-const RIPPLE_TARGETS = '.menu-btn, .md-button, .option-btn, .md-icon-button, .lesson-item, .md-fab, .md-feature-card, .tab-bar button, .flashcard-buttons button, .word-bank .chip, .filter-chip, .prayer-word, .clear-btn, .input-group button, .md-nav-item';
+const RIPPLE_TARGETS = '.menu-btn, .md-button, .option-btn, .md-icon-button, .lesson-item, .md-fab, .md-feature-card, .tab-bar button, .flashcard-buttons button, .flashcard-flip-btn, .word-bank .chip, .filter-chip, .prayer-word, .clear-btn, .input-group button, .md-nav-item';
 
 document.addEventListener('pointerdown', function (e) {
     let host = e.target.closest && e.target.closest(RIPPLE_TARGETS);

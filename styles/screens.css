@@ -329,7 +329,10 @@
    КАРТОЧКИ ДЛЯ ЗАУЧИВАНИЯ (flashcards)
    ============================================================ */
 .flashcard-area { text-align: center; padding: 8px 0; }
+/* Обёртка держит перспективу для переворота; поля остаются на самой карточке. */
+.flashcard-flip { perspective: 1200px; }
 .md-flashcard {
+    position: relative;
     background: var(--md-sys-color-surface-container-high);
     border-radius: var(--md-sys-shape-corner-extra-large);
     padding: 40px 24px;
@@ -365,6 +368,7 @@
     gap: 8px;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: 24px;
 }
 .flashcard-buttons button {
     position: relative;
@@ -399,6 +403,87 @@
 .flashcard-buttons .show { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
 .flashcard-buttons .know { background: var(--md-extended-color-success-container); color: var(--md-extended-color-on-success-container); }
 .flashcard-buttons .dontknow { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+
+/* --- Оборот карточки: тренировка форм слова --- */
+/* Кнопка-переворот стоит в углу поверх содержимого, поэтому обе стороны
+   резервируют под неё место снизу. */
+.md-flashcard--has-flip { padding-bottom: 76px; }
+.md-flashcard--back {
+    padding-top: 24px;
+    justify-content: flex-start;
+    min-height: 260px;
+}
+@keyframes md-card-flip {
+    from { transform: rotateY(-90deg); opacity: 0; }
+    to   { transform: rotateY(0deg); opacity: 1; }
+}
+.md-flashcard--flip {
+    animation: md-card-flip var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.card-declension { width: 100%; }
+.card-declension__word {
+    font-family: var(--md-ref-typeface-greek);
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: var(--md-sys-color-on-surface);
+}
+.card-declension__progress {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.03125rem;
+    text-transform: uppercase;
+    color: var(--md-sys-color-on-surface-variant);
+}
+.card-declension__prompt {
+    margin-top: 12px;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: var(--md-sys-color-primary);
+}
+.card-declension .options { margin: 16px 0 0; }
+.card-declension__done {
+    margin-top: 24px;
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    color: var(--md-sys-color-on-surface);
+}
+.card-declension .md-button-row { justify-content: center; margin-top: 8px; }
+
+.flashcard-flip-btn {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    cursor: pointer;
+    isolation: isolate;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-radius var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+}
+.flashcard-flip-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    z-index: -1;
+}
+.flashcard-flip-btn:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.flashcard-flip-btn:focus-visible::before { opacity: var(--md-sys-state-focus-opacity); }
+.flashcard-flip-btn:active { border-radius: var(--md-sys-shape-corner-medium); }
+.flashcard-flip-btn .msym { font-size: 24px; }
 
 /* ============================================================
    СТАТИСТИКА / ОШИБКИ

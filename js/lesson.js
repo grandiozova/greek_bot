@@ -14,7 +14,6 @@ const LESSON_DRILL_GROUPS = [
     {
         label: 'Формы и грамматика',
         drills: [
-            { kind: 'exercise', key: 'declension_fill', label: 'Склонение', icon: 'account_tree' },
             { kind: 'exercise', key: 'case_number', label: 'Падеж и число', icon: 'target' },
             { kind: 'exercise', key: 'agreement', label: 'Согласование', icon: 'link' },
             { kind: 'exercise', key: 'attribute_vs_predicate', label: 'Атрибут / предикатив', icon: 'balance' },
