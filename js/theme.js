@@ -3,7 +3,7 @@
 // ============================================================
 // 'system' хранится как выбор, а не как вычисленная тема: иначе смена темы
 // в ОС перестанет доходить до приложения после первого же запуска.
-const THEME_MODES = ['system', 'light', 'dark'];
+const THEME_MODES = ['system', 'light', 'dark', 'sepia'];
 let themeMode = 'system';
 
 const darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
