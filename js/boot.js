@@ -28,7 +28,6 @@ renderMainMenu();
 updateShell();
 initLessonSwipe();
 
-let scrollFrame = null;
 window.addEventListener('scroll', function () {
     if (scrollFrame) return;
     scrollFrame = requestAnimationFrame(function () {

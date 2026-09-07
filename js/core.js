@@ -3,7 +3,6 @@
 // ============================================================
 
 // Инициализация всех систем
-normalizeTranslationData();
 normalizeCaseNames();
 initTheme();
 loadStats();
@@ -42,3 +41,11 @@ document.addEventListener('keydown', function (e) {
         e.target.click();
     }
 });
+
+// Отменяет запланированный переход (используется в упражнениях и тестах)
+function cancelAdvance() {
+    if (window._advanceTimer) {
+        clearTimeout(window._advanceTimer);
+        window._advanceTimer = null;
+    }
+}
