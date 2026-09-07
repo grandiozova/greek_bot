@@ -94,6 +94,11 @@ function showTest() {
     s.answered = false;
 }
 
+function nextTestQuestion() {
+    testState.index++;
+    showTest();
+}
+
 function testAnswer(sel, corr) {
     if (testState.answered) return;
     testState.answered = true;
@@ -108,9 +113,14 @@ function testAnswer(sel, corr) {
     stats.totalCorrect += ok ? 1 : 0;
     saveStats();
     let container = document.getElementById('testContainer');
-    if (ok) container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>';
-    else container.innerHTML = '<div class="feedback fail"><span>Неверно. Правильный ответ: <strong>' + corr + '</strong></span></div>';
-    scheduleAdvance(() => { testState.index++; showTest(); }, 1500);
+    let feedbackClass = ok ? 'ok' : 'fail';
+    let feedbackText = ok ? 'Верно!' : 'Неверно. Правильный ответ: <strong>' + corr + '</strong>';
+    container.innerHTML = `
+        <div class="feedback ${feedbackClass}"><span>${feedbackText}</span></div>
+        <div class="md-button-row">
+            <button class="menu-btn primary" onclick="nextTestQuestion()"><span class="msym">arrow_forward</span>Далее</button>
+        </div>
+    `;
 }
 
 function testTranslation() {
@@ -125,14 +135,21 @@ function testTranslation() {
         if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
     }
     let container = document.getElementById('testContainer');
-    if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
+    let feedbackClass = ok ? 'ok' : 'fail';
+    let feedbackText = ok ? 'Верно!' : 'Неверно. Ключевые слова: ' + q.keywords.join(', ');
+    if (ok) { testState.correct++; stats.totalCorrect++; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         recordError(lesson, { word: q.greek, correct: q.keywords.join(', '), your: ans });
-        container.innerHTML = '<div class="feedback fail"><span>Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</span></div>';
     }
     saveStats();
     testState.answered = true;
+    container.innerHTML = `
+        <div class="feedback ${feedbackClass}"><span>${feedbackText}</span></div>
+        <div class="md-button-row">
+            <button class="menu-btn primary" onclick="nextTestQuestion()"><span class="msym">arrow_forward</span>Далее</button>
+        </div>
+    `;
 }
 
 function testPickWord(w) {
@@ -163,13 +180,19 @@ function testTranslationRu() {
     let corr = q.correct_sequence;
     let ok = chosen.length === corr.length && chosen.every((w,i) => w === corr[i]);
     let container = document.getElementById('testContainer');
-    if (ok) { testState.correct++; stats.totalCorrect++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
+    let feedbackClass = ok ? 'ok' : 'fail';
+    let feedbackText = ok ? 'Верно!' : 'Неверно. Правильно: <strong>' + corr.join(' ') + '</strong>';
+    if (ok) { testState.correct++; stats.totalCorrect++; } else {
         stats.totalWrong++;
         let lesson = currentLesson;
         recordError(lesson, { word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
-        container.innerHTML = '<div class="feedback fail"><span>Неверно. Правильно: <strong>' + corr.join(' ') + '</strong></span></div>';
     }
     saveStats();
     testState.answered = true;
+    container.innerHTML = `
+        <div class="feedback ${feedbackClass}"><span>${feedbackText}</span></div>
+        <div class="md-button-row">
+            <button class="menu-btn primary" onclick="nextTestQuestion()"><span class="msym">arrow_forward</span>Далее</button>
+        </div>
+    `;
 }
-

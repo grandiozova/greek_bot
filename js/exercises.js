@@ -14,26 +14,25 @@ function startExercise(type) {
 function getCaseName(caseKey) {
     let map = {
         // Падежи для существительных
-        'gen_sg': 'Genitivus (Род. п.) — кого? чего?',
-        'dat_sg': 'Dativus (Дат. п.) — кому? чему?',
-        'acc_sg': 'Accusativus (Вин. п.) — кого? что?',
-        'nom_pl': 'Nominativus (Им. п.) мн.ч. — кто? что?',
-        'gen_pl': 'Genitivus (Род. п.) мн.ч. — кого? чего?',
-        'dat_pl': 'Dativus (Дат. п.) мн.ч. — кому? чему?',
-        'acc_pl': 'Accusativus (Вин. п.) мн.ч. — кого? что?',
-        'voc_sg': 'Vocativus (Зват. п.) — обращение',
-        'nom_pl_m': 'Nominativus (Им. п.) мн.ч. муж.р. — кто? что?',
-        // Родительный падеж мужского рода
-        'gen_sg_m': 'Genitivus (Род. п.) муж.р. — кого? чего?',
-        'dat_sg_f': 'Dativus (Дат. п.) жен.р. — кому? чему?',
-        'acc_sg_n': 'Accusativus (Вин. п.) ср.р. — кого? что?',
+        'gen_sg': 'Genitivus sg.',
+        'dat_sg': 'Dativus sg.',
+        'acc_sg': 'Accusativus sg.',
+        'nom_pl': 'Nominativus pl.',
+        'gen_pl': 'Genitivus pl.',
+        'dat_pl': 'Dativus pl.',
+        'acc_pl': 'Accusativus pl.',
+        'voc_sg': 'Vocativus sg.',
+        'nom_pl_m': 'Nominativus pl. m.',
+        'gen_sg_m': 'Genitivus sg. m.',
+        'dat_sg_f': 'Dativus sg. f.',
+        'acc_sg_n': 'Accusativus sg. n.',
         // Для глаголов (личные формы)
-        '1sg': '1-е лицо ед.ч. — я',
-        '2sg': '2-е лицо ед.ч. — ты',
-        '3sg': '3-е лицо ед.ч. — он/она/оно',
-        '1pl': '1-е лицо мн.ч. — мы',
-        '2pl': '2-е лицо мн.ч. — вы',
-        '3pl': '3-е лицо мн.ч. — они'
+        '1sg': '1 sg.',
+        '2sg': '2 sg.',
+        '3sg': '3 sg.',
+        '1pl': '1 pl.',
+        '2pl': '2 pl.',
+        '3pl': '3 pl.'
     };
     return map[caseKey] || caseKey;
 }

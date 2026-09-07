@@ -186,9 +186,9 @@ const CARD_DECKS = {
     all:    { state: function () { return allFlashcardState; }, render: function () { showAllFlashcard(); } }
 };
 
-const CARD_CASE_RU = {
-    nom: 'Nominativus (Им. п.)', gen: 'Genitivus (Род. п.)', dat: 'Dativus (Дат. п.)',
-    acc: 'Accusativus (Вин. п.)', voc: 'Vocativus (Зват. п.)'
+const CARD_CASE = {
+    nom: 'Nominativus', gen: 'Genitivus', dat: 'Dativus',
+    acc: 'Accusativus', voc: 'Vocativus'
 };
 const CARD_GENDER_RU = { m: 'муж. р.', f: 'жен. р.', n: 'ср. р.' };
 
@@ -197,10 +197,14 @@ const CARD_GENDER_RU = { m: 'муж. р.', f: 'жен. р.', n: 'ср. р.' };
 // одинаково и в списке вопросов нет разнобоя формулировок.
 function cardCaseLabel(key) {
     let m = /^([123])(sg|pl)$/.exec(key);
-    if (m) return m[1] + '-е лицо ' + (m[2] === 'sg' ? 'ед. ч.' : 'мн. ч.');
+    if (m) return m[1] + ' ' + (m[2] === 'sg' ? 'sg.' : 'pl.');
     m = /^(nom|gen|dat|acc|voc)_(sg|pl)(?:_([mfn]))?$/.exec(key);
-    if (m) return CARD_CASE_RU[m[1]] + ' ' + (m[2] === 'sg' ? 'ед. ч.' : 'мн. ч.') +
-        (m[3] ? ', ' + CARD_GENDER_RU[m[3]] : '');
+    if (m) {
+        let label = CARD_CASE[m[1]] || m[1];
+        let num = m[2] === 'sg' ? 'sg.' : 'pl.';
+        let gender = m[3] ? (m[3] === 'm' ? ' m.' : m[3] === 'f' ? ' f.' : ' n.') : '';
+        return label + ' ' + num + gender;
+    }
     return getCaseName(key);
 }
 
