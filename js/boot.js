@@ -21,6 +21,7 @@ function normalizeTranslationData() {
     }
 }
 
+// Здесь НЕТ вызова normalizeCaseNames (пока)
 normalizeTranslationData();
 initTheme();
 loadStats();
@@ -28,6 +29,7 @@ renderMainMenu();
 updateShell();
 initLessonSwipe();
 
+// Тень на app bar при скролле – используем scrollFrame из shell.js
 window.addEventListener('scroll', function () {
     if (scrollFrame) return;
     scrollFrame = requestAnimationFrame(function () {
