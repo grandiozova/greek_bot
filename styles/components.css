@@ -722,3 +722,31 @@
 .flashcard-context .vocab-example {
     background: var(--md-sys-color-surface-container-high);
 }
+/* ============================================================
+   Токены в build-area стали кликабельными — убирают слово по клику.
+   Добавить в конец styles/components.css (не переопределяет
+   .build-area .token, а дополняет уже существующее правило).
+   ============================================================ */
+.build-area .token {
+    cursor: pointer;
+    gap: 6px;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+                opacity var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+}
+.build-area .token:hover,
+.build-area .token:focus-visible {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    outline: none;
+}
+.build-area .token::after {
+    content: '✕';
+    font-size: 0.6875rem;
+    opacity: 0.55;
+}
+.build-area .token:hover::after,
+.build-area .token:focus-visible::after {
+    opacity: 0.85;
+}

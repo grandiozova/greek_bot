@@ -1,7 +1,92 @@
+/
+Claude finished the response
+Thought for 33s
+
+Вижу проблему — это как раз тот samый запасной источник (exercises.translate_greek_to_russian), где keywords — не готовое предложение, а список слов для проверки ответа, и я просто склеивала их через запятую. Из-за этого получается «Царство,знает,истину» вместо нормального предложения.
+
+Чинится добавлением функции, которая аккуратно собирает из этого списка предложение (пробелы, заглавная буква, точка в конце). В vocab.js замените этот кусок:
+
+Было:
+js
+
+if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
+    data.exercises.translate_greek_to_russian.forEach(q => {
+        let ru = Array.isArray(q.keywords) ? q.keywords.join(', ') : q.keywords;
+        tryAdd(q.greek, ru);
+    });
+}
+
+Стало:
+js
+
+if (examples.length < maxCount && data.exercises && data.exercises.translate_greek_to_russian) {
+    data.exercises.translate_greek_to_russian.forEach(q => {
+        tryAdd(q.greek, formatKeywordsAsSentence(q.keywords));
+    });
+}
+
+И добавьте саму функцию рядом с highlightWord (например, прямо перед findUsageExamples):
+js
+
+// keywords — это список слов для проверки ответа, а не готовое предложение;
+// склеиваем их в подобие фразы: пробелы вместо запятых, заглавная буква, точка.
+function formatKeywordsAsSentence(keywords) {
+    if (!keywords) return keywords;
+    let text = Array.isArray(keywords) ? keywords.join(' ').trim() : String(keywords).trim();
+    if (!text) return text;
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    if (!/[.!?]$/.test(text)) text += '.';
+    return text;
+}
+
+Теперь «βασιλεία γινώσκει ἀλήθειαν.» будет показывать «Царство знает истину.» вместо «Царство,знает,истину».
+
+Хотите, я сразу вышлю обновлённый vocab.js целиком, чтобы просто заменить файл?
+
+<!DOCTYPE html> <html lang="ru"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"> <meta name="description" content="Древнегреческий учебник в кармане: уроки 1–10, словарь, карточки, тесты и разбор «Отче наш»."> <
+
+pasted
+
+это мой индекс код работаю через vscode мне нужно исправить это: в раздел упражнения с переводом предложений с греческого на русский и с русского на греческий добавить возможность удалять слова из поля ввода текста через нажатие на слово (чтобы можно было удалить по одному, а не только через очистить все)
+Thought for 5s
+
+Чтобы слова в поле ввода стали кликабельными для удаления по одному, мне нужно увидеть js/translation.js — там сейчас функции сборки предложения (что-то вроде transPickWord, transClear, добавление токенов в build-area). Без него я рискую either сломать существующую логику проверки ответа, either угадать не те имена функций/переменных.
+
+Пришлите, пожалуйста, js/translation.js — и я:
+
+    Сделаю каждый .token в build-area кликабельным (клик = убрать это слово и вернуть его обратно в word-bank, разблокировав чип);
+    Оставлю кнопку «Очистить всё» как есть, для удаления сразу всех;
+    Ничего в проверке ответа не сломаю — просто буду синхронизировать массив выбранных слов с тем, что видно в build-area.
+
+// ============================================================ // ФУНКЦИИ ДЛЯ ПЕРЕВОДА // ============================================================ function checkTranslationBuild() { let s = translationState; if (s.index >= s.total) return; let q = s.questions[s.index]; if (!q)
+
+pasted
+Thought for 31s
+
+Вижу — сейчас transPickWord просто ищет чип по тексту и помечает первый непомеченный, а токены в build-area — это просто текст без возможности клика. Добавлю каждому чипу и токену свой индекс, чтобы точно знать, какое слово из банка соответствует какому токену (это важно, если одно и то же слово встречается в предложении дважды — например «καί»), и повешу клик на сам токен для удаления.
+Created 2 files, ran a command, read a file
+
+Что изменилось в js/translation.js (замените файл целиком):
+
+    Каждому чипу в банке слов теперь присваивается data-chip-idx — уникальный номер по позиции в перемешанном списке. Это нужно, чтобы отличать одинаковые слова друг от друга (например, если «καί» встречается дважды).
+    transPickWord(w, idx) теперь помнит не только само слово, но и индекс исходного чипа (translationState.chosenIdx), и вешает на созданный токен onclick/onkeydown, вызывающий transRemoveToken(idx).
+    Новая transRemoveToken(idx) — убирает ровно этот токен из build-area, снимает .picked с исходного чипа (он снова доступен для выбора) и синхронно правит chosen/chosenIdx, так что checkTranslationBuild() как проверяла массив chosen по порядку — так и продолжает, ничего в логике проверки не сломано.
+    transClear() и showTranslation() теперь дополнительно сбрасывают chosenIdx.
+
+translation-tokens.css — вставьте в конец styles/components.css: курсор-указатель, крестик ✕ после слова и подсветка в цвет ошибки при наведении/фокусе — чтобы было видно, что токен кликабелен.
+Translation
+JS 
+Translation tokens
+Code·CSS 
+Write a message…
+
+
+Claude is AI and can make mistakes.
+Translation · JS
 // ============================================================
 // ФУНКЦИИ ДЛЯ ПЕРЕВОДА
 // ============================================================
-
+ 
 function checkTranslationBuild() {
     let s = translationState;
     if (s.index >= s.total) return;
@@ -44,11 +129,12 @@ function startTranslation(type) {
         index: 0,
         correct: 0,
         total: qs.length,
-        chosen: []
+        chosen: [],
+        chosenIdx: []
     };
     showTranslation();
 }
-
+ 
 function showTranslation() {
     let s = translationState;
     if (s.index >= s.total) {
@@ -64,7 +150,7 @@ function showTranslation() {
     let container = document.getElementById('translationQuestion');
     let html = progressHead('Перевод ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     html += '<div class="question">' + q.source + '</div>';
-
+ 
     // Собираем все слова: правильные + лишние (из словаря урока)
     let lessonData = getLessonData(currentLesson);
     let vocabWords = lessonData.vocabulary ? lessonData.vocabulary.map(v => v.greek) : [];
@@ -88,39 +174,72 @@ function showTranslation() {
         let chosenExtras = shuffle(extras).slice(0, 4);
         allWords = shuffle([...correctWords, ...chosenExtras]);
     }
-
+ 
+    // Каждому чипу — свой индекс. Это важно, если одно и то же слово (например, «καί»)
+    // встречается в банке слов несколько раз: индекс однозначно связывает конкретный
+    // чип с конкретным токеном в поле сборки, чтобы удаление работало точно.
+    translationState.allWords = allWords;
+ 
     html += '<div class="build-area" id="transBuildArea"></div>';
     html += '<div class="word-bank" id="transWordBank">';
-    for (let w of allWords) {
-        html += '<span class="chip" onclick="transPickWord(\'' + escArg(w) + '\')">' + w + '</span>';
-    }
+    allWords.forEach((w, idx) => {
+        html += '<span class="chip" data-chip-idx="' + idx + '" onclick="transPickWord(\'' + escArg(w) + '\', ' + idx + ')">' + w + '</span>';
+    });
     html += '</div>';
     html += '<div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationBuild()"><span class="msym">check</span>Проверить</button>';
     html += '<button class="menu-btn text" onclick="transClear()"><span class="msym">undo</span>Очистить</button></div>';
-
+ 
     container.innerHTML = html;
     translationState.chosen = [];
+    translationState.chosenIdx = [];
 }
-
-function transPickWord(w) {
-    translationState.chosen.push(w);
-    let bank = document.getElementById('transWordBank');
-    bank.querySelectorAll('.chip').forEach(c => {
-        if (c.textContent === w && !c.classList.contains('picked')) c.classList.add('picked');
-    });
+ 
+function transPickWord(w, idx) {
+    let s = translationState;
+    s.chosen.push(w);
+    if (!s.chosenIdx) s.chosenIdx = [];
+    s.chosenIdx.push(idx);
+ 
+    let chip = document.querySelector('#transWordBank .chip[data-chip-idx="' + idx + '"]');
+    if (chip) chip.classList.add('picked');
+ 
     let area = document.getElementById('transBuildArea');
     let t = document.createElement('span');
     t.className = 'token';
     t.textContent = w;
+    t.setAttribute('data-chip-idx', idx);
+    t.title = 'Нажмите, чтобы убрать слово';
+    t.setAttribute('role', 'button');
+    t.setAttribute('tabindex', '0');
+    t.onclick = function () { transRemoveToken(idx); };
+    t.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); transRemoveToken(idx); } };
     area.appendChild(t);
 }
-
+ 
+// Убирает ровно то слово, по чипу которого кликнули — остальные токены не трогает.
+function transRemoveToken(idx) {
+    let s = translationState;
+    if (!s.chosenIdx) return;
+    let pos = s.chosenIdx.indexOf(idx);
+    if (pos === -1) return;
+    s.chosenIdx.splice(pos, 1);
+    s.chosen.splice(pos, 1);
+ 
+    let area = document.getElementById('transBuildArea');
+    let tokenEl = area && area.querySelector('.token[data-chip-idx="' + idx + '"]');
+    if (tokenEl) tokenEl.remove();
+ 
+    let chip = document.querySelector('#transWordBank .chip[data-chip-idx="' + idx + '"]');
+    if (chip) chip.classList.remove('picked');
+}
+ 
 function transClear() {
     translationState.chosen = [];
+    translationState.chosenIdx = [];
     document.getElementById('transBuildArea').innerHTML = '';
     document.getElementById('transWordBank').querySelectorAll('.chip').forEach(c => c.classList.remove('picked'));
 }
-
+ 
 function checkExerciseTranslation(index) {
     let inp = document.getElementById('transInput');
     if (!inp) return;
@@ -154,4 +273,4 @@ function checkExerciseTranslation(index) {
     saveStats();
     // setTimeout убираем
 }
-
+ 
