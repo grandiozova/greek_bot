@@ -40,6 +40,7 @@ function showAllFlashcard() {
     var html = progressHead('Слово ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     html += flashcardBodyHtml(w, s, 'all');
     if (s.revealed) {
+        // Показываем пример сразу, без кнопки
         if (!s.flipped) html += flashcardContextBlockHtml(w);
         html += '<div class="flashcard-buttons"><button class="know" onclick="allFlashcardAnswer(true)"><span class="msym">check</span>Знаю</button><button class="dontknow" onclick="allFlashcardAnswer(false)"><span class="msym">close</span>Не знаю</button></div>';
     } else {
@@ -109,6 +110,7 @@ function showFlashcard() {
     let html = progressHead('Карточка ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     html += flashcardBodyHtml(w, s, 'lesson');
     if (s.revealed) {
+        // Показываем пример сразу, без кнопки
         if (!s.flipped) html += flashcardContextBlockHtml(w);
         html += '<div class="flashcard-buttons"><button class="know" onclick="flashAnswer(true)"><span class="msym">check</span>Знаю</button><button class="dontknow" onclick="flashAnswer(false)"><span class="msym">close</span>Не знаю</button></div>';
     } else {
@@ -135,32 +137,17 @@ function flashAnswer(know) {
 }
 
 // ------------------------------------------------------------
-// «Показать в словосочетании» — берём то же слово в подлинном
-// примере из упражнений урока (findUsageExamples определена в
-// vocab.js; к моменту клика все скрипты уже загружены).
+// Пример словосочетания — показывается сразу после перевода
+// без нажатия на кнопку.
 // ------------------------------------------------------------
 function flashcardContextBlockHtml(word) {
     if (typeof findUsageExamples !== 'function') return '';
     let examples = findUsageExamples(word, 1);
     if (!examples.length) return '';
-    let exampleHtml = '<div class="vocab-example">' +
+    return '<div class="vocab-example">' +
         '<div class="vocab-example__greek">' + highlightWord(examples[0].greek, word) + '</div>' +
         '<div class="vocab-example__ru">' + examples[0].russian + '</div>' +
     '</div>';
-    return (
-        '<button type="button" class="menu-btn outlined flashcard-context-btn" onclick="toggleFlashcardContext(this)">' +
-            '<span class="msym">account_tree</span>Показать в словосочетании' +
-        '</button>' +
-        '<div class="flashcard-context" style="display:none;">' + exampleHtml + '</div>'
-    );
-}
-
-function toggleFlashcardContext(btn) {
-    let block = btn.nextElementSibling;
-    if (!block) return;
-    let show = block.style.display === 'none';
-    block.style.display = show ? 'block' : 'none';
-    btn.classList.toggle('active', show);
 }
 
 // ============================================================
