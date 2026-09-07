@@ -21,6 +21,8 @@ function getCaseName(caseKey) {
         'gen_pl': 'Genitivus (Род. п.) мн.ч. — кого? чего?',
         'dat_pl': 'Dativus (Дат. п.) мн.ч. — кому? чему?',
         'acc_pl': 'Accusativus (Вин. п.) мн.ч. — кого? что?',
+        'voc_sg': 'Vocativus (Зват. п.) — обращение',
+        'nom_pl_m': 'Nominativus (Им. п.) мн.ч. муж.р. — кто? что?',
         // Родительный падеж мужского рода
         'gen_sg_m': 'Genitivus (Род. п.) муж.р. — кого? чего?',
         'dat_sg_f': 'Dativus (Дат. п.) жен.р. — кому? чему?',
