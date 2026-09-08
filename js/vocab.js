@@ -1,7 +1,9 @@
 // ============================================================
 // ПОИСК В СЛОВАРЕ ВСЕХ СЛОВ
 // ============================================================
-let allVocabCache = null;
+// allVocabCache объявлен в core.js вместе с остальным состоянием:
+// повторное `let` в другом файле — SyntaxError, скрипты делят одну
+// глобальную лексическую область.
 let vocabById = new Map();
 
 // Урок 1 — это названия букв (ἄλφα, βῆτα…), а не лексика: в словарь он не идёт.
@@ -127,6 +129,13 @@ function foldAccents(s) {
 // именно слова целиком: подстрокой ἐκ находится внутри ἐκκλησίαι, а οὐ — внутри
 // οὐρανόν, и словарь показывал такие «примеры» как употребление предлога.
 const GREEK_WORD_SOURCE = "[\\p{L}\\p{M}'\u2019]+";
+
+// Для поиска по словарю сносим всю диакритику, а не только ударение: учащийся
+// набирает «αγαθ», а в словаре стоит ἀγαθός — с придыханием и острым. При
+// сравнении форм (foldAccents) придыхание, наоборот, значимо и остаётся.
+function foldForSearch(s) {
+    return String(s).toLowerCase().normalize('NFD').replace(/\p{M}+/gu, '').normalize('NFC');
+}
 function tokenizeGreek(text) {
     return (String(text).match(new RegExp(GREEK_WORD_SOURCE, 'gu')) || []).map(foldAccents);
 }
@@ -393,13 +402,16 @@ function applyVocabFilter() {
     let input = document.getElementById('vocabSearchInput');
     let clearBtn = document.getElementById('vocabSearchClear');
     if (!input) return;
-    let query = input.value.trim().toLowerCase();
-    if (clearBtn) clearBtn.classList.toggle('show', query.length > 0);
+    let raw = input.value.trim();
+    if (clearBtn) clearBtn.classList.toggle('show', raw.length > 0);
     let entries = filterVocabByType(getAllVocab(), vocabTypeFilter);
-    if (query) {
+    if (raw) {
+        // Обе стороны сравнения сворачиваем одинаково, иначе запрос «мой»
+        // перестал бы находить «мой»: й в NFD — тоже буква с диакритикой.
+        let query = foldForSearch(raw);
         entries = entries.filter(e => {
-            let greekMatch = e.greek.toLowerCase().includes(query);
-            let ruMatch = e.translation.toLowerCase().includes(query);
+            let greekMatch = foldForSearch(e.greek).includes(query);
+            let ruMatch = foldForSearch(e.translation).includes(query);
             return greekMatch || ruMatch;
         });
     }

@@ -16,8 +16,10 @@ function generateDeclensionTable(forms, translations) {
             let f = (forms.feminine && forms.feminine.singular && forms.feminine.singular[c]) ? forms.feminine.singular[c] : '';
             let n = (forms.neuter && forms.neuter.singular && forms.neuter.singular[c]) ? forms.neuter.singular[c] : '';
             html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td>';
-            if (translations && translations.singular && translations.singular[c]) {
-                html += '<td>'+translations.singular[c]+'</td>';
+            // Колонка объявлена в <thead>, значит ячейка обязана быть в каждой
+            // строке — иначе таблица съезжает на строках без перевода.
+            if (translations) {
+                html += '<td>'+((translations.singular && translations.singular[c]) || '')+'</td>';
             }
             html += '</tr>';
         }
@@ -33,8 +35,8 @@ function generateDeclensionTable(forms, translations) {
                 let f = (forms.feminine && forms.feminine.plural && forms.feminine.plural[c]) ? forms.feminine.plural[c] : '';
                 let n = (forms.neuter && forms.neuter.plural && forms.neuter.plural[c]) ? forms.neuter.plural[c] : '';
                 html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td>';
-                if (translations && translations.plural && translations.plural[c]) {
-                    html += '<td>'+translations.plural[c]+'</td>';
+                if (translations) {
+                    html += '<td>'+((translations.plural && translations.plural[c]) || '')+'</td>';
                 }
                 html += '</tr>';
             }

@@ -31,9 +31,17 @@ function getLessonData(l) { return LESSONS_DATA[l]; }
 
 function getExercises(l, t) {
     let d = getLessonData(l);
-    if (!d) return [];
+    if (!d || !d.exercises) return [];
     return d.exercises[t] || [];
 }
+
+// Номера уроков берём из самих данных: добавленный урок подхватывается
+// списком, стрелками «предыдущий/следующий» и заголовком без правок кода.
+function lessonNumbers() {
+    return Object.keys(LESSONS_DATA).map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+}
+function firstLessonNumber() { let n = lessonNumbers(); return n.length ? n[0] : 1; }
+function lastLessonNumber() { let n = lessonNumbers(); return n.length ? n[n.length - 1] : 1; }
 
 function loadStats() {
     try {
@@ -48,7 +56,7 @@ function loadStats() {
 }
 
 function saveStats() {
-    localStorage.setItem('greek_stats', JSON.stringify(stats));
+    try { localStorage.setItem('greek_stats', JSON.stringify(stats)); } catch (e) {}
 }
 
 function recordError(lesson, error) {
@@ -56,25 +64,36 @@ function recordError(lesson, error) {
     stats.errors[lesson].push(error);
 }
 
-function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    let t = document.getElementById(id);
-    if (t) t.classList.add('active');
-}
-
-function goToMain() {
-    showSection('mainMenu');
-    renderMainMenu();
-}
-
 function pluralRu(n, one, few, many) {
-    if (n % 10 === 1 && n % 100 !== 11) return one;
-    if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return few;
+    let m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
     return many;
 }
 
+// Текст в разметку. Всё, что пришло от пользователя (его ответы в разборе
+// ошибок) или из внешних данных, проходит здесь.
+function escHtml(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// Строковый аргумент внутрь onclick="…('ЗДЕСЬ')". Сначала экранируем как строку
+// JS, потом как значение HTML-атрибута: браузер декодирует сущности до разбора
+// JS, поэтому обработчик получает исходный текст обратно и сравнение
+// с textContent кнопки по-прежнему сходится.
 function escArg(s) {
-    return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return String(s)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 }
 
 // Отменяет запланированный переход (используется в упражнениях и тестах)
@@ -91,32 +110,4 @@ function scheduleAdvance(callback, delay) {
         window._advanceTimer = null;
         callback();
     }, delay);
-}
-
-// Прогресс-бар для упражнений и карточек
-function progressHead(label, index, total) {
-    let pct = total > 0 ? Math.round((index / total) * 100) : 0;
-    return '<div style="margin-bottom:12px;">' +
-        '<div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-soft);">' +
-            '<span>' + label + '</span>' +
-            '<span>' + pct + '%</span>' +
-        '</div>' +
-        '<div style="height:4px;background:var(--border);border-radius:999px;overflow:hidden;">' +
-            '<div style="height:100%;width:' + pct + '%;background:var(--primary);border-radius:999px;transition:width 0.3s;"></div>' +
-        '</div>' +
-    '</div>';
-}
-
-// Результат (фидбек + кнопки)
-function resultBlock(correct, total, title) {
-    let pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-    let ok = pct >= 70;
-    return '<div class="feedback ' + (ok ? 'ok' : 'fail') + '">' +
-        '<span>' + title + '</span><br>' +
-        '<span>Правильно: ' + correct + ' из ' + total + ' (' + pct + '%)</span>' +
-    '</div>';
-}
-
-function emptyState(icon, text) {
-    return '<div class="search-empty"><span class="msym lg" style="font-size:48px;display:block;margin-bottom:8px;opacity:0.4;">' + icon + '</span>' + text + '</div>';
 }

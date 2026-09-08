@@ -99,7 +99,6 @@ function showFlashcard() {
     let s = flashcardState;
     let container = document.getElementById('flashcardContainer');
     if (s.index >= s.total) {
-        let p = Math.round((s.correct / s.total) * 100);
         container.innerHTML = resultBlock(s.correct, s.total, 'Карточки завершены') +
             '<div class="md-button-row">' +
             '<button class="menu-btn primary" onclick="startFlashcards()"><span class="msym">restart_alt</span>Повторить</button>' +

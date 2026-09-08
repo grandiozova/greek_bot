@@ -436,7 +436,7 @@ function nextTranslation() {
     
 function goToPrevLesson() {
     let prev = currentLesson - 1;
-    if (prev < 1) {  // было prev < 3
+    if (prev < firstLessonNumber()) {
         showToast('Это первый урок.');
         return;
     }
@@ -451,8 +451,9 @@ function goToPrevLesson() {
 
 function goToNextLesson() {
     let next = currentLesson + 1;
-    if (next > 10) {
-        showToast('Это последний урок (урок 10).');
+    let last = lastLessonNumber();
+    if (next > last) {
+        showToast('Это последний урок (урок ' + last + ').');
         return;
     }
     let data = getLessonData(next);
@@ -468,7 +469,7 @@ function updateNavButtons(lesson) {
     let prevBtn = document.getElementById('prevLessonBtn');
     let nextBtn = document.getElementById('nextLessonBtn');
     
-    if (prevBtn) prevBtn.disabled = (lesson <= 1);
-    if (nextBtn) nextBtn.disabled = (lesson >= 10);
+    if (prevBtn) prevBtn.disabled = (lesson <= firstLessonNumber());
+    if (nextBtn) nextBtn.disabled = (lesson >= lastLessonNumber());
 }
 

@@ -10,7 +10,9 @@ function collectTestQuestions(data) {
     if (!data) return all;
     for (let t of TEST_TYPES) {
         let qs = (data.exercises && data.exercises[t]) || [];
-        for (let q of qs) { q._type = t; all.push(q); }
+        // Копия, а не сам объект урока: помечать _type прямо в LESSONS_DATA
+        // значит писать в общие данные при каждом открытии урока.
+        for (let q of qs) all.push(Object.assign({}, q, { _type: t }));
     }
     return all;
 }
@@ -154,11 +156,10 @@ function testTranslation() {
 
 function testPickWord(w) {
     if (testState.answered) return;
+    let chip = pickFreeChip('testWordBank', w);
+    if (!chip) return;
+    chip.classList.add('picked');
     window._test_chosen.push(w);
-    let bank = document.getElementById('testWordBank');
-    bank.querySelectorAll('.chip').forEach(c => {
-        if (c.textContent === w && !c.classList.contains('picked')) c.classList.add('picked');
-    });
     let area = document.getElementById('testBuildArea');
     let t = document.createElement('span');
     t.className = 'token';

@@ -24,35 +24,35 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ## Project layout
 
 ```
-index.html           283  <head>, разметка, порядок загрузки
+index.html           286  <head>, разметка, порядок загрузки
 styles/
-  tokens.css           164  :root и [data-theme=dark] — все переменные
+  tokens.css           217  :root и [data-theme=dark] — все переменные
   base.css             326  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
-  components.css       723  кнопки, list item урока, карточки, табы, search bar, text field, chips
-  screens.css          648  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш»
+  components.css       751  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  screens.css          651  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш»
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
-  settings.css         120  segmented button темы, список лицензий
+  settings.css         134  segmented button темы, список лицензий
 data/
   lessons.js         1,699  const LESSONS_DATA
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
 js/
-  core.js              109  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
+  core.js              113  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
-  shell.js             207  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
+  shell.js             206  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              74  режимы темы, applyTheme, initTheme
-  lesson.js            474  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
-  declension.js        137  generateDeclensionTable, аккордеон
-  exercises.js         186  упражнения урока
-  flashcards.js        374  карточки: общие и урока, оборот карточки с тренировкой форм
-  test.js              175  тест
-  translation.js       155  перевод
+  lesson.js            475  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  declension.js        139  generateDeclensionTable, аккордеон
+  exercises.js         175  упражнения урока
+  flashcards.js        364  карточки: общие и урока, оборот карточки с тренировкой форм
+  test.js              198  тест
+  translation.js       194  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
-  prayer.js            224  «Отче наш»: разбор и упражнения
-  vocab.js             409  общий словарь, поиск, фильтр по частям речи
+  prayer.js            223  «Отче наш»: разбор и упражнения
+  vocab.js             426  общий словарь, поиск, фильтр по частям речи
   settings.js           27  showSettings, renderLicenses
-  boot.js               66  normalizeTranslationData, init*, глобальные слушатели
+  boot.js               60  normalizeTranslationData, init*, глобальные слушатели
 ```
 
 **Load order is the contract.** Three rules, all enforced only by the order of tags in `index.html`:

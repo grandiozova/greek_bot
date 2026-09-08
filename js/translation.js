@@ -53,7 +53,6 @@ function startTranslation(type) {
 function showTranslation() {
     let s = translationState;
     if (s.index >= s.total) {
-        let p = Math.round((s.correct / s.total) * 100);
         document.getElementById('translationQuestion').innerHTML =
             resultBlock(s.correct, s.total, 'Упражнение завершено') +
             '<div class="md-button-row">' +
@@ -111,12 +110,16 @@ function showTranslation() {
  
 function transPickWord(w, idx) {
     let s = translationState;
-    s.chosen.push(w);
-    if (!s.chosenIdx) s.chosenIdx = [];
-    s.chosenIdx.push(idx);
- 
+    // Повторный клик по уже выбранной фишке не добавляет слово второй раз:
+    // иначе в поле сборки появились бы два токена с одним data-chip-idx,
+    // и transRemoveToken убрал бы только один из них.
     let chip = document.querySelector('#transWordBank .chip[data-chip-idx="' + idx + '"]');
-    if (chip) chip.classList.add('picked');
+    if (!chip || chip.classList.contains('picked')) return;
+    chip.classList.add('picked');
+
+    if (!s.chosenIdx) s.chosenIdx = [];
+    s.chosen.push(w);
+    s.chosenIdx.push(idx);
  
     let area = document.getElementById('transBuildArea');
     let t = document.createElement('span');

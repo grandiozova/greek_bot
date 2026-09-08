@@ -115,34 +115,24 @@ function answerOpt(sel, corr) {
     scheduleAdvance(showExercise, 1200);
 }
 
-function checkTranslation() {
-    let inp = document.getElementById('transInput');
-    if (!inp) return;
-    let ans = inp.value.trim().toLowerCase();
-    let q = window._trans_q;
-    if (!q) return;
-    let ok = true;
-    for (let kw of q.keywords) {
-        if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
+// Одно и то же слово может стоять в банке дважды, поэтому берём первую ещё
+// не выбранную фишку. Если такой нет — по фишке уже кликали, и повторный клик
+// не должен класть слово в ответ второй раз: .picked гасит её только визуально.
+function pickFreeChip(bankId, w) {
+    let bank = document.getElementById(bankId);
+    if (!bank) return null;
+    let chips = bank.querySelectorAll('.chip');
+    for (let i = 0; i < chips.length; i++) {
+        if (chips[i].textContent === w && !chips[i].classList.contains('picked')) return chips[i];
     }
-    let container = document.getElementById('exerciseQuestion');
-    if (ok) { stats.totalCorrect++; exerciseState.correct++; container.innerHTML = '<div class="feedback ok"><span>Верно!</span></div>'; } else {
-        stats.totalWrong++;
-        let lesson = currentLesson;
-        recordError(lesson, { word: q.greek, correct: q.keywords.join(', '), your: ans });
-        container.innerHTML = '<div class="feedback fail"><span>Неверно. Ключевые слова: ' + q.keywords.join(', ') + '</span></div>';
-    }
-    saveStats();
-    exerciseState.index++;
-    scheduleAdvance(showExercise, 1500);
+    return null;
 }
 
 function pickWord(w) {
+    let chip = pickFreeChip('wordBank', w);
+    if (!chip) return;
+    chip.classList.add('picked');
     window._chosen.push(w);
-    let bank = document.getElementById('wordBank');
-    bank.querySelectorAll('.chip').forEach(c => {
-        if (c.textContent === w && !c.classList.contains('picked')) c.classList.add('picked');
-    });
     let area = document.getElementById('buildArea');
     let t = document.createElement('span');
     t.className = 'token';

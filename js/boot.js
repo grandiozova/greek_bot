@@ -48,9 +48,14 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     });
 }
 
+// Элементы с role="button" на <div>/<span> (слово в «Отче наш», строка словаря)
+// сами по себе клавиатуру не слушают — Enter и пробел доводим до клика руками.
+const KEY_ACTIVATED = 'prayer-word word-row';
 document.addEventListener('keydown', function (e) {
-    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('prayer-word')) {
-        e.preventDefault();
-        e.target.click();
-    }
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    let el = e.target;
+    if (!el || !el.classList) return;
+    if (!KEY_ACTIVATED.split(' ').some(c => el.classList.contains(c))) return;
+    e.preventDefault();
+    el.click();
 });

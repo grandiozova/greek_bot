@@ -13,7 +13,7 @@
  * ВАЖНО: подняв CACHE_VERSION, вы гарантированно раздаёте новую версию —
  * старые кэши удаляются в activate.
  */
-const CACHE_VERSION = 'greek-v5';
+const CACHE_VERSION = 'greek-v6';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const FONT_CACHE = CACHE_VERSION + '-fonts';
 
@@ -113,7 +113,9 @@ self.addEventListener('fetch', event => {
                     caches.open(FONT_CACHE).then(c => c.put(request, copy));
                 }
                 return response;
-            }).catch(() => hit))
+            // сюда попадаем только при промахе кэша, откатываться не на что:
+            // отвечаем честной ошибкой, а не undefined
+            }).catch(() => Response.error()))
         );
         return;
     }

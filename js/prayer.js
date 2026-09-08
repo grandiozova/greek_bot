@@ -2,7 +2,8 @@
 // ФУНКЦИИ ДЛЯ "ОТЧЕ НАШ"
 // ============================================================
 
-let prayerExerciseState = { type: null, questions: [], index: 0, correct: 0, total: 0, chosen: [] };
+// prayerExerciseState объявлен в core.js вместе с остальным состоянием:
+// повторное `let` в другом файле — SyntaxError.
 
 function showPrayer() {
     showSection('prayerSection');
@@ -112,7 +113,6 @@ function showPrayerExerciseQuestion() {
     const state = prayerExerciseState;
     const container = document.getElementById('prayerExerciseQuestion');
     if (state.index >= state.total) {
-        let p = Math.round((state.correct / state.total) * 100);
         container.innerHTML = resultBlock(state.correct, state.total, 'Упражнение завершено') +
             `<button class="menu-btn primary" onclick="startPrayer${state.type==='fill'?'Fill':'Translate'}()"><span class="msym">restart_alt</span>Ещё раз</button>`;
         return;
@@ -131,7 +131,7 @@ function showPrayerExerciseQuestion() {
         html += `<div class="options options--greek">`;
         const opts = shuffle([q.correct, ...q.distractors]);
         opts.forEach(opt => {
-            html += `<button class="option-btn" onclick="prayerFillAnswer('${opt}', '${q.correct}')">${opt}</button>`;
+            html += `<button class="option-btn" onclick="prayerFillAnswer('${escArg(opt)}', '${escArg(q.correct)}')">${opt}</button>`;
         });
         html += `</div>`;
         container.innerHTML = html;
@@ -142,7 +142,7 @@ function showPrayerExerciseQuestion() {
         html += `<div class="build-area" id="prayerBuildArea"></div>`;
         html += `<div class="word-bank" id="prayerWordBank">`;
         q.pool.forEach(w => {
-            html += `<span class="chip" onclick="prayerPickWord('${w}')">${w}</span>`;
+            html += `<span class="chip" onclick="prayerPickWord('${escArg(w)}')">${w}</span>`;
         });
         html += `</div>`;
         html += `<div class="md-button-row"><button class="menu-btn primary" onclick="prayerCheckTranslate()"><span class="msym">check</span>Проверить</button>`;
@@ -173,11 +173,10 @@ function prayerFillAnswer(selected, correct) {
 }
 
 function prayerPickWord(w) {
+    let chip = pickFreeChip('prayerWordBank', w);
+    if (!chip) return;
+    chip.classList.add('picked');
     prayerExerciseState.chosen.push(w);
-    let bank = document.getElementById('prayerWordBank');
-    bank.querySelectorAll('.chip').forEach(c => {
-        if (c.textContent === w && !c.classList.contains('picked')) c.classList.add('picked');
-    });
     let area = document.getElementById('prayerBuildArea');
     let t = document.createElement('span');
     t.className = 'token';
