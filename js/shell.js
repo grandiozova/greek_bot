@@ -114,7 +114,6 @@ function updateShell() {
 function navigateTo(dest) {
     let id = DEST_SECTION[dest];
     if (!id) return;
-    if (dest === 'lessons') { goToMain(); return; }
     if (dest === 'lessons') { goToLessonsDest(); return; }
     if (dest === 'progress') { showStats(); return; }
     if (dest === 'settings') { showSettings(); return; }
