@@ -37,6 +37,7 @@ data/
   lessons.js         1,699  const LESSONS_DATA
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
+tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
   core.js              113  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
@@ -200,19 +201,28 @@ Bump `CACHE_VERSION` in `sw.js` when the cached set changes; `activate` deletes 
 
 ## Verify before reporting done
 
+**Start with `npm test`.** The suite lives in `tests/` and is committed; it
+boots the real `index.html` in jsdom and drives every screen. It covers points
+1, 3 and 5 below, plus the load-order contract and `CORE_ASSETS` completeness.
+See `tests/README.md` for how it is wired and what it deliberately does not
+cover. `npm install` once; jsdom is the only dependency, and the app itself
+still has none.
+
 Do not claim completion on a design change without checking it renders. At minimum:
 
-1. **JS syntax** — `node --check` every file in `js/` and `data/`, plus `sw.js`. There is no inline script left to extract.
-2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **both** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `index.html` so the audit cannot drift from the source.
-3. **Behaviour** — exercise every screen (jsdom is enough) and confirm no screen renders empty, no `undefined` leaks into markup, and no stray hex colors appear in the live DOM.
+1. **JS syntax** — covered by `npm test` (`static.test.js`), or `node --check` every file in `js/` and `data/`, plus `sw.js`.
+2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **both** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `styles/tokens.css` so the audit cannot drift from the source.
+3. **Behaviour** — covered by `npm test`: every screen is exercised, every drill in every lesson is played to its result screen, and `undefined`/`NaN` leaking into markup fails the run. Add a test here rather than re-deriving a throwaway harness.
 4. **Render** — screenshot light and dark, mobile (412px) and desktop (1280px), and check for console errors and horizontal overflow.
-5. **Icon coverage** — drive every screen and collect `.msym` text, then diff it against `icon_names=`. A missing name is invisible in jsdom and obvious to users.
+5. **Icon coverage** — covered by `npm test` (`icons.test.js`): it drives every screen, collects `.msym` text and diffs it against `icon_names=`. A missing name is invisible in jsdom and obvious to users.
 6. **Offline** — if you touched `sw.js`, the manifest, or anything in `<head>`: serve the repo over HTTP under a `/greek_bot/` subpath, load once, `setOffline(true)`, and confirm a cold load still boots and renders. Then confirm an edited `index.html` is still served when back online — a service worker that pins a stale build is worse than no service worker.
 
-These harnesses are not committed; they are quick to rewrite. Ask before adding a `tools/` directory and its dependencies to the repo.
+Points 2, 4 and 6 have no committed harness — they need a browser or a server,
+and are still written ad hoc. Ask before adding further tooling and dependencies
+to the repo.
 
 ## Environment gotchas
 
 - Windows. The Bash tool mangles heredocs containing quotes — write patch scripts to a file and run them, rather than piping a heredoc.
-- jsdom does not implement `window.scrollTo`/`Element.scrollTo`; those errors in test output are harness noise, not app bugs. The app already guards both calls.
+- jsdom does not implement `window.scrollTo`/`Element.scrollTo`; the test loader stubs both. The app also guards the calls itself.
 - Playwright needs `npx playwright install chromium` before first use.
