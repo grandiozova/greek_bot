@@ -45,6 +45,11 @@ function showSection(id) {
     let t = document.getElementById(id);
     if (t) t.classList.add('active');
     currentSectionId = id;
+    // Три экрана относятся к вкладке «Уроки» — запоминаем последний из них,
+    // чтобы вернуться в него, а не сбрасывать на список.
+    if (id === 'mainMenu' || id === 'lessonSection' || id === 'drillSection') {
+        lessonsReturnSection = id;
+    }
     // Внутренние вкладки урока сбрасываются вместе со всеми .section — восстанавливаем
     if (id === 'lessonSection') restoreLessonPart();
     updateShell();
@@ -110,6 +115,7 @@ function navigateTo(dest) {
     let id = DEST_SECTION[dest];
     if (!id) return;
     if (dest === 'lessons') { goToMain(); return; }
+    if (dest === 'lessons') { goToLessonsDest(); return; }
     if (dest === 'progress') { showStats(); return; }
     if (dest === 'settings') { showSettings(); return; }
     if (dest === 'vocab') {
@@ -143,6 +149,7 @@ function goBack() {
     if (!meta || !meta.back) return;
     if (meta.back === 'test') { cancelTest(); return; }
     if (meta.back === 'lesson') { closeLessonDrill(); return; }
+    if (meta.back === 'lessons') { goToMain(); return; }
     navigateTo(meta.back);
 }
 
@@ -164,6 +171,20 @@ function continueLesson() {
 }
 
 function goToMain() { showSection('mainMenu'); renderMainMenu(); }
+// Нижняя навигация «Уроки»: восстанавливает то, что было открыто до ухода
+// (список уроков / сам урок / начатое упражнение), а не сбрасывает на список.
+function goToLessonsDest() {
+    if (currentSectionId === 'lessonSection' || currentSectionId === 'drillSection') return; // уже там
+    if (lessonsReturnSection === 'drillSection' && currentDrill && getLessonData(currentLesson)) {
+        showSection('drillSection');
+        return;
+    }
+    if (lessonsReturnSection === 'lessonSection' && getLessonData(currentLesson)) {
+        showSection('lessonSection');
+        return;
+    }
+    goToMain();
+}
 
 function renderMainMenu() {
     let grid = document.getElementById('lessonGrid');
