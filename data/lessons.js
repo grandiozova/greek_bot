@@ -35,7 +35,7 @@ const LESSONS_DATA = {
         </table><br>
         <b>Дифтонги:</b> αι [ай], ει [эй], οι [ой], υι [юй], αυ [ав], ευ [эв], ου [у], ηυ [эв].<br>
         <b>Придыхание:</b> ῾ (густое – [х]), ᾿ (тонкое – не произносится).<br>
-        <b>Ударения:</b> ´ (острое), ` (тупое), ῀ (облеченное).`,
+        <b>Ударения:</b> ´ (острое), ` (тупое), ῀ (облеченное).`,
         vocabulary: [
             {greek:"ἄλφα", translation:"альфа (Α α)", type:"other"},
             {greek:"βῆτα", translation:"бета (Β β)", type:"other"},
@@ -69,8 +69,8 @@ const LESSONS_DATA = {
         title: "Ударение и правила чтения",
         grammar: `<b>Правила ударения:</b><br>
         • Ударение может стоять только на одном из трёх последних слогов.<br>
-        • Острое ударение (´) – повышение тона.<br>
-        • Тупое ударение (`) – понижение тона (в потоке речи).<br>
+        • Острое ударение (´) – повышение тона.<br>
+        • Тупое ударение (`) – понижение тона (в потоке речи).<br>
         • Облеченное ударение (῀) – повышение + понижение (только на долгих гласных).<br><br>
         <b>Специальные правила:</b><br>
         • У глаголов ударение ставится как можно дальше от конца слова.<br>
@@ -96,7 +96,7 @@ const LESSONS_DATA = {
         translation: {}
     },
     3: {
-        title: "Глаголы на -ω (настоящее время)",
+        title: "Глаголы на -ω: настоящее время",
 grammar: `<b>1. Грамматические категории глагола</b><br>
 Греческий глагол имеет следующие категории:<br>
 • <b>Tempus (время)</b> — Praesens (настоящее), Aoristus (аорист), Futurum (будущее) и др.<br>
@@ -238,7 +238,7 @@ grammar: `<b>1. Грамматические категории глагола</
         }
     },
     4: {
-        title: "2-е склонение (мужской и средний род)",
+        title: "Существительные 2-е склонение M. N.",
 grammar: `<b>1. Общие сведения о склонении</b><br>
 В греческом языке три склонения. Ко <b>2-му склонению</b> относятся существительные:<br>
 • <b>мужского рода</b> с окончанием <b>-ος</b> в Nom. Sing.<br>
@@ -392,15 +392,15 @@ grammar: `<b>1. Общие сведения о склонении</b><br>
         {russian:"дар и закон", correct_sequence:["τὸ","δῶρον","καὶ","ὁ","νόμος"], all_words:["τὸ","δῶρον","καὶ","ὁ","νόμος","τόν","οἶκον"]}
             ],
             case_number: [
-                {form:"ἀνθρώπων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-                {form:"δῶρα", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
-                {form:"λόγοις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-                {form:"ἱερά", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Nominativus (Им. п.) ед.ч."]},
-                {form:"υἱοῦ", correct:"Genitivus (Род. п.) ед.ч.", distractors:["Dativus (Дат. п.) ед.ч.","Accusativus (Вин. п.) ед.ч.","Nominativus (Им. п.) ед.ч."]},
-                {form:"δούλῳ", correct:"Dativus (Дат. п.) ед.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч.","Dativus (Дат. п.) мн.ч."]},
-                {form:"ἀποστόλους", correct:"Accusativus (Вин. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) ед.ч."]},
-                {form:"Ἰησοῦν", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
-                {form:"ἀδελφέ", correct:"Vocativus (Зват. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч."]}
+                {form:"ἀνθρώπων", correct:"Gen. Pl.", distractors:["Gen. Sg.","Dat. Pl.","Acc. Pl."]},
+                {form:"δῶρα", correct:"Nom./Acc. Pl.", distractors:["Nom. Sg.","Gen. Pl.","Dat. Pl."]},
+                {form:"λόγοις", correct:"Dat. Pl.", distractors:["Nom. Pl.","Gen. Pl.","Acc. Pl."]},
+                {form:"ἱερά", correct:"Nom./Acc. Pl.", distractors:["Gen. Pl.","Dat. Pl.","Nom. Sg."]},
+                {form:"υἱοῦ", correct:"Gen. Sg.", distractors:["Dat. Sg.","Acc. Sg.","Nom. Sg."]},
+                {form:"δούλῳ", correct:"Dat. Sg.", distractors:["Gen. Sg.","Acc. Sg.","Dat. Pl."]},
+                {form:"ἀποστόλους", correct:"Acc. Pl.", distractors:["Nom. Pl.","Gen. Pl.","Acc. Sg."]},
+                {form:"Ἰησοῦν", correct:"Acc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Dat. Sg."]},
+                {form:"ἀδελφέ", correct:"Voc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Acc. Sg."]}
             ]
         },
 translation: {
@@ -439,7 +439,7 @@ translation: {
     }
 },
     5: {
-        title: "1-е склонение (женский род)",
+        title: "Существительные 1-е склонение F.",
 grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
 К 1-му склонению относятся имена существительные преимущественно женского рода с основой на <b>α</b> (или <b>η</b>) и окончаниями в Nom. Sing.:
 <ul>
@@ -598,12 +598,12 @@ grammar: `<b>1. Общие сведения о 1-м склонении</b><br>
         {russian:"час", correct_sequence:["ὥρα"], all_words:["ὥρα","ἐντολή","φωνή","ἐκκλησία"]}
     ],
     case_number: [
-        {form:"ὡρῶν", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"δόξαις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"ἀλήθειαι", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"ζωῶν", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"βασιλείαις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"ἡμέραν", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]}
+        {form:"ὡρῶν", correct:"Gen. Pl.", distractors:["Gen. Sg.","Dat. Pl.","Acc. Pl."]},
+        {form:"δόξαις", correct:"Dat. Pl.", distractors:["Dat. Sg.","Nom. Pl.","Acc. Pl."]},
+        {form:"ἀλήθειαι", correct:"Nom. Pl.", distractors:["Gen. Pl.","Dat. Pl.","Acc. Pl."]},
+        {form:"ζωῶν", correct:"Gen. Pl.", distractors:["Nom. Pl.","Dat. Pl.","Acc. Pl."]},
+        {form:"βασιλείαις", correct:"Dat. Pl.", distractors:["Nom. Pl.","Gen. Pl.","Acc. Pl."]},
+        {form:"ἡμέραν", correct:"Acc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Dat. Sg."]}
     ]
 },
 translation: {
@@ -644,7 +644,7 @@ translation: {
     }
 },
     6: {
-        title: "Прилагательные 1-2 склонения, артикль",
+        title: "Прилагательные и артикли",
 grammar: `<b>1. Прилагательные 1-2 склонения</b><br>
 Прилагательные 1-2 склонения изменяются по трём родам:<br>
 • <b>мужской род</b> — окончание <b>-ος</b> (как 2-е склонение)<br>
@@ -837,7 +837,7 @@ translation: {
     }
 },
     7: {
-        title: "Существительные муж. рода 1-го скл., предлоги",
+        title: "Существительные 1-е склонение M., предлоги",
 grammar: `<b>1. Существительные мужского рода 1-го склонения</b><br>
 Некоторые существительные мужского рода имеют основу на -α и склоняются по 1-му склонению, но артикль у них — по 2-му склонению (ἄνθρωπος). В именительном падеже единственного числа они могут оканчиваться на <b>-ης</b> (например, προφήτης) или на <b>-ας</b> (например, νεανίας).<br><br>
 
@@ -967,15 +967,15 @@ grammar: `<b>1. Существительные мужского рода 1-го 
         {russian:"с учениками", correct_sequence:["μετὰ","τῶν","μαθητῶν"], all_words:["μετὰ","τῶν","μαθητῶν","διὰ","τοῦ","κόσμου"]}
     ],
     case_number: [
-        {form:"προφήτῃ", correct:"Dativus (Дат. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч."]},
-        {form:"ἀγγέλων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч.","Nominativus (Им. п.) мн.ч."]},
-        {form:"προφῆται", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"μαθηταῖς", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"θεοῦ", correct:"Genitivus (Род. п.) ед.ч.", distractors:["Dativus (Дат. п.) ед.ч.","Accusativus (Вин. п.) ед.ч.","Nominativus (Им. п.) ед.ч."]},
-        {form:"τέκνα", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
-        {form:"νεανίαν", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
-        {form:"λίθοις", correct:"Dativus (Дат. п.) мн.ч.", distractors:["Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч.","Nominativus (Им. п.) мн.ч."]},
-        {form:"βαπτιστά", correct:"Vocativus (Зват. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Accusativus (Вин. п.) ед.ч.","Genitivus (Род. п.) ед.ч."]}
+        {form:"προφήτῃ", correct:"Dat. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Acc. Sg."]},
+        {form:"ἀγγέλων", correct:"Gen. Pl.", distractors:["Dat. Pl.","Acc. Pl.","Nom. Pl."]},
+        {form:"προφῆται", correct:"Nom. Pl.", distractors:["Gen. Pl.","Dat. Pl.","Acc. Pl."]},
+        {form:"μαθηταῖς", correct:"Dat. Pl.", distractors:["Nom. Pl.","Gen. Pl.","Acc. Pl."]},
+        {form:"θεοῦ", correct:"Gen. Sg.", distractors:["Dat. Sg.","Acc. Sg.","Nom. Sg."]},
+        {form:"τέκνα", correct:"Nom./Acc. Pl.", distractors:["Nom. Sg.","Gen. Pl.","Dat. Pl."]},
+        {form:"νεανίαν", correct:"Acc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Dat. Sg."]},
+        {form:"λίθοις", correct:"Dat. Pl.", distractors:["Gen. Pl.","Acc. Pl.","Nom. Pl."]},
+        {form:"βαπτιστά", correct:"Voc. Sg.", distractors:["Nom. Sg.","Acc. Sg.","Gen. Sg."]}
     ]
 },
 translation: {
@@ -1023,7 +1023,7 @@ translation: {
     }
 },
     8: {
-title: "Энклитики и проклитики, местоимения",
+title: "Энклитики, проклитики, местоимения",
 grammar: `<b>1. Энклитики и проклитики</b><br>
 <b>Энклитики</b> — односложные или двусложные слова, которые теряют ударение и примыкают к предыдущему слову. В греческом языке к энклитикам относятся: μου, μοι, με; σου, σοι, σε; ἐστί(ν), εἰσί(ν); τις, τι; που, ποτε и др.<br><br>
 <b>Проклитики</b> — безударные слова, которые образуют единство с последующим словом. К проклитикам относятся: ὁ, ἡ, οἱ, αἱ; εἰς, ἐκ, ἐν; οὐ (οὐκ, οὐχ); ὡς; εἰ.<br><br>
@@ -1312,14 +1312,14 @@ exercises: {
         {form:"λύεις", correct:"2-е л. ед.ч.", distractors:["1-е л. ед.ч.","3-е л. ед.ч.","2-е л. мн.ч."]},
         {form:"λύομεν", correct:"1-е л. мн.ч.", distractors:["1-е л. ед.ч.","2-е л. мн.ч.","3-е л. мн.ч."]},
         // δεσπότης
-        {form:"δεσπότην", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
-        {form:"δεσπόται", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
+        {form:"δεσπότην", correct:"Acc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Dat. Sg."]},
+        {form:"δεσπόται", correct:"Nom. Pl.", distractors:["Acc. Pl.","Gen. Pl.","Dat. Pl."]},
         // κριτής
-        {form:"κριτοῦ", correct:"Genitivus (Род. п.) ед.ч.", distractors:["Accusativus (Вин. п.) ед.ч.","Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) ед.ч."]},
-        {form:"κριταί", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
+        {form:"κριτοῦ", correct:"Gen. Sg.", distractors:["Acc. Sg.","Dat. Sg.","Nom. Sg."]},
+        {form:"κριταί", correct:"Nom. Pl.", distractors:["Acc. Pl.","Gen. Pl.","Dat. Pl."]},
         // τελώνης
-        {form:"τελώνην", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
-        {form:"τελῶναι", correct:"Nominativus (Им. п.) мн.ч.", distractors:["Accusativus (Вин. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]}
+        {form:"τελώνην", correct:"Acc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Dat. Sg."]},
+        {form:"τελῶναι", correct:"Nom. Pl.", distractors:["Acc. Pl.","Gen. Pl.","Dat. Pl."]}
     ]
 },
 translation: {
@@ -1369,7 +1369,7 @@ translation: {
     }
 },
     9: {
-        title: "Указательные местоимения, αὐτός",
+        title: "Указательные местоимения",
 grammar: `<b>1. Указательные местоимения οὗτος, αὕτη, τοῦτο (этот, эта, это)</b><br>
 Указывает на <b>близкий</b> предмет (в пространстве или в речи).<br>
 <table>
@@ -1499,14 +1499,14 @@ grammar: `<b>1. Указательные местоимения οὗτος, α�
         {russian:"обещание Господа", correct_sequence:["ἡ","ἐπαγγελία","τοῦ","κυρίου"], all_words:["ἡ","ἐπαγγελία","τοῦ","κυρίου","τό","εὐαγγέλιον"]}
     ],
     case_number: [
-        {form:"ταύταις", correct:"Dativus (Дат. п.) мн.ч. жен.р.", distractors:["Nominativus (Им. п.) мн.ч.","Genitivus (Род. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"ἐκείνων", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Nominativus (Им. п.) мн.ч.","Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч."]},
-        {form:"ἀγάπην", correct:"Accusativus (Вин. п.) ед.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) ед.ч.","Dativus (Дат. п.) ед.ч."]},
-        {form:"ἁμαρτιῶν", correct:"Genitivus (Род. п.) мн.ч.", distractors:["Dativus (Дат. п.) мн.ч.","Accusativus (Вин. п.) мн.ч.","Nominativus (Им. п.) мн.ч."]},
-        {form:"διδασκάλῳ", correct:"Dativus (Дат. п.) ед.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч.","Nominativus (Им. п.) ед.ч."]},
-        {form:"πρόσωπα", correct:"Nominativus / Accusativus (Им./Вин. п.) мн.ч.", distractors:["Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч.","Dativus (Дат. п.) мн.ч."]},
-        {form:"χαρᾷ", correct:"Dativus (Дат. п.) ед.ч.", distractors:["Genitivus (Род. п.) ед.ч.","Accusativus (Вин. п.) ед.ч.","Nominativus (Им. п.) ед.ч."]},
-        {form:"εὐαγγελίου", correct:"Genitivus (Род. п.) ед.ч.", distractors:["Dativus (Дат. п.) ед.ч.","Nominativus (Им. п.) ед.ч.","Genitivus (Род. п.) мн.ч."]}
+        {form:"ταύταις", correct:"Dat. Pl. F.", distractors:["Nom. Pl.","Gen. Pl.","Acc. Pl."]},
+        {form:"ἐκείνων", correct:"Gen. Pl.", distractors:["Nom. Pl.","Dat. Pl.","Acc. Pl."]},
+        {form:"ἀγάπην", correct:"Acc. Sg.", distractors:["Nom. Sg.","Gen. Sg.","Dat. Sg."]},
+        {form:"ἁμαρτιῶν", correct:"Gen. Pl.", distractors:["Dat. Pl.","Acc. Pl.","Nom. Pl."]},
+        {form:"διδασκάλῳ", correct:"Dat. Sg.", distractors:["Gen. Sg.","Acc. Sg.","Nom. Sg."]},
+        {form:"πρόσωπα", correct:"Nom./Acc. Pl.", distractors:["Nom. Sg.","Gen. Pl.","Dat. Pl."]},
+        {form:"χαρᾷ", correct:"Dat. Sg.", distractors:["Gen. Sg.","Acc. Sg.","Nom. Sg."]},
+        {form:"εὐαγγελίου", correct:"Gen. Sg.", distractors:["Dat. Sg.","Nom. Sg.","Gen. Pl."]}
     ]
 },
 translation: {
