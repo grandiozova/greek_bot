@@ -6,18 +6,20 @@
 // глобальную лексическую область.
 let vocabById = new Map();
 
-// Урок 1 — это названия букв (ἄλφα, βῆτα…), а не лексика: в словарь он не идёт.
-// Со второго урока начинаются настоящие слова — артикли и предлоги.
-const VOCAB_FIRST_LESSON = 2;
+// С какого урока слова идут в общий словарь — свойство курса, а не константа:
+// у греческого урок 1 это названия букв (ἄλφα, βῆτα…), а не лексика, у
+// еврейского словарь начинается с главы 3. См. data/courses.js.
+function vocabFirstLesson() { return activeCourse().vocabFirstLesson || 1; }
 
 function buildAllVocabCache() {
     let entries = [];
     let seen = new Set();
     vocabById = new Map();
     let idCounter = 0;
-    let lessons = Object.keys(LESSONS_DATA)
+    let first = vocabFirstLesson();
+    let lessons = Object.keys(courseLessons())
         .map(Number)
-        .filter(n => n >= VOCAB_FIRST_LESSON)
+        .filter(n => n >= first)
         .sort((a, b) => a - b);
     for (let l of lessons) {
         let data = getLessonData(l);
@@ -244,7 +246,7 @@ function findUsageExamples(entry, maxCount) {
         seen.add(key);
         examples.push({ greek: greek, russian: russian });
     }
-    let rest = Object.keys(LESSONS_DATA).map(Number).sort((a, b) => a - b).filter(n => n !== entry.lesson);
+    let rest = Object.keys(courseLessons()).map(Number).sort((a, b) => a - b).filter(n => n !== entry.lesson);
     let lessons = [entry.lesson].concat(rest);
     lessons.forEach(l => {
         let data = getLessonData(l);

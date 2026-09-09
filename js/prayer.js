@@ -5,7 +5,12 @@
 // prayerExerciseState объявлен в core.js вместе с остальным состоянием:
 // повторное `let` в другом файле — SyntaxError.
 
+// Разбор молитвы есть не у каждого курса: PRAYER_DATA — это данные греческого,
+// у еврейского его аналог («Шма», Втор. 6:4–5) появится вместе с уроками.
+// Карточку-ссылку на главном экране прячет applyCourseChrome(), а этот guard
+// страхует прямой вызов — из строки адреса, теста или будущего кода.
 function showPrayer() {
+    if (!coursePrayer()) return;
     showSection('prayerSection');
     renderPrayerText();
     renderPrayerExercise();
@@ -14,7 +19,7 @@ function showPrayer() {
 function renderPrayerText() {
     const container = document.getElementById('prayerContent');
     let html = '<p class="md-body-medium mb-12">Нажмите на любое слово, чтобы увидеть разбор формы.</p>';
-    PRAYER_DATA.verses.forEach((verse, verseIdx) => {
+    coursePrayer().verses.forEach((verse, verseIdx) => {
         html += `<div class="prayer-verse">`;
         html += `<div class="prayer-line">`;
         verse.words.forEach((word, wordIdx) => {
@@ -32,7 +37,7 @@ function renderPrayerText() {
 }
 
 function showWordAnalysis(verseIdx, wordIdx) {
-    const verse = PRAYER_DATA.verses[verseIdx];
+    const verse = coursePrayer().verses[verseIdx];
     const word = verse.words[wordIdx];
     const analysisDiv = document.getElementById(`analysis-${verseIdx}`);
     if (!analysisDiv) return;
@@ -75,10 +80,10 @@ function closeAllAnalysis() {
     
 function startPrayerFill() {
     let questions = [];
-    PRAYER_DATA.verses.forEach(verse => {
+    coursePrayer().verses.forEach(verse => {
         const wordIndex = Math.floor(Math.random() * verse.words.length);
         const correctWord = verse.words[wordIndex].greek;
-        const allWords = PRAYER_DATA.verses.flatMap(v => v.words.map(w => w.greek));
+        const allWords = coursePrayer().verses.flatMap(v => v.words.map(w => w.greek));
         const distractors = shuffle(allWords.filter(w => w !== correctWord)).slice(0, 3);
         questions.push({
             verse: verse.greek,
@@ -94,9 +99,9 @@ function startPrayerFill() {
 
 function startPrayerTranslate() {
     let questions = [];
-    PRAYER_DATA.verses.forEach(verse => {
+    coursePrayer().verses.forEach(verse => {
         const correctWords = verse.words.map(w => w.greek);
-        const allWords = PRAYER_DATA.verses.flatMap(v => v.words.map(w => w.greek));
+        const allWords = coursePrayer().verses.flatMap(v => v.words.map(w => w.greek));
         const extras = shuffle(allWords.filter(w => !correctWords.includes(w))).slice(0, 3);
         const pool = shuffle([...correctWords, ...extras]);
         questions.push({

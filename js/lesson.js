@@ -78,9 +78,10 @@ function menuItemHtml(icon, label, hint, onclick) {
     '</button>';
 }
 
-// Разделы урока списком. Уроки 1–2 — алфавит и правила чтения: тренировать
-// в них нечего, остаётся один пункт.
-function renderLessonMenu(data, isIntroLesson) {
+// Разделы урока списком. У вводного урока (алфавит, правила чтения) тренировать
+// нечего, остаётся один пункт. Параметр называется intro, а не isIntroLesson:
+// последнее — глобальная функция курса, и одноимённый параметр её бы закрыл.
+function renderLessonMenu(data, intro) {
     let box = document.getElementById('lessonPartMenu');
     if (!box) return;
     let items = [];
@@ -90,7 +91,7 @@ function renderLessonMenu(data, isIntroLesson) {
         words ? 'Грамматика и ' + words + ' ' + pluralRu(words, 'слово', 'слова', 'слов') : 'Грамматика урока',
         "switchLessonPart('material')"));
 
-    if (!isIntroLesson) {
+    if (!intro) {
         let drills = countLessonDrills(data);
         if (drills) {
             items.push(menuItemHtml('edit_note', 'Упражнения',
@@ -264,18 +265,19 @@ function openLesson(lesson) {
     currentLesson = lesson;
     let data = getLessonData(lesson);
     if (!data) return;
-    try { localStorage.setItem('greek_last_lesson', String(lesson)); } catch (e) {}
+    try { localStorage.setItem(courseKey('last_lesson'), String(lesson)); } catch (e) {}
     document.getElementById('lessonTitle').textContent = data.title;
     currentLessonPart = 'menu';
     showSection('lessonSection');
     updateNavButtons(lesson);
 
-    // Уроки 1–2 — это алфавит и правила чтения: тренировать в них нечего,
-    // остаётся одна вкладка с материалом.
-    let isIntroLesson = (lesson === 1 || lesson === 2);
+    // Вводные уроки (алфавит, правила чтения) тренировать нечем — остаётся
+    // одна вкладка с материалом. Какие именно, знает курс: у греческого это
+    // уроки 1–2, у еврейского — главы 1–2.
+    let intro = isIntroLesson(lesson);
     document.querySelectorAll('#lessonTabs button').forEach(btn => {
         let part = btn.getAttribute('data-part');
-        btn.style.display = (isIntroLesson && part !== 'material') ? 'none' : '';
+        btn.style.display = (intro && part !== 'material') ? 'none' : '';
     });
 
     document.getElementById('grammarContent').innerHTML = renderGrammarHtml(data.grammar);
@@ -304,7 +306,7 @@ function openLesson(lesson) {
     }
 
     // Разделы урока и список упражнений внутри вкладки «Упражнения»
-    renderLessonMenu(data, isIntroLesson);
+    renderLessonMenu(data, intro);
     renderLessonDrills(data);
     resetLessonDrill();
 

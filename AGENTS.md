@@ -10,10 +10,14 @@ An Ancient Greek learning web app, published to GitHub Pages.
 |---|---|---|
 | Markup shell | `index.html` | `<head>`, the screens, and the tag list that loads everything else. No logic, no styles, no data. |
 | Styles | `styles/*.css` | The design system, seven files. See "Project layout". |
-| Lesson content | `data/*.js` | Vocabulary, grammar, exercises, prayer, licences. |
-| Logic | `js/*.js` | Fifteen files, one per feature area. |
+| Lesson content | `data/*.js` | Vocabulary, grammar, exercises, prayer, licences, the course registry. |
+| Logic | `js/*.js` | Sixteen files, one per feature area. |
 | Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
-| Source textbook | `reference/machen-nt-greek/` | The book the lessons come from, as text. Reference only — never loaded by the app. See "Source textbook" below. |
+| Source textbooks | `reference/machen-nt-greek/`, `reference/nbbs-hebrew/` | The books the lessons come from, as text. Reference only — never loaded by the app. See "Source textbooks" below. |
+
+The app hosts **two courses**, Greek and Hebrew, chosen on a start screen. `data/courses.js`
+is the registry and `js/course.js` the switching; see "Courses" and "The Hebrew course:
+phased plan" below.
 
 There is no backend and no build step. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
 
@@ -24,42 +28,45 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ## Project layout
 
 ```
-index.html           286  <head>, разметка, порядок загрузки
+index.html           332  <head>, разметка, порядок загрузки
 styles/
   tokens.css           217  :root и [data-theme=dark] — все переменные
   base.css             326  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
   components.css       751  кнопки, list item урока, карточки, табы, search bar, text field, chips
-  screens.css          651  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш»
+  screens.css          789  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
-  settings.css         134  segmented button темы, список лицензий
+  settings.css         156  segmented button темы и курса, карточка курса, список лицензий
 data/
-  lessons.js         1,699  const LESSONS_DATA
+  lessons.js         1,698  const LESSONS_DATA — уроки ГРЕЧЕСКОГО курса, а не «уроки вообще»
+  hebrew-lessons.js     22  const HEBREW_LESSONS_DATA — пока пустой объект (фаза 5)
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
+  courses.js            68  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
 tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
-  core.js              113  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
+  core.js              120  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
+  course.js            224  текущий курс, ключи хранилища, стартовый экран, переключение курса
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
-  shell.js             206  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
-  theme.js              74  режимы темы, applyTheme, initTheme
-  lesson.js            475  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  shell.js             238  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
+  theme.js              86  режимы темы, applyTheme, initTheme
+  lesson.js            477  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
   declension.js        139  generateDeclensionTable, аккордеон
   exercises.js         175  упражнения урока
   flashcards.js        364  карточки: общие и урока, оборот карточки с тренировкой форм
   test.js              198  тест
   translation.js       194  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
-  prayer.js            223  «Отче наш»: разбор и упражнения
-  vocab.js             426  общий словарь, поиск, фильтр по частям речи
-  settings.js           27  showSettings, renderLicenses
-  boot.js               60  normalizeTranslationData, init*, глобальные слушатели
+  prayer.js            228  «Отче наш»: разбор и упражнения
+  vocab.js             428  общий словарь, поиск, фильтр по частям речи
+  settings.js           28  showSettings, renderLicenses
+  boot.js               74  normalizeTranslationData, init*, глобальные слушатели
 ```
 
 **Load order is the contract.** Three rules, all enforced only by the order of tags in `index.html`:
 
 1. `tokens.css` first — everything else reads its variables. The other six stylesheets are listed in the order their rules appeared in the old single `<style>`, so the cascade is unchanged; reordering the `<link>` tags is a silent visual regression.
-2. `data/*.js` before `js/*.js` — the logic reads `LESSONS_DATA` during boot.
+2. `data/*.js` before `js/*.js` — the logic reads the lesson data during boot. Within `data/`, **`courses.js` comes last**: the registry references the objects the other data files declare, so it must see them already bound.
 3. **`boot.js` last.** It is the only file that *executes* anything at load time; every other file just declares. Top-level `let`/`const` across classic scripts share one global lexical environment, so a file that ran code referencing a binding declared in a later file would hit a temporal-dead-zone `ReferenceError`. Keep new files declaration-only, and keep `boot.js` at the bottom.
 
 The two exceptions to "declaration-only" are `ui.js` (the ripple `pointerdown`/`keydown` listeners) and `prayer.js` (the click-outside handler); both only register callbacks, which run long after every script has loaded.
@@ -72,11 +79,12 @@ Whatever you touch, it is almost always one file:
 | A component's look | `styles/components.css` (or `dialogs.css` / `settings.css`) |
 | A screen's look | `styles/screens.css` |
 | Responsive / nav rail | `styles/layout.css` |
-| **Lesson content** | `data/lessons.js` — **do not touch** unless the task is explicitly about content |
-| Finding content in the textbook | `reference/machen-nt-greek/INDEX.md` — then the lesson file it points to |
+| **Lesson content** | `data/lessons.js` (Greek) / `data/hebrew-lessons.js` (Hebrew) — **do not touch** unless the task is explicitly about content |
+| Finding content in the textbook | `reference/machen-nt-greek/INDEX.md` or `reference/nbbs-hebrew/INDEX.md` — then the lesson file it points to |
 | A new dependency's licence | `data/licenses.js` |
 | Behaviour | the matching `js/*.js` — the table above says which |
 | A new screen | `index.html` markup **+** `SCREEN_META`/`DEST_SECTION`/`FAB_CONFIG` in `js/shell.js` |
+| A course, or a fact that varies by course | `data/courses.js` — see "Courses" |
 
 Structural facts worth knowing before editing:
 
@@ -93,7 +101,7 @@ Structural facts worth knowing before editing:
 - **Формы слова тренируются на обороте карточки, а не отдельным упражнением.** `declension_fill` больше не значится в `LESSON_DRILL_GROUPS`: круглая кнопка в углу карточки (появляется только после «Показать перевод») переворачивает её и запускает тот же вопрос о форме с теми же `.option-btn`. Вопросы собирает `cardDeclensionQuestions()` (`js/flashcards.js`) из двух источников — авторских `exercises.declension_fill` урока про это же слово (их дистракторы продуманы вручную, и их же берёт «Тест», поэтому данные не осиротели) и остальной парадигмы из `declension_forms`. Ключи генерируемых форм намеренно совпадают с авторскими (`gen_sg`, `2pl`, `nom_pl_m`, `dat_sg_f`), иначе один и тот же падеж попадёт в колоду дважды. Результат кешируется в `word._declQuestions` — тем же приёмом, что `entry._examples`. Ответ перерисовывает только `#cardDeclension`, а не всю карточку: иначе анимация переворота проигрывалась бы на каждый вариант.
 - **The dictionary and the flashcards share one cache.** `buildAllVocabCache()` (`js/vocab.js`) collects the vocabulary of every lesson ≥ `VOCAB_FIRST_LESSON` (lesson 1 is the letter names, not words), de-duplicates it and serves both screens; `startAllFlashcards(type)` builds its deck from there, not from `LESSONS_DATA` directly. A card and a dictionary entry are therefore literally the same object — which is why `findUsageExamples()` caches the full set in `entry._examples` and slices it, instead of caching whatever count the first caller asked for.
 - **Part of speech is a filter, not just a heading.** `item.type` in `data/lessons.js` drives the dictionary's section headings, the `.filter-chip` row above both screens, and which words go into a flashcard deck. The permitted values are listed in `VOCAB_TYPE_ORDER` and `TYPE_LABELS` (`js/vocab.js`): `noun`, `verb`, `adjective`, `pronoun`, `adverb`, `preposition`, `conjunction`, `particle`, `article`, `other`. A new type must go into both lists, or its words fall into «Прочее» and get no chip.
-- Progress is `localStorage` only: `greek_stats`, `greek_theme`, `greek_last_lesson`. All reads/writes must stay wrapped in `try/catch` — they throw in private-mode Safari.
+- Progress is `localStorage` only, and the keys are **per course**: `courseKey('stats')` and `courseKey('last_lesson')` resolve to `greek_stats` / `hebrew_last_lesson` and so on. Genuinely global settings take an `app_` prefix instead — `app_theme`, `app_course`, `app_default_course`. Never hard-code a course's key. See "Courses". All reads/writes must stay wrapped in `try/catch` — they throw in private-mode Safari.
 
 ## Design: Material 3 (Material You) — mandatory
 
@@ -159,19 +167,23 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 
 `settingsSection` is the fifth navigation destination and the home for anything that is not study content: theme, data management, licenses.
 
-- **Theme** is a three-way choice — `system` / `light` / `dark` — stored in `greek_theme` as the *mode*, never as the resolved colour. Storing the resolved value is what breaks "follow the system": the app would pin whatever the OS happened to be on first run. `system` stays live via a `matchMedia` listener. A value written by an older build (`light`/`dark`) is still read as a valid manual choice.
+- **Course** is the first card: which course is open, a button back to the start screen, and `app_default_course` — whether the start screen asks on every load or drops straight into one course.
+- **Theme** is a three-way choice — `system` / `light` / `dark` — stored in `app_theme` as the *mode*, never as the resolved colour. Storing the resolved value is what breaks "follow the system": the app would pin whatever the OS happened to be on first run. `system` stays live via a `matchMedia` listener. A value written by an older build (`light`/`dark`) is still read as a valid manual choice, and the pre-courses key `greek_theme` is read as a fallback and migrated forward once.
 - **Licenses** come from the `LICENSES` array; add an entry when you add a dependency. The course material is listed last because it is a copyright statement, not an open licence.
-- The nav bar now holds **five** destinations — the M3 maximum. A sixth needs a different pattern, not a sixth item.
+- The nav bar now holds **five** destinations — the M3 maximum. A sixth needs a different pattern, not a sixth item. That is exactly why the course picker is a full-screen overlay rather than a destination.
 
-## Source textbook
+## Source textbooks
+
+There are two, one per course. Both are **reference material only**: nothing under
+`reference/` is loaded by the app, precached by `sw.js`, or listed in `index.html` —
+do not wire it in.
+
+### Greek — `reference/machen-nt-greek/`
 
 `reference/machen-nt-greek/` holds the book the lessons are built from — Machen's
 *New Testament Greek for Beginners* in the Russian Bible Society edition (33 lessons,
 241 pages), extracted from its PDF as Markdown plus two JSON vocabulary files.
 Start at `reference/machen-nt-greek/INDEX.md`; the rules are in its `README.md`.
-
-It is **reference material only**. Nothing there is loaded by the app, precached by
-`sw.js`, or listed in `index.html` — do not wire it in.
 
 The Greek there **is polytonic and can be copied** — but check one thing first.
 The source PDF is a scan whose OCR layer had lost every breathing and circumflex;
@@ -184,6 +196,121 @@ So: if a word is not in that report, its polytonic form is verified — use it. 
 restore the form yourself (against NA28/SBLGNT, or the verified lessons 1–10 already in
 `data/lessons.js`). A vowel-initial word with no breathing is always unverified — that
 is the visible tell. Russian text, page numbers and structure are reliable throughout.
+
+### Hebrew — `reference/nbbs-hebrew/`
+
+`reference/nbbs-hebrew/` holds the Novosibirsk Biblical Theological Seminary's
+*Учебное пособие по грамматике древнееврейского языка* (2011, after Pratico &
+Van Pelt's *Basics of Biblical Hebrew Grammar*; 273 pages, 36 chapters).
+**Chapters 1–11 are transcribed** — the whole nominal system, up to the verb.
+Start at `reference/nbbs-hebrew/INDEX.md`.
+
+Unlike the Greek, this was never OCR'd. The PDF stores Hebrew in the **BWHEBB**
+legacy font encoding — Latin characters that a font draws as Hebrew glyphs, so
+דָּבָר is stored as `rb'D"`. That mapping is reversible and lossless, and
+`tools/unfont.py` applies it mechanically. **So the Hebrew forms can be copied as
+they stand**; there is no per-word verification list, because nothing was guessed.
+
+Two things to know before copying:
+
+- **Never NFC-normalise the Hebrew.** Canonical ordering sorts combining marks by
+  class and puts the vowel *before* the dagesh — which matches neither BHS nor the
+  Leningrad Codex, and some fonts render it wrong. The decoder deliberately emits
+  consonant → dagesh → shin/sin dot → vowel → meteg → accent and leaves it there.
+  Same rule as the Greek diacritics, with a concrete cost if broken.
+- **The weak link is the hand transcription**, not the decoding. `unfont.py --audit`
+  flags glyphs missing from the table, which catches impossible input (it found a
+  Cyrillic `а` typed for a Latin `a`); it cannot catch one *valid* glyph typed for
+  another. Verify against the Westminster Leningrad Codex anything that goes into
+  a drill. See `reference/nbbs-hebrew/restoration-report.md`.
+
+## The Hebrew course: phased plan
+
+The app is being extended from one course to two. Agreed scope: **a pilot of
+chapters 1–11**, the nominal system. The verb (chapters 12–36) is out of scope for
+now, which is what defers Phase 4.
+
+Phases are ordered so each one lands working. Mark a phase done here when it is.
+
+| # | Phase | State |
+|---|---|---|
+| 0 | Extract the textbook into `reference/nbbs-hebrew/` | **done** |
+| 1 | Course shell: start screen, course switching, namespaced storage | **done** |
+| 2 | RTL rendering | not started |
+| 3 | Hebrew-specific drills | not started |
+| 4 | Data-driven paradigm engine | **deferred** — needs the verb system |
+| 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | not started |
+
+**Phase 1 — course shell.** Done; see "Courses" below for what it built.
+
+**Phase 2 — RTL.** The single genuinely new rendering requirement: there is not one
+`dir` attribute in the repo today. Hebrew text needs `dir="rtl"` on the element that
+contains it, not on the page — the UI copy stays Russian and LTR, and a Hebrew word
+quoted inside a Russian sentence is an inline island. Expect trouble in exactly the
+places the Greek code got away with LTR assumptions: the word bank in
+`js/translation.js` (chip order is meaningful), `.md-table-scroll` (which edge does a
+too-wide table start at), the flashcard flip, and any `text-align` that assumes left.
+Add a Hebrew typeface token beside `--md-ref-typeface-greek` — the Greek serif has no
+niqqud coverage.
+
+**Phase 3 — Hebrew drills.** New exercise types with no Greek equivalent: niqqud
+(name the vowel, supply the missing one), silent vs vocal shva, dagesh forte vs lene,
+qamets vs qamets-hatuf, syllable division, begadkefat, gutturals, the construct chain,
+and pronominal suffixes (type 1 vs type 2). Mechanically each is one more branch in
+the `s.type` chain in `js/exercises.js` plus an entry in `LESSON_DRILL_GROUPS`
+(`js/lesson.js`) and `TEST_TYPES` (`js/test.js`) — the engine already takes them as
+data. Keep exercise keys course-neutral where the concept is shared
+(`translate_*`, `agreement`) and prefix the rest.
+
+**Phase 4 — paradigm engine.** `generateDeclensionTable()` (`js/declension.js`)
+hard-codes `['nom','gen','dat','acc','voc']`, three genders and three persons. Hebrew's
+verb is a binyan × conjugation × 9-PGN cube, which that function cannot express. The
+fix is a table renderer driven by an axis description in the data rather than by
+hard-coded case lists. **Deferred on purpose**: chapters 1–11 stop before the verb, and
+the nominal paradigms in them fit the existing table. Do not start this until the
+scope grows past chapter 11.
+
+**Phase 5 — content.** Author chapters 1–11 into `data/hebrew-lessons.js`, in the same
+lesson shape as `data/lessons.js` (`title`, `grammar`, `vocabulary`, `exercises`,
+`translation`). The file already exists and is wired in — it is an empty object waiting
+for content. Source material and its caveats are in `reference/nbbs-hebrew/`.
+`data/vocabulary-by-lesson.json` there carries a `freq` per word (the textbook's own
+count of its occurrences in the Hebrew Bible) — an axis the Greek data has no
+equivalent of, and the natural way to order what gets taught first.
+
+## Courses
+
+The app hosts two courses. **`data/courses.js` is the registry**; `js/course.js` holds
+the state and the switching.
+
+- A course is one entry in `COURSES` — its name, its lessons object, its prayer data,
+  and the handful of facts that used to be hard-coded for Greek: which lessons are
+  intro-only (no drills), which lesson the dictionary starts at, the search
+  placeholder, the writing direction. Adding a course is a data entry plus its lesson
+  file; it is not a code change.
+- **Read lesson data through `courseLessons()`, never `LESSONS_DATA` directly.** The
+  same goes for `coursePrayer()`. `LESSONS_DATA` is now *the Greek course's* lessons,
+  not *the* lessons. `getLessonData()` and `lessonNumbers()` in `js/core.js` already
+  go through the active course; use them.
+- **Storage keys are namespaced by course**: `courseKey('stats')` → `greek_stats` /
+  `hebrew_stats`, `courseKey('last_lesson')` likewise. This is why no migration was
+  needed for progress — the pre-existing `greek_stats` and `greek_last_lesson` are
+  exactly what the scheme produces for the Greek course. Anything genuinely global
+  gets an `app_` prefix instead: `app_theme` (migrated from `greek_theme`, which is
+  still read as a fallback), `app_course`, `app_default_course`.
+- **The start screen is an overlay, not a `.section`.** `#startScreen` sits outside
+  `.app` and is toggled by `body.start-open`, which hides the app bar, nav bar and FAB
+  in CSS. It was deliberately not made a sixth screen: the nav bar is already at the
+  M3 maximum of five destinations, and a launcher is not a destination. The app behind
+  it is fully booted on the active course, so dismissing it is just hiding it.
+- **`app_default_course` decides whether the start screen appears at all.** `ask`
+  (the default) shows it on every load; a course id skips straight into that course.
+  The setting lives on the settings screen next to the course switcher, which is the
+  only other way back to the start screen.
+- Switching a course goes through `applyCourse(id)`, which reloads stats, drops
+  `allVocabCache`, resets the decks and re-renders. Anything you add that caches
+  across screens must be reset there, or it will leak one course's words into the
+  other.
 
 ## Offline shell
 

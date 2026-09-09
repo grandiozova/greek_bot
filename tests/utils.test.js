@@ -132,7 +132,8 @@ test('тема запоминается и применяется', () => {
 
     app.window.setThemeMode('dark');
     assert.strictEqual(root.getAttribute('data-theme'), 'dark');
-    assert.strictEqual(app.window.localStorage.getItem('greek_theme'), 'dark');
+    // Тема общая для курсов, поэтому ключ app_theme, а не <курс>_theme.
+    assert.strictEqual(app.window.localStorage.getItem('app_theme'), 'dark');
 
     app.window.setThemeMode('sepia');
     assert.strictEqual(root.getAttribute('data-theme'), 'sepia');
@@ -143,18 +144,35 @@ test('тема запоминается и применяется', () => {
 });
 
 test('режим «как в системе» следует за системной темой', () => {
-    const light = loadApp({ prefersDark: false, storage: { greek_theme: 'system' } });
+    const light = loadApp({ prefersDark: false, storage: { app_theme: 'system' } });
     assert.strictEqual(light.document.documentElement.getAttribute('data-theme'), 'light');
     light.close();
 
-    const dark = loadApp({ prefersDark: true, storage: { greek_theme: 'system' } });
+    const dark = loadApp({ prefersDark: true, storage: { app_theme: 'system' } });
     assert.strictEqual(dark.document.documentElement.getAttribute('data-theme'), 'dark');
     dark.close();
 });
 
 test('сохранённая вручную тема не сбрасывается системной', () => {
-    const app = loadApp({ prefersDark: true, storage: { greek_theme: 'light' } });
+    const app = loadApp({ prefersDark: true, storage: { app_theme: 'light' } });
     assert.strictEqual(app.document.documentElement.getAttribute('data-theme'), 'light');
+    app.close();
+});
+
+// Тема раньше лежала в greek_theme — выбор пользователя не должен потеряться
+// от того, что ключ стал общим для курсов.
+test('старый ключ темы greek_theme читается и переносится в app_theme', () => {
+    const app = loadApp({ prefersDark: true, storage: { greek_theme: 'light' } });
+    assert.strictEqual(app.document.documentElement.getAttribute('data-theme'), 'light',
+        'выбор из старого ключа должен примениться');
+    assert.strictEqual(app.window.localStorage.getItem('app_theme'), 'light',
+        'и переехать в новый ключ, чтобы читаться напрямую');
+    app.close();
+});
+
+test('app_theme имеет приоритет над оставшимся greek_theme', () => {
+    const app = loadApp({ storage: { app_theme: 'dark', greek_theme: 'light' } });
+    assert.strictEqual(app.document.documentElement.getAttribute('data-theme'), 'dark');
     app.close();
 });
 

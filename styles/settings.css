@@ -57,6 +57,28 @@
     color: var(--md-sys-color-on-surface-variant);
 }
 
+/* Какой курс открыт сейчас — над кнопкой «Сменить курс». */
+.settings-course {
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-corner-large);
+    background: var(--md-sys-color-surface-container-high);
+}
+.settings-course__name {
+    display: block;
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    color: var(--md-sys-color-on-surface);
+}
+.settings-course__tagline {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.015625rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
 .license-item {
     padding: 12px 0;
     border-bottom: 1px solid var(--md-sys-color-outline-variant);

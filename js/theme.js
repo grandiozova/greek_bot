@@ -14,7 +14,8 @@ function resolvedTheme() { return themeMode === 'system' ? systemTheme() : theme
 function setThemeMode(mode) {
     if (THEME_MODES.indexOf(mode) === -1) mode = 'system';
     themeMode = mode;
-    try { localStorage.setItem('greek_theme', mode); } catch (e) {}
+    // Тема — общая для всех курсов, поэтому ключ с приставкой app_, а не с именем курса.
+    try { localStorage.setItem('app_theme', mode); } catch (e) {}
     applyTheme(resolvedTheme());
     syncThemeControls();
 }
@@ -58,7 +59,18 @@ function applyTheme(theme) {
 
 function initTheme() {
     let saved = null;
-    try { saved = localStorage.getItem('greek_theme'); } catch (e) {}
+    try {
+        saved = localStorage.getItem('app_theme');
+        // До появления второго курса тема лежала в greek_theme. Читаем как
+        // запас и переносим один раз, чтобы выбор пользователя не потерялся.
+        if (saved === null) {
+            let legacy = localStorage.getItem('greek_theme');
+            if (legacy !== null) {
+                saved = legacy;
+                localStorage.setItem('app_theme', legacy);
+            }
+        }
+    } catch (e) {}
     // До появления настроек здесь лежала уже вычисленная тема ('light'/'dark') —
     // такое значение остаётся валидным выбором «вручную».
     themeMode = THEME_MODES.indexOf(saved) !== -1 ? saved : 'system';

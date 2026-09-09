@@ -28,7 +28,9 @@ function shuffle(a) {
     return c;
 }
 
-function getLessonData(l) { return LESSONS_DATA[l]; }
+// Уроки берём у текущего курса, а не из LESSONS_DATA напрямую: LESSONS_DATA —
+// это уроки ГРЕЧЕСКОГО курса, а не «уроки вообще». См. js/course.js.
+function getLessonData(l) { return courseLessons()[l]; }
 
 function getExercises(l, t) {
     let d = getLessonData(l);
@@ -39,14 +41,18 @@ function getExercises(l, t) {
 // Номера уроков берём из самих данных: добавленный урок подхватывается
 // списком, стрелками «предыдущий/следующий» и заголовком без правок кода.
 function lessonNumbers() {
-    return Object.keys(LESSONS_DATA).map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+    return Object.keys(courseLessons()).map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
 }
 function firstLessonNumber() { let n = lessonNumbers(); return n.length ? n[0] : 1; }
 function lastLessonNumber() { let n = lessonNumbers(); return n.length ? n[n.length - 1] : 1; }
 
+// Прогресс у каждого курса свой: courseKey('stats') — это greek_stats или
+// hebrew_stats. Для греческого получается прежний ключ, поэтому уже накопленная
+// статистика читается без переноса.
 function loadStats() {
+    stats = { totalCorrect: 0, totalWrong: 0, errors: {} };
     try {
-        let d = localStorage.getItem('greek_stats');
+        let d = localStorage.getItem(courseKey('stats'));
         if (d) {
             let p = JSON.parse(d);
             stats.totalCorrect = p.totalCorrect || 0;
@@ -57,7 +63,7 @@ function loadStats() {
 }
 
 function saveStats() {
-    try { localStorage.setItem('greek_stats', JSON.stringify(stats)); } catch (e) {}
+    try { localStorage.setItem(courseKey('stats'), JSON.stringify(stats)); } catch (e) {}
 }
 
 function recordError(lesson, error) {

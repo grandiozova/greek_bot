@@ -13,7 +13,7 @@
  * ВАЖНО: подняв CACHE_VERSION, вы гарантированно раздаёте новую версию —
  * старые кэши удаляются в activate.
  */
-const CACHE_VERSION = 'greek-v6';
+const CACHE_VERSION = 'greek-v7';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const FONT_CACHE = CACHE_VERSION + '-fonts';
 
@@ -33,9 +33,12 @@ const CORE_ASSETS = [
     './styles/layout.css',
     './styles/settings.css',
     './data/lessons.js',
+    './data/hebrew-lessons.js',
     './data/prayer.js',
     './data/licenses.js',
+    './data/courses.js',
     './js/core.js',
+    './js/course.js',
     './js/ui.js',
     './js/shell.js',
     './js/theme.js',

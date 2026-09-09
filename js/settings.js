@@ -21,6 +21,7 @@ function renderLicenses() {
 
 function showSettings() {
     showSection('settingsSection');
+    syncCourseControls();
     syncThemeControls();
     renderLicenses();
 }

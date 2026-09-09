@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Древнегреческий учебник в кармане: уроки 1–10, словарь, карточки, тесты и разбор «Отче наш».">
+    <meta name="description" content="Древние языки в кармане: древнегреческий и древнееврейский — уроки, словарь, карточки, тесты и разбор «Отче наш».">
     <meta name="theme-color" content="#FAFAFD" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
-    <title>Древнегреческий учебник в кармане (уроки 1–10)</title>
+    <!-- Заголовок вкладки дальше ведёт applyCourseChrome() по выбранному курсу;
+         этот нужен до запуска скриптов. -->
+    <title>Древние языки в кармане</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300..700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <!-- Material Symbols только теми иконками, что реально используются (icon_names).
          Полный набор — 5.4 МБ, и при display=block интерфейс стоит без иконок, пока он не придёт.
          Добавляя новую иконку в разметку или в JS, допишите её имя в этот список. -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=abc,account_tree,arrow_back,arrow_forward,auto_stories,balance,brightness_auto,cancel,check,check_circle,chevron_right,close,contrast,dark_mode,delete,delete_sweep,dictionary,edit,edit_note,edit_off,error,expand_more,flip,g_translate,help,home,inbox,info,insights,light_mode,link,local_library,menu_book,open_in_new,play_arrow,push_pin,quiz,restart_alt,resume,rocket_launch,rule,school,search,search_off,settings,settings_backup_restore,style,target,task_alt,translate,undo,visibility,warning&display=block" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=abc,account_tree,arrow_back,arrow_forward,auto_stories,balance,brightness_auto,cancel,check,check_circle,chevron_right,close,contrast,dark_mode,delete,delete_sweep,dictionary,edit,edit_note,edit_off,error,expand_more,flip,g_translate,help,home,hourglass_top,inbox,info,insights,light_mode,link,local_library,menu_book,open_in_new,play_arrow,push_pin,quiz,restart_alt,resume,rocket_launch,rule,school,search,search_off,settings,settings_backup_restore,style,swap_horiz,target,task_alt,translate,undo,visibility,warning&display=block" rel="stylesheet">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <!-- Стили. Порядок обязателен: токены задают переменные, остальное их использует.
@@ -39,11 +41,13 @@
 
 <!-- ============ УРОКИ (главный экран) ============ -->
 <div id="mainMenu" class="section active">
-    <button class="md-feature-card" onclick="showPrayer()">
+    <!-- Разбор молитвы есть не у каждого курса: подписи и видимость задаёт
+         applyCourseChrome() по данным курса из data/courses.js. -->
+    <button class="md-feature-card" id="prayerFeatureCard" onclick="showPrayer()">
         <span class="md-feature-card__icon"><span class="msym">local_library</span></span>
         <span class="md-feature-card__text">
-            <span class="md-feature-card__title">Отче наш — Πάτερ ἡμῶν</span>
-            <span class="md-feature-card__body">Пословный разбор с транскрипцией</span>
+            <span class="md-feature-card__title" id="prayerFeatureTitle">Отче наш — Πάτερ ἡμῶν</span>
+            <span class="md-feature-card__body" id="prayerFeatureBody">Пословный разбор с транскрипцией</span>
         </span>
         <span class="md-feature-card__chevron msym">chevron_right</span>
     </button>
@@ -145,6 +149,30 @@
 <!-- ============ НАСТРОЙКИ ============ -->
 <div id="settingsSection" class="section">
     <div class="card">
+        <h3><span class="msym">school</span>Курс</h3>
+        <div class="settings-course">
+            <span class="settings-course__name" id="currentCourseName">Древнегреческий</span>
+            <span class="settings-course__tagline" id="currentCourseTagline"></span>
+        </div>
+        <div class="md-button-row">
+            <button class="menu-btn outlined" onclick="openCoursePicker()"><span class="msym">swap_horiz</span>Сменить курс</button>
+        </div>
+        <p class="md-body-medium settings-hint">При запуске</p>
+        <div class="md-segmented" id="defaultCourseSegmented" role="radiogroup" aria-label="Курс при запуске">
+            <button type="button" role="radio" data-default-course="ask" onclick="setDefaultCourse('ask')" aria-checked="true">
+                <span class="msym">help</span>Спрашивать
+            </button>
+            <button type="button" role="radio" data-default-course="greek" onclick="setDefaultCourse('greek')" aria-checked="false">
+                <span class="msym">menu_book</span>Греческий
+            </button>
+            <button type="button" role="radio" data-default-course="hebrew" onclick="setDefaultCourse('hebrew')" aria-checked="false">
+                <span class="msym">menu_book</span>Еврейский
+            </button>
+        </div>
+        <p class="md-body-medium settings-hint" id="defaultCourseHint"></p>
+    </div>
+
+    <div class="card">
         <h3><span class="msym">contrast</span>Оформление</h3>
         <div class="md-segmented" id="themeSegmented" role="radiogroup" aria-label="Тема оформления">
             <button type="button" role="radio" data-theme-mode="system" onclick="setThemeMode('system')" aria-checked="true">
@@ -240,6 +268,20 @@
     <span class="md-fab__label" id="mainFabLabel">Продолжить</span>
 </button>
 
+<!-- ============ ВЫБОР КУРСА (стартовый экран) ============ -->
+<!-- Не .section, а перекрытие поверх приложения: nav bar уже держит пять точек —
+     максимум для M3 — а пусковой экран и не точка навигации. Приложение под ним
+     загружено на текущем курсе, поэтому «выбрать» = убрать перекрытие.
+     Видимостью управляет body.start-open (styles/screens.css). -->
+<div class="start-screen" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startScreenTitle" hidden>
+    <div class="start-screen__inner">
+        <h2 class="start-screen__title" id="startScreenTitle">С чего начнём?</h2>
+        <p class="start-screen__subtitle md-body-medium">Прогресс у курсов отдельный — переключаться можно в любой момент.</p>
+        <div class="start-screen__list" id="startCourseList"></div>
+        <p class="start-screen__hint md-body-small">Чтобы этот экран не спрашивал каждый раз, выберите курс по умолчанию в настройках.</p>
+    </div>
+</div>
+
 <!-- ============ SNACKBAR ============ -->
 <div class="md-snackbar" id="snackbar" role="status" aria-live="polite"></div>
 
@@ -260,14 +302,18 @@
      область, как раньше, и всё это открывается по file:// без сервера и сборки.
      Данные обязаны загрузиться до логики — она читает их сразу при старте. -->
 <script src="data/lessons.js"></script>
+<script src="data/hebrew-lessons.js"></script>
 <script src="data/prayer.js"></script>
 <script src="data/licenses.js"></script>
+<!-- courses.js — последним среди данных: реестр ссылается на объявленные выше объекты. -->
+<script src="data/courses.js"></script>
 
 <!-- Логика. Тоже обычные скрипты: onclick= в разметке зовёт эти функции по имени,
      значит они обязаны остаться глобальными — с type="module" всё сломается.
      Порядок: сначала состояние и утилиты, boot.js последним — он единственный,
      кто что-то выполняет при загрузке, и ему нужны все объявления выше. -->
 <script src="js/core.js"></script>
+<script src="js/course.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/shell.js"></script>
 <script src="js/theme.js"></script>

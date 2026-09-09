@@ -57,12 +57,13 @@ function showSection(id) {
 }
 
 function updateShell() {
-    let meta = SCREEN_META[currentSectionId] || { title: 'Древнегреческий', dest: null, back: null };
+    let meta = SCREEN_META[currentSectionId] || { title: activeCourse().name, dest: null, back: null };
 
     // --- заголовок ---
     let titleEl = document.getElementById('appBarTitle');
     if (titleEl) {
-        let title = meta.title;
+        // На главном экране заголовок — название курса, а не строка в SCREEN_META.
+        let title = currentSectionId === 'mainMenu' ? activeCourse().name : meta.title;
         if (currentSectionId === 'lessonSection') {
             let d = getLessonData(currentLesson);
             title = d ? 'Урок ' + currentLesson : 'Урок';
@@ -99,8 +100,10 @@ function updateShell() {
     // --- контекстный FAB ---
     let fab = document.getElementById('mainFab');
     let cfg = FAB_CONFIG[currentSectionId];
+    // «Продолжить» нечему продолжать, пока в курсе нет ни одного урока.
+    if (currentSectionId === 'mainMenu' && !courseHasLessons()) cfg = null;
     if (fab) {
-        if (cfg && !(currentSectionId === 'lessonSection' && (currentLesson === 1 || currentLesson === 2))) {
+        if (cfg && !(currentSectionId === 'lessonSection' && isIntroLesson(currentLesson))) {
             fab.classList.remove('hidden-fab');
             document.getElementById('mainFabIcon').textContent = cfg.icon;
             document.getElementById('mainFabLabel').textContent = cfg.label;
@@ -163,8 +166,9 @@ function onFabClick() {
 }
 
 function continueLesson() {
+    if (!courseHasLessons()) return;
     let last = firstLessonNumber();
-    try { last = parseInt(localStorage.getItem('greek_last_lesson'), 10) || last; } catch (e) {}
+    try { last = parseInt(localStorage.getItem(courseKey('last_lesson')), 10) || last; } catch (e) {}
     if (!getLessonData(last)) last = firstLessonNumber();
     openLesson(last);
 }
@@ -190,8 +194,17 @@ function renderMainMenu() {
     if (!grid) return;
     grid.innerHTML = '';
     let last = 0;
-    try { last = parseInt(localStorage.getItem('greek_last_lesson'), 10) || 0; } catch (e) {}
+    try { last = parseInt(localStorage.getItem(courseKey('last_lesson')), 10) || 0; } catch (e) {}
     let numbers = lessonNumbers();
+    let heading = document.getElementById('lessonGridTitle');
+    // Курс может быть подключён раньше, чем наполнен: показываем это прямо,
+    // а не пустой карточкой без объяснений.
+    if (!numbers.length) {
+        grid.innerHTML = emptyState('hourglass_top', 'Уроки готовятся',
+            'Материал этого курса ещё не подключён. Курс можно сменить в настройках.');
+        if (heading) heading.textContent = 'Уроки';
+        return;
+    }
     for (let l of numbers) {
         let data = getLessonData(l);
         if (!data) continue;
@@ -209,8 +222,7 @@ function renderMainMenu() {
         grid.appendChild(btn);
     }
     // Заголовок карточки называет реальный диапазон уроков в данных
-    let heading = document.getElementById('lessonGridTitle');
-    if (heading && numbers.length) {
+    if (heading) {
         heading.textContent = 'Уроки ' + numbers[0] + '–' + numbers[numbers.length - 1];
     }
 }

@@ -30,7 +30,7 @@ test('словарь не включает урок 1 — там названи�
     const app = openVocab();
     const lessons = app.get('getAllVocab().map(e => e.lesson).join(",")').split(',').map(Number);
     assert.ok(!lessons.includes(1), 'в словарь попал урок 1');
-    assert.ok(Math.min(...lessons) >= app.get('VOCAB_FIRST_LESSON'));
+    assert.ok(Math.min(...lessons) >= app.window.vocabFirstLesson());
     app.close();
 });
 
