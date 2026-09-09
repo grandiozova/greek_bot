@@ -24,3 +24,7 @@ screenshots/
 # Secrets / local config
 .env
 .env.local
+
+# Python bytecode from reference/ build scripts
+__pycache__/
+*.pyc
