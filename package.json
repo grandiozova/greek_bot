@@ -1,5 +1,5 @@
 {
-  "name": "greek-bot-tests",
+  "name": "anticus-tests",
   "version": "0.0.0",
   "private": true,
   "description": "Тесты для статического приложения. Само приложение зависимостей не имеет и открывается как index.html.",

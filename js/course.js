@@ -112,7 +112,7 @@ function applyCourseChrome() {
     // развернуть её целиком значило бы развернуть app bar, вкладки и меню.
     document.documentElement.setAttribute('data-script', course.script || 'greek');
     document.documentElement.setAttribute('data-script-dir', courseDir());
-    document.title = course.name + ' — учебник в кармане';
+    document.title = 'Anticus — ' + course.name;
 
     let input = document.getElementById('vocabSearchInput');
     if (input) input.setAttribute('placeholder', course.searchPlaceholder || 'Поиск');

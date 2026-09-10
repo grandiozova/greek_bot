@@ -4,7 +4,7 @@ Guidance for AI agents working in this repository.
 
 ## What this repo is
 
-A biblical-languages learning web app — Ancient Greek and Biblical Hebrew — published to GitHub Pages.
+**Anticus** — a biblical-languages learning web app, Ancient Greek and Biblical Hebrew, published to GitHub Pages. The name is the product name only; the repository, the Pages URL and the `greek_*` storage keys predate it and are unchanged.
 
 | Part | Files | Notes |
 |---|---|---|
@@ -247,15 +247,10 @@ data must occur verbatim somewhere in `reference/nbbs-hebrew/`. **Do not "fix" a
 from that test by retyping the word** — copy it out of the reference, or the same
 reordering comes back.
 
-Two decisions already settled in the data, so they do not get re-litigated:
-
-- **`אֵת` occurs twice in chapter 6 as two different words.** The dictionary forbids
-  duplicate headwords, so the preposition sense is folded into a comment and only the
-  object-marker entry ships. It is not a missing entry.
-- **There is no gender/number drill for chapter 4.** Greek's `case_number` asks the same
-  question but is labelled «Падеж и число», and Hebrew has no cases. This is the one
-  known gap in the pilot: either add `heb_gender_number`, or give the shared type a
-  per-course label.
+One decision already settled in the data, so it does not get re-litigated: **`אֵת`
+occurs twice in chapter 6 as two different words.** The dictionary forbids duplicate
+headwords, so the preposition sense is folded into a comment and only the object-marker
+entry ships. It is not a missing entry.
 
 ## Exercise types
 
@@ -282,8 +277,10 @@ own answer handler. A new kind is an entry in that table, not a branch.
   `translate_*` and `article_fill` are used by both courses — Hebrew's article question
   is the same question, just with `הָ`/`הַ`/`הֶ` as the forms. Kinds that exist only in
   the Hebrew course are prefixed `heb_`: `heb_vowel_name`, `heb_vowel_fill`, `heb_shva`,
-  `heb_dagesh`, `heb_qamets`, `heb_begadkefat`, `heb_syllables`, `heb_gutturals`,
-  `heb_construct`, `heb_suffix_type`. The prefix is a convention for readers; no code
+  `heb_dagesh`, `heb_qamets`, `heb_gender_number`, `heb_begadkefat`, `heb_syllables`,
+  `heb_gutturals`, `heb_construct`, `heb_suffix_type`. Hebrew has no cases, so
+  `heb_gender_number` is its own kind rather than a reuse of Greek's `case_number`,
+  which is labelled «Падеж и число». The prefix is a convention for readers; no code
   parses it.
 - **A group with nothing available is not drawn.** That is what keeps the phonology
   group («Огласовка и чтение») off Greek lesson screens without any branching on course.
