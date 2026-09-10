@@ -308,7 +308,7 @@ function renderVocabExamplesHtml(entry) {
         if (fallback) {
             return '<div class="vocab-examples">' +
                 '<div class="vocab-example vocab-example--generated">' +
-                    '<div class="vocab-example__greek">' + highlightWord(fallback.greek, entry) + '</div>' +
+                    '<div class="vocab-example__script">' + highlightWord(fallback.greek, entry) + '</div>' +
                     '<div class="vocab-example__ru">' + fallback.russian + '</div>' +
                     '<div class="vocab-example__note">пример составлен автоматически</div>' +
                 '</div>' +
@@ -321,7 +321,7 @@ function renderVocabExamplesHtml(entry) {
     examples.forEach(ex => {
         parts.push(
             '<div class="vocab-example">',
-                '<div class="vocab-example__greek">', highlightWord(ex.greek, entry), '</div>',
+                '<div class="vocab-example__script">', highlightWord(ex.greek, entry), '</div>',
                 '<div class="vocab-example__ru">', ex.russian, '</div>',
             '</div>'
         );

@@ -54,7 +54,7 @@ function showExercise() {
     if (s.type === 'declension_fill') {
         let caseName = getCaseName(q.case);
         let wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
-        html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <span class="greek">' + wordDisplay + '</span></div><div class="options options--greek">';
+        html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <span class="script">' + wordDisplay + '</span></div><div class="options options--script">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
@@ -63,33 +63,33 @@ function showExercise() {
     html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){checkExerciseTranslation(' + idx + ');}"><button type="button" onclick="checkExerciseTranslation(' + idx + ')"><span class="msym">check</span>Проверить</button></div>';
 } else if (s.type === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
-        html += '<div class="question">Переведите на греческий</div><div class="md-prompt-ru">' + q.russian + '</div><div class="build-area" id="buildArea"></div><div class="word-bank" id="wordBank">';
+        html += '<div class="question">Переведите на ' + courseLang() + '</div><div class="md-prompt-ru">' + q.russian + '</div><div class="build-area build-area--script" id="buildArea"></div><div class="word-bank word-bank--script" id="wordBank">';
         for (let w of words) html += '<span class="chip" onclick="pickWord(\'' + escArg(w) + '\')">' + w + '</span>';
         html += '</div><div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationRu()"><span class="msym">check</span>Готово</button><button class="menu-btn text" onclick="clearChosen()"><span class="msym">undo</span>Очистить</button></div>';
         window._trans_ru = q;
         window._chosen = [];
     } else if (s.type === 'case_number') {
-        html += '<div class="question">Определите падеж и число для формы: <span class="greek">' + q.form + '</span></div><div class="options">';
+        html += '<div class="question">Определите падеж и число для формы: <span class="script">' + q.form + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'agreement') {
-        html += '<div class="question">Вставьте прилагательное <span class="greek">' + q.adjective + '</span> в правильной форме:<br><span class="greek">' + q.article + ' ____ ' + q.noun + '</span></div><div class="options options--greek">';
+        html += '<div class="question">Вставьте прилагательное <span class="script">' + q.adjective + '</span> в правильной форме:<br><span class="script">' + q.article + ' ____ ' + q.noun + '</span></div><div class="options options--script">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'attribute_vs_predicate') {
-        html += '<div class="question">Определите, атрибутив или предикатив:<br><span class="greek">' + q.phrase + '</span></div><div class="options">';
+        html += '<div class="question">Определите, атрибутив или предикатив:<br><span class="script">' + q.phrase + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'substantivation') {
-        html += '<div class="question">Что означает:<br><span class="greek">' + q.phrase + '</span></div><div class="options">';
+        html += '<div class="question">Что означает:<br><span class="script">' + q.phrase + '</span></div><div class="options">';
         let opts = shuffle([q.correct].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
         html += '</div>';
     } else if (s.type === 'article_fill') {
-        html += '<div class="question">Вставьте правильную форму артикля:<br><span class="greek">____ ' + q.noun + '</span></div><div class="options options--greek">';
+        html += '<div class="question">Вставьте правильную форму артикля:<br><span class="script">____ ' + q.noun + '</span></div><div class="options options--script">';
         let opts = shuffle([q.correct_article].concat(q.distractors));
         for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct_article) + '\')">' + o + '</button>';
         html += '</div>';
@@ -157,7 +157,7 @@ function checkTranslationRu() {
         stats.totalCorrect++;
         exerciseState.correct++;
         container.innerHTML = `
-            <div class="feedback ok"><span>Верно! <strong>${corr.join(' ')}</strong></span></div>
+            <div class="feedback ok"><span>Верно! <strong class="script">${corr.join(' ')}</strong></span></div>
             <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
         `;
     } else {
@@ -165,7 +165,7 @@ function checkTranslationRu() {
         let lesson = currentLesson;
         recordError(lesson, { word: q.russian, correct: corr.join(' '), your: chosen.join(' ') });
         container.innerHTML = `
-            <div class="feedback fail"><span>Неверно. Правильный порядок: <strong>${corr.join(' ')}</strong></span></div>
+            <div class="feedback fail"><span>Неверно. Правильный порядок: <strong class="script">${corr.join(' ')}</strong></span></div>
             <button class="menu-btn primary" onclick="nextExercise()">Далее<span class="msym">arrow_forward</span></button>
         `;
     }

@@ -11,11 +11,14 @@ function checkTranslationBuild() {
     let correct = q.correct;
     let ok = chosen.length === correct.length && chosen.every((w, i) => w === correct[i]);
     let container = document.getElementById('translationQuestion');
+    // ru_to_el собирают на изучаемом языке, el_to_ru — по-русски. Помечаем
+    // только первый: .script развернул бы русский ответ справа налево.
+    let answerCls = s.type === 'ru_to_el' ? ' class="script"' : '';
     if (ok) {
         s.correct++;
         stats.totalCorrect++;
         container.innerHTML = `
-            <div class="feedback ok"><span>Верно! <strong>${correct.join(' ')}</strong></span></div>
+            <div class="feedback ok"><span>Верно! <strong${answerCls}>${correct.join(' ')}</strong></span></div>
             <button class="menu-btn primary" onclick="nextTranslation()">Далее<span class="msym">arrow_forward</span></button>
         `;
     } else {
@@ -24,7 +27,7 @@ function checkTranslationBuild() {
         if (!stats.errors[lesson]) stats.errors[lesson] = [];
         stats.errors[lesson].push({ word: q.source, correct: correct.join(' '), your: chosen.join(' ') });
         container.innerHTML = `
-            <div class="feedback fail"><span>Неверно. Правильный порядок: <strong>${correct.join(' ')}</strong></span></div>
+            <div class="feedback fail"><span>Неверно. Правильный порядок: <strong${answerCls}>${correct.join(' ')}</strong></span></div>
             <button class="menu-btn primary" onclick="nextTranslation()">Далее<span class="msym">arrow_forward</span></button>
         `;
     }
@@ -63,7 +66,12 @@ function showTranslation() {
     let q = s.questions[s.index];
     let container = document.getElementById('translationQuestion');
     let html = progressHead('Перевод ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
-    html += '<div class="question">' + q.source + '</div>';
+    // Направление перевода решает, на каком языке условие, а на каком фишки:
+    // ru_to_el — русское условие и банк слов изучаемого языка, el_to_ru —
+    // наоборот. Помечаем ту половину, которая на изучаемом языке.
+    let toScript = s.type === 'ru_to_el';
+    html += '<div class="question">' +
+        (toScript ? q.source : '<span class="script">' + q.source + '</span>') + '</div>';
  
     // Собираем все слова: правильные + лишние (из словаря урока)
     let lessonData = getLessonData(currentLesson);
@@ -94,8 +102,8 @@ function showTranslation() {
     // чип с конкретным токеном в поле сборки, чтобы удаление работало точно.
     translationState.allWords = allWords;
  
-    html += '<div class="build-area" id="transBuildArea"></div>';
-    html += '<div class="word-bank" id="transWordBank">';
+    html += '<div class="build-area' + (toScript ? ' build-area--script' : '') + '" id="transBuildArea"></div>';
+    html += '<div class="word-bank' + (toScript ? ' word-bank--script' : '') + '" id="transWordBank">';
     allWords.forEach((w, idx) => {
         html += '<span class="chip" data-chip-idx="' + idx + '" onclick="transPickWord(\'' + escArg(w) + '\', ' + idx + ')">' + w + '</span>';
     });

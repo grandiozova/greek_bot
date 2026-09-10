@@ -48,9 +48,33 @@ body {
 .msym.sm { font-size: 20px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
 .msym.lg { font-size: 32px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 40; }
 
-/* --- греческий текст: полноценная поддержка политоники --- */
+/* --- текст изучаемого языка --- */
+/* .script — язык текущего курса: и шрифт, и направление письма приходят
+   токенами, которые переключает <html data-script data-script-dir>. Этим
+   классом размечает свои строки JS, поэтому одно и то же место разметки
+   годится обоим курсам и не приходится плодить ветки по курсу.
+
+   Явные метки языка (.greek, .hebrew, lang=) сильнее токенов: греческое
+   слово внутри еврейского материала остаётся греческим. Так же размечается
+   ячейка таблицы в data/*.js — <td lang="he">.
+
+   isolate, а не просто direction: еврейское слово внутри русской фразы —
+   это вставка, и её знаки препинания принадлежат фразе, а не вставке.
+   Без изоляции точка в конце предложения уезжает к левому краю слова. */
+.script {
+    font-family: var(--md-ref-typeface-script);
+    direction: var(--md-ref-script-direction);
+    unicode-bidi: isolate;
+}
 .greek, .grammar-text table td:lang(el), [lang="grc"] {
     font-family: var(--md-ref-typeface-greek);
+    direction: ltr;
+    unicode-bidi: isolate;
+}
+.hebrew, .grammar-text table td:lang(he), [lang="he"] {
+    font-family: var(--md-ref-typeface-hebrew);
+    direction: rtl;
+    unicode-bidi: isolate;
 }
 
 /* --- шкала типографики --- */

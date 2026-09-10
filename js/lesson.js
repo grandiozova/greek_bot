@@ -26,10 +26,10 @@ const LESSON_DRILL_GROUPS = [
         // учебника — разные задания, поэтому в подписях они разведены явно.
         label: 'Перевод',
         drills: [
-            { kind: 'exercise', key: 'translate_greek_to_russian', label: 'Фразы: греческий → русский', icon: 'translate' },
-            { kind: 'exercise', key: 'translate_russian_to_greek', label: 'Фразы: русский → греческий', icon: 'g_translate' },
-            { kind: 'translation', key: 'el_to_ru', label: 'Предложения: греческий → русский', icon: 'translate' },
-            { kind: 'translation', key: 'ru_to_el', label: 'Предложения: русский → греческий', icon: 'g_translate' }
+            { kind: 'exercise', key: 'translate_greek_to_russian', label: 'Фразы: {lang} → русский', icon: 'translate' },
+            { kind: 'exercise', key: 'translate_russian_to_greek', label: 'Фразы: русский → {lang}', icon: 'g_translate' },
+            { kind: 'translation', key: 'el_to_ru', label: 'Предложения: {lang} → русский', icon: 'translate' },
+            { kind: 'translation', key: 'ru_to_el', label: 'Предложения: русский → {lang}', icon: 'g_translate' }
         ]
     },
     {
@@ -39,6 +39,13 @@ const LESSON_DRILL_GROUPS = [
         ]
     }
 ];
+
+// Каталог общий для курсов, поэтому язык в подписи стоит местом, а не словом:
+// {lang} раскрывается при отрисовке. Читать drill.label напрямую нельзя —
+// в списке или в заголовке окажется «{lang}».
+function drillLabel(drill) {
+    return String(drill.label).replace('{lang}', courseLang());
+}
 
 // Контейнер на «сцене» под выбранное упражнение — по одному на вид.
 const DRILL_BOXES = { exercise: 'exerciseQuestion', translation: 'translationQuestion', flashcards: 'flashcardContainer' };
@@ -117,7 +124,7 @@ function renderLessonDrills(data) {
         parts.push('<div class="drill-group"><h4 class="drill-group__label">', group.label, '</h4><div class="lesson-list">');
         available.forEach((d, i) => {
             if (i) parts.push('<hr class="md-divider">');
-            parts.push(menuItemHtml(d.icon, d.label, null,
+            parts.push(menuItemHtml(d.icon, drillLabel(d), null,
                 'startLessonDrill(\'' + d.kind + '\',\'' + d.key + '\')'));
         });
         parts.push('</div></div>');
@@ -148,7 +155,7 @@ function startLessonDrill(kind, key) {
     let icon = document.getElementById('drillStageIcon');
     if (icon) icon.textContent = drill.icon;
     let title = document.getElementById('drillStageTitle');
-    if (title) title.textContent = drill.label;
+    if (title) title.textContent = drillLabel(drill);
 
     Object.keys(DRILL_BOXES).forEach(k => {
         let el = document.getElementById(DRILL_BOXES[k]);
@@ -195,7 +202,16 @@ const LIFT_MARK = '\u0001';
 // собранный из строк с «•». Без класса он достался бы глобальному сбросу
 // `* { margin: 0; padding: 0 }` и остался бы вовсе без отступов и маркеров.
 function grammarLiftedHtml(html) {
-    if (/^<table/i.test(html)) return '<div class="md-table-scroll">' + html + '</div>';
+    if (/^<table/i.test(html)) {
+        // dir с таблицы дублируем на полосу прокрутки. Полоса — отдельный
+        // элемент, и «начало» она считает по своему направлению: у таблицы
+        // справа налево первая колонка правая, а полоса с ltr открывала бы
+        // такую таблицу с последней. Направление здесь задают данные урока,
+        // а не курс: таблица в материале бывает и русской.
+        let dir = /^<table[^>]*\bdir=["']?(rtl|ltr)/i.exec(html);
+        return '<div class="md-table-scroll"' +
+            (dir ? ' dir="' + dir[1].toLowerCase() + '"' : '') + '>' + html + '</div>';
+    }
     if (/^<(ul|ol)\b[^>]*\bclass=/i.test(html)) return html;
     return html.replace(/^<(ul|ol)\b/i, '<$1 class="grammar-list"');
 }

@@ -21,7 +21,7 @@ function renderPrayerText() {
     let html = '<p class="md-body-medium mb-12">Нажмите на любое слово, чтобы увидеть разбор формы.</p>';
     coursePrayer().verses.forEach((verse, verseIdx) => {
         html += `<div class="prayer-verse">`;
-        html += `<div class="prayer-line">`;
+        html += `<div class="prayer-line script">`;
         verse.words.forEach((word, wordIdx) => {
             html += `<span class="prayer-word" data-verse="${verseIdx}" data-word="${wordIdx}" role="button" tabindex="0" onclick="showWordAnalysis(${verseIdx}, ${wordIdx})">${word.greek}</span>`;
         });
@@ -66,7 +66,7 @@ function renderPrayerExercise() {
     const container = document.getElementById('prayerExercise');
     let html = `<div class="md-button-row" style="margin-top:0;">
         <button class="menu-btn" onclick="startPrayerFill()"><span class="msym">edit</span>Заполни пропуски</button>
-        <button class="menu-btn primary" onclick="startPrayerTranslate()"><span class="msym">translate</span>Перевод на греческий</button>
+        <button class="menu-btn primary" onclick="startPrayerTranslate()"><span class="msym">translate</span>Перевод на ${courseLang()}</button>
     </div>`;
     html += `<div id="prayerExerciseQuestion"></div>`;
     container.innerHTML = html;
@@ -131,9 +131,9 @@ function showPrayerExerciseQuestion() {
         });
         const text = displayWords.join(' ');
         let html = progressHead(`Вопрос ${state.index+1} из ${state.total}`, state.index, state.total);
-        html += `<div class="question">${text}</div>`;
+        html += `<div class="question"><span class="script">${text}</span></div>`;
         html += `<div class="prayer-russian mb-12">${q.russian}</div>`;
-        html += `<div class="options options--greek">`;
+        html += `<div class="options options--script">`;
         const opts = shuffle([q.correct, ...q.distractors]);
         opts.forEach(opt => {
             html += `<button class="option-btn" onclick="prayerFillAnswer('${escArg(opt)}', '${escArg(q.correct)}')">${opt}</button>`;
@@ -143,9 +143,9 @@ function showPrayerExerciseQuestion() {
     } else if (state.type === 'translate') {
         let html = progressHead(`Вопрос ${state.index+1} из ${state.total}`, state.index, state.total);
         html += `<div class="question">${q.russian}</div>`;
-        html += `<div class="prayer-russian mb-12">Соберите греческий перевод из слов</div>`;
-        html += `<div class="build-area" id="prayerBuildArea"></div>`;
-        html += `<div class="word-bank" id="prayerWordBank">`;
+        html += `<div class="prayer-russian mb-12">Соберите перевод на ${courseLang()} из слов</div>`;
+        html += `<div class="build-area build-area--script" id="prayerBuildArea"></div>`;
+        html += `<div class="word-bank word-bank--script" id="prayerWordBank">`;
         q.pool.forEach(w => {
             html += `<span class="chip" onclick="prayerPickWord('${escArg(w)}')">${w}</span>`;
         });

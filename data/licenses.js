@@ -11,7 +11,7 @@ const LICENSES = [
         url: 'https://github.com/grandiozova/greek_bot/blob/main/LICENSE'
     },
     {
-        name: 'Noto Sans, Noto Serif',
+        name: 'Noto Sans, Noto Serif, Noto Serif Hebrew',
         terms: 'SIL Open Font License 1.1 © Google',
         url: 'https://openfontlicense.org/'
     },

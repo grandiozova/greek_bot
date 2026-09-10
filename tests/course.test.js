@@ -247,7 +247,7 @@ test('каждый курс реестра описан полностью', () 
     for (const id of order) {
         const c = app.get('COURSES')[id];
         assert.ok(c, 'нет курса ' + id + ' из COURSE_ORDER');
-        for (const field of ['id', 'name', 'tagline', 'blurb', 'icon', 'dir', 'searchPlaceholder']) {
+        for (const field of ['id', 'name', 'tagline', 'blurb', 'icon', 'dir', 'script', 'lang', 'searchPlaceholder']) {
             assert.ok(c[field], id + ': не заполнено поле ' + field);
         }
         assert.strictEqual(c.id, id, 'id внутри записи должен совпадать с ключом');
@@ -256,5 +256,39 @@ test('каждый курс реестра описан полностью', () 
         // prayerCard имеет смысл только вместе с prayer
         if (c.prayer) assert.ok(c.prayerCard, id + ': есть prayer, но нет подписей карточки');
     }
+    app.close();
+});
+
+// ------------------------------------------------------------ подписи по курсу
+
+test('подписи упражнений называют язык курса, а не греческий', () => {
+    // Каталог упражнений один на оба курса, поэтому язык в подписи стоит
+    // местом ({lang}) и раскрывается при отрисовке. Забыть drillLabel()
+    // где-нибудь — значит показать «{lang}» пользователю.
+    const app = loadApp({ storage: { app_default_course: 'greek' } });
+    const w = app.window;
+
+    const labels = () => w.eval(
+        'LESSON_DRILL_GROUPS.flatMap(g => g.drills).map(drillLabel).join(" | ")');
+    assert.match(labels(), /Фразы: греческий → русский/);
+    assert.ok(!labels().includes('{lang}'), 'плейсхолдер не раскрыт: ' + labels());
+
+    w.applyCourse('hebrew');
+    assert.match(labels(), /Фразы: еврейский → русский/);
+    assert.ok(!labels().includes('греческ'), 'в еврейском курсе греческий язык: ' + labels());
+    app.close();
+});
+
+test('заголовок экрана упражнения тоже называет язык курса', () => {
+    const app = loadApp({ storage: { app_default_course: 'greek' } });
+    const w = app.window;
+    const lesson = w.lessonNumbers().find(n => {
+        const t = (w.getLessonData(n).translation || {}).ru_to_el;
+        return t && t.length;
+    });
+    w.openLesson(lesson);
+    w.startLessonDrill('translation', 'ru_to_el');
+    assert.strictEqual(app.appBarTitle(), 'Предложения: русский → греческий');
+    assert.deepStrictEqual(app.errors, []);
     app.close();
 });

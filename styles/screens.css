@@ -8,10 +8,12 @@
     color: var(--md-sys-color-on-surface);
     margin-bottom: 16px;
 }
-.question b, .question .greek { font-weight: 600; }
-.question .greek { font-family: var(--md-ref-typeface-greek); }
+.question b, .question .script { font-weight: 600; }
+/* Шрифт и направление вставке даёт .script (styles/base.css) — здесь только вес. */
 .md-prompt-strong {
-    font-family: var(--md-ref-typeface-greek);
+    font-family: var(--md-ref-typeface-script);
+    direction: var(--md-ref-script-direction);
+    unicode-bidi: isolate;
     font-size: 1.75rem;
     line-height: 2.25rem;
     text-align: center;
@@ -64,8 +66,11 @@
 }
 .option-btn:hover:not(:disabled)::before { opacity: var(--md-sys-state-hover-opacity); }
 .option-btn:active:not(:disabled) { border-radius: var(--md-sys-shape-corner-medium); }
-.options--greek .option-btn {
-    font-family: var(--md-ref-typeface-greek);
+/* Варианты ответа — формы изучаемого языка, а не подписи интерфейса. */
+.options--script .option-btn {
+    font-family: var(--md-ref-typeface-script);
+    direction: var(--md-ref-script-direction);
+    unicode-bidi: isolate;
     font-size: 1.0625rem;
     letter-spacing: 0;
 }
@@ -115,7 +120,9 @@
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-.feedback strong { font-family: var(--md-ref-typeface-greek); }
+/* В <strong> обратной связи лежит то русский ответ, то форма изучаемого
+   языка — что именно, знает только тот, кто эту строку собрал. Поэтому
+   шрифт и направление вешает он же, классом .script, а не это правило. */
 .feedback.ok {
     background: var(--md-extended-color-success-container);
     color: var(--md-extended-color-on-success-container);
@@ -204,7 +211,9 @@
 }
 .word-item.clickable .word-row:hover::before { opacity: var(--md-sys-state-hover-opacity); }
 .word-item .word-row strong {
-    font-family: var(--md-ref-typeface-greek);
+    font-family: var(--md-ref-typeface-script);
+    direction: var(--md-ref-script-direction);
+    unicode-bidi: isolate;
     font-weight: 600;
     font-size: 1rem;
     line-height: 1.5rem;
@@ -269,11 +278,25 @@
 /* Внутри полосы прокрутки таблица занимает всю ширину, но не обязана в неё
    влезать: width:100% сжимал бы колонки до нечитаемого вместо прокрутки. */
 .md-table-scroll table { width: auto; min-width: 100%; margin: 0; }
+/* Таблица парадигмы — это формы изучаемого языка, и разворачивается она вместе
+   с ним: при письме справа налево первая колонка правая. Направление стоит на
+   полосе прокрутки, а не на самой таблице: слишком широкая таблица должна
+   открываться с первой колонки, а у полосы с direction:ltr «начало» — левый
+   край, и она открывалась бы с последней.
+   Таблицы из материала урока сюда не входят: они бывают и русскими, и
+   разворачиваются только там, где в данных написано <table dir="rtl"> —
+   этот атрибут переносит на полосу grammarLiftedHtml() (js/lesson.js). */
+.word-details > .md-table-scroll { direction: var(--md-ref-script-direction); }
 .word-details td, .word-details th,
 .grammar-text td, .grammar-text th {
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
     padding: 10px 12px;
-    text-align: left;
+    /* start, а не left: у таблицы с dir="rtl" строка начинается справа */
+    text-align: start;
+    /* Направление каждая ячейка берёт из своего текста: в развёрнутой таблице
+       колонка форм еврейская, а «Падеж» и «Перевод» русские, и точка в конце
+       «ед. ч.» без этого уезжала бы в левый край ячейки. */
+    unicode-bidi: plaintext;
     color: var(--md-sys-color-on-surface);
 }
 /* Внутри полосы прокрутки ячейки не переносятся. Иначе колонка «Перевод»,
@@ -316,7 +339,8 @@
 /* Маркер снаружи: вторая строка пункта встаёт под текст, а не под «•» */
 .grammar-list {
     margin: 0 0 12px;
-    padding-left: 24px;
+    /* inline-start: списку с dir="rtl" отступ нужен справа */
+    padding-inline-start: 24px;
     list-style: disc outside;
 }
 .grammar-list li { margin-bottom: 4px; }
@@ -350,7 +374,9 @@
     to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 .flashcard-word {
-    font-family: var(--md-ref-typeface-greek);
+    font-family: var(--md-ref-typeface-script);
+    direction: var(--md-ref-script-direction);
+    unicode-bidi: isolate;
     font-size: 2.8125rem;
     line-height: 3.25rem;
     font-weight: 400;
@@ -422,7 +448,9 @@
 }
 .card-declension { width: 100%; }
 .card-declension__word {
-    font-family: var(--md-ref-typeface-greek);
+    font-family: var(--md-ref-typeface-script);
+    direction: var(--md-ref-script-direction);
+    unicode-bidi: isolate;
     font-size: 1.5rem;
     line-height: 2rem;
     color: var(--md-sys-color-on-surface);
@@ -554,7 +582,14 @@
     font-size: 0.875rem;
     line-height: 1.25rem;
 }
-.error-item strong { font-family: var(--md-ref-typeface-greek); color: var(--md-extended-color-success); }
+/* Правильный ответ здесь — то форма изучаемого языка, то русский перевод:
+   разбор ошибок сводит в один список все виды упражнений. plaintext берёт
+   направление из самого текста, поэтому гадать за него не приходится. */
+.error-item strong {
+    font-family: var(--md-ref-typeface-script);
+    unicode-bidi: plaintext;
+    color: var(--md-extended-color-success);
+}
 .error-item .msym { color: var(--md-sys-color-error); }
 .clear-btn {
     min-height: 40px;
@@ -599,12 +634,16 @@
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 .prayer-verse:last-child { border-bottom: 0; }
+/* Стих — ряд отдельных слов, поэтому направление письма стоит здесь: иначе
+   слова легли бы в порядке слева направо, а каждое читалось бы справа налево.
+   Класс .script на этот ряд вешает renderPrayerText() (js/prayer.js). */
 .prayer-line {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 8px;
 }
+/* Слово молитвы — текст изучаемого языка. */
 .prayer-word {
     position: relative;
     isolation: isolate;
@@ -613,7 +652,7 @@
     border-radius: var(--md-sys-shape-corner-small);
     background: var(--md-sys-color-surface-container-high);
     color: var(--md-sys-color-on-surface);
-    font-family: var(--md-ref-typeface-greek);
+    font-family: var(--md-ref-typeface-script);
     font-size: 1.125rem;
     line-height: 1.75rem;
     cursor: pointer;
@@ -647,7 +686,11 @@
     line-height: 1.25rem;
     animation: md-feedback-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
 }
-.prayer-analysis strong { font-family: var(--md-ref-typeface-greek); font-size: 1.0625rem; }
+.prayer-analysis strong {
+    font-family: var(--md-ref-typeface-script);
+    unicode-bidi: plaintext;
+    font-size: 1.0625rem;
+}
 
 
 /* ============================================================

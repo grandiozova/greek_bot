@@ -23,6 +23,21 @@ function activeCourse() { return COURSES[currentCourseId] || COURSES.greek; }
 function courseLessons() { return activeCourse().lessons || {}; }
 function coursePrayer() { return activeCourse().prayer || null; }
 
+// ------------------------------------------------------------ изучаемый язык
+//
+// Текст изучаемого языка размечается классом .script — одним и тем же в обоих
+// курсах. Греческой антиквой слева направо или ивритом справа налево он
+// обернётся, решают токены в styles/tokens.css по атрибутам, которые ставит
+// applyCourseChrome(). Ветвиться по курсу в разметке не нужно.
+
+// Направление письма изучаемого языка. Интерфейс остаётся русским и слева
+// направо в любом курсе — это про текст урока, а не про экран.
+function courseDir() { return activeCourse().dir === 'rtl' ? 'rtl' : 'ltr'; }
+
+// Название изучаемого языка для подписей упражнений. Подставляется вместо
+// {lang} — держать в подписи «греческий» значит соврать в еврейском курсе.
+function courseLang() { return activeCourse().lang || 'язык курса'; }
+
 // Ключ прогресса текущего курса: 'stats' -> 'greek_stats' / 'hebrew_stats'.
 function courseKey(name) { return currentCourseId + '_' + name; }
 
@@ -90,6 +105,13 @@ function applyCourse(id) {
 function applyCourseChrome() {
     let course = activeCourse();
     document.documentElement.setAttribute('data-course', course.id);
+    // Письмо изучаемого языка — двумя атрибутами на <html>, а не классом на
+    // каждом элементе: шрифт и направление приходят в правила токенами
+    // (styles/tokens.css), поэтому разметке про курс знать нечего.
+    // Атрибут dir на <html> при этом НЕ трогаем: страница русская, и
+    // развернуть её целиком значило бы развернуть app bar, вкладки и меню.
+    document.documentElement.setAttribute('data-script', course.script || 'greek');
+    document.documentElement.setAttribute('data-script-dir', courseDir());
     document.title = course.name + ' — учебник в кармане';
 
     let input = document.getElementById('vocabSearchInput');

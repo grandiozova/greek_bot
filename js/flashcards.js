@@ -144,7 +144,7 @@ function flashcardContextBlockHtml(word) {
     let examples = findUsageExamples(word, 1);
     if (!examples.length) return '';
     return '<div class="vocab-example">' +
-        '<div class="vocab-example__greek">' + highlightWord(examples[0].greek, word) + '</div>' +
+        '<div class="vocab-example__script">' + highlightWord(examples[0].greek, word) + '</div>' +
         '<div class="vocab-example__ru">' + examples[0].russian + '</div>' +
     '</div>';
 }
@@ -327,7 +327,7 @@ function renderCardDeclension(deck) {
     let q = d.questions[d.index];
     html += '<div class="card-declension__progress">Форма ' + (d.index + 1) + ' из ' + d.questions.length + '</div>';
     html += '<div class="card-declension__prompt">' + q.label + '</div>';
-    html += '<div class="options options--greek">';
+    html += '<div class="options options--script">';
     for (let o of shuffle([q.correct].concat(q.distractors))) {
         html += '<button class="option-btn" onclick="answerCardDeclension(\'' + escArg(o) + '\',\'' +
             escArg(q.correct) + '\',\'' + deck + '\')">' + o + '</button>';

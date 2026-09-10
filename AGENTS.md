@@ -28,12 +28,12 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ## Project layout
 
 ```
-index.html           332  <head>, разметка, порядок загрузки
+index.html           334  <head>, разметка, порядок загрузки
 styles/
-  tokens.css           217  :root и [data-theme=dark] — все переменные
-  base.css             326  сброс, типографика, каркас, app bar, icon button, nav bar, FAB, ripple
-  components.css       751  кнопки, list item урока, карточки, табы, search bar, text field, chips
-  screens.css          789  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
+  tokens.css           249  :root, [data-theme=dark] и [data-script] — все переменные
+  base.css             350  сброс, типографика, метки языка (.script/.greek/.hebrew), каркас, app bar, icon button, nav bar, FAB, ripple
+  components.css       771  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  screens.css          832  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
   settings.css         156  segmented button темы и курса, карточка курса, список лицензий
@@ -42,20 +42,20 @@ data/
   hebrew-lessons.js     22  const HEBREW_LESSONS_DATA — пока пустой объект (фаза 5)
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
-  courses.js            68  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
+  courses.js            77  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
 tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
   core.js              120  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
-  course.js            224  текущий курс, ключи хранилища, стартовый экран, переключение курса
+  course.js            244  текущий курс, ключи хранилища, письмо, стартовый экран, переключение курса
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
   shell.js             238  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              86  режимы темы, applyTheme, initTheme
-  lesson.js            477  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  lesson.js            493  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
   declension.js        139  generateDeclensionTable, аккордеон
   exercises.js         175  упражнения урока
   flashcards.js        364  карточки: общие и урока, оборот карточки с тренировкой форм
-  test.js              198  тест
-  translation.js       194  перевод
+  test.js              205  тест
+  translation.js       202  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
   prayer.js            228  «Отче наш»: разбор и упражнения
   vocab.js             428  общий словарь, поиск, фильтр по частям речи
@@ -158,8 +158,8 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 ### Typography
 
 - UI: **Noto Sans** (`--md-ref-typeface-plain`).
-- Greek: **Noto Serif** (`--md-ref-typeface-greek`), applied *only* where Greek is the object of study — headwords, flashcards, chips and tokens, prayer text, and Greek answer options via `.options--greek`. Russian UI text never gets the serif.
-- Mark inline Greek inside Russian sentences with `<span class="greek">`, not `<b>`.
+- The language being studied: **`--md-ref-typeface-script`** — Noto Serif for Greek, **Noto Serif Hebrew** for Hebrew (the Greek serif has no Hebrew glyph at all, let alone niqqud). The token resolves per course; the two raw faces stay available as `--md-ref-typeface-greek` / `--md-ref-typeface-hebrew`. Applied *only* where that language is the object of study — headwords, flashcards, chips and tokens, prayer text, and answer options via `.options--script`. Russian UI text never gets the serif; a rule outside `tokens.css`/`base.css` that names `--md-ref-typeface-greek` directly is a bug, and `tests/rtl.test.js` fails on it.
+- Mark studied-language text inside a Russian sentence with `<span class="script">`, not `<b>` — see "Writing direction" below.
 - Icons are **Material Symbols Rounded** (`<span class="msym">name</span>`). No emoji in the interface.
 - The icon font is **subsetted** via the `icon_names=` parameter on the Google Fonts `<link>` in `<head>`. The full family is 5.4 MB and loads with `display=block`, so the whole UI sits iconless until it arrives; the subset is ~76 KB for the 50 icons currently used. **Adding an icon means adding its ligature name to that list** — otherwise it renders as raw text (`menu_book`) instead of a glyph. Sweep the rendered DOM for `.msym` text to regenerate the list rather than editing it by hand.
 
@@ -236,22 +236,19 @@ Phases are ordered so each one lands working. Mark a phase done here when it is.
 |---|---|---|
 | 0 | Extract the textbook into `reference/nbbs-hebrew/` | **done** |
 | 1 | Course shell: start screen, course switching, namespaced storage | **done** |
-| 2 | RTL rendering | not started |
+| 2 | RTL rendering | **done** |
 | 3 | Hebrew-specific drills | not started |
 | 4 | Data-driven paradigm engine | **deferred** — needs the verb system |
 | 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | not started |
 
 **Phase 1 — course shell.** Done; see "Courses" below for what it built.
 
-**Phase 2 — RTL.** The single genuinely new rendering requirement: there is not one
-`dir` attribute in the repo today. Hebrew text needs `dir="rtl"` on the element that
-contains it, not on the page — the UI copy stays Russian and LTR, and a Hebrew word
-quoted inside a Russian sentence is an inline island. Expect trouble in exactly the
-places the Greek code got away with LTR assumptions: the word bank in
-`js/translation.js` (chip order is meaningful), `.md-table-scroll` (which edge does a
-too-wide table start at), the flashcard flip, and any `text-align` that assumes left.
-Add a Hebrew typeface token beside `--md-ref-typeface-greek` — the Greek serif has no
-niqqud coverage.
+**Phase 2 — RTL.** Done; the contract is in "Writing direction" below. In short:
+`<html>` never gets a `dir`, two attributes on it resolve into two tokens, and the
+marker class in generated markup is `.script` (it replaced `class="greek"`, and
+`.options--greek` / `.vocab-example__greek` became `--script` likewise). The word bank
+is marked by the language of its chips rather than by the course, because one screen
+shows both. Noto Serif Hebrew joined the font link for the niqqud.
 
 **Phase 3 — Hebrew drills.** New exercise types with no Greek equivalent: niqqud
 (name the vowel, supply the missing one), silent vs vocal shva, dagesh forte vs lene,
@@ -286,8 +283,11 @@ the state and the switching.
 - A course is one entry in `COURSES` — its name, its lessons object, its prayer data,
   and the handful of facts that used to be hard-coded for Greek: which lessons are
   intro-only (no drills), which lesson the dictionary starts at, the search
-  placeholder, the writing direction. Adding a course is a data entry plus its lesson
-  file; it is not a code change.
+  placeholder, the script and its writing direction, and `lang` — the name of the
+  language as it appears in drill labels ("Фразы: {lang} → русский", "Переведите на
+  …"). Read that one through `courseLang()` and `drillLabel()`; a literal
+  "греческий" in a shared string is a bug. Adding a course is a data entry plus its
+  lesson file; it is not a code change.
 - **Read lesson data through `courseLessons()`, never `LESSONS_DATA` directly.** The
   same goes for `coursePrayer()`. `LESSONS_DATA` is now *the Greek course's* lessons,
   not *the* lessons. `getLessonData()` and `lessonNumbers()` in `js/core.js` already
@@ -311,6 +311,57 @@ the state and the switching.
   `allVocabCache`, resets the decks and re-renders. Anything you add that caches
   across screens must be reset there, or it will leak one course's words into the
   other.
+
+## Writing direction
+
+Hebrew is written right to left; the interface is Russian and stays left to right.
+Those two facts are kept apart by one rule: **`<html>` never gets a `dir`.** Turning
+the page over would turn over the app bar, the tabs, the nav bar and every Russian
+label with it. Only the text of the language being studied is turned over.
+
+Three pieces carry it:
+
+1. **`applyCourseChrome()` (`js/course.js`) puts two attributes on `<html>`** from the
+   registry: `data-script` (which script — `course.script`) and `data-script-dir`
+   (`course.dir`). Nothing else in the app reads the course to decide how to draw text.
+2. **`styles/tokens.css` resolves them into two tokens**: `--md-ref-typeface-script`
+   and `--md-ref-script-direction`. Every rule that draws studied-language text
+   declares that pair plus `unicode-bidi: isolate`, so no rule mentions a course.
+3. **`.script` is the marker class in generated markup.** A Hebrew word quoted inside
+   a Russian sentence is an inline island: `<span class="script">…</span>`. `isolate`
+   is what keeps the sentence's full stop from jumping to the wrong end of the word.
+
+A few consequences worth knowing before you touch the rendering:
+
+- **`.script` means "whatever the current course is". `.greek`, `.hebrew`, `lang="grc"`
+  and `lang="he"` mean a specific language and win over it** — they are declared after
+  `.script` in `base.css` for exactly that reason. Use them in `data/*.js` (`<td
+  lang="he">`) where the content, not the course, decides.
+- **The word bank is marked by the language of the chips, not by the course.**
+  `ru_to_el` builds a phrase in the studied language, `el_to_ru` builds a Russian one,
+  and the same screen does both — hence `word-bank--script` / `build-area--script`
+  rather than a rule keyed on the course. Direction there reorders the chips: in RTL
+  the first word picked lands on the right. `chosen[]` keeps logical order, so the
+  answer check never learns about direction.
+- **The same goes for the `<strong>` in the feedback line and in the error review.**
+  Whether it holds a form or a Russian keyword depends on the drill; the code that
+  builds the string adds `.script` when it is a form. Where the mix is genuinely
+  unknowable — the error list sweeps every drill into one place — the CSS uses
+  `unicode-bidi: plaintext`, which takes the direction from the text itself.
+- **Paradigm tables turn over with the course** (`.word-details > .md-table-scroll`):
+  in RTL the first column is the right one. Grammar tables in the lesson data do not —
+  they are often Russian — so they opt in with `<table dir="rtl">`, and
+  `grammarLiftedHtml()` copies that `dir` onto the scroll strip. It has to: the strip
+  is its own element, and a strip with `direction: ltr` would open a too-wide RTL
+  table on its *last* column.
+- **Interface chrome stays put.** The flashcard flip button, the tab bar, the swipe
+  direction and the dictionary row layout are all part of the LTR interface, so none
+  of them mirror. Use logical properties (`text-align: start`,
+  `padding-inline-start`) inside anything that can turn over.
+
+`tests/rtl.test.js` covers all of this, including a synthetic Hebrew chapter injected
+into `HEBREW_LESSONS_DATA` — chapters 1–11 are not written yet (Phase 5), and without
+it the first real chapter would be the first test of the rendering.
 
 ## Offline shell
 

@@ -70,7 +70,7 @@ function updateShell() {
         }
         // На экране упражнения заголовок называет само упражнение — его карточка
         // единственная на экране, и повторять «Урок N» здесь нечем помочь.
-        if (currentSectionId === 'drillSection' && currentDrill) title = currentDrill.label;
+        if (currentSectionId === 'drillSection' && currentDrill) title = drillLabel(currentDrill);
         if (titleEl.textContent !== title) {
             // мягкая замена заголовка; быстрые переходы подряд не должны гонять таймеры
             clearTimeout(titleFadeTimer);

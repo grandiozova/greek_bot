@@ -8,6 +8,19 @@
     --md-ref-typeface-plain: 'Noto Sans', system-ui, 'Segoe UI', sans-serif;
     --md-ref-typeface-brand: 'Noto Sans', system-ui, 'Segoe UI', sans-serif;
     --md-ref-typeface-greek: 'Noto Serif', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Times New Roman', serif;
+    /* Греческая антиква не покрывает огласовку: в 'Noto Serif' нет ни одного
+       знака иврита, и браузер подставил бы под каждое слово что придётся. */
+    --md-ref-typeface-hebrew: 'Noto Serif Hebrew', 'SBL Hebrew', 'Ezra SIL', 'Times New Roman', serif;
+
+    /* --- письмо изучаемого языка --- */
+    /* Два токена вместо двух наборов правил: элемент, в котором лежит текст
+       изучаемого языка, объявляет их один раз — а какой именно это язык,
+       решают атрибуты data-script и data-script-dir на <html>. Их ставит
+       applyCourseChrome() (js/course.js) по полям script и dir курса из
+       data/courses.js, поэтому новый курс — это запись в реестре плюс,
+       если письмо новое, шрифт здесь. */
+    --md-ref-typeface-script: var(--md-ref-typeface-greek);
+    --md-ref-script-direction: ltr;
 
     /* --- shape scale --- */
     --md-sys-shape-corner-none: 0px;
@@ -214,4 +227,23 @@
        её elevation отдельно переопределять не нужно. */
 
     color-scheme: light;
+}
+
+/* ============================================================
+   ПИСЬМО ИЗУЧАЕМОГО ЯЗЫКА
+   ============================================================
+   Тема и письмо разведены нарочно: тем три, а курсов два, и пересечения
+   между ними нет. Атрибуты ставит applyCourseChrome() (js/course.js).
+
+   data-script     — какой шрифт брать для текста изучаемого языка;
+   data-script-dir — в какую сторону этот текст пишется.
+
+   Интерфейс от них не зависит: подписи, кнопки и меню остаются русскими
+   и слева направо в любом курсе. Разворачивается только то, что несёт
+   текст изучаемого языка, — см. .script в styles/base.css. */
+:root[data-script="hebrew"] {
+    --md-ref-typeface-script: var(--md-ref-typeface-hebrew);
+}
+:root[data-script-dir="rtl"] {
+    --md-ref-script-direction: rtl;
 }
