@@ -9,7 +9,7 @@ const TEST_TYPES = [
     'case_number', 'agreement', 'attribute_vs_predicate', 'substantivation', 'article_fill',
     'heb_vowel_name', 'heb_vowel_fill', 'heb_shva', 'heb_dagesh', 'heb_qamets',
     'heb_begadkefat', 'heb_syllables',
-    'heb_gutturals', 'heb_construct', 'heb_suffix_type'
+    'heb_gender_number', 'heb_gutturals', 'heb_construct', 'heb_suffix_type'
 ];
 
 // Пул вопросов теста. Список разделов урока спрашивает только его размер,

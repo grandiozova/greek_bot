@@ -35,6 +35,7 @@ const LESSON_DRILL_GROUPS = [
             { kind: 'exercise', key: 'attribute_vs_predicate', label: 'Атрибут / предикатив', icon: 'balance' },
             { kind: 'exercise', key: 'substantivation', label: 'Субстантивация', icon: 'push_pin' },
             { kind: 'exercise', key: 'article_fill', label: 'Артикль', icon: 'abc' },
+            { kind: 'exercise', key: 'heb_gender_number', label: 'Род и число', icon: 'category' },
             { kind: 'exercise', key: 'heb_gutturals', label: 'Артикль и гортанные', icon: 'rule' },
             { kind: 'exercise', key: 'heb_construct', label: 'Сопряжённое сочетание', icon: 'add_link' },
             { kind: 'exercise', key: 'heb_suffix_type', label: 'Местоименные суффиксы', icon: 'person_pin' }

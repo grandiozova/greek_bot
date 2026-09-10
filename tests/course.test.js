@@ -3,6 +3,20 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { loadApp } = require('./helpers/app');
 
+// Пустой курс — тот, что объявлен в реестре раньше своих уроков. Заводим его
+// прямо в тесте: еврейский курс на эту роль больше не годится, у него есть
+// главы, а поведение проверять надо — следующий курс появится так же.
+function withEmptyCourse(app) {
+    app.window.eval(`
+        COURSES.empty = Object.assign({}, COURSES.hebrew, {
+            id: 'empty', name: 'Пустой курс', lessons: {}, prayer: null, prayerCard: null
+        });
+        if (COURSE_ORDER.indexOf('empty') === -1) COURSE_ORDER.push('empty');
+        renderStartScreen();
+    `);
+    return app;
+}
+
 // ------------------------------------------------------------ стартовый экран
 
 test('без настройки курса приложение спрашивает на старте', () => {
@@ -23,12 +37,13 @@ test('стартовый экран предлагает оба курса в п
     app.close();
 });
 
-test('карточка курса честно говорит, что материала ещё нет', () => {
-    const app = loadApp();
+test('карточка курса считает уроки, а пустому курсу пишет честную подпись', () => {
+    const app = withEmptyCourse(loadApp());
     const notes = Array.from(app.document.querySelectorAll('#startCourseList .course-card__note'))
         .map(n => n.textContent.replace(/\s+/g, ' ').trim());
     assert.ok(/уроков|урока|урок/.test(notes[0]), 'у греческого курса считаются уроки: ' + notes[0]);
-    assert.ok(/готовится/.test(notes[1]), 'у пустого курса должна быть честная подпись: ' + notes[1]);
+    assert.ok(/уроков|урока|урок/.test(notes[1]), 'у еврейского курса тоже: ' + notes[1]);
+    assert.ok(/готовится/.test(notes[2]), 'у пустого курса должна быть честная подпись: ' + notes[2]);
     app.close();
 });
 
@@ -74,7 +89,8 @@ test('переключение на еврейский курс не роняе�
 });
 
 test('курс без уроков показывает заглушку, а не пустую карточку', () => {
-    const app = loadApp({ storage: { app_default_course: 'hebrew' } });
+    const app = withEmptyCourse(loadApp());
+    app.window.startCourse('empty');
     const grid = app.html('#lessonGrid');
     assert.ok(/готовятся/.test(grid), 'должно быть сказано, что уроки готовятся: ' + grid);
     assert.strictEqual(app.document.querySelectorAll('#lessonGrid .lesson-item').length, 0);
@@ -82,9 +98,10 @@ test('курс без уроков показывает заглушку, а н�
 });
 
 test('на курсе без уроков FAB «Продолжить» скрыт', () => {
-    const hebrew = loadApp({ storage: { app_default_course: 'hebrew' } });
-    assert.ok(hebrew.fab().hidden, 'продолжать нечего, кнопки быть не должно');
-    hebrew.close();
+    const empty = withEmptyCourse(loadApp());
+    empty.window.startCourse('empty');
+    assert.ok(empty.fab().hidden, 'продолжать нечего, кнопки быть не должно');
+    empty.close();
 
     const greek = loadApp({ storage: { app_default_course: 'greek' } });
     assert.ok(!greek.fab().hidden, 'у греческого курса FAB на месте');
@@ -131,7 +148,7 @@ test('смена курса на ходу перестраивает слова�
     assert.strictEqual(app.get('stats.totalCorrect'), 0, 'статистика должна быть своя');
 
     app.window.showAllVocab();
-    assert.strictEqual(app.get('allVocabCache.length'), 0, 'в пустом курсе слов нет');
+    assert.ok(app.get('allVocabCache.length') > 0, 'у еврейского курса свой словарь');
     assert.deepStrictEqual(app.errors, []);
     app.close();
 });

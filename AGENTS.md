@@ -39,9 +39,9 @@ styles/
   settings.css         156  segmented button темы и курса, карточка курса, список лицензий
 data/
   lessons.js         1,698  const LESSONS_DATA — уроки ГРЕЧЕСКОГО курса, а не «уроки вообще»
-  hebrew-lessons.js     71  const HEBREW_LESSONS_DATA — пустой объект + форма записи упражнений (фаза 5)
+  hebrew-lessons.js    732  const HEBREW_LESSONS_DATA — главы 1–11: грамматика, словарь, упражнения
   prayer.js            136  const PRAYER_DATA
-  licenses.js           38  const LICENSES
+  licenses.js           47  const LICENSES
   courses.js            77  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
 tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
@@ -50,9 +50,9 @@ js/
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
   shell.js             238  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              86  режимы темы, applyTheme, initTheme
-  lesson.js            512  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  lesson.js            513  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
   declension.js        194  парадигма как описание осей, отрисовка таблицы, перебор ячеек
-  exercises.js         303  EXERCISE_TYPES — список видов упражнений, отрисовка вопроса, проверка ответа
+  exercises.js         312  EXERCISE_TYPES — список видов упражнений, отрисовка вопроса, проверка ответа
   flashcards.js        374  карточки: общие и урока, оборот карточки с тренировкой форм
   test.js              191  тест
   translation.js       202  перевод
@@ -239,7 +239,7 @@ Phases are ordered so each one lands working. Mark a phase done here when it is.
 | 2 | RTL rendering | **done** |
 | 3 | Hebrew-specific drills | **done** |
 | 4 | Data-driven paradigm engine | **done** |
-| 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | not started |
+| 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | **done** |
 
 **Phase 1 — course shell.** Done; see "Courses" below for what it built.
 
@@ -289,13 +289,29 @@ Hebrew has no cases and two genders, so the case list rendered an empty grid and
 gender branch added a neuter column that does not exist. Phase 5 could not have authored
 a single paradigm for chapters 7–11. See "Paradigms" below for the shape.
 
-**Phase 5 — content.** Author chapters 1–11 into `data/hebrew-lessons.js`, in the same
-lesson shape as `data/lessons.js` (`title`, `grammar`, `vocabulary`, `exercises`,
-`translation`). The file already exists and is wired in — it is an empty object waiting
-for content. Source material and its caveats are in `reference/nbbs-hebrew/`.
-`data/vocabulary-by-lesson.json` there carries a `freq` per word (the textbook's own
-count of its occurrences in the Hebrew Bible) — an axis the Greek data has no
-equivalent of, and the natural way to order what gets taught first.
+**Phase 5 — content.** Done. All eleven chapters are in `data/hebrew-lessons.js`:
+grammar, 163 dictionary entries ordered by the textbook's own Hebrew-Bible frequency,
+drills for every type phase 3 added, and sentence-building where the book prints
+sentences. Chapters 1–2 are material only (they are `introLessons` in the registry) and
+chapter 9 has drills but no dictionary — the book gives it no vocabulary section.
+
+**The one thing to know before editing this data**: 220 of the Hebrew strings written by
+hand were byte-wrong on the first pass, and none of it was visible. Hebrew combining
+marks have no canonical order — the textbook writes dagesh before the vowel
+(`תּ` = 05EA 05BC 05B8), and typing the same glyph naturally produces the reverse
+(05EA 05B8 05BC). Identical on screen, different strings to every search and comparison.
+This is exactly the failure `restoration-report.md` says the decoding audit cannot catch.
+`tests/hebrew-content.test.js` now catches it mechanically: every Hebrew token in the
+lesson data must occur verbatim somewhere in `reference/nbbs-hebrew/`. **Do not "fix" a
+failure from that test by retyping the word** — copy it out of the reference, or the
+same reordering comes back.
+
+Two defects surfaced while transferring, both fixed at the source rather than worked
+around: `vocabulary-by-lesson.json` had `freq: 1` for יִשְׂרָאֵל because the collector read
+the enumeration marker «(1)» in the gloss as the frequency (noted in
+`restoration-report.md`), and `אֵת` occurs twice in chapter 6 as two different words —
+the dictionary forbids duplicate headwords, so the preposition sense is folded into a
+comment and only the object-marker entry ships.
 
 ## Exercise types
 
