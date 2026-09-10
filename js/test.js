@@ -1,7 +1,16 @@
 // ============================================================
 // ТЕСТ
 // ============================================================
-const TEST_TYPES = ['declension_fill','translate_greek_to_russian','translate_russian_to_greek','case_number','agreement','attribute_vs_predicate','substantivation','article_fill'];
+// Виды, попадающие в тест урока. Не Object.keys(EXERCISE_TYPES): в тест идут не
+// все виды подряд, а те, что в нём уместны, и порядок здесь свой. Вид, которого
+// в этом списке нет, остаётся отдельным упражнением и в тест не попадает.
+const TEST_TYPES = [
+    'declension_fill', 'translate_greek_to_russian', 'translate_russian_to_greek',
+    'case_number', 'agreement', 'attribute_vs_predicate', 'substantivation', 'article_fill',
+    'heb_vowel_name', 'heb_vowel_fill', 'heb_shva', 'heb_dagesh', 'heb_qamets',
+    'heb_begadkefat', 'heb_syllables',
+    'heb_gutturals', 'heb_construct', 'heb_suffix_type'
+];
 
 // Пул вопросов теста. Список разделов урока спрашивает только его размер,
 // поэтому сбор вынесен из startTest — чтобы обе стороны считали одинаково.
@@ -51,33 +60,10 @@ function showTest() {
     let html = progressHead('Вопрос ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
     let t = q._type;
 
-    if (t === 'declension_fill' || t === 'case_number' || t === 'agreement' ||
-        t === 'attribute_vs_predicate' || t === 'substantivation' || t === 'article_fill') {
-        let text = '';
-        let scriptOpts = false;
-        if (t === 'declension_fill') {
-            let caseName = getCaseName(q.case);
-            let wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
-            text = 'Вставьте форму для <b>' + caseName + '</b> для слова <span class="script">' + wordDisplay + '</span>';
-            scriptOpts = true;
-        } else if (t === 'case_number') {
-            text = 'Определите падеж и число: <span class="script">' + q.form + '</span>';
-        } else if (t === 'agreement') {
-            text = 'Вставьте прилагательное <span class="script">' + q.adjective + '</span>: <span class="script">' + q.article + ' ____ ' + q.noun + '</span>';
-            scriptOpts = true;
-        } else if (t === 'attribute_vs_predicate') {
-            text = 'Атрибутив или предикатив? <span class="script">' + q.phrase + '</span>';
-        } else if (t === 'substantivation') {
-            text = 'Что означает? <span class="script">' + q.phrase + '</span>';
-        } else if (t === 'article_fill') {
-            text = 'Вставьте артикль: <span class="script">____ ' + q.noun + '</span>';
-            scriptOpts = true;
-        }
-        let corr = q.correct || q.correct_article;
-        let opts = shuffle([corr].concat(q.distractors));
-        html += '<div class="question">' + text + '</div><div class="options' + (scriptOpts ? ' options--script' : '') + '">';
-        for (let o of opts) html += '<button class="option-btn" onclick="testAnswer(\'' + escArg(o) + '\',\'' + escArg(corr) + '\')">' + o + '</button>';
-        html += '</div>';
+    // Вопрос с выбором варианта рисует общий с упражнением урока код: текст
+    // вопроса и набор вариантов у вида один, отличается только обработчик.
+    if (EXERCISE_TYPES[t] && EXERCISE_TYPES[t].prompt) {
+        html += choiceQuestionHtml(t, q, 'testAnswer');
     } else if (t === 'translate_greek_to_russian') {
         html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="testTransInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){testTranslation();}"><button onclick="testTranslation()"><span class="msym">check</span>Проверить</button></div>';
         window._test_q = q;
@@ -111,7 +97,7 @@ function testAnswer(sel, corr) {
         stats.totalWrong++;
         let lesson = currentLesson;
         let q = testState.questions[testState.index];
-        recordError(lesson, { word: q.word || q.greek || 'вопрос', correct: corr, your: sel });
+        recordError(lesson, { word: questionSubject(q), correct: corr, your: sel });
     }
     stats.totalCorrect += ok ? 1 : 0;
     saveStats();

@@ -224,6 +224,25 @@ test('таблица парадигмы разворачивается вмес�
     assert.match(css, /\.grammar-text td, \.grammar-text th \{[\s\S]*?text-align: start;/);
 });
 
+test('огласовке задан нижний предел кегля, и он свой у каждого письма', () => {
+    // Точки под буквой на мелком кегле сливаются с ней: камец от сегола не
+    // отличить, а половина упражнений главы 3 именно об этом.
+    const css = read('styles/tokens.css');
+    assert.match(css, /--md-ref-script-min-size: 0;/, 'у греческого предела быть не должно');
+    assert.match(css, /:root\[data-script="hebrew"\] \{[\s\S]*?--md-ref-script-min-size: 1\.25rem;/,
+        'еврейскому письму не задан нижний предел кегля');
+
+    // Мелкий текст изучаемого языка обязан проходить через max(): без него
+    // предел ничего не удерживает.
+    for (const file of ['styles/screens.css', 'styles/components.css']) {
+        const rules = read(file).match(/font-size: (max\()?[\d.]+rem/g) || [];
+        assert.ok(rules.some(r => r.includes('max(')), file + ' — предел кегля нигде не применён');
+    }
+    const bank = read('styles/components.css');
+    assert.match(bank, /\.word-bank--script \.chip, \.build-area--script \.token \{[\s\S]*?max\(0\.9375rem, var\(--md-ref-script-min-size\)\)/,
+        'фишки банка слов — самый мелкий текст изучаемого языка, предел нужен именно там');
+});
+
 // ------------------------------------------------------------ иврит целиком
 
 // Глав в data/hebrew-lessons.js ещё нет (фаза 5), а разворот проверять надо

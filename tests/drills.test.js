@@ -257,3 +257,88 @@ test('упражнения не помечают общие данные уро�
     assert.strictEqual(polluted, '', 'в LESSONS_DATA попало служебное поле _type: ' + polluted);
     app.close();
 });
+
+// ============================================================
+// СПИСОК ВИДОВ УПРАЖНЕНИЙ
+// ============================================================
+// Вид упражнения живёт в трёх списках сразу: EXERCISE_TYPES (как рисуется),
+// LESSON_DRILL_GROUPS (как называется и где в меню) и TEST_TYPES (попадает ли
+// в тест). Забыть один из них — значит получить либо упражнение, до которого
+// нет хода, либо пункт меню с надписью «тип не поддерживается».
+
+function registry(app) {
+    return {
+        types: app.get('Object.keys(EXERCISE_TYPES).join(",")').split(','),
+        drills: app.get('LESSON_DRILL_GROUPS.flatMap(g => g.drills.map(d => d.kind + ":" + d.key)).join(",")')
+            .split(',').map(s => s.split(':')),
+        testTypes: app.get('TEST_TYPES.join(",")').split(',')
+    };
+}
+
+test('до каждого объявленного вида упражнения есть ход', () => {
+    // Не «у каждого вида есть пункт меню»: declension_fill отдельным
+    // упражнением не показывается (склонение отрабатывается на обороте
+    // карточки), но в тесте урока встречается. Спрашиваем то, что важно, —
+    // добраться до вида можно хоть как-то.
+    const app = loadApp();
+    const r = registry(app);
+    const inMenu = r.drills.filter(([kind]) => kind === 'exercise').map(([, key]) => key);
+
+    const unreachable = r.types.filter(k => !inMenu.includes(k) && !r.testTypes.includes(k));
+    assert.deepStrictEqual(unreachable, [],
+        'вид объявлен, но до него нет хода ни из меню, ни из теста: ' + unreachable.join(', '));
+
+    const noType = inMenu.filter(k => !r.types.includes(k));
+    assert.deepStrictEqual(noType, [],
+        'пункт меню ведёт к виду, которого нет в EXERCISE_TYPES: ' + noType.join(', '));
+    app.close();
+});
+
+test('в тест попадают только объявленные виды', () => {
+    const app = loadApp();
+    const r = registry(app);
+    const unknown = r.testTypes.filter(k => !r.types.includes(k));
+    assert.deepStrictEqual(unknown, [], 'в TEST_TYPES вид, которого нет в EXERCISE_TYPES: ' + unknown.join(', '));
+    app.close();
+});
+
+test('вид упражнения либо рисуется списком вариантов, либо помечен custom', () => {
+    const app = loadApp();
+    const broken = app.get(`
+        Object.keys(EXERCISE_TYPES).filter(function (k) {
+            let t = EXERCISE_TYPES[k];
+            return !t.prompt === !t.custom;   // ни того ни другого — или сразу оба
+        }).join(',')
+    `);
+    assert.strictEqual(broken, '',
+        'у вида должно быть ровно одно из двух — prompt или custom: ' + broken);
+    app.close();
+});
+
+test('у вида с постоянным набором вариантов правильный ответ есть среди них', () => {
+    // Набор вариантов такого вида записан в коде, а ответ — в данных урока.
+    // Опечатка в данных дала бы вопрос, на который нельзя ответить верно.
+    const app = loadApp();
+    const bad = app.get(`
+        (function () {
+            let hits = [];
+            for (let id in COURSES) {
+                let lessons = COURSES[id].lessons || {};
+                for (let n in lessons) {
+                    let ex = (lessons[n] || {}).exercises || {};
+                    for (let key in ex) {
+                        let type = EXERCISE_TYPES[key];
+                        if (!type || !Array.isArray(type.options)) continue;
+                        for (let q of (ex[key] || [])) {
+                            let corr = exerciseCorrect(type, q);
+                            if (type.options.indexOf(corr) === -1) hits.push(id + '/' + n + '/' + key + ': ' + corr);
+                        }
+                    }
+                }
+            }
+            return hits.join(' | ');
+        })()
+    `);
+    assert.strictEqual(bad, '', 'ответ не совпадает ни с одним вариантом: ' + bad);
+    app.close();
+});

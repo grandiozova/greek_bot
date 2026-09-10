@@ -37,6 +37,166 @@ function getCaseName(caseKey) {
     return map[caseKey] || caseKey;
 }
 
+// ============================================================
+// ВИДЫ УПРАЖНЕНИЙ
+// ============================================================
+// Почти любое упражнение — это вопрос и ряд вариантов, один из которых верный.
+// Виды различаются тремя вещами: текстом вопроса, тем, откуда берутся варианты,
+// и тем, на каком языке эти варианты набраны. Поэтому вид описан данными, а не
+// веткой в showExercise: по одному и тому же списку рисуется и экран
+// упражнения, и вопрос теста. Пока это были две ветки, один и тот же вид жил в
+// двух местах и в двух формулировках; с еврейским курсом видов стало вдвое
+// больше, и цена такого удвоения перестала быть терпимой.
+//
+// Поля:
+//   prompt(q)   — текст вопроса; вставка на изучаемом языке — через sc()
+//   subject(q)  — то, о чём спрашивают, отдельной строкой под вопросом
+//   options     — массив (набор постоянный) или функция от вопроса;
+//                 если поля нет — [правильный, ...q.distractors]
+//   correct(q)  — правильный ответ; если поля нет — q.correct
+//   script      — варианты набраны на изучаемом языке (шрифт и направление)
+//   custom      — вид рисует не choiceQuestionHtml, а сам вызывающий
+//
+// Ключ вида, общего для курсов, языка не называет (translate_*, agreement,
+// article_fill). Виды, которых за пределами еврейского курса не бывает,
+// начинаются с heb_. Это соглашение об именах: префикс код не разбирает.
+const EXERCISE_TYPES = {
+    // --- греческий именной строй ---
+    declension_fill: {
+        prompt: q => 'Вставьте форму для <b>' + getCaseName(q.case) + '</b> для слова ' +
+            sc(q.word ? q.word + ' (' + q.translation + ')' : ''),
+        script: true
+    },
+    case_number: {
+        prompt: q => 'Определите падеж и число для формы: ' + sc(q.form)
+    },
+    agreement: {
+        prompt: q => 'Вставьте прилагательное ' + sc(q.adjective) + ' в правильной форме:<br>' +
+            sc(q.article + ' ____ ' + q.noun),
+        script: true
+    },
+    attribute_vs_predicate: {
+        prompt: q => 'Определите, атрибутив или предикатив:<br>' + sc(q.phrase)
+    },
+    substantivation: {
+        prompt: q => 'Что означает:<br>' + sc(q.phrase)
+    },
+    // Артикль есть и там, и там: в греческом выбирают одну из форм ὁ/ἡ/τό, в
+    // еврейском — огласовку ה перед первым согласным слова. Вопрос один и тот
+    // же, поэтому вид общий и ключ без префикса. Пропуск стоит перед словом: в
+    // тексте справа налево он окажется справа, где приставке и место.
+    article_fill: {
+        prompt: q => 'Вставьте правильную форму артикля:<br>' + sc('____ ' + q.noun),
+        correct: q => q.correct_article,
+        script: true
+    },
+
+    // --- огласовка и чтение: главы 2–3 еврейского курса ---
+    // Знак огласовки сам по себе — комбинирующий символ, он не отображается без
+    // согласного. Поэтому в данных он лежит вместе с носителем, как в пособии
+    // (בַּ), а не голым.
+    heb_vowel_name: {
+        prompt: () => 'Как называется этот знак?',
+        subject: q => q.sign
+    },
+    heb_vowel_fill: {
+        prompt: q => 'Какого знака огласовки не хватает?' +
+            (q.translation ? ' («' + q.translation + '»)' : ''),
+        subject: q => q.word,
+        script: true
+    },
+    heb_shva: {
+        prompt: q => 'Как читается шва' + (q.letter ? ' под буквой ' + sc(q.letter) : '') + '?',
+        subject: q => q.word,
+        options: ['«Немое» шва', '«Произносимое» шва']
+    },
+    heb_dagesh: {
+        prompt: q => 'Какой дагеш стоит в букве ' + sc(q.letter) + '?',
+        subject: q => q.word,
+        options: ['«Слабый» дагеш', '«Сильный» дагеш']
+    },
+    // Камец и камец хатуф выглядят одинаково, различает их только слог, —
+    // поэтому в вопросе слово целиком, а не одна буква.
+    heb_qamets: {
+        prompt: q => 'Камец или камец хатуф' + (q.letter ? ' под буквой ' + sc(q.letter) : '') + '?',
+        subject: q => q.word,
+        options: ['Камец — долгий ā', 'Камец хатуф — краткий o']
+    },
+    heb_begadkefat: {
+        prompt: q => 'Как произносится буква ' + sc(q.letter) + '?',
+        subject: q => q.word
+    },
+    // Границу слога пособие метит вертикальной чертой (דְּ|בָ|רִים) — её же
+    // ждём и в ответе, чтобы данные писались прямо из книги.
+    heb_syllables: {
+        prompt: () => 'Разделите слово на слоги',
+        subject: q => q.word,
+        script: true
+    },
+
+    // --- формы: главы 5, 9, 10 еврейского курса ---
+    // Гортанные и ר не удваиваются, и вместо удвоения происходит одно из трёх.
+    // Четвёртый вариант — обычное удвоение: без него выбирать было бы не из чего.
+    heb_gutturals: {
+        prompt: () => 'Что произошло с артиклем?',
+        subject: q => q.phrase,
+        options: ['Обычное удвоение', 'Заместительное удлинение',
+                  'Скрытое удвоение гортанного', 'Неправильный сегол']
+    },
+    // Перевод в вопросе не показываем: «этот голос этого человека» — это и есть
+    // ответ. То же и у суффиксов: «его кони» выдало бы множественное число.
+    heb_construct: {
+        prompt: () => 'Сочетание определённое или неопределённое?',
+        subject: q => q.phrase,
+        options: ['Определённое', 'Неопределённое']
+    },
+    heb_suffix_type: {
+        prompt: () => 'Суффикс какого типа?',
+        subject: q => q.word,
+        options: ['Тип 1 — существительное ед. ч.', 'Тип 2 — существительное мн. ч.']
+    },
+
+    // Не «выбор варианта»: у этих двух свой виджет — поле ввода и банк слов.
+    // Разметка у упражнения урока и у теста разная (свои id и свои обработчики),
+    // общего кода не выходит, и рисуют их showExercise и showTest. Объявлены
+    // здесь, чтобы список видов оставался полным.
+    translate_greek_to_russian: { custom: true },
+    translate_russian_to_greek: { custom: true }
+};
+
+function exerciseCorrect(type, q) {
+    return type.correct ? type.correct(q) : q.correct;
+}
+
+function exerciseOptions(type, q) {
+    if (Array.isArray(type.options)) return type.options;
+    if (typeof type.options === 'function') return type.options(q);
+    return [exerciseCorrect(type, q)].concat(q.distractors || []);
+}
+
+// Разметка вопроса с выбором варианта. Обработчик передаётся именем: у
+// упражнения урока и у теста они разные (answerOpt и testAnswer), но принимают
+// одно и то же — выбранный ответ и правильный.
+function choiceQuestionHtml(key, q, handler) {
+    let type = EXERCISE_TYPES[key];
+    if (!type || !type.prompt) return '<p>Тип упражнения не поддерживается.</p>';
+    let corr = exerciseCorrect(type, q);
+    let html = '<div class="question">' + type.prompt(q) + '</div>';
+    if (type.subject) html += '<div class="md-prompt-strong">' + type.subject(q) + '</div>';
+    html += '<div class="options' + (type.script ? ' options--script' : '') + '">';
+    for (let o of shuffle(exerciseOptions(type, q))) {
+        html += '<button class="option-btn" onclick="' + handler + '(\'' + escArg(o) + '\',\'' +
+            escArg(corr) + '\')">' + o + '</button>';
+    }
+    return html + '</div>';
+}
+
+// Чем вопрос назван в разборе ошибок. Поле, в котором лежит разбираемое слово,
+// у каждого вида своё.
+function questionSubject(q) {
+    return q.word || q.phrase || q.form || q.sign || q.greek || 'вопрос';
+}
+
 function showExercise() {
     let s = exerciseState;
     if (s.index >= s.total) {
@@ -51,50 +211,18 @@ function showExercise() {
     let container = document.getElementById('exerciseQuestion');
     let html = progressHead('Упражнение ' + (s.index + 1) + ' из ' + s.total, s.index, s.total);
 
-    if (s.type === 'declension_fill') {
-        let caseName = getCaseName(q.case);
-        let wordDisplay = q.word ? q.word + ' (' + q.translation + ')' : '';
-        html += '<div class="question">Вставьте форму для <b>' + caseName + '</b> для слова <span class="script">' + wordDisplay + '</span></div><div class="options options--script">';
-        let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
-        html += '</div>';
-} else if (s.type === 'translate_greek_to_russian') {
-    let idx = s.index;
-    html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){checkExerciseTranslation(' + idx + ');}"><button type="button" onclick="checkExerciseTranslation(' + idx + ')"><span class="msym">check</span>Проверить</button></div>';
-} else if (s.type === 'translate_russian_to_greek') {
+    if (s.type === 'translate_greek_to_russian') {
+        let idx = s.index;
+        html += '<div class="question">Переведите на русский</div><div class="md-prompt-strong">' + q.greek + '</div><div class="input-group"><input type="text" id="transInput" placeholder="Перевод" autocomplete="off" onkeydown="if(event.key===\'Enter\'){checkExerciseTranslation(' + idx + ');}"><button type="button" onclick="checkExerciseTranslation(' + idx + ')"><span class="msym">check</span>Проверить</button></div>';
+    } else if (s.type === 'translate_russian_to_greek') {
         let words = shuffle(q.all_words);
         html += '<div class="question">Переведите на ' + courseLang() + '</div><div class="md-prompt-ru">' + q.russian + '</div><div class="build-area build-area--script" id="buildArea"></div><div class="word-bank word-bank--script" id="wordBank">';
         for (let w of words) html += '<span class="chip" onclick="pickWord(\'' + escArg(w) + '\')">' + w + '</span>';
         html += '</div><div class="md-button-row"><button class="menu-btn primary" onclick="checkTranslationRu()"><span class="msym">check</span>Готово</button><button class="menu-btn text" onclick="clearChosen()"><span class="msym">undo</span>Очистить</button></div>';
         window._trans_ru = q;
         window._chosen = [];
-    } else if (s.type === 'case_number') {
-        html += '<div class="question">Определите падеж и число для формы: <span class="script">' + q.form + '</span></div><div class="options">';
-        let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
-        html += '</div>';
-    } else if (s.type === 'agreement') {
-        html += '<div class="question">Вставьте прилагательное <span class="script">' + q.adjective + '</span> в правильной форме:<br><span class="script">' + q.article + ' ____ ' + q.noun + '</span></div><div class="options options--script">';
-        let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
-        html += '</div>';
-    } else if (s.type === 'attribute_vs_predicate') {
-        html += '<div class="question">Определите, атрибутив или предикатив:<br><span class="script">' + q.phrase + '</span></div><div class="options">';
-        let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
-        html += '</div>';
-    } else if (s.type === 'substantivation') {
-        html += '<div class="question">Что означает:<br><span class="script">' + q.phrase + '</span></div><div class="options">';
-        let opts = shuffle([q.correct].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct) + '\')">' + o + '</button>';
-        html += '</div>';
-    } else if (s.type === 'article_fill') {
-        html += '<div class="question">Вставьте правильную форму артикля:<br><span class="script">____ ' + q.noun + '</span></div><div class="options options--script">';
-        let opts = shuffle([q.correct_article].concat(q.distractors));
-        for (let o of opts) html += '<button class="option-btn" onclick="answerOpt(\'' + escArg(o) + '\',\'' + escArg(q.correct_article) + '\')">' + o + '</button>';
-        html += '</div>';
     } else {
-        html += '<p>Тип упражнения не поддерживается.</p>';
+        html += choiceQuestionHtml(s.type, q, 'answerOpt');
     }
     container.innerHTML = html;
 }
@@ -108,7 +236,7 @@ function answerOpt(sel, corr) {
         stats.totalWrong++;
         let lesson = currentLesson;
         let q = exerciseState.questions[exerciseState.index];
-        recordError(lesson, { word: q.word || q.greek || 'вопрос', correct: corr, your: sel });
+        recordError(lesson, { word: questionSubject(q), correct: corr, your: sel });
     }
     saveStats();
     exerciseState.index++;

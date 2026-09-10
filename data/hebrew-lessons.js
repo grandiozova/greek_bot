@@ -22,4 +22,30 @@
 //      <td lang="he">, таблица целиком — <table dir="rtl">. Шрифт и
 //      направление приложение подставит само (раздел «Writing direction»
 //      в AGENTS.md).
+//
+// Виды упражнений (exercises) уже написаны — фаза 3. Полный список полей
+// каждого вида и то, как он выглядит на экране, — в EXERCISE_TYPES
+// (js/exercises.js); здесь только форма записи:
+//
+//   heb_vowel_name  { sign, correct, distractors }        знак с носителем: 'בַּ'
+//   heb_vowel_fill  { word, translation, correct, distractors }   пропуск в слове
+//   heb_shva        { word, letter, correct }             «Немое» / «Произносимое» шва
+//   heb_dagesh      { word, letter, correct }             «Слабый» / «Сильный» дагеш
+//   heb_qamets      { word, letter, correct }             Камец — долгий ā / Камец хатуф — краткий o
+//   heb_begadkefat  { word, letter, correct, distractors }
+//   heb_syllables   { word, correct, distractors }        границы слогов через '|'
+//   heb_gutturals   { phrase, correct }                   что стало с артиклем
+//   heb_construct   { phrase, correct }                   Определённое / Неопределённое
+//   heb_suffix_type { word, correct }                     Тип 1 / Тип 2
+//   article_fill    { noun, correct_article, distractors }  вид общий с греческим
+//
+// У видов с постоянным набором ответов (шва, дагеш, камец, гортанные,
+// сопряжённое сочетание, суффиксы) correct пишется ровно тем же текстом, что и
+// вариант в EXERCISE_TYPES: опечатку ловит тест «у вида с постоянным набором
+// вариантов правильный ответ есть среди них». Перевод в heb_construct и
+// heb_suffix_type на экран не идёт — он выдал бы ответ, — но в данных полезен.
+//
+// Чего пока нет: вида «род и число» для существительных (глава 4). Греческий
+// case_number подписан «Падеж и число», а падежей в иврите нет; отдельный вид
+// в фазу 3 не входил. См. AGENTS.md, фаза 5.
 const HEBREW_LESSONS_DATA = {};

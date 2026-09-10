@@ -71,7 +71,7 @@
     font-family: var(--md-ref-typeface-script);
     direction: var(--md-ref-script-direction);
     unicode-bidi: isolate;
-    font-size: 1.0625rem;
+    font-size: max(1.0625rem, var(--md-ref-script-min-size));
     letter-spacing: 0;
 }
 .option-btn:disabled { cursor: default; }
@@ -215,7 +215,7 @@
     direction: var(--md-ref-script-direction);
     unicode-bidi: isolate;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: max(1rem, var(--md-ref-script-min-size));
     line-height: 1.5rem;
     color: var(--md-sys-color-on-surface);
 }
@@ -653,7 +653,7 @@
     background: var(--md-sys-color-surface-container-high);
     color: var(--md-sys-color-on-surface);
     font-family: var(--md-ref-typeface-script);
-    font-size: 1.125rem;
+    font-size: max(1.125rem, var(--md-ref-script-min-size));
     line-height: 1.75rem;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -689,7 +689,7 @@
 .prayer-analysis strong {
     font-family: var(--md-ref-typeface-script);
     unicode-bidi: plaintext;
-    font-size: 1.0625rem;
+    font-size: max(1.0625rem, var(--md-ref-script-min-size));
 }
 
 

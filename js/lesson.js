@@ -12,13 +12,32 @@
 // flashcards → flashcards.js. Группы задают порядок и подписи в списке выбора.
 const LESSON_DRILL_GROUPS = [
     {
+        // Огласовка — это весь еврейский курс до четвёртой главы, и у греческого
+        // ничего подобного нет. Группа, в которой нет ни одного доступного
+        // упражнения, не показывается вовсе (renderLessonDrills), поэтому
+        // греческий урок этого раздела не увидит.
+        label: 'Огласовка и чтение',
+        drills: [
+            { kind: 'exercise', key: 'heb_vowel_name', label: 'Названия огласовок', icon: 'label' },
+            { kind: 'exercise', key: 'heb_vowel_fill', label: 'Пропущенная огласовка', icon: 'text_fields' },
+            { kind: 'exercise', key: 'heb_shva', label: 'Шва: немое или произносимое', icon: 'hearing' },
+            { kind: 'exercise', key: 'heb_dagesh', label: 'Дагеш: слабый или сильный', icon: 'scatter_plot' },
+            { kind: 'exercise', key: 'heb_qamets', label: 'Камец и камец хатуф', icon: 'compare' },
+            { kind: 'exercise', key: 'heb_begadkefat', label: 'Бегадкефат', icon: 'record_voice_over' },
+            { kind: 'exercise', key: 'heb_syllables', label: 'Слогораздел', icon: 'segment' }
+        ]
+    },
+    {
         label: 'Формы и грамматика',
         drills: [
             { kind: 'exercise', key: 'case_number', label: 'Падеж и число', icon: 'target' },
             { kind: 'exercise', key: 'agreement', label: 'Согласование', icon: 'link' },
             { kind: 'exercise', key: 'attribute_vs_predicate', label: 'Атрибут / предикатив', icon: 'balance' },
             { kind: 'exercise', key: 'substantivation', label: 'Субстантивация', icon: 'push_pin' },
-            { kind: 'exercise', key: 'article_fill', label: 'Артикль', icon: 'abc' }
+            { kind: 'exercise', key: 'article_fill', label: 'Артикль', icon: 'abc' },
+            { kind: 'exercise', key: 'heb_gutturals', label: 'Артикль и гортанные', icon: 'rule' },
+            { kind: 'exercise', key: 'heb_construct', label: 'Сопряжённое сочетание', icon: 'add_link' },
+            { kind: 'exercise', key: 'heb_suffix_type', label: 'Местоименные суффиксы', icon: 'person_pin' }
         ]
     },
     {

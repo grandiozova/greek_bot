@@ -30,31 +30,31 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ```
 index.html           334  <head>, разметка, порядок загрузки
 styles/
-  tokens.css           249  :root, [data-theme=dark] и [data-script] — все переменные
+  tokens.css           258  :root, [data-theme=dark] и [data-script] — все переменные
   base.css             350  сброс, типографика, метки языка (.script/.greek/.hebrew), каркас, app bar, icon button, nav bar, FAB, ripple
-  components.css       771  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  components.css       772  кнопки, list item урока, карточки, табы, search bar, text field, chips
   screens.css          832  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
   settings.css         156  segmented button темы и курса, карточка курса, список лицензий
 data/
   lessons.js         1,698  const LESSONS_DATA — уроки ГРЕЧЕСКОГО курса, а не «уроки вообще»
-  hebrew-lessons.js     22  const HEBREW_LESSONS_DATA — пока пустой объект (фаза 5)
+  hebrew-lessons.js     51  const HEBREW_LESSONS_DATA — пустой объект + форма записи упражнений (фаза 5)
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
   courses.js            77  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
 tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
-  core.js              120  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
-  course.js            244  текущий курс, ключи хранилища, письмо, стартовый экран, переключение курса
+  core.js              125  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
+  course.js            246  текущий курс, ключи хранилища, письмо, стартовый экран, переключение курса
   ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
   shell.js             238  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              86  режимы темы, applyTheme, initTheme
-  lesson.js            493  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  lesson.js            512  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
   declension.js        139  generateDeclensionTable, аккордеон
-  exercises.js         175  упражнения урока
+  exercises.js         303  EXERCISE_TYPES — список видов упражнений, отрисовка вопроса, проверка ответа
   flashcards.js        364  карточки: общие и урока, оборот карточки с тренировкой форм
-  test.js              205  тест
+  test.js              191  тест
   translation.js       202  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
   prayer.js            228  «Отче наш»: разбор и упражнения
@@ -237,7 +237,7 @@ Phases are ordered so each one lands working. Mark a phase done here when it is.
 | 0 | Extract the textbook into `reference/nbbs-hebrew/` | **done** |
 | 1 | Course shell: start screen, course switching, namespaced storage | **done** |
 | 2 | RTL rendering | **done** |
-| 3 | Hebrew-specific drills | not started |
+| 3 | Hebrew-specific drills | **done** |
 | 4 | Data-driven paradigm engine | **deferred** — needs the verb system |
 | 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | not started |
 
@@ -250,14 +250,25 @@ marker class in generated markup is `.script` (it replaced `class="greek"`, and
 is marked by the language of its chips rather than by the course, because one screen
 shows both. Noto Serif Hebrew joined the font link for the niqqud.
 
-**Phase 3 — Hebrew drills.** New exercise types with no Greek equivalent: niqqud
-(name the vowel, supply the missing one), silent vs vocal shva, dagesh forte vs lene,
-qamets vs qamets-hatuf, syllable division, begadkefat, gutturals, the construct chain,
-and pronominal suffixes (type 1 vs type 2). Mechanically each is one more branch in
-the `s.type` chain in `js/exercises.js` plus an entry in `LESSON_DRILL_GROUPS`
-(`js/lesson.js`) and `TEST_TYPES` (`js/test.js`) — the engine already takes them as
-data. Keep exercise keys course-neutral where the concept is shared
-(`translate_*`, `agreement`) and prefix the rest.
+**Phase 3 — Hebrew drills.** Done; the ten new types are listed in "Exercise types"
+below, and `data/hebrew-lessons.js` carries the field-by-field authoring guide phase 5
+needs. Two things came out differently from the sketch above:
+
+- **Not "one more branch".** The plan said each type is a branch in the `s.type` chain
+  in `js/exercises.js`. It is really *two* branches — `js/test.js` re-implemented the
+  same six types with its own wording — so ten new types meant twenty new branches and
+  twenty chances for the two screens to drift. They had already drifted. The chain is
+  now a table, `EXERCISE_TYPES`, and both screens render from it.
+- **Niqqud needed a size floor**, not just a typeface. Vowel points are dots under and
+  inside the letter; at the 15px the word-bank chips use, a dagesh merges into the
+  letter and qamets is not distinguishable from segol — which is fatal for drills whose
+  whole content is that distinction. `--md-ref-script-min-size` is the third token in
+  the writing-direction set (see "Writing direction").
+
+A gender/number drill for chapter 4 is **not** among the ten. Greek's `case_number` is
+the same question but is labelled "Падеж и число", and Hebrew has no cases; the type
+was outside phase 3's list and there is no content to shape it against yet. Phase 5
+should either add `heb_gender_number` or give the shared type a per-course label.
 
 **Phase 4 — paradigm engine.** `generateDeclensionTable()` (`js/declension.js`)
 hard-codes `['nom','gen','dat','acc','voc']`, three genders and three persons. Hebrew's
@@ -274,6 +285,40 @@ for content. Source material and its caveats are in `reference/nbbs-hebrew/`.
 `data/vocabulary-by-lesson.json` there carries a `freq` per word (the textbook's own
 count of its occurrences in the Hebrew Bible) — an axis the Greek data has no
 equivalent of, and the natural way to order what gets taught first.
+
+## Exercise types
+
+**`EXERCISE_TYPES` in `js/exercises.js` is the list of drill kinds.** An entry says how
+one kind is asked — the question text, where the options come from, and whether those
+options are in the studied language. `choiceQuestionHtml()` renders from it, and both
+the lesson drill (`showExercise`) and the lesson test (`showTest`) call it with their
+own answer handler. A new kind is an entry in that table, not a branch.
+
+- **A kind lives in three lists**, and forgetting one is the usual bug: `EXERCISE_TYPES`
+  (how it is drawn), `LESSON_DRILL_GROUPS` in `js/lesson.js` (its label, icon and place
+  in the menu) and `TEST_TYPES` in `js/test.js` (whether the lesson test may ask it).
+  `tests/drills.test.js` checks that every declared kind is reachable from at least one
+  of the last two, and that nothing in them is undeclared.
+- **Two kinds are not multiple choice** — `translate_greek_to_russian` (a text field)
+  and `translate_russian_to_greek` (a word bank). Their markup differs between the drill
+  screen and the test screen (different element ids, different handlers), so there is no
+  shared code to extract; they are declared `custom: true` and drawn by the caller.
+- **Options are either a fixed array or derived from the question.** Fixed sets — «Немое»
+  / «Произносимое» шва and the like — live in the table so the author does not retype
+  them per question; the question's `correct` must then match one of them exactly, which
+  a test enforces across every course's data.
+- **Keys name the concept, not the language, when the concept is shared.** `agreement`,
+  `translate_*` and `article_fill` are used by both courses — Hebrew's article question
+  is the same question, just with `הָ`/`הַ`/`הֶ` as the forms. Kinds that exist only in
+  the Hebrew course are prefixed `heb_`: `heb_vowel_name`, `heb_vowel_fill`, `heb_shva`,
+  `heb_dagesh`, `heb_qamets`, `heb_begadkefat`, `heb_syllables`, `heb_gutturals`,
+  `heb_construct`, `heb_suffix_type`. The prefix is a convention for readers; no code
+  parses it.
+- **A group with nothing available is not drawn.** That is what keeps the phonology
+  group («Огласовка и чтение») off Greek lesson screens without any branching on course.
+- **Do not put the answer in the question.** `heb_construct` and `heb_suffix_type` carry
+  a translation in the data and deliberately do not show it: «его кони» announces the
+  number, «(этот) голос (этого) человека» announces the definiteness.
 
 ## Courses
 
@@ -324,9 +369,10 @@ Three pieces carry it:
 1. **`applyCourseChrome()` (`js/course.js`) puts two attributes on `<html>`** from the
    registry: `data-script` (which script — `course.script`) and `data-script-dir`
    (`course.dir`). Nothing else in the app reads the course to decide how to draw text.
-2. **`styles/tokens.css` resolves them into two tokens**: `--md-ref-typeface-script`
-   and `--md-ref-script-direction`. Every rule that draws studied-language text
-   declares that pair plus `unicode-bidi: isolate`, so no rule mentions a course.
+2. **`styles/tokens.css` resolves them into tokens**: `--md-ref-typeface-script`,
+   `--md-ref-script-direction` and `--md-ref-script-min-size`. Every rule that draws
+   studied-language text declares the first two plus `unicode-bidi: isolate`, so no
+   rule mentions a course.
 3. **`.script` is the marker class in generated markup.** A Hebrew word quoted inside
    a Russian sentence is an inline island: `<span class="script">…</span>`. `isolate`
    is what keeps the sentence's full stop from jumping to the wrong end of the word.
@@ -348,6 +394,14 @@ A few consequences worth knowing before you touch the rendering:
   builds the string adds `.script` when it is a form. Where the mix is genuinely
   unknowable — the error list sweeps every drill into one place — the CSS uses
   `unicode-bidi: plaintext`, which takes the direction from the text itself.
+- **Niqqud have a floor on how small they may be set.** `--md-ref-script-min-size` is
+  `0` for Greek and `1.25rem` for Hebrew, and small studied-language text is written
+  `font-size: max(<its own size>, var(--md-ref-script-min-size))`. Hebrew vowel points
+  are dots below and inside the letter: at the 15px the word-bank chips use, the dagesh
+  merges into the letter it sits in and qamets is not distinguishable from segol. Large
+  text — the flashcard word, the drill prompt — is already above the floor and left
+  alone. Add the `max()` when you set a small size on script text; leave it off where
+  the text may be Russian (the error list, which sweeps every drill together).
 - **Paradigm tables turn over with the course** (`.word-details > .md-table-scroll`):
   in RTL the first column is the right one. Grammar tables in the lesson data do not —
   they are often Russian — so they opt in with `<table dir="rtl">`, and
