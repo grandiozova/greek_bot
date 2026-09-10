@@ -30,16 +30,16 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ```
 index.html           334  <head>, разметка, порядок загрузки
 styles/
-  tokens.css           258  :root, [data-theme=dark] и [data-script] — все переменные
+  tokens.css           259  :root, [data-theme=dark] и [data-script] — все переменные
   base.css             350  сброс, типографика, метки языка (.script/.greek/.hebrew), каркас, app bar, icon button, nav bar, FAB, ripple
   components.css       772  кнопки, list item урока, карточки, табы, search bar, text field, chips
-  screens.css          832  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
+  screens.css          855  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
   settings.css         156  segmented button темы и курса, карточка курса, список лицензий
 data/
   lessons.js         1,698  const LESSONS_DATA — уроки ГРЕЧЕСКОГО курса, а не «уроки вообще»
-  hebrew-lessons.js     51  const HEBREW_LESSONS_DATA — пустой объект + форма записи упражнений (фаза 5)
+  hebrew-lessons.js     71  const HEBREW_LESSONS_DATA — пустой объект + форма записи упражнений (фаза 5)
   prayer.js            136  const PRAYER_DATA
   licenses.js           38  const LICENSES
   courses.js            77  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
@@ -51,14 +51,14 @@ js/
   shell.js             238  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
   theme.js              86  режимы темы, applyTheme, initTheme
   lesson.js            512  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
-  declension.js        139  generateDeclensionTable, аккордеон
+  declension.js        194  парадигма как описание осей, отрисовка таблицы, перебор ячеек
   exercises.js         303  EXERCISE_TYPES — список видов упражнений, отрисовка вопроса, проверка ответа
-  flashcards.js        364  карточки: общие и урока, оборот карточки с тренировкой форм
+  flashcards.js        374  карточки: общие и урока, оборот карточки с тренировкой форм
   test.js              191  тест
   translation.js       202  перевод
   stats.js              97  статистика, ошибки, сброс прогресса
   prayer.js            228  «Отче наш»: разбор и упражнения
-  vocab.js             428  общий словарь, поиск, фильтр по частям речи
+  vocab.js             434  общий словарь, поиск, фильтр по частям речи
   settings.js           28  showSettings, renderLicenses
   boot.js               74  normalizeTranslationData, init*, глобальные слушатели
 ```
@@ -238,7 +238,7 @@ Phases are ordered so each one lands working. Mark a phase done here when it is.
 | 1 | Course shell: start screen, course switching, namespaced storage | **done** |
 | 2 | RTL rendering | **done** |
 | 3 | Hebrew-specific drills | **done** |
-| 4 | Data-driven paradigm engine | **deferred** — needs the verb system |
+| 4 | Data-driven paradigm engine | **done** |
 | 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | not started |
 
 **Phase 1 — course shell.** Done; see "Courses" below for what it built.
@@ -270,13 +270,24 @@ the same question but is labelled "Падеж и число", and Hebrew has no 
 was outside phase 3's list and there is no content to shape it against yet. Phase 5
 should either add `heb_gender_number` or give the shared type a per-course label.
 
-**Phase 4 — paradigm engine.** `generateDeclensionTable()` (`js/declension.js`)
-hard-codes `['nom','gen','dat','acc','voc']`, three genders and three persons. Hebrew's
-verb is a binyan × conjugation × 9-PGN cube, which that function cannot express. The
-fix is a table renderer driven by an axis description in the data rather than by
-hard-coded case lists. **Deferred on purpose**: chapters 1–11 stop before the verb, and
-the nominal paradigms in them fit the existing table. Do not start this until the
-scope grows past chapter 11.
+**Phase 4 — paradigm engine.** Done. The fix was the one the plan named — a table
+renderer driven by an axis description in the data — but **the reason for deferring it
+was wrong, and it is worth knowing why.**
+
+The plan deferred this until the scope grew past chapter 11, on the grounds that "the
+nominal paradigms in chapters 1–11 fit the existing table". They do not. Not one of them
+does, and the verb was never the blocker:
+
+| Paradigm | Axes | Why the old table could not hold it |
+|---|---|---|
+| Adjective (ch. 7) | gender × number | No case axis at all; `hasCases` is false, so nothing renders |
+| Personal pronoun (ch. 8) | person-with-gender × number | Five PGN rows, not three persons |
+| Pronominal suffixes (ch. 9) | ten PGN × two types | Neither axis existed |
+| Numerals (ch. 11) | numeral × (gender × state) | Four columns; the old table had at most three, and they were genders |
+
+Hebrew has no cases and two genders, so the case list rendered an empty grid and the
+gender branch added a neuter column that does not exist. Phase 5 could not have authored
+a single paradigm for chapters 7–11. See "Paradigms" below for the shape.
 
 **Phase 5 — content.** Author chapters 1–11 into `data/hebrew-lessons.js`, in the same
 lesson shape as `data/lessons.js` (`title`, `grammar`, `vocabulary`, `exercises`,
@@ -319,6 +330,36 @@ own answer handler. A new kind is an entry in that table, not a branch.
 - **Do not put the answer in the question.** `heb_construct` and `heb_suffix_type` carry
   a translation in the data and deliberately do not show it: «его кони» announces the
   number, «(этот) голос (этого) человека» announces the definiteness.
+
+## Paradigms
+
+A paradigm is a grid: axes with ordered values, and forms at the intersections.
+**`js/declension.js` takes that description from the data** — `declension_forms.tables`,
+one entry per table, each with `rows`, `cols`, `cells` and optional `caption` and
+`translations`. The exact shape is documented at the top of that file and again in
+`data/hebrew-lessons.js`, where it will be authored.
+
+- **Greek data was not rewritten.** All 101 paradigms in `data/lessons.js` keep the old
+  nested notation (`forms[gender][number][case]`); `legacyParadigm()` expands it into the
+  same axes, so there is one renderer and no second code path. Greek output is unchanged
+  down to the byte — `declension.test.js` holds that line, and it is the reason the
+  legacy branch reproduces small oddities like always emitting five case rows.
+- **Cell keys must keep matching authored `declension_fill` questions** (`gen_sg`,
+  `nom_pl_m`, `2sg`) for Greek, which is why `collectCardForms()` in `js/flashcards.js`
+  still builds those keys itself. Axis-described paradigms need none of that: the key is
+  `row_col` and the label comes from the axis values, so nothing parses a key with a
+  regular expression.
+- **Forms are marked `.script`, the row labels and the translation column are not.** The
+  paradigm table was the one place studied-language text was still drawn in the interface
+  font — invisible with Greek, fatal with niqqud at 14px. Cell size is
+  `max(0.875rem, var(--md-ref-script-min-size))`: unchanged for Greek, floored for Hebrew.
+- **Anything that walks the data looking for word forms must go through
+  `paradigmCells()`**, not over the object. Axis labels are Russian strings living in the
+  same structure; `getWordSearchForms()` in `js/vocab.js` used to collect every string it
+  found, which would have made the dictionary highlight «Тип 1» inside example sentences.
+- The verb (chapters 12–36) is still out of scope, but nothing about it needs new
+  machinery now: a binyan × conjugation × PGN cube is a list of tables, which is what the
+  description already is.
 
 ## Courses
 

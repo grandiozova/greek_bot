@@ -194,11 +194,17 @@ function cardCaseLabel(key) {
     return getCaseName(key);
 }
 
-// Все формы слова плоским списком. Род различаем суффиксом ключа — ровно
-// так же, как он записан в авторских вопросах (gen_sg_m, dat_sg_f, acc_sg_n).
+// Все формы слова плоским списком: {key, form, label}.
+//
+// У парадигмы, описанной осями (declension_forms.tables — см. js/declension.js),
+// ключ и подпись уже есть в самих осях, и разбирать их незачем. Прежняя
+// греческая форма ключей не несёт: их собирают здесь и обязаны собрать ровно
+// такими, как в авторских declension_fill (gen_sg_m, dat_sg_f, acc_sg_n), —
+// иначе вопрос из данных и вопрос из парадигмы задвоятся.
 function collectCardForms(forms) {
     let out = [];
     if (!forms) return out;
+    if (forms.tables) return paradigmCells(forms);
     let cases = ['nom', 'gen', 'dat', 'acc', 'voc'];
     let nums = { singular: 'sg', plural: 'pl' };
     let genders = { masculine: 'm', feminine: 'f', neuter: 'n' };
@@ -206,14 +212,18 @@ function collectCardForms(forms) {
         for (let num in nums) {
             let block = node[num];
             if (!block) continue;
-            for (let p of ['1', '2', '3']) if (block[p]) out.push({ key: p + nums[num], form: block[p] });
-            for (let c of cases) if (block[c]) out.push({ key: c + '_' + nums[num] + suffix, form: block[c] });
+            for (let p of ['1', '2', '3']) if (block[p]) out.push(legacyCardForm(p + nums[num], block[p]));
+            for (let c of cases) if (block[c]) out.push(legacyCardForm(c + '_' + nums[num] + suffix, block[c]));
         }
     }
     let gendered = false;
     for (let g in genders) if (forms[g]) { gendered = true; walk(forms[g], '_' + genders[g]); }
     if (!gendered) walk(forms, '');
     return out;
+}
+
+function legacyCardForm(key, form) {
+    return { key: key, form: form, label: cardCaseLabel(key) };
 }
 
 // Заголовочные формы слова: «ἀκούω + Gen.» → ἀκούω, «οὗτος, αὕτη, τοῦτο» →
@@ -251,7 +261,7 @@ function cardDeclensionQuestions(word) {
         let others = shuffle(pool.filter(function (x) { return x !== f.form; })).slice(0, 3);
         if (others.length < 2) continue;
         seen.add(f.key);
-        out.push({ label: cardCaseLabel(f.key), correct: f.form, distractors: others });
+        out.push({ label: f.label, correct: f.form, distractors: others });
     }
     word._declQuestions = out;
     return out;

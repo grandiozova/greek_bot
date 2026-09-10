@@ -1,132 +1,188 @@
 // ============================================================
-// ФУНКЦИИ ДЛЯ АККОРДЕОНА (таблицы склонений)
+// ПАРАДИГМЫ: ТАБЛИЦЫ СКЛОНЕНИЙ И СПРЯЖЕНИЙ
 // ============================================================
-function generateDeclensionTable(forms, translations) {
-    if (!forms) return '';
-    let html = '';
-    // Для местоимений с мужским/женским/средним родом
-    if (forms.masculine || forms.feminine || forms.neuter) {
-        let cases = ['nom','gen','dat','acc','voc'];
-        let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
-        html += '<table><thead><tr><th>Падеж</th><th>Муж.</th><th>Жен.</th><th>Ср.</th>';
-        if (translations) html += '<th>Перевод</th>';
-        html += '</tr></thead><tbody>';
-        for (let c of cases) {
-            let m = (forms.masculine && forms.masculine.singular && forms.masculine.singular[c]) ? forms.masculine.singular[c] : '';
-            let f = (forms.feminine && forms.feminine.singular && forms.feminine.singular[c]) ? forms.feminine.singular[c] : '';
-            let n = (forms.neuter && forms.neuter.singular && forms.neuter.singular[c]) ? forms.neuter.singular[c] : '';
-            html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td>';
-            // Колонка объявлена в <thead>, значит ячейка обязана быть в каждой
-            // строке — иначе таблица съезжает на строках без перевода.
-            if (translations) {
-                html += '<td>'+((translations.singular && translations.singular[c]) || '')+'</td>';
-            }
-            html += '</tr>';
-        }
-        html += '</tbody></table>';
-        // Множественное число
-        let hasPlural = (forms.masculine && forms.masculine.plural) || (forms.feminine && forms.feminine.plural) || (forms.neuter && forms.neuter.plural);
-        if (hasPlural) {
-            html += '<table><thead><tr><th>Падеж</th><th>Муж. (мн.)</th><th>Жен. (мн.)</th><th>Ср. (мн.)</th>';
-            if (translations) html += '<th>Перевод</th>';
-            html += '</tr></thead><tbody>';
-            for (let c of cases) {
-                let m = (forms.masculine && forms.masculine.plural && forms.masculine.plural[c]) ? forms.masculine.plural[c] : '';
-                let f = (forms.feminine && forms.feminine.plural && forms.feminine.plural[c]) ? forms.feminine.plural[c] : '';
-                let n = (forms.neuter && forms.neuter.plural && forms.neuter.plural[c]) ? forms.neuter.plural[c] : '';
-                html += '<tr><td>'+labels[c]+'</td><td>'+m+'</td><td>'+f+'</td><td>'+n+'</td>';
-                if (translations) {
-                    html += '<td>'+((translations.plural && translations.plural[c]) || '')+'</td>';
-                }
-                html += '</tr>';
-            }
-            html += '</tbody></table>';
-        }
-        return html;
-    }
-    // Для существительных с singular/plural (без разделения по родам)
-    if (forms.singular || forms.plural) {
-        let cases = ['nom','gen','dat','acc','voc'];
-        let labels = {nom:'Nom.',gen:'Gen.',dat:'Dat.',acc:'Acc.',voc:'Voc.'};
-        let hasCases = false;
-        for (let c of cases) {
-            if ((forms.singular && forms.singular[c]) || (forms.plural && forms.plural[c])) {
-                hasCases = true;
-                break;
-            }
-        }
-        if (hasCases) {
-            html += '<table><thead><tr><th>Падеж</th>';
-            if (forms.singular && Object.keys(forms.singular).length > 0) html += '<th>Ед.ч.</th>';
-            if (forms.plural && Object.keys(forms.plural).length > 0) html += '<th>Мн.ч.</th>';
-            if (translations) html += '<th>Перевод</th>';
-            html += '</tr></thead><tbody>';
-            for (let c of cases) {
-                let sg = (forms.singular && forms.singular[c]) ? forms.singular[c] : '';
-                let pl = (forms.plural && forms.plural[c]) ? forms.plural[c] : '';
-                if (sg || pl) {
-                    html += '<tr><td>'+labels[c]+'</td>';
-                    if (forms.singular && Object.keys(forms.singular).length > 0) html += '<td>'+sg+'</td>';
-                    if (forms.plural && Object.keys(forms.plural).length > 0) html += '<td>'+pl+'</td>';
-                    if (translations) {
-                        let trans = '';
-                        if (translations.singular && translations.singular[c]) trans = translations.singular[c];
-                        else if (translations.plural && translations.plural[c]) trans = translations.plural[c];
-                        html += '<td>'+trans+'</td>';
-                    }
-                    html += '</tr>';
-                }
-            }
-            html += '</tbody></table>';
-            return html;
-        }
-// Для глаголов (лица) — добавляем перевод
-if (forms.singular && forms.singular["1"] !== undefined) {
-    let persons = ['1','2','3'];
-    let personLabels = ['1-е лицо','2-е лицо','3-е лицо'];
-    html += '<table><thead><tr><th>Лицо</th><th>Ед.ч.</th><th>Мн.ч.</th>';
-    if (translations) html += '<th>Перевод</th>';
+// Парадигма — это решётка: оси с упорядоченными значениями и формы в
+// пересечениях. Раньше решётка была зашита в код — пять греческих падежей,
+// три рода, три лица, — и ничего, кроме греческого имени и глагола, выразить
+// не могла.
+//
+// В иврите падежей нет вовсе, а роды два, и в эту решётку не ложится ни одна
+// парадигма пособия: прилагательное — это род × число (гл. 7), личное
+// местоимение — пять лиц-с-родом × число (гл. 8), местоименные суффиксы —
+// десять лиц × два типа (гл. 9), числительное — четыре колонки
+// «муж./жен. × абсолютная/сопряжённая» (гл. 11).
+//
+// Поэтому оси описываются данными:
+//
+//   declension_forms: {
+//       tables: [{
+//           caption: 'Единственное число',        // необязательно
+//           rows: { label: 'Лицо', values: [['1cs', '1 общ. ед.'], …] },
+//           cols: { values: [['t1', 'Тип 1'], ['t2', 'Тип 2']] },
+//           cells: { '1cs': { t1: 'יִ', t2: 'יַ' }, … },
+//           translations: { '1cs': 'мой / мои' }  // необязательная колонка
+//       }]
+//   }
+//
+// Греческие данные (101 слово в data/lessons.js) записаны прежней вложенной
+// формой — forms[род][число][падеж]. Её не переписывали: legacyParadigm()
+// раскладывает её в те же оси, поэтому таблица у греческого получается ровно
+// та же, что и раньше (tests/declension.test.js сверяет посимвольно), а
+// рисующий код остался один.
+
+const CASE_ORDER = ['nom', 'gen', 'dat', 'acc', 'voc'];
+const CASE_LABELS = { nom: 'Nom.', gen: 'Gen.', dat: 'Dat.', acc: 'Acc.', voc: 'Voc.' };
+const GENDER_COLS = [['m', 'Муж.'], ['f', 'Жен.'], ['n', 'Ср.']];
+const NUMBER_COLS = [['singular', 'Ед.ч.'], ['plural', 'Мн.ч.']];
+
+// ------------------------------------------------------------ отрисовка
+
+// Одна таблица. Колонка, объявленная в <thead>, обязана быть в каждой строке —
+// иначе таблица едет вбок на строках без перевода; поэтому ячейки перебираются
+// по осям, а не по тому, что нашлось в данных.
+function paradigmTableHtml(t) {
+    if (!t || !t.rows || !t.cols) return '';
+    let html = '<table>';
+    if (t.caption) html += '<caption>' + t.caption + '</caption>';
+    html += '<thead><tr><th>' + (t.rows.label || '') + '</th>';
+    for (let col of t.cols.values) html += '<th>' + col[1] + '</th>';
+    if (t.translations) html += '<th>Перевод</th>';
     html += '</tr></thead><tbody>';
-    for (let i=0; i<persons.length; i++) {
-        let sg = (forms.singular && forms.singular[persons[i]]) ? forms.singular[persons[i]] : '';
-        let pl = (forms.plural && forms.plural[persons[i]]) ? forms.plural[persons[i]] : '';
-        html += '<tr><td>'+personLabels[i]+'</td><td>'+sg+'</td><td>'+pl+'</td>';
-        if (translations) {
-            let trans = '';
-            if (translations.singular && translations.singular[persons[i]]) trans = translations.singular[persons[i]];
-            else if (translations.plural && translations.plural[persons[i]]) trans = translations.plural[persons[i]];
-            html += '<td>'+trans+'</td>';
-        }
+    for (let row of t.rows.values) {
+        let cells = (t.cells && t.cells[row[0]]) || {};
+        html += '<tr><td>' + row[1] + '</td>';
+        // Форма — текст изучаемого языка, подпись строки и перевод — русские,
+        // поэтому метка стоит на ячейках пересечения, а не на всей таблице.
+        for (let col of t.cols.values) html += '<td class="script">' + (cells[col[0]] || '') + '</td>';
+        if (t.translations) html += '<td>' + (t.translations[row[0]] || '') + '</td>';
         html += '</tr>';
     }
-    html += '</tbody></table>';
-    return html;
+    return html + '</tbody></table>';
 }
-        // fallback
-        let keys = Object.keys(forms.singular || {});
-        if (keys.length) {
-            html += '<table><thead><tr><th></th><th>Ед.ч.</th><th>Мн.ч.</th>';
-            if (translations) html += '<th>Перевод</th>';
-            html += '</tr></thead><tbody>';
-            for (let k of keys) {
-                let sg = forms.singular ? forms.singular[k] : '';
-                let pl = forms.plural ? forms.plural[k] : '';
-                html += '<tr><td>'+k+'</td><td>'+sg+'</td><td>'+pl+'</td>';
-                if (translations) {
-                    let trans = '';
-                    if (translations.singular && translations.singular[k]) trans = translations.singular[k];
-                    else if (translations.plural && translations.plural[k]) trans = translations.plural[k];
-                    html += '<td>'+trans+'</td>';
-                }
-                html += '</tr>';
-            }
-            html += '</tbody></table>';
-        }
-        return html;
+
+function generateDeclensionTable(forms, translations) {
+    let p = paradigm(forms, translations);
+    return p ? p.tables.map(paradigmTableHtml).join('') : '';
+}
+
+// Описание осей: либо оно уже в данных, либо его собирают из прежней формы.
+function paradigm(forms, translations) {
+    if (!forms) return null;
+    if (forms.tables) return forms;
+    return legacyParadigm(forms, translations);
+}
+
+// ------------------------------------------------------------ прежняя форма
+
+// Перевод строки в таблице без разделения по родам искали то в singular, то в
+// plural — здесь это сведено в одну карту «падеж → перевод».
+function mergedTranslations(translations, keys) {
+    if (!translations) return null;
+    let out = {};
+    for (let k of keys) {
+        out[k] = (translations.singular && translations.singular[k]) ||
+                 (translations.plural && translations.plural[k]) || '';
     }
-    return '';
+    return out;
 }
-   
+
+function legacyParadigm(forms, translations) {
+    // --- местоимения и прилагательные: род × падеж, отдельная таблица на число
+    if (forms.masculine || forms.feminine || forms.neuter) {
+        let genders = { m: forms.masculine, f: forms.feminine, n: forms.neuter };
+        let table = (num, cols) => {
+            let cells = {};
+            for (let c of CASE_ORDER) {
+                cells[c] = {};
+                for (let g in genders) {
+                    let block = genders[g] && genders[g][num];
+                    cells[c][g] = (block && block[c]) || '';
+                }
+            }
+            return {
+                rows: { label: 'Падеж', values: CASE_ORDER.map(c => [c, CASE_LABELS[c]]) },
+                cols: { values: cols },
+                cells: cells,
+                translations: translations ? (translations[num] || {}) : null
+            };
+        };
+        let tables = [table('singular', GENDER_COLS)];
+        let hasPlural = Object.keys(genders).some(g => genders[g] && genders[g].plural);
+        if (hasPlural) {
+            tables.push(table('plural', GENDER_COLS.map(c => [c[0], c[1] + ' (мн.)'])));
+        }
+        return { tables: tables };
+    }
+
+    if (!forms.singular && !forms.plural) return null;
+
+    // Колонка числа показывается, только если в ней что-то есть.
+    let numberCols = NUMBER_COLS.filter(c => forms[c[0]] && Object.keys(forms[c[0]]).length > 0);
+    let cellsBy = keys => {
+        let cells = {};
+        for (let k of keys) {
+            cells[k] = {};
+            for (let c of NUMBER_COLS) cells[k][c[0]] = (forms[c[0]] && forms[c[0]][k]) || '';
+        }
+        return cells;
+    };
+
+    // --- имя без разделения по родам: падеж × число, пустые падежи пропускаем
+    let cases = CASE_ORDER.filter(c => (forms.singular && forms.singular[c]) || (forms.plural && forms.plural[c]));
+    if (cases.length) {
+        return { tables: [{
+            rows: { label: 'Падеж', values: cases.map(c => [c, CASE_LABELS[c]]) },
+            cols: { values: numberCols },
+            cells: cellsBy(cases),
+            translations: mergedTranslations(translations, cases)
+        }] };
+    }
+
+    // --- глагол: лицо × число
+    if (forms.singular && forms.singular['1'] !== undefined) {
+        let persons = ['1', '2', '3'];
+        return { tables: [{
+            rows: { label: 'Лицо', values: persons.map(p => [p, p + '-е лицо']) },
+            cols: { values: NUMBER_COLS },
+            cells: cellsBy(persons),
+            translations: mergedTranslations(translations, persons)
+        }] };
+    }
+
+    // --- всё остальное: ключи как есть
+    let keys = Object.keys(forms.singular || {});
+    if (!keys.length) return null;
+    return { tables: [{
+        rows: { label: '', values: keys.map(k => [k, k]) },
+        cols: { values: NUMBER_COLS },
+        cells: cellsBy(keys),
+        translations: mergedTranslations(translations, keys)
+    }] };
+}
+
+// ------------------------------------------------------------ перебор форм
+
+// Все формы парадигмы плоским списком — из него строится оборот карточки.
+// Ключ и подпись берутся из самих осей, поэтому разбирать ключ строкой
+// (cardCaseLabel) приходится только для прежней греческой формы, где ключи
+// обязаны совпадать с авторскими declension_fill (gen_sg, nom_pl_m, 2sg).
+function paradigmCells(forms) {
+    let p = paradigm(forms, null);
+    if (!p) return [];
+    let out = [];
+    for (let t of p.tables) {
+        for (let row of t.rows.values) {
+            let cells = (t.cells && t.cells[row[0]]) || {};
+            for (let col of t.cols.values) {
+                let form = cells[col[0]];
+                if (!form) continue;
+                let label = col[1] ? row[1] + ', ' + col[1] : row[1];
+                out.push({ key: row[0] + '_' + col[0], form: form, label: label });
+            }
+        }
+    }
+    return out;
+}
 
 function toggleDeclension(el) {
     let details = el.querySelector('.word-details');
@@ -136,4 +192,3 @@ function toggleDeclension(el) {
     el.classList.toggle('open', opening);   // разворачивает стрелку chevron
     el.setAttribute('aria-expanded', opening ? 'true' : 'false');
 }
-

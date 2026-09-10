@@ -160,7 +160,13 @@ function addSearchForm(form, out) {
 function getWordSearchForms(entry) {
     let forms = new Set();
     addSearchForm((entry.greek || '').split(',')[0].split('(')[0].trim(), forms);
-    if (entry.declension_forms) {
+    if (entry.declension_forms && entry.declension_forms.tables) {
+        // У парадигмы, описанной осями, подписи строк и колонок лежат в тех же
+        // данных, что и формы («1 общ. ед.», «Тип 1»). Обход всех строк подряд
+        // принял бы их за словоформы, и поиск подсвечивал бы в примерах русские
+        // слова. Ячейки перебирает paradigmCells — только формы, без подписей.
+        paradigmCells(entry.declension_forms).forEach(c => addSearchForm(c.form, forms));
+    } else if (entry.declension_forms) {
         (function walk(obj) {
             if (!obj) return;
             if (typeof obj === 'string') {

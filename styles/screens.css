@@ -287,6 +287,29 @@
    разворачиваются только там, где в данных написано <table dir="rtl"> —
    этот атрибут переносит на полосу grammarLiftedHtml() (js/lesson.js). */
 .word-details > .md-table-scroll { direction: var(--md-ref-script-direction); }
+/* Формы в таблице парадигмы. Шрифт им даёт .script на самой ячейке
+   (js/declension.js): подпись строки и колонка «Перевод» русские, и разворачивать
+   вместе с формами их нельзя. Кегль остаётся табличным — 14px, — но не ниже
+   предела, за которым огласовка перестаёт читаться: для греческого max() ничего
+   не меняет, для иврита поднимает. Единственное место, где текст изучаемого
+   языка был набран интерфейсным шрифтом: на греческом это было незаметно, на
+   огласовке — нет. */
+.word-details td.script {
+    font-size: max(0.875rem, var(--md-ref-script-min-size));
+}
+/* Подпись парадигмы. Именно <caption>, а не строка над таблицей: полоса
+   прокрутки уезжает вбок вместе с содержимым, и заголовок вне таблицы от неё
+   бы отстал. Выравнивание по началу строки, а не по центру: у развёрнутой
+   таблицы начало справа. */
+.word-details caption {
+    padding: 0 12px 8px;
+    text-align: start;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.00625rem;
+    color: var(--md-sys-color-on-surface-variant);
+}
 .word-details td, .word-details th,
 .grammar-text td, .grammar-text th {
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
