@@ -4,7 +4,7 @@ Guidance for AI agents working in this repository.
 
 ## What this repo is
 
-An Ancient Greek learning web app, published to GitHub Pages.
+A biblical-languages learning web app — Ancient Greek and Biblical Hebrew — published to GitHub Pages.
 
 | Part | Files | Notes |
 |---|---|---|
@@ -16,12 +16,12 @@ An Ancient Greek learning web app, published to GitHub Pages.
 | Source textbooks | `reference/machen-nt-greek/`, `reference/nbbs-hebrew/` | The books the lessons come from, as text. Reference only — never loaded by the app. See "Source textbooks" below. |
 
 The app hosts **two courses**, Greek and Hebrew, chosen on a start screen. `data/courses.js`
-is the registry and `js/course.js` the switching; see "Courses" and "The Hebrew course:
-phased plan" below.
+is the registry and `js/course.js` the switching; see "Courses" and "The Hebrew
+course" below.
 
 There is no backend and no build step. Progress is kept in `localStorage`. Do not add a server, a bundler, or new tracked secrets.
 
-The split files are **classic scripts and plain stylesheets**, deliberately not ES modules: 73 inline `onclick=` handlers need their functions to stay global, and `type="module"` / `fetch()` are both blocked on `file://`, which would break "clone and open `index.html`". Keep it that way unless you first replace the inline handlers with delegation.
+The split files are **classic scripts and plain stylesheets**, deliberately not ES modules: the ~80 inline `onclick=` handlers, in `index.html` and in generated markup alike, need their functions to stay global, and `type="module"` / `fetch()` are both blocked on `file://`, which would break "clone and open `index.html`". Keep it that way unless you first replace the inline handlers with delegation.
 
 All user-facing copy is **Russian**. Greek content is **polytonic** (accents, breathings, iota subscript — `ᾅ`, `ὥρᾳ`, `ἡμῶν`). Never "normalise" or strip Greek diacritics; they are the subject matter.
 
@@ -30,7 +30,7 @@ All user-facing copy is **Russian**. Greek content is **polytonic** (accents, br
 ```
 index.html           334  <head>, разметка, порядок загрузки
 styles/
-  tokens.css           259  :root, [data-theme=dark] и [data-script] — все переменные
+  tokens.css           280  :root, [data-theme=dark], [data-theme=sepia] и [data-script] — все переменные
   base.css             350  сброс, типографика, метки языка (.script/.greek/.hebrew), каркас, app bar, icon button, nav bar, FAB, ripple
   components.css       772  кнопки, list item урока, карточки, табы, search bar, text field, chips
   screens.css          855  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
@@ -41,8 +41,8 @@ data/
   lessons.js         1,698  const LESSONS_DATA — уроки ГРЕЧЕСКОГО курса, а не «уроки вообще»
   hebrew-lessons.js    732  const HEBREW_LESSONS_DATA — главы 1–11: грамматика, словарь, упражнения
   prayer.js            136  const PRAYER_DATA
-  licenses.js           47  const LICENSES
-  courses.js            77  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
+  licenses.js           49  const LICENSES
+  courses.js            82  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
 tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
   core.js              125  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
@@ -111,9 +111,9 @@ The app is already a full M3 implementation. Extend it; do not reintroduce ad-ho
 
 ### Non-negotiables
 
-1. **No hard-coded colors.** Not in CSS, not in inline `style=`, not in JS-generated markup strings. Every color is `var(--md-sys-color-*)` or `var(--md-extended-color-*)`. A literal hex anywhere outside the two token blocks is a bug — this codebase had ~20 of them and dark mode was broken everywhere as a result. The only permitted literals are the bootstrap `<meta name="theme-color">` tags, which must paint before CSS loads; keep them in sync with `surface` in both schemes. Where JS needs a color it reads the token — see `applyTheme()`, which pulls `--md-sys-color-surface` via `getComputedStyle` rather than repeating the hex.
+1. **No hard-coded colors.** Not in CSS, not in inline `style=`, not in JS-generated markup strings. Every color is `var(--md-sys-color-*)` or `var(--md-extended-color-*)`. A literal hex anywhere outside the theme blocks in `styles/tokens.css` is a bug — this codebase had ~20 of them and dark mode was broken everywhere as a result. The only permitted literals are the two bootstrap `<meta name="theme-color">` tags, which must paint before CSS loads; keep them in sync with `surface` in the light and dark schemes. Sepia gets none: it is a manual choice, not a system preference, and nothing knows about it before JS runs — `applyTheme()` then removes all of them and writes one from the token. Where JS needs a color it reads the token — see `applyTheme()`, which pulls `--md-sys-color-surface` via `getComputedStyle` rather than repeating the hex.
 2. **Always use the `on-` pair.** `background: primary-container` requires `color: on-primary-container`. Never mix roles across pairs.
-3. **Both themes, always.** Any new role goes into `:root` *and* `[data-theme="dark"]`. Never ship a token defined in only one.
+3. **All three themes, always.** Any new role goes into `:root`, `[data-theme="dark"]` *and* `[data-theme="sepia"]`. Never ship a token defined in only some of them. The exception is a role a scheme inherits unchanged from `:root` — `shadow`, `scrim` and the elevation levels are correct for both light schemes, so dark overrides the elevations and sepia overrides nothing; anything else missing is a bug, not an inheritance.
 4. **Spacing on a 4dp grid**, shape from the shape scale, motion from the motion tokens. No arbitrary `border-radius: 7px` or `transition: 0.15s ease`.
 5. **Touch targets ≥ 48×48dp**, even when the visual element is smaller.
 6. **State layers on everything interactive** — hover 8%, focus 10%, pressed 10%, via the `::before` overlay pattern used throughout, plus ripple (`RIPPLE_TARGETS`).
@@ -121,7 +121,7 @@ The app is already a full M3 implementation. Extend it; do not reintroduce ad-ho
 
 ### Token vocabulary
 
-Defined in the `:root` / `[data-theme="dark"]` blocks. Use these names, add new ones only when a genuine M3 role is missing.
+Defined in the `:root`, `[data-theme="dark"]` and `[data-theme="sepia"]` blocks. Use these names, add new ones only when a genuine M3 role is missing.
 
 - Color: `primary`, `secondary`, `tertiary`, `error` (each with `on-*`, `*-container`, `on-*-container`); `surface`, `surface-dim`, `surface-bright`, `surface-container-lowest|low|<base>|high|highest`, `on-surface`, `on-surface-variant`, `outline`, `outline-variant`, `inverse-surface`, `inverse-on-surface`, `inverse-primary`, `shadow`, `scrim`.
 - Custom extended color: `--md-extended-color-success*` — correct answers. Errors use the standard `error` role.
@@ -161,15 +161,15 @@ Window size classes drive navigation: bottom **navigation bar** in compact, **na
 - The language being studied: **`--md-ref-typeface-script`** — Noto Serif for Greek, **Noto Serif Hebrew** for Hebrew (the Greek serif has no Hebrew glyph at all, let alone niqqud). The token resolves per course; the two raw faces stay available as `--md-ref-typeface-greek` / `--md-ref-typeface-hebrew`. Applied *only* where that language is the object of study — headwords, flashcards, chips and tokens, prayer text, and answer options via `.options--script`. Russian UI text never gets the serif; a rule outside `tokens.css`/`base.css` that names `--md-ref-typeface-greek` directly is a bug, and `tests/rtl.test.js` fails on it.
 - Mark studied-language text inside a Russian sentence with `<span class="script">`, not `<b>` — see "Writing direction" below.
 - Icons are **Material Symbols Rounded** (`<span class="msym">name</span>`). No emoji in the interface.
-- The icon font is **subsetted** via the `icon_names=` parameter on the Google Fonts `<link>` in `<head>`. The full family is 5.4 MB and loads with `display=block`, so the whole UI sits iconless until it arrives; the subset is ~76 KB for the 50 icons currently used. **Adding an icon means adding its ligature name to that list** — otherwise it renders as raw text (`menu_book`) instead of a glyph. Sweep the rendered DOM for `.msym` text to regenerate the list rather than editing it by hand.
+- The icon font is **subsetted** via the `icon_names=` parameter on the Google Fonts `<link>` in `<head>`. The full family is 5.4 MB and loads with `display=block`, so the whole UI sits iconless until it arrives; the subset carries only the icons actually used and downloads in a fraction of that. **Adding an icon means adding its ligature name to that list** — otherwise it renders as raw text (`menu_book`) instead of a glyph. Sweep the rendered DOM for `.msym` text to regenerate the list rather than editing it by hand.
 
 ## Settings screen
 
 `settingsSection` is the fifth navigation destination and the home for anything that is not study content: theme, data management, licenses.
 
 - **Course** is the first card: which course is open, a button back to the start screen, and `app_default_course` — whether the start screen asks on every load or drops straight into one course.
-- **Theme** is a three-way choice — `system` / `light` / `dark` — stored in `app_theme` as the *mode*, never as the resolved colour. Storing the resolved value is what breaks "follow the system": the app would pin whatever the OS happened to be on first run. `system` stays live via a `matchMedia` listener. A value written by an older build (`light`/`dark`) is still read as a valid manual choice, and the pre-courses key `greek_theme` is read as a fallback and migrated forward once.
-- **Licenses** come from the `LICENSES` array; add an entry when you add a dependency. The course material is listed last because it is a copyright statement, not an open licence.
+- **Theme** is a four-way choice — `system` / `light` / `dark` / `sepia` — stored in `app_theme` as the *mode*, never as the resolved colour. `sepia` is a warm light scheme built on the same M3 tone map as `:root`, not a filter over it. Storing the resolved value is what breaks "follow the system": the app would pin whatever the OS happened to be on first run. `system` stays live via a `matchMedia` listener. A value written by an older build (`light`/`dark`) is still read as a valid manual choice, and the pre-courses key `greek_theme` is read as a fallback and migrated forward once.
+- **Licenses** come from the `LICENSES` array; add an entry when you add a dependency. Only the middle of that list is open licences: the app's own code is first and is all-rights-reserved (see `LICENSE`), and the course materials are last as their holders' copyright. Both are statements, not licences, and carry no `url`.
 - The nav bar now holds **five** destinations — the M3 maximum. A sixth needs a different pattern, not a sixth item. That is exactly why the course picker is a full-screen overlay rather than a destination.
 
 ## Source textbooks
@@ -224,76 +224,17 @@ Two things to know before copying:
   another. Verify against the Westminster Leningrad Codex anything that goes into
   a drill. See `reference/nbbs-hebrew/restoration-report.md`.
 
-## The Hebrew course: phased plan
+## The Hebrew course
 
-The app is being extended from one course to two. Agreed scope: **a pilot of
-chapters 1–11**, the nominal system. The verb (chapters 12–36) is out of scope for
-now, which is what defers Phase 4.
+Scope is a pilot of **chapters 1–11**, the nominal system; the verb (chapters 12–36) is
+out of scope. All eleven chapters are authored in `data/hebrew-lessons.js` — grammar,
+163 dictionary entries ordered by the textbook's own Hebrew-Bible frequency, drills for
+every `heb_*` type, and sentence-building where the book prints sentences. That file
+carries the field-by-field authoring guide; follow it rather than inferring the shape
+from a neighbouring entry.
 
-Phases are ordered so each one lands working. Mark a phase done here when it is.
-
-| # | Phase | State |
-|---|---|---|
-| 0 | Extract the textbook into `reference/nbbs-hebrew/` | **done** |
-| 1 | Course shell: start screen, course switching, namespaced storage | **done** |
-| 2 | RTL rendering | **done** |
-| 3 | Hebrew-specific drills | **done** |
-| 4 | Data-driven paradigm engine | **done** |
-| 5 | Author chapters 1–11 into `data/hebrew-lessons.js` | **done** |
-
-**Phase 1 — course shell.** Done; see "Courses" below for what it built.
-
-**Phase 2 — RTL.** Done; the contract is in "Writing direction" below. In short:
-`<html>` never gets a `dir`, two attributes on it resolve into two tokens, and the
-marker class in generated markup is `.script` (it replaced `class="greek"`, and
-`.options--greek` / `.vocab-example__greek` became `--script` likewise). The word bank
-is marked by the language of its chips rather than by the course, because one screen
-shows both. Noto Serif Hebrew joined the font link for the niqqud.
-
-**Phase 3 — Hebrew drills.** Done; the ten new types are listed in "Exercise types"
-below, and `data/hebrew-lessons.js` carries the field-by-field authoring guide phase 5
-needs. Two things came out differently from the sketch above:
-
-- **Not "one more branch".** The plan said each type is a branch in the `s.type` chain
-  in `js/exercises.js`. It is really *two* branches — `js/test.js` re-implemented the
-  same six types with its own wording — so ten new types meant twenty new branches and
-  twenty chances for the two screens to drift. They had already drifted. The chain is
-  now a table, `EXERCISE_TYPES`, and both screens render from it.
-- **Niqqud needed a size floor**, not just a typeface. Vowel points are dots under and
-  inside the letter; at the 15px the word-bank chips use, a dagesh merges into the
-  letter and qamets is not distinguishable from segol — which is fatal for drills whose
-  whole content is that distinction. `--md-ref-script-min-size` is the third token in
-  the writing-direction set (see "Writing direction").
-
-A gender/number drill for chapter 4 is **not** among the ten. Greek's `case_number` is
-the same question but is labelled "Падеж и число", and Hebrew has no cases; the type
-was outside phase 3's list and there is no content to shape it against yet. Phase 5
-should either add `heb_gender_number` or give the shared type a per-course label.
-
-**Phase 4 — paradigm engine.** Done. The fix was the one the plan named — a table
-renderer driven by an axis description in the data — but **the reason for deferring it
-was wrong, and it is worth knowing why.**
-
-The plan deferred this until the scope grew past chapter 11, on the grounds that "the
-nominal paradigms in chapters 1–11 fit the existing table". They do not. Not one of them
-does, and the verb was never the blocker:
-
-| Paradigm | Axes | Why the old table could not hold it |
-|---|---|---|
-| Adjective (ch. 7) | gender × number | No case axis at all; `hasCases` is false, so nothing renders |
-| Personal pronoun (ch. 8) | person-with-gender × number | Five PGN rows, not three persons |
-| Pronominal suffixes (ch. 9) | ten PGN × two types | Neither axis existed |
-| Numerals (ch. 11) | numeral × (gender × state) | Four columns; the old table had at most three, and they were genders |
-
-Hebrew has no cases and two genders, so the case list rendered an empty grid and the
-gender branch added a neuter column that does not exist. Phase 5 could not have authored
-a single paradigm for chapters 7–11. See "Paradigms" below for the shape.
-
-**Phase 5 — content.** Done. All eleven chapters are in `data/hebrew-lessons.js`:
-grammar, 163 dictionary entries ordered by the textbook's own Hebrew-Bible frequency,
-drills for every type phase 3 added, and sentence-building where the book prints
-sentences. Chapters 1–2 are material only (they are `introLessons` in the registry) and
-chapter 9 has drills but no dictionary — the book gives it no vocabulary section.
+Chapters 1–2 are material only (`introLessons` in the registry) and chapter 9 has drills
+but no dictionary — the book gives it no vocabulary section. Neither is a gap to fill.
 
 **The one thing to know before editing this data**: 220 of the Hebrew strings written by
 hand were byte-wrong on the first pass, and none of it was visible. Hebrew combining
@@ -301,17 +242,20 @@ marks have no canonical order — the textbook writes dagesh before the vowel
 (`תּ` = 05EA 05BC 05B8), and typing the same glyph naturally produces the reverse
 (05EA 05B8 05BC). Identical on screen, different strings to every search and comparison.
 This is exactly the failure `restoration-report.md` says the decoding audit cannot catch.
-`tests/hebrew-content.test.js` now catches it mechanically: every Hebrew token in the
-lesson data must occur verbatim somewhere in `reference/nbbs-hebrew/`. **Do not "fix" a
-failure from that test by retyping the word** — copy it out of the reference, or the
-same reordering comes back.
+`tests/hebrew-content.test.js` catches it mechanically: every Hebrew token in the lesson
+data must occur verbatim somewhere in `reference/nbbs-hebrew/`. **Do not "fix" a failure
+from that test by retyping the word** — copy it out of the reference, or the same
+reordering comes back.
 
-Two defects surfaced while transferring, both fixed at the source rather than worked
-around: `vocabulary-by-lesson.json` had `freq: 1` for יִשְׂרָאֵל because the collector read
-the enumeration marker «(1)» in the gloss as the frequency (noted in
-`restoration-report.md`), and `אֵת` occurs twice in chapter 6 as two different words —
-the dictionary forbids duplicate headwords, so the preposition sense is folded into a
-comment and only the object-marker entry ships.
+Two decisions already settled in the data, so they do not get re-litigated:
+
+- **`אֵת` occurs twice in chapter 6 as two different words.** The dictionary forbids
+  duplicate headwords, so the preposition sense is folded into a comment and only the
+  object-marker entry ships. It is not a missing entry.
+- **There is no gender/number drill for chapter 4.** Greek's `case_number` asks the same
+  question but is labelled «Падеж и число», and Hebrew has no cases. This is the one
+  known gap in the pilot: either add `heb_gender_number`, or give the shared type a
+  per-course label.
 
 ## Exercise types
 
@@ -353,7 +297,7 @@ A paradigm is a grid: axes with ordered values, and forms at the intersections.
 **`js/declension.js` takes that description from the data** — `declension_forms.tables`,
 one entry per table, each with `rows`, `cols`, `cells` and optional `caption` and
 `translations`. The exact shape is documented at the top of that file and again in
-`data/hebrew-lessons.js`, where it will be authored.
+`data/hebrew-lessons.js`, where the Hebrew paradigms are authored.
 
 - **Greek data was not rewritten.** All 101 paradigms in `data/lessons.js` keep the old
   nested notation (`forms[gender][number][case]`); `legacyParadigm()` expands it into the
@@ -470,9 +414,10 @@ A few consequences worth knowing before you touch the rendering:
   of them mirror. Use logical properties (`text-align: start`,
   `padding-inline-start`) inside anything that can turn over.
 
-`tests/rtl.test.js` covers all of this, including a synthetic Hebrew chapter injected
-into `HEBREW_LESSONS_DATA` — chapters 1–11 are not written yet (Phase 5), and without
-it the first real chapter would be the first test of the rendering.
+`tests/rtl.test.js` covers all of this, including a synthetic Hebrew chapter written
+over `HEBREW_LESSONS_DATA[3]`. The fixture exercises every RTL feature in one chapter
+and keeps the test independent of the authored content, so editing a real chapter cannot
+quietly change what the rendering is asserted against.
 
 ## Offline shell
 
@@ -500,9 +445,9 @@ still has none.
 Do not claim completion on a design change without checking it renders. At minimum:
 
 1. **JS syntax** — covered by `npm test` (`static.test.js`), or `node --check` every file in `js/` and `data/`, plus `sw.js`.
-2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **both** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `styles/tokens.css` so the audit cannot drift from the source.
+2. **Contrast** — compute WCAG ratios for every `on-*`/container pair in **all three** themes. Text ≥ 4.5:1, outlines/non-text ≥ 3:1, adjacent surface tones distinguishable (≥ ~1.10:1). Parse the tokens straight out of `styles/tokens.css` so the audit cannot drift from the source.
 3. **Behaviour** — covered by `npm test`: every screen is exercised, every drill in every lesson is played to its result screen, and `undefined`/`NaN` leaking into markup fails the run. Add a test here rather than re-deriving a throwaway harness.
-4. **Render** — screenshot light and dark, mobile (412px) and desktop (1280px), and check for console errors and horizontal overflow.
+4. **Render** — screenshot light, dark and sepia, mobile (412px) and desktop (1280px), and check for console errors and horizontal overflow.
 5. **Icon coverage** — covered by `npm test` (`icons.test.js`): it drives every screen, collects `.msym` text and diffs it against `icon_names=`. A missing name is invisible in jsdom and obvious to users.
 6. **Offline** — if you touched `sw.js`, the manifest, or anything in `<head>`: serve the repo over HTTP under a `/greek_bot/` subpath, load once, `setOffline(true)`, and confirm a cold load still boots and renders. Then confirm an edited `index.html` is still served when back online — a service worker that pins a stale build is worse than no service worker.
 

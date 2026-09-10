@@ -185,55 +185,76 @@
 }
 [data-theme="sepia"] {
     /* Тёплая «бумажная» палитра — как страница старой книги.
-       Держим её светлой (color-scheme: light), но уводим все
-       нейтральные тона в кремово-коричневый, а акценты — в амбер/терракоту. */
-    --md-sys-color-primary: #6B4423;
+       Схема светлая (color-scheme: light) и построена по тем же правилам
+       M3, что и :root: семь тональных палитр с постоянными тоном/насыщенностью,
+       из которых роли берутся по табличным тонам светлой схемы
+       (акцент 40, on-акцент 100, container 90, on-container 10;
+        поверхности 98/96/94/92/90/87, контур 50/80, инверсия 20/95/80).
+
+       Палитры: primary   — золотисто-коричневая (тон охры),
+                secondary — она же вполовину насыщенности,
+                tertiary  — приглушённый винный,
+                error     — кирпично-красная,
+                neutral / neutral-variant — пергамент.
+
+       Третичная палитра нарочно уведена из тёплого сектора: и она,
+       и error, и «успех» встречаются на одном экране (разбор молитвы
+       рядом с разбором ошибок), а на тоне 90 весь тёплый сектор
+       вырождается в один и тот же бледно-персиковый — терракота
+       и error-container отличались на ΔE 4,6, то есть не отличались.
+       Вино даёт ΔE 17 против error и 51 против «успеха». */
+    --md-sys-color-primary: #82542D;
     --md-sys-color-on-primary: #FFFFFF;
-    --md-sys-color-primary-container: #F0DDBB;
-    --md-sys-color-on-primary-container: #2E1B00;
+    --md-sys-color-primary-container: #FFDCC3;
+    --md-sys-color-on-primary-container: #2B1700;
 
-    --md-sys-color-secondary: #6F6353;
+    --md-sys-color-secondary: #725947;
     --md-sys-color-on-secondary: #FFFFFF;
-    --md-sys-color-secondary-container: #EAE0CB;
-    --md-sys-color-on-secondary-container: #241C0E;
+    --md-sys-color-secondary-container: #FBDDC8;
+    --md-sys-color-on-secondary-container: #2A1702;
 
-    --md-sys-color-tertiary: #8B4B3A;
+    --md-sys-color-tertiary: #824C75;
     --md-sys-color-on-tertiary: #FFFFFF;
-    --md-sys-color-tertiary-container: #F4D9CF;
-    --md-sys-color-on-tertiary-container: #340E04;
+    --md-sys-color-tertiary-container: #FFD7F3;
+    --md-sys-color-on-tertiary-container: #37052E;
 
-    --md-sys-color-error: #9A3324;
+    --md-sys-color-error: #AE2F2D;
     --md-sys-color-on-error: #FFFFFF;
-    --md-sys-color-error-container: #F6D8CE;
-    --md-sys-color-on-error-container: #3B0900;
+    --md-sys-color-error-container: #FFDAD5;
+    --md-sys-color-on-error-container: #3C0700;
 
-    --md-sys-color-surface: #F4ECD8;
-    --md-sys-color-on-surface: #3D2E1F;
-    --md-sys-color-surface-variant: #E7DAB9;
-    --md-sys-color-on-surface-variant: #5C5237;
-    --md-sys-color-surface-dim: #DED0AE;
-    --md-sys-color-surface-bright: #FBF6E9;
-    --md-sys-color-surface-container-lowest: #FFFBF0;
-    --md-sys-color-surface-container-low: #F8F0DC;
-    --md-sys-color-surface-container: #F1E8CE;
-    --md-sys-color-surface-container-high: #EBE0C0;
-    --md-sys-color-surface-container-highest: #E4D8B2;
+    /* Лестница поверхностей идёт сверху вниз, как в светлой схеме:
+       страница (surface, тон 98) — самая светлая, а чем выше уровень
+       контейнера, тем он темнее. Бумажный оттенок держится не темнотой,
+       а тем, что вся нейтральная палитра стоит на тёплом тоне. */
+    --md-sys-color-surface: #FFF9E9;
+    --md-sys-color-on-surface: #1F1B0E;
+    --md-sys-color-surface-variant: #ECE2C6;
+    --md-sys-color-on-surface-variant: #4D462F;
+    --md-sys-color-surface-dim: #E0DAC9;
+    --md-sys-color-surface-bright: #FFF9E9;
+    /* Тон 99, а не 100: чистый белый — единственный цвет без насыщенности,
+       и на пергаменте он выпадал бы из палитры белой заплатой. */
+    --md-sys-color-surface-container-lowest: #FFFCF4;
+    --md-sys-color-surface-container-low: #FAF3E2;
+    --md-sys-color-surface-container: #F4EDDD;
+    --md-sys-color-surface-container-high: #EEE8D7;
+    --md-sys-color-surface-container-highest: #E9E2D1;
 
-    --md-sys-color-outline: #8A7C5C;
-    --md-sys-color-outline-variant: #D3C4A0;
-    --md-sys-color-inverse-surface: #3A2E1A;
-    --md-sys-color-inverse-on-surface: #F4ECD8;
-    --md-sys-color-inverse-primary: #E4B37A;
-    --md-sys-color-shadow: #000000;
-    --md-sys-color-scrim: #000000;
+    --md-sys-color-outline: #7F775E;
+    --md-sys-color-outline-variant: #D0C6AB;
+    --md-sys-color-inverse-surface: #343023;
+    --md-sys-color-inverse-on-surface: #F7F0DF;
+    --md-sys-color-inverse-primary: #F5BB8F;
 
-    --md-extended-color-success: #3F6B2E;
+    --md-extended-color-success: #356A24;
     --md-extended-color-on-success: #FFFFFF;
-    --md-extended-color-success-container: #D9EFC4;
-    --md-extended-color-on-success-container: #102300;
+    --md-extended-color-success-container: #BAF2A2;
+    --md-extended-color-on-success-container: #0F2000;
 
-    /* Тень остаётся светлой (как у :root) — сепия не тёмная тема,
-       её elevation отдельно переопределять не нужно. */
+    /* shadow и scrim не переопределяем: роль тени в M3 чёрная во всех
+       схемах, а :root уже задал её — как и уровни elevation, которые
+       сепии, светлой схеме, подходят без изменений. */
 
     color-scheme: light;
 }

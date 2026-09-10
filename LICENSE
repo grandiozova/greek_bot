@@ -1,21 +1,30 @@
-MIT License
+Copyright (c) 2026 Александра Морозова, Марк Ингрэм
+Все права защищены.
 
-Copyright (c) 2026 grandiozova
+Код этого репозитория не распространяется по открытой лицензии. Никаких прав
+на использование, копирование, изменение, объединение, публикацию,
+распространение, сублицензирование или продажу копий не предоставляется.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Исходный код опубликован для ознакомления. Любое использование, выходящее за
+рамки просмотра кода в этом репозитории, требует письменного разрешения
+правообладателей.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Уведомление относится к коду. Права на учебные материалы принадлежат их
+правообладателям, этим уведомлением не затрагиваются и перечислены в README.md
+и на экране настроек приложения. Сторонние компоненты — шрифты, значки,
+дизайн-система — распространяются по собственным лицензиям, там же указанным.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+---
+
+Copyright (c) 2026 Александра Морозова, Марк Ингрэм
+All rights reserved.
+
+The code in this repository is not released under an open-source licence. No
+permission is granted to use, copy, modify, merge, publish, distribute,
+sublicense or sell copies of it. The source is published for reference only;
+any use beyond reading it in this repository requires the copyright holders'
+written permission.
+
+This notice covers the code. Rights to the course materials belong to their
+respective holders and are unaffected; third-party components ship under their
+own licences. Both are listed in README.md and on the app's settings screen.
