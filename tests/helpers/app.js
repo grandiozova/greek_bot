@@ -24,9 +24,14 @@ function readIndex() {
     return fs.readFileSync(repoPath('index.html'), 'utf8');
 }
 
+// Тег <script src="…"></script>. Закрывающий тег принимается в любом виде,
+// какой понимает браузер (</script >, </SCRIPT>): иначе такой тег проскочил бы
+// мимо и проверки порядка, и вклейки.
+const SCRIPT_TAG_RE = /<script src="([^"]+)"><\/script[^>]*>/gi;
+
 // Пути из <script src="…"> в порядке разметки — это и есть контракт загрузки.
 function scriptOrder(html) {
-    return Array.from((html || readIndex()).matchAll(/<script src="([^"]+)"><\/script>/g)).map(m => m[1]);
+    return Array.from((html || readIndex()).matchAll(SCRIPT_TAG_RE)).map(m => m[1]);
 }
 
 // Пути из <link rel="stylesheet" href="…"> — только свои, без CDN.
@@ -35,7 +40,7 @@ function styleOrder(html) {
 }
 
 function inlineScripts(html, { breakScript = null } = {}) {
-    return html.replace(/<script src="([^"]+)"><\/script>/g, (m, src) => {
+    return html.replace(SCRIPT_TAG_RE, (m, src) => {
         let code = fs.readFileSync(repoPath(src), 'utf8');
         if (code.includes('</script')) {
             throw new Error('В ' + src + ' есть закрывающий тег script — вклейка сломается');

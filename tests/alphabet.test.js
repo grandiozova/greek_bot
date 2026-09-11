@@ -42,8 +42,19 @@ const ALPHABET_KEYS = GREEK_KEYS.concat('accent_type', HEBREW_KEYS);
 // сверяем текст, а не узлы, и разбор здесь ровно такой, каким его видит
 // renderGrammarHtml() — таблица целиком, строка целиком, ячейка без тегов.
 
+// Теги снимаются до неподвижной точки: один проход оставил бы тег, собранный
+// из обломков другого («<scr<b>ipt>» → «<script>»).
+function withoutTags(html) {
+    let s = String(html), prev;
+    do {
+        prev = s;
+        s = s.replace(/<[^>]*>/g, '');
+    } while (s !== prev);
+    return s;
+}
+
 function stripTags(html) {
-    return String(html).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    return withoutTags(html).replace(/&nbsp;/g, ' ').trim();
 }
 
 function tables(html) {
@@ -546,7 +557,7 @@ test('гортанные — те четыре буквы, что названы
 
     // «Гортанных согласных четыре: א, ע, ה и ח. Согласный ר тоже часто ведёт
     // себя как гортанный» — названа гортанной четвёрка, ר только ведёт себя так.
-    const plain = grammar.replace(/<\/?[^>]+>/g, '');
+    const plain = withoutTags(grammar);
     const m = /Гортанных согласных четыре:([\s\S]*?)\./.exec(plain);
     assert.ok(m, 'в главе 1 нет фразы о гортанных');
     const four = m[1].match(/[\u05D0-\u05EA]/g) || [];
