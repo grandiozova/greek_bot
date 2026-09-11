@@ -145,8 +145,18 @@ test('картинки README лежат там, куда он ссылаетс�
     const missing = srcs.filter(src => !fs.existsSync(repoPath(src)));
     assert.deepStrictEqual(missing, [], 'README ссылается на отсутствующие файлы: ' + missing.join(', '));
 
+    // Шаблон без косой черты в начале или в середине (screenshots/) git
+    // применяет на любой глубине — под него попадает и docs/screenshots/. К
+    // корню его привязывает только ведущая черта (/screenshots/). Прежняя
+    // проверка сравнивала с началом пути и пропустила ровно этот случай:
+    // новые скриншоты лежали на месте, README их показывал, а git их не видел.
     const ignoredDirs = read('.gitignore').split(/\r?\n/)
         .map(l => l.trim()).filter(l => /^[^#!*][^*]*\/$/.test(l));
-    const ignored = srcs.filter(src => ignoredDirs.some(dir => src.startsWith(dir)));
+    const ignoredBy = src => ignoredDirs.find(dir => {
+        const name = dir.replace(/^\//, '');
+        const anchored = dir.startsWith('/') || name.slice(0, -1).includes('/');
+        return anchored ? src.startsWith(name) : ('/' + src).includes('/' + name);
+    });
+    const ignored = srcs.filter(ignoredBy).map(src => src + ' (' + ignoredBy(src) + ')');
     assert.deepStrictEqual(ignored, [], 'картинки README в папке из .gitignore: ' + ignored.join(', '));
 });

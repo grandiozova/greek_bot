@@ -19,7 +19,9 @@ blob-report/
 # Local scratch output
 *.log
 tmp/
-screenshots/
+# Только корневая папка: без ведущей черты шаблон ловит и docs/screenshots/,
+# где лежат картинки README.
+/screenshots/
 
 # Secrets / local config
 .env

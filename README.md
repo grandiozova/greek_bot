@@ -13,6 +13,16 @@
     <a href="https://grandiozova.github.io/greek_bot/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=dark"><img alt="badge" src="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=light"></picture></a>
 </p>
 
+<div align="center">
+  <img src="docs/screenshots/01-start-light.png" width="30%" alt="Выбор курса">
+  <img src="docs/screenshots/02-lessons-greek-light.png" width="30%" alt="Уроки греческого курса">
+  <img src="docs/screenshots/03-grammar-greek-light.png" width="30%" alt="Грамматика урока">
+  <br><br>
+  <img src="docs/screenshots/06-flashcard-greek-light.png" width="30%" alt="Карточки для запоминания">
+  <img src="docs/screenshots/09-dictionary-hebrew-light.png" width="30%" alt="Словарь еврейского курса">
+  <img src="docs/screenshots/11-alphabet-drill-hebrew-light.png" width="30%" alt="Упражнение на алфавит иврита">
+</div>
+
 ## Курсы
 
 | Курс | Учебник | Объём |
@@ -23,17 +33,6 @@
 Курс выбирается на старте и меняется в настройках; прогресс и карточки у каждого свои.
 Греческий — политонически, с ударениями и придыханиями. Еврейский — справа налево,
 с огласовкой; интерфейс при этом остаётся русским.
-
-## Скриншоты
-
-**Словарь** — греческий и еврейский курс рядом:
-<p align="center"><img src="docs/screenshots/vocabulary.jpeg" width="100%" alt="Словарь, оба курса"></p>
-
-**Карточки для запоминания:**
-<p align="center"><img src="docs/screenshots/cards.png" width="100%" alt="Карточки, оба курса"></p>
-
-**Грамматика в уроках:**
-<p align="center"><img src="docs/screenshots/grammatica.png" width="100%" alt="Грамматика, оба курса"></p>
 
 ## Возможности
 
