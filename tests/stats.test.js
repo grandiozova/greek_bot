@@ -41,6 +41,37 @@ test('разбор ошибок показывает записанные оши
     app.close();
 });
 
+test('разбор ошибок метит изучаемый язык по самой строке, а не по графе', () => {
+    // Графа «правильно» бывает то формой, то русским словом: список сводит все
+    // виды упражнений. Без .script огласовка рисовалась шрифтом интерфейса и
+    // отрывалась от буквы (хатеф-камец стоял рядом с ней, как «i»), а русский ответ под общим
+    // правилом для <strong> получал еврейский шрифт, в котором нет кириллицы.
+    // Строки берём из пула курса, а не набираем: см. AGENTS.md.
+    const app = loadApp({ storage: { app_course: 'hebrew', app_default_course: 'hebrew' } });
+    const w = app.window;
+    w.eval(`stats.errors = { 2: [
+        { word: HEBREW_ALPHABET.vowels[14].sign, correct: HEBREW_ALPHABET.vowels[14].name, your: HEBREW_ALPHABET.vowels[6].name },
+        { word: HEBREW_ALPHABET.letters[1].name, correct: HEBREW_ALPHABET.letters[1].letter, your: HEBREW_ALPHABET.letters[2].letter }
+    ] }`);
+    w.showErrors();
+
+    const items = app.document.querySelectorAll('#errorsContent .error-item');
+    assert.strictEqual(items.length, 2);
+    const marked = item => [...item.querySelectorAll('.script')].map(e => e.textContent);
+
+    // Знак огласовки — изучаемый язык, его название — русское.
+    assert.deepStrictEqual(marked(items[0]), [app.get('HEBREW_ALPHABET.vowels[14].sign')],
+        'помечено не только разбираемое слово');
+    assert.ok(!items[0].querySelector('strong .script'), 'русский верный ответ помечен как иврит');
+    // Наоборот: название буквы русское, а ответы — сами буквы.
+    assert.deepStrictEqual(marked(items[1]),
+        [app.get('HEBREW_ALPHABET.letters[1].letter'), app.get('HEBREW_ALPHABET.letters[2].letter')],
+        'буквы в ответах не помечены или помечено русское название');
+    assert.ok(items[1].querySelector('strong .script'), 'верный ответ-буква не помечен');
+    assert.deepStrictEqual(app.errors, []);
+    app.close();
+});
+
 test('ответ пользователя не может внести разметку в разбор ошибок', () => {
     // Ошибки хранятся в localStorage и попадают в разметку. Экранирование —
     // единственное, что стоит между напечатанным ответом и innerHTML.

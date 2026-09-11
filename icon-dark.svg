@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Anticus">
+    <!-- Тёмный вариант icon.svg — для тёмной темы. Цвета — пара
+         primary-container / on-primary-container из [data-theme="dark"]
+         в styles/tokens.css: так в тёмной теме выглядит FAB. Токены до
+         файла иконки не доходят, поэтому цвета вписаны; поменялась тёмная
+         палитра — поменяйте и их. Геометрия общая с icon.svg. -->
+    <rect width="512" height="512" rx="112" fill="#0842A0"/>
+    <!-- Ω — прописная. Базовая линия опущена под высоту прописных (~0.7em),
+         иначе буква висит выше центра плитки. -->
+    <text x="256" y="360" text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', 'Noto Serif', serif"
+          font-size="300" fill="#D3E3FD">Ω</text>
+</svg>

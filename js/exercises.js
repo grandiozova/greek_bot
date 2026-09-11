@@ -54,13 +54,138 @@ function getCaseName(caseKey) {
 //   options     — массив (набор постоянный) или функция от вопроса;
 //                 если поля нет — [правильный, ...q.distractors]
 //   correct(q)  — правильный ответ; если поля нет — q.correct
-//   script      — варианты набраны на изучаемом языке (шрифт и направление)
+//   script      — варианты набраны на изучаемом языке (шрифт и направление).
+//                 Функция от вопроса — там, где это решает сам вопрос, а не
+//                 вид: вопрос о названии буквы один и тот же в обоих курсах,
+//                 а язык названия в них разный
 //   custom      — вид рисует не choiceQuestionHtml, а сам вызывающий
 //
 // Ключ вида, общего для курсов, языка не называет (translate_*, agreement,
 // article_fill). Виды, которых за пределами еврейского курса не бывает,
 // начинаются с heb_. Это соглашение об именах: префикс код не разбирает.
 const EXERCISE_TYPES = {
+    // --- алфавит и чтение: уроки 1–2 в обоих курсах ---
+    // Здесь спрашивают не о слове, а о букве. Вопросы берутся из пула букв
+    // курса — courseAlphabet(): буква одна, а вопросов о ней несколько, и
+    // переписывать алфавит в каждый вид значило бы держать четыре копии,
+    // которые со временем разойдутся.
+    //
+    // Неверные варианты собирает otherValues() из того же пула: соседние буквы
+    // алфавита похожи и начертанием, и звучанием, и отвлекать должны похожие.
+    // Сам верный ответ она не возвращает — только похожие значения, — поэтому
+    // каждый вид ставит его первым сам: варианты обязан содержать правильный
+    // ответ, иначе вопрос без верной кнопки.
+    // Повторов среди вариантов быть не может — ответ сравнивается с текстом
+    // кнопки, и две одинаковые кнопки дадут два верных ответа (в греческом
+    // [эв] — это и ευ, и ηυ; в еврейском «х» — и хе, и хет).
+    letter_name: {
+        prompt: () => 'Как называется эта буква?',
+        subject: q => q.letter,
+        correct: q => q.name,
+        options: q => [q.name].concat(
+            otherValues(courseAlphabet().letters.map(l => l.name), q.name, 3)),
+        // Названия букв бывают на изучаемом языке (ἄλφα), а бывают русскими
+        // (а́леф, «син / шин») — шрифт выбирается по самой строке.
+        script: q => isScriptText(q.name)
+    },
+    letter_from_name: {
+        prompt: () => 'Какая буква так называется?',
+        subject: q => q.name,
+        correct: q => q.letter,
+        options: q => [q.letter].concat(
+            otherValues(courseAlphabet().letters.map(l => l.letter), q.letter, 3)),
+        script: true
+    },
+    letter_sound: {
+        prompt: () => 'Как произносится эта буква?',
+        subject: q => q.letter,
+        correct: q => q.sound,
+        options: q => [q.sound].concat(
+            otherValues(courseAlphabet().letters.map(l => l.sound), q.sound, 3))
+    },
+    // Порядок букв. Варианты — сами буквы, а не их названия: вопрос о том, что
+    // стоит следом за буквой. Последняя буква алфавита в вопросы не входит —
+    // ответа у неё нет, и в данных стоит .slice(0, -1).
+    letter_order: {
+        prompt: () => 'Какая буква идёт следом?',
+        subject: q => q.letter,
+        correct: q => alphabetSuccessor(q.letter),
+        options: q => {
+            const next = alphabetSuccessor(q.letter);
+            return [next].concat(otherValues(courseAlphabet().letters.map(l => l.letter),
+                [q.letter, next], 3));
+        },
+        script: true
+    },
+    // Регистр есть только в греческом: в иврите прописных нет, и поля upper
+    // в данных курса тоже нет — вида в главе просто не окажется.
+    letter_case_lower: {
+        prompt: () => 'Какая строчная буква соответствует прописной?',
+        subject: q => q.upper,
+        correct: q => q.letter,
+        options: q => [q.letter].concat(
+            otherValues(courseAlphabet().letters.map(l => l.letter), q.letter, 3)),
+        script: true
+    },
+    letter_case_upper: {
+        prompt: () => 'Какая прописная буква соответствует строчной?',
+        subject: q => q.letter,
+        correct: q => q.upper,
+        options: q => [q.upper].concat(
+            otherValues(courseAlphabet().letters.map(l => l.upper), q.upper, 3)),
+        script: true
+    },
+    diphthong_sound: {
+        prompt: () => 'Как произносится этот дифтонг?',
+        subject: q => q.diphthong,
+        correct: q => q.sound,
+        options: q => [q.sound].concat(
+            otherValues(courseAlphabet().diphthongs.map(d => d.sound), q.sound, 3))
+    },
+    // Придыхание и ударение — вопрос о знаке, а не о букве или слове. Набор
+    // вариантов постоянный и лежит здесь, чтобы автор не повторял его в каждом
+    // вопросе; правильный ответ приходит из данных (q.correct), и тест следит,
+    // чтобы он совпадал с одним из этих трёх-двух.
+    breathing_type: {
+        prompt: () => 'Какое придыхание при этой гласной?',
+        subject: q => q.sign,
+        options: ['Густое (с [х])', 'Тонкое (не произносится)']
+    },
+    accent_type: {
+        prompt: () => 'Какое ударение на этой гласной?',
+        subject: q => q.sign,
+        options: ['Острое', 'Тупое', 'Облеченное']
+    },
+    // --- буквы еврейского алфавита: глава 1 ---
+    // Транслитерация — не текст изучаемого языка, а латиница: варианты не
+    // разворачиваются, а подпись под вопросом — сама буква, и та на иврите.
+    heb_letter_translit: {
+        prompt: () => 'Как транслитерируется эта буква?',
+        subject: q => q.letter,
+        correct: q => q.translit,
+        options: q => [q.translit].concat(
+            otherValues(courseAlphabet().letters.map(l => l.translit), q.translit, 3))
+    },
+    // Пять конечных букв (ך ם ן ף ץ) похожи одна на другую сильнее, чем на
+    // свои обычные формы, поэтому в вариантах все пять, а не выборка: подсказкой
+    // служит только начертание.
+    heb_letter_final: {
+        prompt: () => 'Выберите конечную форму буквы',
+        subject: q => q.letter,
+        correct: q => q.final,
+        options: q => [q.final].concat(
+            otherValues(courseAlphabet().finals.map(f => f.final), q.final, 4)),
+        script: true
+    },
+    // Гортанных в пособии четыре — א, ע, ה, ח. Буква ר «тоже часто ведёт себя
+    // как гортанный», но гортанной не названа, и в вопросы она не попала:
+    // верных ответов было бы два.
+    heb_letter_guttural: {
+        prompt: () => 'Эта буква гортанная?',
+        subject: q => q.letter,
+        options: ['Гортанная', 'Не гортанная']
+    },
+
     // --- греческий именной строй ---
     declension_fill: {
         prompt: q => 'Вставьте форму для <b>' + getCaseName(q.case) + '</b> для слова ' +
@@ -98,6 +223,15 @@ const EXERCISE_TYPES = {
     heb_vowel_name: {
         prompt: () => 'Как называется этот знак?',
         subject: q => q.sign
+    },
+    // Тот же знак, другой вопрос: не как знак называется, а какой звук он
+    // обозначает. Вариантов ровно пять — по числу гласных, набор постоянный,
+    // а ответ берётся у самого знака: в пуле курса он и лежит полем sound.
+    heb_vowel_sound: {
+        prompt: () => 'Какой звук обозначает этот знак?',
+        subject: q => q.sign,
+        correct: q => q.sound,
+        options: ['[а]', '[э]', '[и]', '[о]', '[у]']
     },
     heb_vowel_fill: {
         prompt: q => 'Какого знака огласовки не хватает?' +
@@ -183,6 +317,53 @@ function exerciseOptions(type, q) {
     return [exerciseCorrect(type, q)].concat(q.distractors || []);
 }
 
+// Неверные варианты из пула значений: буквы, звуки, транслитерация. Берём не
+// «что попало», а с равным шагом по пулу — тогда в вариантах оказываются в том
+// числе соседние по алфавиту буквы, а их-то и путают. Шаг считается от ответа:
+// отступив от него, мы не подсовываем в один вопрос две почти одинаковые
+// подсказки подряд.
+//
+// Значения пула повторяются (в греческом [эв] — это и ευ, и ηυ), а два
+// одинаковых варианта — это два верных ответа: ответ сравнивается с текстом
+// кнопки. Поэтому пул сначала схлопывается, а исключённое (правильный ответ и
+// то, о чём уже спросили в самом вопросе) не возвращается. Если значений в пуле
+// меньше, чем просили, вернётся сколько есть — вопроса без вариантов не будет,
+// пока в пуле есть хоть что-то.
+function otherValues(values, exclude, n) {
+    exclude = [].concat(exclude);
+    let uniq = [];
+    for (let v of values) if (!uniq.includes(v)) uniq.push(v);
+    if (!uniq.length) return [];
+    let start = 0;
+    for (let e of exclude) {
+        let i = uniq.indexOf(e);
+        if (i >= start) start = i + 1;
+    }
+    let out = [];
+    let step = Math.max(1, Math.round(uniq.length / (n + 1)));
+    for (let k = 0; k < uniq.length && out.length < n; k++) {
+        let v = uniq[(start + k * step) % uniq.length];
+        if (exclude.includes(v) || out.includes(v)) continue;
+        out.push(v);
+    }
+    // Шаг мог перескочить через исключённые значения и не добрать вариантов.
+    for (let v of uniq) {
+        if (out.length >= n) break;
+        if (!exclude.includes(v) && !out.includes(v)) out.push(v);
+    }
+    return out;
+}
+
+// Следующая буква алфавита — ответ вида letter_order. Буквы лежат в данных
+// в алфавитном порядке. У последней буквы следующей нет, поэтому в вопросы она
+// не попадает (в данных стоит .slice(0, -1)); пустая строка здесь — не ответ,
+// а признак того, что вопроса быть не должно.
+function alphabetSuccessor(letter) {
+    let letters = (courseAlphabet().letters || []).map(l => l.letter);
+    let i = letters.indexOf(letter);
+    return i >= 0 && i + 1 < letters.length ? letters[i + 1] : '';
+}
+
 // Разметка вопроса с выбором варианта. Обработчик передаётся именем: у
 // упражнения урока и у теста они разные (answerOpt и testAnswer), но принимают
 // одно и то же — выбранный ответ и правильный.
@@ -191,8 +372,20 @@ function choiceQuestionHtml(key, q, handler) {
     if (!type || !type.prompt) return '<p>Тип упражнения не поддерживается.</p>';
     let corr = exerciseCorrect(type, q);
     let html = '<div class="question">' + type.prompt(q) + '</div>';
-    if (type.subject) html += '<div class="md-prompt-strong">' + type.subject(q) + '</div>';
-    html += '<div class="options' + (type.script ? ' options--script' : '') + '">';
+    // Строки с разбираемым словом может не быть: у бегадкефат главы 1 слово не
+    // приводится, спрашивают о букве, и поля word в этих вопросах нет.
+    if (type.subject) {
+        let sub = type.subject(q);
+        // Шрифт строки — по самой строке: под вопросом о букве стоит то её
+        // начертание (ἄλφα, בּ), то русское название (а́леф). Серифный шрифт со
+        // скриптом курса русскому тексту противопоказан, и наоборот.
+        if (sub) html += '<div class="' + (isScriptText(sub) ? 'md-prompt-strong' : 'md-prompt-ru') + '">' + sub + '</div>';
+    }
+    // Варианты на изучаемом языке — не свойство вида, а свойство вопроса:
+    // «как называется буква» в греческом курсе имеет греческие варианты,
+    // в еврейском — русские.
+    let script = typeof type.script === 'function' ? type.script(q) : type.script;
+    html += '<div class="options' + (script ? ' options--script' : '') + '">';
     for (let o of shuffle(exerciseOptions(type, q))) {
         html += '<button class="option-btn" onclick="' + handler + '(\'' + escArg(o) + '\',\'' +
             escArg(corr) + '\')">' + o + '</button>';
@@ -200,10 +393,18 @@ function choiceQuestionHtml(key, q, handler) {
     return html + '</div>';
 }
 
-// Чем вопрос назван в разборе ошибок. Поле, в котором лежит разбираемое слово,
-// у каждого вида своё.
-function questionSubject(q) {
-    return q.word || q.phrase || q.form || q.sign || q.greek || 'вопрос';
+// Чем вопрос назван в разборе ошибок. Поле, в котором лежит разбираемое
+// значение, у каждого вида своё, поэтому спрашиваем сам вид: у letter_case_upper
+// разбирают строчную букву, а первый подходящий по имени ключ показал бы в
+// разборе ошибок не то, о чём спрашивали. Виды без subject (перевод) по-прежнему
+// отдают слово, фразу или форму; q.letter добавлен для вопросов об алфавите.
+function questionSubject(q, key) {
+    let type = EXERCISE_TYPES[key];
+    if (type && type.subject) {
+        let sub = type.subject(q);
+        if (sub) return sub;
+    }
+    return q.word || q.phrase || q.form || q.sign || q.greek || q.letter || 'вопрос';
 }
 
 function showExercise() {
@@ -245,7 +446,7 @@ function answerOpt(sel, corr) {
         stats.totalWrong++;
         let lesson = currentLesson;
         let q = exerciseState.questions[exerciseState.index];
-        recordError(lesson, { word: questionSubject(q), correct: corr, your: sel });
+        recordError(lesson, { word: questionSubject(q, exerciseState.type), correct: corr, your: sel });
     }
     saveStats();
     exerciseState.index++;

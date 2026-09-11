@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.svg" alt="Anticus" width="128" height="128">
+  <img src="icon-dark.svg" alt="Anticus" width="128" height="128">
 </p>
 
 <h1 align="center">Anticus</h1>
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-    <a href="https://grandiozova.github.io/greek_bot/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-1a73e8.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=dark"><img alt="badge" src="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-1a73e8.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=light"></picture></a>
+    <a href="https://grandiozova.github.io/greek_bot/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=dark"><img alt="badge" src="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=light"></picture></a>
 </p>
 
 ## Курсы
@@ -34,9 +34,6 @@
 
 **Грамматика в уроках:**
 <p align="center"><img src="docs/screenshots/grammatica.png" width="100%" alt="Грамматика, оба курса"></p>
-
-**Темы оформления:**
-<p align="center"><img src="docs/screenshots/themes.png" width="100%" alt="Тёмная, светлая и сепия темы"></p>
 
 ## Возможности
 

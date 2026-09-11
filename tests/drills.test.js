@@ -8,6 +8,21 @@ const { loadApp } = require('./helpers/app.js');
 const { playThrough } = require('./helpers/play.js');
 
 const DRILLS = [
+    ['exercise', 'letter_name'],
+    ['exercise', 'letter_from_name'],
+    ['exercise', 'letter_sound'],
+    ['exercise', 'letter_order'],
+    ['exercise', 'letter_case_lower'],
+    ['exercise', 'letter_case_upper'],
+    ['exercise', 'diphthong_sound'],
+    ['exercise', 'breathing_type'],
+    ['exercise', 'accent_type'],
+    ['exercise', 'heb_letter_translit'],
+    ['exercise', 'heb_letter_final'],
+    ['exercise', 'heb_letter_guttural'],
+    ['exercise', 'heb_begadkefat'],
+    ['exercise', 'heb_vowel_name'],
+    ['exercise', 'heb_vowel_sound'],
     ['exercise', 'case_number'],
     ['exercise', 'agreement'],
     ['exercise', 'attribute_vs_predicate'],
@@ -48,7 +63,10 @@ test('каждое доступное упражнение каждого уро
         }
     }
 
-    assert.ok(played >= 40, 'ожидалось много упражнений, пройдено всего ' + played);
+    // Порог — это число доступных упражнений греческого курса. Планка снизу:
+    // добавить уроки можно, а вот потерять упражнение из меню — нельзя, и
+    // без счёта такое исчезновение прошло бы незамеченным.
+    assert.ok(played >= 62, 'ожидалось не меньше 62 упражнений, пройдено всего ' + played);
     assert.deepStrictEqual(app.errors, [], 'ошибки во время прохождения:\n' + app.errors.join('\n'));
     app.close();
 });

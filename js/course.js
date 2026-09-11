@@ -23,6 +23,13 @@ function activeCourse() { return COURSES[currentCourseId] || COURSES.greek; }
 function courseLessons() { return activeCourse().lessons || {}; }
 function coursePrayer() { return activeCourse().prayer || null; }
 
+// Алфавит курса — пул букв для упражнений уроков 1–2 (GREEK_ALPHABET
+// в data/lessons.js, HEBREW_ALPHABET в data/hebrew-lessons.js). Виды letter_*
+// задают разные вопросы об одной и той же букве, поэтому список букв лежит
+// в данных курса, а не внутри вида: вид остаётся описанием вопроса.
+// Пустой объект, а не null: курс без алфавита не должен ломать отрисовку.
+function courseAlphabet() { return activeCourse().alphabet || {}; }
+
 // ------------------------------------------------------------ изучаемый язык
 //
 // Текст изучаемого языка размечается классом .script — одним и тем же в обоих

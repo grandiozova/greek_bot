@@ -55,6 +55,28 @@ function applyTheme(theme) {
         }
         if (meta.content !== surface) meta.content = surface;
     }
+    applyThemeIcon(theme);
+}
+
+// Иконка вкладки: тёмная у тёмной темы, светлая у светлой и сепии. Тот же
+// приём, что с theme-color: варианты по системной теме в <head> работают до
+// запуска скрипта, а потом решает выбор в настройках — «тёмная» при светлой
+// системе должна получить тёмную иконку, и media-ссылки тут только мешают.
+const THEME_ICONS = { dark: 'icon-dark.svg' };
+const DEFAULT_ICON = 'icon.svg';
+
+function applyThemeIcon(theme) {
+    let link = document.getElementById('themeIconLink');
+    if (!link) {
+        document.querySelectorAll('link[rel="icon"]').forEach(l => l.remove());
+        link = document.createElement('link');
+        link.id = 'themeIconLink';
+        link.rel = 'icon';
+        link.type = 'image/svg+xml';
+        document.head.appendChild(link);
+    }
+    let href = THEME_ICONS[theme] || DEFAULT_ICON;
+    if (link.getAttribute('href') !== href) link.setAttribute('href', href);
 }
 
 function initTheme() {

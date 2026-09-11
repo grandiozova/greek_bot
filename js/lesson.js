@@ -12,6 +12,31 @@
 // flashcards → flashcards.js. Группы задают порядок и подписи в списке выбора.
 const LESSON_DRILL_GROUPS = [
     {
+        // Алфавит спрашивают только уроки 1–2 — в остальных этих ключей нет,
+        // а группа без доступных упражнений не показывается вовсе
+        // (renderLessonDrills). Поэтому греческий урок 1 и еврейская глава 1
+        // начинают список с него, а урок 5 его просто не увидит.
+        label: 'Алфавит и чтение',
+        drills: [
+            { kind: 'exercise', key: 'letter_name', label: 'Название буквы', icon: 'label' },
+            { kind: 'exercise', key: 'letter_from_name', label: 'Буква по названию', icon: 'swap_horiz' },
+            { kind: 'exercise', key: 'letter_sound', label: 'Произношение буквы', icon: 'record_voice_over' },
+            { kind: 'exercise', key: 'letter_order', label: 'Порядок букв', icon: 'arrow_forward' },
+            // Стрелка — как в «Фразы: {lang} → русский»: слева то, что показано,
+            // справа то, что выбирают. letter_case_lower показывает прописную.
+            { kind: 'exercise', key: 'letter_case_lower', label: 'Прописная → строчная', icon: 'text_fields' },
+            { kind: 'exercise', key: 'letter_case_upper', label: 'Строчная → прописная', icon: 'abc' },
+            { kind: 'exercise', key: 'diphthong_sound', label: 'Дифтонги', icon: 'hearing' },
+            { kind: 'exercise', key: 'breathing_type', label: 'Придыхание', icon: 'compare' },
+            { kind: 'exercise', key: 'accent_type', label: 'Знаки ударения', icon: 'target' },
+            { kind: 'exercise', key: 'heb_letter_translit', label: 'Транслитерация', icon: 'translate' },
+            { kind: 'exercise', key: 'heb_letter_final', label: 'Конечные формы', icon: 'segment' },
+            // rule, как у heb_gutturals: warning в пункте списка читается как
+            // сообщение об ошибке, а не как тема упражнения.
+            { kind: 'exercise', key: 'heb_letter_guttural', label: 'Гортанные', icon: 'rule' }
+        ]
+    },
+    {
         // Огласовка — это весь еврейский курс до четвёртой главы, и у греческого
         // ничего подобного нет. Группа, в которой нет ни одного доступного
         // упражнения, не показывается вовсе (renderLessonDrills), поэтому
@@ -19,6 +44,7 @@ const LESSON_DRILL_GROUPS = [
         label: 'Огласовка и чтение',
         drills: [
             { kind: 'exercise', key: 'heb_vowel_name', label: 'Названия огласовок', icon: 'label' },
+            { kind: 'exercise', key: 'heb_vowel_sound', label: 'Звук огласовки', icon: 'contrast' },
             { kind: 'exercise', key: 'heb_vowel_fill', label: 'Пропущенная огласовка', icon: 'text_fields' },
             { kind: 'exercise', key: 'heb_shva', label: 'Шва: немое или произносимое', icon: 'hearing' },
             { kind: 'exercise', key: 'heb_dagesh', label: 'Дагеш: слабый или сильный', icon: 'scatter_plot' },

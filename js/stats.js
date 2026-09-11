@@ -39,6 +39,16 @@ function showStats() {
     document.getElementById('statsContent').innerHTML = html;
 }
 
+// Строка разбора ошибок. Список сводит все виды упражнений, поэтому одна и та
+// же графа бывает то формой изучаемого языка (λόγος, בֳּ), то русским словом
+// («патах», «[о]»). Метку .script решает сама строка, а не курс: без неё
+// огласовка рисовалась шрифтом интерфейса и отрывалась от буквы, а русский
+// ответ с ней получал еврейский шрифт, в котором нет кириллицы.
+function errorText(s) {
+    let t = escHtml(s);
+    return isScriptText(s) ? '<span class="script">' + t + '</span>' : t;
+}
+
 function showErrors() {
     showSection('errorsSection');
     let content = document.getElementById('errorsContent');
@@ -54,8 +64,8 @@ function showErrors() {
         html += '<div class="md-subhead">' + (lesson === 'all' ? 'Все слова' : 'Урок ' + escHtml(lesson)) + '</div>';
         for (let e of items) {
             // e.your — то, что напечатал пользователь; в разметку только экранированным
-            html += '<div class="error-item"><span class="msym sm">error</span><span>' + escHtml(e.word) +
-                ' → правильно: <strong>' + escHtml(e.correct) + '</strong><br>ваш ответ: ' + escHtml(e.your) + '</span></div>';
+            html += '<div class="error-item"><span class="msym sm">error</span><span>' + errorText(e.word) +
+                ' → правильно: <strong>' + errorText(e.correct) + '</strong><br>ваш ответ: ' + errorText(e.your) + '</span></div>';
         }
     }
     html += '<button class="clear-btn" onclick="clearErrors()"><span class="msym sm">delete_sweep</span>Очистить ошибки</button>';

@@ -5,9 +5,13 @@
 // все виды подряд, а те, что в нём уместны, и порядок здесь свой. Вид, которого
 // в этом списке нет, остаётся отдельным упражнением и в тест не попадает.
 const TEST_TYPES = [
+    'letter_name', 'letter_from_name', 'letter_sound', 'letter_order',
+    'letter_case_lower', 'letter_case_upper', 'diphthong_sound',
+    'breathing_type', 'accent_type',
+    'heb_letter_translit', 'heb_letter_final', 'heb_letter_guttural',
     'declension_fill', 'translate_greek_to_russian', 'translate_russian_to_greek',
     'case_number', 'agreement', 'attribute_vs_predicate', 'substantivation', 'article_fill',
-    'heb_vowel_name', 'heb_vowel_fill', 'heb_shva', 'heb_dagesh', 'heb_qamets',
+    'heb_vowel_name', 'heb_vowel_sound', 'heb_vowel_fill', 'heb_shva', 'heb_dagesh', 'heb_qamets',
     'heb_begadkefat', 'heb_syllables',
     'heb_gender_number', 'heb_gutturals', 'heb_construct', 'heb_suffix_type'
 ];
@@ -97,7 +101,7 @@ function testAnswer(sel, corr) {
         stats.totalWrong++;
         let lesson = currentLesson;
         let q = testState.questions[testState.index];
-        recordError(lesson, { word: questionSubject(q), correct: corr, your: sel });
+        recordError(lesson, { word: questionSubject(q, q._type), correct: corr, your: sel });
     }
     stats.totalCorrect += ok ? 1 : 0;
     saveStats();

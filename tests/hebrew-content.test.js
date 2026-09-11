@@ -137,7 +137,7 @@ test('у каждой словарной статьи есть перевод и
     assert.strictEqual(bad, '', bad);
 });
 
-test('главы 1–11 на месте, вводные — без упражнений', () => {
+test('главы 1–11 на месте, и у каждой есть упражнения', () => {
     const app = loadApp(GREEK);
     app.window.applyCourse('hebrew');
     // Строкой, а не массивом: числа приходят из другого realm, и
@@ -149,9 +149,9 @@ test('главы 1–11 на месте, вводные — без упражн�
         const d = app.window.getLessonData(n);
         assert.ok(d.title && d.title.trim(), 'глава ' + n + ' без заголовка');
         assert.ok(d.grammar && d.grammar.length > 200, 'глава ' + n + ': грамматика пуста');
-        // Главы 1–2 объявлены вводными в data/courses.js: тренировать в них нечего.
-        if (n <= 2) assert.ok(!d.exercises, 'глава ' + n + ' вводная, упражнений быть не должно');
-        else assert.ok(d.exercises && Object.keys(d.exercises).length,
+        // Вводных глав в курсе больше нет: алфавит и огласовка (главы 1–2)
+        // тренируются теми же упражнениями, что и остальные главы.
+        assert.ok(d.exercises && Object.keys(d.exercises).length,
             'глава ' + n + ' без упражнений');
     }
     assert.deepStrictEqual(app.errors, []);
@@ -218,7 +218,9 @@ test('каждое упражнение каждой главы проходит
         }
     }
 
-    assert.ok(played >= 30, 'пройдено подозрительно мало упражнений: ' + played);
+    // Как и в drills.test.js, порог — измеренное число доступных упражнений
+    // курса (главы 1–11 вместе с алфавитными), а не «примерно сколько-то».
+    assert.ok(played >= 55, 'пройдено подозрительно мало упражнений: ' + played);
     assert.deepStrictEqual(app.errors, [], 'ошибки во время прохождения: ' + app.errors.join(' | '));
     app.close();
 });

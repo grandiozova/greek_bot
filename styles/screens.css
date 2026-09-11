@@ -606,12 +606,19 @@
     line-height: 1.25rem;
 }
 /* Правильный ответ здесь — то форма изучаемого языка, то русский перевод:
-   разбор ошибок сводит в один список все виды упражнений. plaintext берёт
-   направление из самого текста, поэтому гадать за него не приходится. */
+   разбор ошибок сводит в один список все виды упражнений. Шрифт и
+   направление формы даёт .script, которым errorText() (js/stats.js) метит
+   только строки на изучаемом языке, — русский ответ остаётся шрифтом
+   интерфейса. plaintext — запас на строку, в которой смешано то и другое. */
 .error-item strong {
-    font-family: var(--md-ref-typeface-script);
     unicode-bidi: plaintext;
     color: var(--md-extended-color-success);
+}
+/* Строка списка — 14px, а огласовка на таком кегле сливается с буквой.
+   Порог тот же, что у прочего мелкого текста изучаемого языка. */
+.error-item .script {
+    font-size: max(1em, var(--md-ref-script-min-size));
+    line-height: 1.5;
 }
 .error-item .msym { color: var(--md-sys-color-error); }
 .clear-btn {

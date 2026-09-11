@@ -25,6 +25,80 @@
 //
 // Виды упражнений и форму записи каждого — см. EXERCISE_TYPES в
 // js/exercises.js; парадигмы (declension_forms) — шапку js/declension.js.
+
+// ============================================================
+// АЛФАВИТ ЕВРЕЙСКОГО КУРСА
+// ============================================================
+// Пул букв для упражнений глав 1–2. Как и GREEK_ALPHABET в data/lessons.js, он
+// даёт видам letter_* вопросы и неверные варианты: 22 буквы переписаны один раз,
+// а не по разу на «название», «транслитерацию» и «порядок».
+//
+// Всё взято из таблицы алфавита и списка конечных форм главы 1 (ниже в файле).
+// Три вещи, о которых нужно знать при правке:
+//   1. Буква хранится без дагеша (ב, а не בּ): смычное и щелевое произношение —
+//      это вопрос о бегадкефат (вид heb_begadkefat), а не о начертании буквы.
+//      По той же причине ש хранится без точки: она может быть и син, и шин, и
+//      обе читаются разными строками в translit и sound — «š / ś» и «с / ш».
+//   2. Гласные (vowels) — сводная таблица огласовки из главы 2. Знак хранится
+//      вместе с носителем (ב и огласовка), а не голым: огласовка — это
+//      комбинирующий символ, без согласного он не отображается. Камец хатуф в
+//      пул не вошёл: он выглядит точно как камец, и один знак с двумя разными
+//      ответами в колоде недопустим. Различает их слог, и этим занимается
+//      heb_qamets в главе 3.
+//   3. Ни одна строка здесь не набрана руками: все они скопированы из
+//      справочника reference/nbbs-hebrew и сверены tests/hebrew-content.test.js.
+const HEBREW_ALPHABET = {
+    letters: [
+        {letter:"א", name:"а́леф", translit:"ʾ", sound:"не произносится"},
+        {letter:"ב", name:"бет", translit:"b / ḇ", sound:"б / в"},
+        {letter:"ג", name:"ги́мел", translit:"g / ḡ", sound:"г"},
+        {letter:"ד", name:"да́лет", translit:"d / ḏ", sound:"д"},
+        {letter:"ה", name:"хе", translit:"h", sound:"х"},
+        {letter:"ו", name:"вав", translit:"w", sound:"в"},
+        {letter:"ז", name:"за́йин", translit:"z", sound:"з"},
+        {letter:"ח", name:"хет", translit:"ḥ", sound:"х"},
+        {letter:"ט", name:"тет", translit:"ṭ", sound:"т"},
+        {letter:"י", name:"йод", translit:"y", sound:"й"},
+        {letter:"כ", name:"каф", translit:"k / ḵ", sound:"к / х"},
+        {letter:"ל", name:"ла́мед", translit:"l", sound:"л"},
+        {letter:"מ", name:"мем", translit:"m", sound:"м"},
+        {letter:"נ", name:"нун", translit:"n", sound:"н"},
+        {letter:"ס", name:"са́мех", translit:"s", sound:"с"},
+        {letter:"ע", name:"а́йин", translit:"ʿ", sound:"не произносится"},
+        {letter:"פ", name:"пе", translit:"p / p̄", sound:"п / ф"},
+        {letter:"צ", name:"ца́де", translit:"ṣ", sound:"ц"},
+        {letter:"ק", name:"коф", translit:"q", sound:"к"},
+        {letter:"ר", name:"реш", translit:"r", sound:"р"},
+        {letter:"ש", name:"син / шин", translit:"ś / š", sound:"с / ш"},
+        {letter:"ת", name:"тав", translit:"t / ṯ", sound:"т"}
+    ],
+    // Конечные формы — пять букв, которые в конце слова пишутся иначе.
+    finals: [
+        {letter:"כ", final:"ך"},
+        {letter:"מ", final:"ם"},
+        {letter:"נ", final:"ן"},
+        {letter:"פ", final:"ף"},
+        {letter:"צ", final:"ץ"}
+    ],
+    vowels: [
+        {sign:"בַּ", name:"патах", sound:"[а]"},
+        {sign:"בֶּ", name:"сегол", sound:"[э]"},
+        {sign:"בִּ", name:"хирек", sound:"[и]"},
+        {sign:"בֻּ", name:"киббуц", sound:"[у]"},
+        {sign:"בָּ", name:"камец", sound:"[а]"},
+        {sign:"בֵּ", name:"цере", sound:"[э]"},
+        {sign:"בֹּ", name:"холем", sound:"[о]"},
+        {sign:"בָּה", name:"камец хе", sound:"[а]"},
+        {sign:"בֵּי", name:"цере йод", sound:"[э]"},
+        {sign:"בִּי", name:"хирек йод", sound:"[и]"},
+        {sign:"בּוֹ", name:"холем вав", sound:"[о]"},
+        {sign:"בּוּ", name:"шурек", sound:"[у]"},
+        {sign:"בֲּ", name:"хатеф-патах", sound:"[а]"},
+        {sign:"בֱּ", name:"хатеф-сегол", sound:"[э]"},
+        {sign:"בֳּ", name:"хатеф-камец", sound:"[о]"}
+    ]
+};
+
 const HEBREW_LESSONS_DATA = {
     1: {
         title: "Алфавит",
@@ -55,7 +129,50 @@ const HEBREW_LESSONS_DATA = {
 </table><br><br><b>2. Конечные буквы</b><br>Пять букв на конце слова пишутся иначе. Начертание меняется, произношение и транслитерация — нет.<br>• <span class="script">כ</span> → <span class="script">ך</span>, как в <span class="script">דרך</span> «дорога»<br>• <span class="script">מ</span> → <span class="script">ם</span>, как в <span class="script">עם</span> «народ»<br>• <span class="script">נ</span> → <span class="script">ן</span>, как в <span class="script">זקן</span> «старейшина»<br>• <span class="script">פ</span> → <span class="script">ף</span>, как в <span class="script">כסף</span> «серебро»<br>• <span class="script">צ</span> → <span class="script">ץ</span><br><br><b>3. Буквы «бегадкефат»</b><br>Шесть согласных имеют по два произношения — смычное и щелевое. Различает их точка внутри буквы, «слабый» дагеш: с дагешем звук смычный, без него щелевой. «Слабый» дагеш ставится только в этих шести буквах.<br><table>
 <tr><th>Смычные</th><td lang="he">בּ</td><td lang="he">גּ</td><td lang="he">דּ</td><td lang="he">כּ</td><td lang="he">פּ</td><td lang="he">תּ</td></tr>
 <tr><th>Щелевые</th><td lang="he">ב</td><td lang="he">ג</td><td lang="he">ד</td><td lang="he">כ</td><td lang="he">פ</td><td lang="he">ת</td></tr>
-</table><br><br><b>4. Гортанные</b><br>Гортанных согласных четыре: <span class="script">א</span>, <span class="script">ע</span>, <span class="script">ה</span> и <span class="script">ח</span>. Согласный <span class="script">ר</span> тоже часто ведёт себя как гортанный. Гортанные не удваиваются — это понадобится в главе 5.`
+</table><br><br><b>4. Гортанные</b><br>Гортанных согласных четыре: <span class="script">א</span>, <span class="script">ע</span>, <span class="script">ה</span> и <span class="script">ח</span>. Согласный <span class="script">ר</span> тоже часто ведёт себя как гортанный. Гортанные не удваиваются — это понадобится в главе 5.`,
+        // Глава 1 — алфавит. Как и в греческом уроке 1, вопросы собраны из
+        // HEBREW_ALPHABET, а не переписаны: 22 буквы, их названия,
+        // транслитерация и конечные формы лежат там.
+        exercises: {
+            letter_name: HEBREW_ALPHABET.letters,
+            letter_from_name: HEBREW_ALPHABET.letters,
+            letter_sound: HEBREW_ALPHABET.letters,
+            letter_order: HEBREW_ALPHABET.letters.slice(0, -1),
+            heb_letter_translit: HEBREW_ALPHABET.letters,
+            heb_letter_final: HEBREW_ALPHABET.finals,
+            // Гортанных в пособии четыре: א, ע, ה и ח. Буква ר «тоже часто ведёт
+            // себя как гортанный» — в вопрос она не идёт, иначе верных ответов
+            // было бы два. Негортанные — первые четыре буквы алфавита из тех,
+            // что гортанными не названы.
+            heb_letter_guttural: [
+                {letter:"א", correct:"Гортанная"},
+                {letter:"ע", correct:"Гортанная"},
+                {letter:"ה", correct:"Гортанная"},
+                {letter:"ח", correct:"Гортанная"},
+                {letter:"ב", correct:"Не гортанная"},
+                {letter:"ג", correct:"Не гортанная"},
+                {letter:"ד", correct:"Не гортанная"},
+                {letter:"ו", correct:"Не гортанная"}
+            ],
+            // Шесть букв бегадкефат: с дагешем смычное, без дагеша щелевое.
+            // Подписи те же, что у heb_begadkefat в главе 3, где тот же вопрос
+            // задаётся о букве в слове, — иначе один ответ назывался бы двумя
+            // способами (это проверяет tests/alphabet.test.js).
+            heb_begadkefat: [
+                {letter:"בּ", correct:"b, смычное", distractors:["ḇ, щелевое"]},
+                {letter:"ב", correct:"ḇ, щелевое", distractors:["b, смычное"]},
+                {letter:"גּ", correct:"g, смычное", distractors:["ḡ, щелевое"]},
+                {letter:"ג", correct:"ḡ, щелевое", distractors:["g, смычное"]},
+                {letter:"דּ", correct:"d, смычное", distractors:["ḏ, щелевое"]},
+                {letter:"ד", correct:"ḏ, щелевое", distractors:["d, смычное"]},
+                {letter:"כּ", correct:"k, смычное", distractors:["ḵ, щелевое"]},
+                {letter:"כ", correct:"ḵ, щелевое", distractors:["k, смычное"]},
+                {letter:"פּ", correct:"p, смычное", distractors:["p̄, щелевое"]},
+                {letter:"פ", correct:"p̄, щелевое", distractors:["p, смычное"]},
+                {letter:"תּ", correct:"t, смычное", distractors:["ṯ, щелевое"]},
+                {letter:"ת", correct:"ṯ, щелевое", distractors:["t, смычное"]}
+            ]
+        }
     },
     2: {
         title: "Гласные древнееврейского языка",
@@ -65,7 +182,30 @@ const HEBREW_LESSONS_DATA = {
 <tr><th>Долгие</th><td lang="he">בָּ камец</td><td lang="he">בֵּ цере</td><td></td><td lang="he">בֹּ холем</td><td></td></tr>
 <tr><th>Долгие с matres lectionis</th><td lang="he">בָּה камец хе</td><td lang="he">בֵּי цере йод</td><td lang="he">בִּי хирек йод</td><td lang="he">בּוֹ холем вав</td><td lang="he">בּוּ шурек</td></tr>
 <tr><th>Сверхкраткие</th><td lang="he">בֲּ хатеф-патах</td><td lang="he">בֱּ хатеф-сегол</td><td></td><td lang="he">בֳּ хатеф-камец</td><td></td></tr>
-</table><br><br><b>3. Matres lectionis</b><br>Ещё до изобретения огласовки писцы отмечали долгие гласные согласными буквами:<br>• <span class="script">ה</span> — долгий <i>a</i> на конце слова<br>• <span class="script">י</span> — долгие <i>i</i> и <i>e</i><br>• <span class="script">ו</span> — долгие <i>u</i> и <i>o</i><br><br><b>4. Знак шва</b><br>Знак <span class="script">בְּ</span> называется шва. Он бывает двух видов. «Немое» шва означает отсутствие гласного между согласными: оно не произносится, не транслитерируется и служит разделителем слогов. «Произносимое» шва передаёт очень краткий беглый звук — половину краткого <i>э</i>; в транслитерации это <i>ǝ</i>. Правила различения — в главе 3.<br><br><b>5. «Сильный» дагеш</b><br>Точка внутри согласного бывает не только «слабым» дагешем. <b>«Сильный» дагеш выглядит точно так же, но обозначает удвоение той согласной, внутри которой стоит.</b> Например, в слове <span class="script">הַשָּׁמַיִם</span> «небеса» «сильный» дагеш стоит внутри <span class="script">שׁ</span>. Он может стоять в любом согласном, кроме гортанных и <span class="script">ר</span>.`
+</table><br><br><b>3. Matres lectionis</b><br>Ещё до изобретения огласовки писцы отмечали долгие гласные согласными буквами:<br>• <span class="script">ה</span> — долгий <i>a</i> на конце слова<br>• <span class="script">י</span> — долгие <i>i</i> и <i>e</i><br>• <span class="script">ו</span> — долгие <i>u</i> и <i>o</i><br><br><b>4. Знак шва</b><br>Знак <span class="script">בְּ</span> называется шва. Он бывает двух видов. «Немое» шва означает отсутствие гласного между согласными: оно не произносится, не транслитерируется и служит разделителем слогов. «Произносимое» шва передаёт очень краткий беглый звук — половину краткого <i>э</i>; в транслитерации это <i>ǝ</i>. Правила различения — в главе 3.<br><br><b>5. «Сильный» дагеш</b><br>Точка внутри согласного бывает не только «слабым» дагешем. <b>«Сильный» дагеш выглядит точно так же, но обозначает удвоение той согласной, внутри которой стоит.</b> Например, в слове <span class="script">הַשָּׁמַיִם</span> «небеса» «сильный» дагеш стоит внутри <span class="script">שׁ</span>. Он может стоять в любом согласном, кроме гортанных и <span class="script">ר</span>.`,
+        // Глава 2 — огласовка. Вопросов два об одном и том же знаке: как он
+        // называется и какой гласный звук обозначает. Знак лежит с носителем,
+        // как в пособии и как в главе 3 (см. HEBREW_ALPHABET.vowels).
+        exercises: {
+            heb_vowel_name: [
+                {sign:"בַּ", correct:"патах", distractors:["камец","камец хе","хатеф-патах"]},
+                {sign:"בֶּ", correct:"сегол", distractors:["цере","цере йод","хатеф-сегол"]},
+                {sign:"בִּ", correct:"хирек", distractors:["хирек йод","патах","сегол"]},
+                {sign:"בֻּ", correct:"киббуц", distractors:["шурек","патах","сегол"]},
+                {sign:"בָּ", correct:"камец", distractors:["патах","камец хе","хатеф-патах"]},
+                {sign:"בֵּ", correct:"цере", distractors:["сегол","цере йод","хатеф-сегол"]},
+                {sign:"בֹּ", correct:"холем", distractors:["холем вав","хатеф-камец","патах"]},
+                {sign:"בָּה", correct:"камец хе", distractors:["патах","камец","хатеф-патах"]},
+                {sign:"בֵּי", correct:"цере йод", distractors:["сегол","цере","хатеф-сегол"]},
+                {sign:"בִּי", correct:"хирек йод", distractors:["хирек","патах","сегол"]},
+                {sign:"בּוֹ", correct:"холем вав", distractors:["холем","хатеф-камец","патах"]},
+                {sign:"בּוּ", correct:"шурек", distractors:["киббуц","патах","сегол"]},
+                {sign:"בֲּ", correct:"хатеф-патах", distractors:["патах","камец","камец хе"]},
+                {sign:"בֱּ", correct:"хатеф-сегол", distractors:["сегол","цере","цере йод"]},
+                {sign:"בֳּ", correct:"хатеф-камец", distractors:["холем","холем вав","патах"]}
+            ],
+            heb_vowel_sound: HEBREW_ALPHABET.vowels
+        }
     },
     3: {
         title: "Структура слога и правила чтения",

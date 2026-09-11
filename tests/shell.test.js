@@ -134,17 +134,27 @@ test('заголовок app bar называет текущий урок и у�
     app.close();
 });
 
-test('на вводных уроках FAB «Тест» скрыт', () => {
+test('FAB «Тест» есть там, где есть вопросы, и скрыт на объявленном вводном уроке', () => {
     const app = loadApp();
     const w = app.window;
 
+    // Алфавит и правила чтения тоже тренируются, поэтому уроки 1–2 больше не
+    // вводные: предложить тест есть что, и FAB ведёт себя как на прочих уроках.
     w.openLesson(1);
-    assert.ok(app.fab().hidden, 'урок 1 — алфавит, тестировать нечего');
+    assert.ok(!app.fab().hidden, 'урок 1 — алфавит, тест есть');
+    assert.strictEqual(app.fab().label, 'Тест');
     w.openLesson(2);
-    assert.ok(app.fab().hidden, 'урок 2 — правила чтения');
+    assert.ok(!app.fab().hidden, 'урок 2 — правила чтения');
     w.openLesson(3);
     assert.ok(!app.fab().hidden, 'с урока 3 тест есть');
-    assert.strictEqual(app.fab().label, 'Тест');
+
+    // Сам механизм вводных уроков остался — курс может объявить урок без
+    // упражнений в introLessons, и тогда FAB прячется. Ни один курс таких
+    // уроков сейчас не объявляет, поэтому проверяем на дописанном.
+    app.get('(function () { activeCourse().introLessons.push(1); return 0; })()');
+    w.openLesson(1);
+    assert.ok(app.fab().hidden, 'вводный урок — тестировать нечего');
+    app.get('(function () { activeCourse().introLessons.pop(); return 0; })()');
     app.close();
 });
 

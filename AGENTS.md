@@ -12,7 +12,7 @@ Guidance for AI agents working in this repository.
 | Styles | `styles/*.css` | The design system, seven files. See "Project layout". |
 | Lesson content | `data/*.js` | Vocabulary, grammar, exercises, prayer, licences, the course registry. |
 | Logic | `js/*.js` | Sixteen files, one per feature area. |
-| Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
+| Offline shell | `sw.js`, `manifest.webmanifest`, `icon.svg`, `icon-dark.svg` | Service worker + PWA metadata. Small, rarely touched — see "Offline shell" below. |
 | Source textbooks | `reference/machen-nt-greek/`, `reference/nbbs-hebrew/` | The books the lessons come from, as text. Reference only — never loaded by the app. See "Source textbooks" below. |
 
 The app hosts **two courses**, Greek and Hebrew, chosen on a start screen. `data/courses.js`
@@ -35,7 +35,7 @@ breaking something you did not look at.
 1. **Find the section of this file that covers your task and read it.** The task table
    under "Project layout" names the file; the sections below it name the traps. Most
    bugs this repo has had were an invariant written down here and not read.
-2. **Run `npm test` first** (197 tests, ~20 s). A failure afterwards is then known to be
+2. **Run `npm test` first** (215 tests, ~30 s). A failure afterwards is then known to be
    yours. If the baseline is already red, say so before you start.
 3. **Read the code directly.** There are about thirty source files and every function is
    global, so Grep for the name and Read the file. `reference/` is the large part — enter
@@ -113,39 +113,39 @@ online test. When you add:
 ## Project layout
 
 ```
-index.html           334  <head>, разметка, порядок загрузки
+index.html           338  <head>, разметка, порядок загрузки
 styles/
   tokens.css           280  :root, [data-theme=dark], [data-theme=sepia] и [data-script] — все переменные
   base.css             350  сброс, типографика, метки языка (.script/.greek/.hebrew), каркас, app bar, icon button, nav bar, FAB, ripple
-  components.css       772  кнопки, list item урока, карточки, табы, search bar, text field, chips
-  screens.css          855  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
+  components.css       777  кнопки, list item урока, карточки, табы, search bar, text field, chips
+  screens.css          862  вопрос/варианты, обратная связь, списки слов, таблицы и их прокрутка, ритм материала, flashcards и их оборот, статистика, «Отче наш», стартовый экран выбора курса
   dialogs.css           88  snackbar, dialog
   layout.css            64  переходы экранов, утилиты, адаптивность (nav rail)
   settings.css         156  segmented button темы и курса, карточка курса, список лицензий
 data/
-  lessons.js         1,698  const LESSONS_DATA — уроки ГРЕЧЕСКОГО курса, а не «уроки вообще»
-  hebrew-lessons.js    732  const HEBREW_LESSONS_DATA — главы 1–11: грамматика, словарь, упражнения
+  lessons.js         1,812  const LESSONS_DATA (греческий курс) и GREEK_ALPHABET — пул букв для уроков 1–2
+  hebrew-lessons.js    872  const HEBREW_LESSONS_DATA — главы 1–11: грамматика, словарь, упражнения; HEBREW_ALPHABET — пул букв и огласовок
   prayer.js            136  const PRAYER_DATA
   licenses.js           49  const LICENSES
-  courses.js            82  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
+  courses.js            94  const COURSES/COURSE_ORDER — реестр курсов, грузится последним из data/
 tests/                    jsdom-набор, `npm test` — см. tests/README.md
 js/
-  core.js              125  состояние, shuffle/escHtml/escArg, scheduleAdvance, localStorage
-  course.js            246  текущий курс, ключи хранилища, письмо, стартовый экран, переключение курса
-  ui.js                 80  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
+  core.js              171  состояние, shuffle/escHtml/escArg, keywordsMatch, isScriptText, scheduleAdvance, localStorage
+  course.js            253  текущий курс, ключи хранилища, письмо, алфавит курса, стартовый экран, переключение курса
+  ui.js                 92  ripple, showToast, mdDialog, progressHead, emptyState, resultBlock
   shell.js             238  SCREEN_META/DEST_SECTION/FAB_CONFIG, showSection, navigateTo, renderMainMenu
-  theme.js              86  режимы темы, applyTheme, initTheme
-  lesson.js            513  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
-  declension.js        194  парадигма как описание осей, отрисовка таблицы, перебор ячеек
-  exercises.js         312  EXERCISE_TYPES — список видов упражнений, отрисовка вопроса, проверка ответа
-  flashcards.js        374  карточки: общие и урока, оборот карточки с тренировкой форм
-  test.js              191  тест
-  translation.js       202  перевод
-  stats.js              97  статистика, ошибки, сброс прогресса
-  prayer.js            228  «Отче наш»: разбор и упражнения
-  vocab.js             434  общий словарь, поиск, фильтр по частям речи
+  theme.js             108  режимы темы, applyTheme, иконка вкладки по теме, initTheme
+  lesson.js            544  openLesson, меню разделов урока, вкладки, свайп, экран упражнения, разметка грамматики
+  declension.js        197  парадигма как описание осей, отрисовка таблицы, перебор ячеек
+  exercises.js         513  EXERCISE_TYPES — список видов упражнений, отрисовка вопроса, проверка ответа
+  flashcards.js        375  карточки: общие и урока, оборот карточки с тренировкой форм
+  test.js              193  тест
+  translation.js       230  перевод
+  stats.js             107  статистика, ошибки, сброс прогресса
+  prayer.js            237  «Отче наш»: разбор и упражнения
+  vocab.js             435  общий словарь, поиск, фильтр по частям речи
   settings.js           28  showSettings, renderLicenses
-  boot.js               74  normalizeTranslationData, init*, глобальные слушатели
+  boot.js               77  normalizeTranslationData, init*, глобальные слушатели
 ```
 
 **Load order is the contract.** Three rules, all enforced only by the order of tags in `index.html`:
@@ -165,6 +165,7 @@ Whatever you touch, it is almost always one file:
 | A screen's look | `styles/screens.css` |
 | Responsive / nav rail | `styles/layout.css` |
 | **Lesson content** | `data/lessons.js` (Greek) / `data/hebrew-lessons.js` (Hebrew) — **do not touch** unless the task is explicitly about content |
+| Letters, sounds, alphabet drill questions | `GREEK_ALPHABET` / `HEBREW_ALPHABET` in the same two files — see "Alphabet and reading" |
 | Finding content in the textbook | `reference/machen-nt-greek/INDEX.md` or `reference/nbbs-hebrew/INDEX.md` — then the lesson file it points to |
 | A new dependency's licence | `data/licenses.js` |
 | Behaviour | the matching `js/*.js` — the table above says which |
@@ -179,7 +180,7 @@ Structural facts worth knowing before editing:
 - **The grammar in `data/lessons.js` is a `<br>`-separated stream, and the app does not render it raw.** In the data, paragraphs are separated by pairs of `<br>`, a section heading is a line that is nothing but `<b>…</b>`, and a list is *either* lines starting with `•` *or* a real `<ul>` (lesson 5 is the one that uses tags). That shape makes vertical rhythm a function of how many `<br>` someone typed, and it puts a wrapped bullet's second line under the marker. `renderGrammarHtml()` (`js/lesson.js`) rebuilds it into real blocks at render time — `.grammar-h`, `.grammar-p`, `.grammar-list` — so spacing comes from CSS instead. It changes markup only, never text; `<b>Примечание:</b> …` with the sentence continuing on the same line stays a paragraph, which is why the heading test requires the bold element to span the **whole** line. Fix grammar spacing here or in `screens.css`, **not** by editing `<br>` runs in the content.
 - **`<table>`, `<ul>` and `<ol>` are lifted out of the stream before it is split** (`GRAMMAR_LIFT_RE` → placeholders → `grammarLiftedHtml()`). Two reasons, and both bite: `<br>` and `•` mean nothing inside them, and — the subtler one — a native `<ul>` in the source has no `<br>` around it, so without lifting, the paragraph before it, the list, and the paragraph after it all collapse into one `.grammar-p` with no spacing between them, and the `<ul>` never gets `.grammar-list`, which drops it through to the global `* { margin: 0; padding: 0 }` reset with no indent at all. A lifted table comes back wrapped in `.md-table-scroll`; a lifted list comes back carrying `.grammar-list`, the same class the `•` form produces. The lift regex is non-nesting — a list inside a list would break it, and there are none.
 - **A table wider than the screen scrolls inside its own strip; the page never scrolls sideways.** Every table sits in `.md-table-scroll` (`overflow-x: auto` plus `overscroll-behavior-x: contain`, so the gesture does not chain to the page), and `body` has `overflow-x: clip` as the backstop — `clip` rather than `hidden` because `hidden` would make `body` a scroll container and break the `window.scrollY` the app bar reads. Inside the strip the table is `width: auto; min-width: 100%` and its cells are `white-space: nowrap`: squeezing columns to fit would inflate a row to three lines because of a «Перевод» column that is off-screen anyway. All cells are left-aligned. If you add a table anywhere, wrap it.
-- **Horizontal swipe switches lesson sections on touch screens.** `initLessonSwipe()` (`js/lesson.js`, called from `boot.js`) listens on `#lessonSection`. The row it moves along is **the tab bar itself** — `lessonSwipeTabs()` reads the visible `#lessonTabs` buttons in markup order, so «Тест» is in it too, and the intro lessons (whose exercise and test tabs are hidden via `style.display`) have nothing to swipe to. `swipeLessonPart()` ends by **clicking the tab it landed on** rather than calling `switchLessonPart()` directly: the test tab carries `startTest()`, not a panel switch, and a swipe must do exactly what a tap on that tab does. That is the whole reason the row is derived from the DOM instead of a list of part names — a hardcoded list silently drops any tab that is an action rather than a panel. A gesture is ignored when it is short, more vertical than horizontal, multi-touch, or started inside something that scrolls sideways itself (`SWIPE_BLOCKERS` — declension tables, the tab bar, chip rows, inputs). Both ends of the row are dead ends; the gesture never wraps.
+- **Horizontal swipe switches lesson sections on touch screens.** `initLessonSwipe()` (`js/lesson.js`, called from `boot.js`) listens on `#lessonSection`. The row it moves along is **the tab bar itself** — `lessonSwipeTabs()` reads the visible `#lessonTabs` buttons in markup order, so «Тест» is in it too, and intro lessons (whose exercise and test tabs are hidden via `style.display` — none at present, see `introLessons`) have nothing to swipe to. `swipeLessonPart()` ends by **clicking the tab it landed on** rather than calling `switchLessonPart()` directly: the test tab carries `startTest()`, not a panel switch, and a swipe must do exactly what a tap on that tab does. That is the whole reason the row is derived from the DOM instead of a list of part names — a hardcoded list silently drops any tab that is an action rather than a panel. A gesture is ignored when it is short, more vertical than horizontal, multi-touch, or started inside something that scrolls sideways itself (`SWIPE_BLOCKERS` — declension tables, the tab bar, chip rows, inputs). Both ends of the row are dead ends; the gesture never wraps.
 - `SCREEN_META`, `DEST_SECTION` and `FAB_CONFIG` (`js/shell.js`) drive the app bar title, back button, active nav destination and contextual FAB. Adding a screen means adding entries there, not just markup.
 - Functions call freely across files — they are all globals on `window`, and every file is loaded before anything runs. There is no import graph to keep in sync; the only ordering rule is the one about `boot.js` above.
 - Top-level `let` and `const` bindings — state (`stats`, `testState`, `allFlashcardState`, …) *and* the data (`LESSONS_DATA`, `PRAYER_DATA`, `LICENSES`) — are **not** on `window`; splitting the data into their own files did not change this, because `const` at the top level of a classic script never creates a window property. `function` declarations *are* on `window`. So a harness can call `window.openLesson(3)` but must reach data through `window.eval('LESSONS_DATA')`. Test through the DOM, not through `window.someState`.
@@ -196,7 +197,7 @@ The app is already a full M3 implementation. Extend it; do not reintroduce ad-ho
 
 ### Non-negotiables
 
-1. **No hard-coded colors.** Not in CSS, not in inline `style=`, not in JS-generated markup strings. Every color is `var(--md-sys-color-*)` or `var(--md-extended-color-*)`. A literal hex anywhere outside the theme blocks in `styles/tokens.css` is a bug — this codebase had ~20 of them and dark mode was broken everywhere as a result. The only permitted literals are the two bootstrap `<meta name="theme-color">` tags, which must paint before CSS loads; keep them in sync with `surface` in the light and dark schemes. Sepia gets none: it is a manual choice, not a system preference, and nothing knows about it before JS runs — `applyTheme()` then removes all of them and writes one from the token. Where JS needs a color it reads the token — see `applyTheme()`, which pulls `--md-sys-color-surface` via `getComputedStyle` rather than repeating the hex.
+1. **No hard-coded colors.** Not in CSS, not in inline `style=`, not in JS-generated markup strings. Every color is `var(--md-sys-color-*)` or `var(--md-extended-color-*)`. A literal hex anywhere outside the theme blocks in `styles/tokens.css` is a bug — this codebase had ~20 of them and dark mode was broken everywhere as a result. The only permitted literals are the two bootstrap `<meta name="theme-color">` tags, which must paint before CSS loads; keep them in sync with `surface` in the light and dark schemes. Sepia gets none: it is a manual choice, not a system preference, and nothing knows about it before JS runs — `applyTheme()` then removes all of them and writes one from the token. Where JS needs a color it reads the token — see `applyTheme()`, which pulls `--md-sys-color-surface` via `getComputedStyle` rather than repeating the hex. The other exception is the two app icons. An SVG loaded as an icon never sees the page's CSS, so its colours are written into the file. `icon.svg` is the light one. `icon-dark.svg` uses the dark scheme's `primary-container` / `on-primary-container`, the dark FAB's pair, so change it with that pair. Its geometry and its Ω (U+03A9, not the look-alike ohm sign U+2126) are copied from `icon.svg`, so keep the two in step. The tab icon follows the theme the same way `theme-color` does. `<head>` carries a `media` variant per system scheme for the moment before JS runs. `applyThemeIcon()` then leaves a single link chosen by the app's own theme: the dark icon for dark, the light one for light and sepia.
 2. **Always use the `on-` pair.** `background: primary-container` requires `color: on-primary-container`. Never mix roles across pairs.
 3. **All three themes, always.** Any new role goes into `:root`, `[data-theme="dark"]` *and* `[data-theme="sepia"]`. Never ship a token defined in only some of them. The exception is a role a scheme inherits unchanged from `:root` — `shadow`, `scrim` and the elevation levels are correct for both light schemes, so dark overrides the elevations and sepia overrides nothing; anything else missing is a bug, not an inheritance.
 4. **Spacing on a 4dp grid**, shape from the shape scale, motion from the motion tokens. No arbitrary `border-radius: 7px` or `transition: 0.15s ease`.
@@ -318,8 +319,9 @@ every `heb_*` type, and sentence-building where the book prints sentences. That 
 carries the field-by-field authoring guide; follow it rather than inferring the shape
 from a neighbouring entry.
 
-Chapters 1–2 are material only (`introLessons` in the registry) and chapter 9 has drills
-but no dictionary — the book gives it no vocabulary section. Neither is a gap to fill.
+Chapters 1–2 are the alphabet and the vowel points, and they now carry drills like
+every other chapter — see "Alphabet and reading". Chapter 9 has drills but no
+dictionary — the book gives it no vocabulary section. Neither is a gap to fill.
 
 **The one thing to know before editing this data**: 220 of the Hebrew strings written by
 hand were byte-wrong on the first pass, and none of it was visible. Hebrew combining
@@ -370,20 +372,88 @@ own answer handler. A new kind is an entry in that table, not a branch.
   / «Произносимое» шва and the like — live in the table so the author does not retype
   them per question; the question's `correct` must then match one of them exactly, which
   a test enforces across every course's data.
+- **When the options are derived, they are derived by `otherValues()` — which never
+  returns the correct value.** It hands back look-alikes at an even stride through the
+  pool (so neighbouring letters show up among the distractors, which is the point), and
+  the kind must therefore put the right answer in **first**:
+  `options: q => [q.correct].concat(otherValues(…, q.correct, 3))`. Forgetting the
+  prefix produces a question whose answer is not on screen — a perfectly normal-looking
+  question you can only fail. All nine alphabet kinds that derive options had this bug
+  at once; `tests/alphabet.test.js` now checks every question of every alphabet kind for
+  it, by calling `exerciseOptions()`.
 - **Keys name the concept, not the language, when the concept is shared.** `agreement`,
   `translate_*` and `article_fill` are used by both courses — Hebrew's article question
-  is the same question, just with `הָ`/`הַ`/`הֶ` as the forms. Kinds that exist only in
+  is the same question, just with `הָ`/`הַ`/`הֶ` as the forms. So are the four
+  `letter_*` kinds both courses answer (`letter_name`, `letter_from_name`,
+  `letter_sound`, `letter_order`). Kinds that exist only in
   the Hebrew course are prefixed `heb_`: `heb_vowel_name`, `heb_vowel_fill`, `heb_shva`,
   `heb_dagesh`, `heb_qamets`, `heb_gender_number`, `heb_begadkefat`, `heb_syllables`,
-  `heb_gutturals`, `heb_construct`, `heb_suffix_type`. Hebrew has no cases, so
-  `heb_gender_number` is its own kind rather than a reuse of Greek's `case_number`,
-  which is labelled «Падеж и число». The prefix is a convention for readers; no code
-  parses it.
+  `heb_gutturals`, `heb_construct`, `heb_suffix_type`, plus the alphabet's
+  `heb_letter_translit`, `heb_letter_final` and `heb_letter_guttural`. Hebrew has no
+  cases, so `heb_gender_number` is its own kind rather than a reuse of Greek's
+  `case_number`, which is labelled «Падеж и число». The prefix is a convention for
+  readers; no code parses it.
 - **A group with nothing available is not drawn.** That is what keeps the phonology
   group («Огласовка и чтение») off Greek lesson screens without any branching on course.
 - **Do not put the answer in the question.** `heb_construct` and `heb_suffix_type` carry
   a translation in the data and deliberately do not show it: «его кони» announces the
   number, «(этот) голос (этого) человека» announces the definiteness.
+
+## Alphabet and reading
+
+The first lesson of each course has no words in it: Greek lesson 1 and Hebrew chapter 1
+are the letters, and the lesson after them is the reading rules (Greek: diphthongs,
+breathings, accents; Hebrew: the vowel points). Those two units per course are now
+drilled like any other material — fifteen kinds exist for them.
+
+**The letters live in a pool per course, not in the questions.** `GREEK_ALPHABET`
+(`data/lessons.js`) and `HEBREW_ALPHABET` (`data/hebrew-lessons.js`) hold the letters
+once with everything there is to ask about them; the kinds build both the question and
+the wrong answers out of it. Writing the alphabet out per question would have been four
+copies of the same table, and they would have drifted.
+
+| Pool | Fields |
+|---|---|
+| `GREEK_ALPHABET` | `letters` ×24 — `{letter, upper, name, sound}`; `diphthongs` ×8 — `{diphthong, sound}`; `breathings` ×6 — `{sign, correct}`; `accents` ×9 — `{sign, correct}` |
+| `HEBREW_ALPHABET` | `letters` ×22 — `{letter, name, translit, sound}`; `finals` ×5 — `{letter, final}`; `vowels` ×15 — `{sign, name, sound}` |
+
+- **`courseAlphabet()` (`js/course.js`) is the only way to the pool** — `COURSES.greek.alphabet`
+  is not. Same rule as `courseLessons()`.
+- **A pool holds only what the course has, and that absence is load-bearing.** Greek has
+  no `finals`/`vowels` fields and Hebrew has no `upper`/`diphthongs`/`breathings`/`accents`
+  (asserted as `undefined`, not as empty arrays). A kind whose questions can only be built
+  from a field the course does not have simply has no questions there, so the phonology
+  group never appears on a Greek lesson screen — no branching on course anywhere.
+- **`letter_order` asks what comes next, so the last letter is not asked about.**
+  `alphabetSuccessor()` returns the letter after the one in the question, and `''` for the
+  last; the authored questions are `letters.slice(0, -1)`, which a test checks against the
+  pool rather than trusting.
+- **`script` may be a function of the question, not of the kind.** «Как называется эта
+  буква?» is one question in both courses, but its options are Greek names (`ἄλφα`) in one
+  and Russian ones (`а́леф`) in the other, so `letter_name` computes `script` from
+  `isScriptText(q.name)`. `letter_from_name` is the mirror image and can be constant: the
+  options are always letters.
+- **The line under the question is set from its own content, not from the course.**
+  `choiceQuestionHtml()` picks `.md-prompt-strong` when `isScriptText(subject)` and
+  `.md-prompt-ru` otherwise, because the subject is sometimes the letter (`בּ`) and
+  sometimes its Russian name (`а́леф`) — within one kind, in one course. `.script` on the
+  *options* still comes from the kind or the question, as everywhere else.
+- **The tables in the textbook's grammar are the source of truth for the pool.**
+  `tests/alphabet.test.js` re-derives the pool from the Greek lesson-1 table, the Hebrew
+  alphabet table, the diphthong line, the breathings and accents, the five finals bullets,
+  the begadkefat rows, the gutturals sentence and the vowel table in chapter 2 — and fails
+  if the data and the book disagree. Write the pool first, then reconcile it with the
+  grammar text; do not type it twice from memory.
+- **A directional drill label reads «shown → chosen»**, as in «Фразы: {lang} → русский».
+  `letter_case_lower` shows the capital, so it is «Прописная → строчная». The first
+  version said «Строчная к прописной» and «Прописная к строчной». Russian «X к Y»
+  reads either way, and both labels came out backwards. `alphabet.test.js` pins them
+  against the letter that is actually displayed.
+- **`introLessons` is empty in both courses and the mechanism is now inert.** It still
+  means "material only, no drills and no test", and `isIntroLesson()` still honours it,
+  but no lesson is on either list: the alphabet is trainable, so there is no material-only
+  lesson left. Only `tests/shell.test.js` exercises the flag, by pushing a lesson onto the
+  list for the length of one test.
 
 ## Paradigms
 
@@ -421,9 +491,9 @@ The app hosts two courses. **`data/courses.js` is the registry**; `js/course.js`
 the state and the switching.
 
 - A course is one entry in `COURSES` — its name, its lessons object, its prayer data,
-  and the handful of facts that used to be hard-coded for Greek: which lessons are
-  intro-only (no drills), which lesson the dictionary starts at, the search
-  placeholder, the script and its writing direction, and `lang` — the name of the
+  its alphabet pool, and the handful of facts that used to be hard-coded for Greek:
+  which lessons are intro-only (no drills), which lesson the dictionary starts at, the
+  search placeholder, the script and its writing direction, and `lang` — the name of the
   language as it appears in drill labels ("Фразы: {lang} → русский", "Переведите на
   …"). Read that one through `courseLang()` and `drillLabel()`; a literal
   "греческий" in a shared string is a bug. Adding a course is a data entry plus its
@@ -486,17 +556,23 @@ A few consequences worth knowing before you touch the rendering:
   answer check never learns about direction.
 - **The same goes for the `<strong>` in the feedback line and in the error review.**
   Whether it holds a form or a Russian keyword depends on the drill; the code that
-  builds the string adds `.script` when it is a form. Where the mix is genuinely
-  unknowable — the error list sweeps every drill into one place — the CSS uses
-  `unicode-bidi: plaintext`, which takes the direction from the text itself.
+  builds the string adds `.script` when it is a form. The error list sweeps every
+  drill into one place, so there no code path knows which it is. `errorText()`
+  (`js/stats.js`) asks the string itself through `isScriptText()` and marks each of
+  the three columns separately. `<strong>` keeps `unicode-bidi: plaintext` as the
+  fallback for a mixed string. It used to force the script font instead, and that
+  broke both ways at once. A Hebrew subject had no `.script`, so its niqqud was set
+  in the interface font and drifted off the letter. A Russian answer («патах»,
+  «[о]») got Noto Serif Hebrew, which has no Cyrillic. `stats.test.js` holds this.
 - **Niqqud have a floor on how small they may be set.** `--md-ref-script-min-size` is
   `0` for Greek and `1.25rem` for Hebrew, and small studied-language text is written
   `font-size: max(<its own size>, var(--md-ref-script-min-size))`. Hebrew vowel points
   are dots below and inside the letter: at the 15px the word-bank chips use, the dagesh
   merges into the letter it sits in and qamets is not distinguishable from segol. Large
   text — the flashcard word, the drill prompt — is already above the floor and left
-  alone. Add the `max()` when you set a small size on script text; leave it off where
-  the text may be Russian (the error list, which sweeps every drill together).
+  alone. Add the `max()` when you set a small size on script text, and leave it off
+  where the text may be Russian. The error list has it on `.error-item .script`, which
+  only ever holds text that `isScriptText()` has already recognised.
 - **Paradigm tables turn over with the course** (`.word-details > .md-table-scroll`):
   in RTL the first column is the right one. Grammar tables in the lesson data do not —
   they are often Russian — so they opt in with `<table dir="rtl">`, and
@@ -523,7 +599,7 @@ quietly change what the rendering is asserted against.
 
 **Adding any file under `styles/`, `data/` or `js/` means adding it to `CORE_ASSETS`.** Miss it and the app still works online, then cold-starts offline with no styles or empty screens — a failure you will not see in any online test.
 
-`manifest.webmanifest` uses **relative** `start_url` and `scope` because Pages serves this from the `/greek_bot/` subpath; absolute paths would break it. Registration is guarded on `location.protocol` so opening the file over `file://` is still fine, and a failed registration is swallowed — offline is a bonus, never a precondition.
+`manifest.webmanifest` uses **relative** `start_url` and `scope` because Pages serves this from the `/greek_bot/` subpath; absolute paths would break it. Its icons stay the light `icon.svg`: a manifest cannot switch icons by colour scheme in any shipping browser, and its `background_color` is the light surface anyway. Registration is guarded on `location.protocol` so opening the file over `file://` is still fine, and a failed registration is swallowed — offline is a bonus, never a precondition.
 
 Bump `CACHE_VERSION` in `sw.js` when the cached set changes; `activate` deletes every cache that does not match.
 

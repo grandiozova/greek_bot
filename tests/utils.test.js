@@ -199,6 +199,36 @@ test('app_theme имеет приоритет над оставшимся greek_
     app.close();
 });
 
+test('иконка вкладки следует за темой, а не за системой', () => {
+    // В <head> два варианта по системной теме — до запуска скриптов. После
+    // него иконка одна и её выбирает тема приложения: «тёмная» при светлой
+    // системе — тёмная иконка, сепия — светлая.
+    const fs = require('node:fs');
+    const path = require('node:path');
+    const root = path.join(__dirname, '..');
+    const head = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    for (const [file, scheme] of [['icon.svg', 'light'], ['icon-dark.svg', 'dark']]) {
+        assert.ok(fs.existsSync(path.join(root, file)), file + ' нет в репозитории');
+        assert.ok(new RegExp('<link rel="icon" href="' + file.replace('.', '\\.') +
+            '"[^>]*media="\\(prefers-color-scheme: ' + scheme + '\\)"').test(head),
+            file + ': нет варианта для системной ' + scheme + ' темы в <head>');
+    }
+
+    const app = loadApp({ prefersDark: false });
+    const icons = () => [...app.document.querySelectorAll('link[rel="icon"]')].map(l => l.getAttribute('href'));
+    assert.deepStrictEqual(icons(), ['icon.svg'], 'после запуска иконка должна остаться одна');
+    for (const [mode, href] of [['dark', 'icon-dark.svg'], ['sepia', 'icon.svg'], ['light', 'icon.svg'], ['dark', 'icon-dark.svg']]) {
+        app.window.setThemeMode(mode);
+        assert.deepStrictEqual(icons(), [href], 'тема ' + mode);
+    }
+    app.close();
+
+    const dark = loadApp({ prefersDark: true, storage: { app_theme: 'system' } });
+    assert.deepStrictEqual([...dark.document.querySelectorAll('link[rel="icon"]')].map(l => l.getAttribute('href')),
+        ['icon-dark.svg'], 'системная тёмная тема — тёмная иконка');
+    dark.close();
+});
+
 test('переключатель темы в настройках отражает выбранный режим', () => {
     const app = loadApp();
     app.window.showSettings();
