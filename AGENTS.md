@@ -25,6 +25,91 @@ The split files are **classic scripts and plain stylesheets**, deliberately not 
 
 All user-facing copy is **Russian**. Greek content is **polytonic** (accents, breathings, iota subscript — `ᾅ`, `ὥρᾳ`, `ἡμῶν`). Never "normalise" or strip Greek diacritics; they are the subject matter.
 
+## How to work here
+
+The rest of this file is *what* the code is. This section is *how* to change it without
+breaking something you did not look at.
+
+### Before editing
+
+1. **Find the section of this file that covers your task and read it.** The task table
+   under "Project layout" names the file; the sections below it name the traps. Most
+   bugs this repo has had were an invariant written down here and not read.
+2. **Run `npm test` first** (186 tests, ~20 s). A failure afterwards is then known to be
+   yours. If the baseline is already red, say so before you start.
+3. **Read the code directly.** There are about thirty source files and every function is
+   global, so Grep for the name and Read the file. `reference/` is the large part — enter
+   it through its `INDEX.md`, not a repo-wide search.
+
+### Subagents
+
+**Work inline by default.** A subagent starts cold and has to re-read this file to work
+safely, and most tasks touch one or two files, so spawning usually costs more than it saves.
+Spawn one only when:
+
+- **A read-only sweep** where only the conclusion matters: "which lessons use X", "where
+  in the textbook is Y taught".
+- **Independent verification in parallel**: checking lesson data against `reference/`,
+  one agent per range of lessons or chapters, each told to **report, not edit**.
+- **A second opinion** on a large diff before it is reported as done.
+
+Never let two agents edit the same file at once. `data/lessons.js` and
+`data/hebrew-lessons.js` are single large files, so concurrent edits clobber each other.
+A subagent's brief must name the sections of this file that apply, restate the
+no-normalisation rule for Greek and Hebrew, and say "do not commit".
+
+### Large features go in phases
+
+The Hebrew course went in as phases 0–5, one commit each. Do the same for anything bigger
+than an afternoon:
+
+- **Phase 0 is groundwork with no visible change**, for example a registry or an extracted
+  helper. Its test is that nothing moved.
+- **Every phase leaves the app working and `npm test` green.** Nothing lands half-wired.
+- **Every phase updates its own docs and plumbing in the same commit**: this file,
+  `tests/README.md`, a new test, `CORE_ASSETS`/`CACHE_VERSION`, `data/licenses.js`. Do not
+  save them for a clean-up at the end, because they get lost.
+
+### Things that live in more than one place
+
+Missing one of these edits causes most of the bugs, and several of them are invisible in an
+online test. When you add:
+
+| You add… | Also change |
+|---|---|
+| a file in `styles/`, `data/`, `js/` | its tag in `index.html` **in the right place** (see load order) + `CORE_ASSETS` in `sw.js` + bump `CACHE_VERSION` |
+| an icon | `icon_names=` on the fonts `<link>` |
+| a screen | markup + `SCREEN_META` / `DEST_SECTION` / `FAB_CONFIG` |
+| an exercise kind | `EXERCISE_TYPES` + `LESSON_DRILL_GROUPS` and/or `TEST_TYPES` |
+| a colour role | `:root`, `[data-theme="dark"]` **and** `[data-theme="sepia"]` |
+| a part-of-speech `type` | `VOCAB_TYPE_ORDER` + `TYPE_LABELS` |
+| a cache that spans screens | a reset in `applyCourse()` |
+| a dependency, font or asset | an entry in `data/licenses.js` |
+| a test file | a row in the `tests/README.md` table |
+
+### Content
+
+- **Leave `data/*.js` alone unless the task is explicitly about content.**
+- **Copy studied-language strings out of `reference/`; never retype them.** A retyped Hebrew
+  word can look identical and still be a different string. A retyped Greek word can lose a
+  breathing. Check any Greek word against `restoration-report.md` before trusting it.
+- **Do not NFC-normalise, trim diacritics or "clean up" Unicode**, whether by hand or with a
+  script.
+
+### Finishing
+
+- **Report what you verified and what you did not.** `npm test` covers behaviour. Contrast,
+  rendering and offline have no harness (see "Verify before reporting done"). If you
+  changed how something looks and did not screenshot it, say so. Do not imply you did.
+- **Keep this file current in the same change.** When you settle a decision or find an
+  invariant that was not obvious, write it here with the reason. The *why* is what stops
+  the next agent from re-litigating it.
+- **Git:** commit or push only when asked. Write commit messages in Russian, as one short
+  line in the style of the log ("Интеграция иврита в приложение, фаза 3", "Исправлены
+  опечатки."). **No AI attribution anywhere**: no `Co-Authored-By` trailer and no mention
+  of the assistant in commits or PR descriptions, even if your tooling adds one by
+  default. The repository's history is its authors'.
+
 ## Project layout
 
 ```
@@ -455,5 +540,7 @@ to the repo.
 ## Environment gotchas
 
 - Windows. The Bash tool mangles heredocs containing quotes — write patch scripts to a file and run them, rather than piping a heredoc.
+- **Never write Greek or Hebrew through the shell.** In Windows PowerShell 5.1, `Set-Content` and `Add-Content` write in the ANSI codepage, which turns every polytonic or pointed character into `?`, and `Out-File -Encoding utf8` adds a BOM. Edit files with the editor tool. If a script has to write them, use Node or Python with explicit UTF-8.
+- PowerShell 5.1 has no `&&` or `||`. Chain with `;`, or use `if ($?) { … }`.
 - jsdom does not implement `window.scrollTo`/`Element.scrollTo`; the test loader stubs both. The app also guards the calls itself.
 - Playwright needs `npx playwright install chromium` before first use.
