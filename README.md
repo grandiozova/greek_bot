@@ -14,13 +14,11 @@
 </p>
 
 <div align="center">
-  <img src="docs/screenshots/01-start-light.png" width="30%" alt="Выбор курса">
-  <img src="docs/screenshots/02-lessons-greek-light.png" width="30%" alt="Уроки греческого курса">
-  <img src="docs/screenshots/03-grammar-greek-light.png" width="30%" alt="Грамматика урока">
-  <br><br>
-  <img src="docs/screenshots/06-flashcard-greek-light.png" width="30%" alt="Карточки для запоминания">
-  <img src="docs/screenshots/09-dictionary-hebrew-light.png" width="30%" alt="Словарь еврейского курса">
-  <img src="docs/screenshots/11-alphabet-drill-hebrew-light.png" width="30%" alt="Упражнение на алфавит иврита">
+  <img src="docs/screenshots/01-start-light.png" width="19%" alt="Выбор курса">
+  <img src="docs/screenshots/02-lessons-greek-light.png" width="19%" alt="Уроки греческого курса">
+  <img src="docs/screenshots/03-grammar-greek-light.png" width="19%" alt="Грамматика урока">
+  <img src="docs/screenshots/06-flashcard-greek-light.png" width="19%" alt="Карточки для запоминания">
+  <img src="docs/screenshots/09-dictionary-hebrew-light.png" width="19%" alt="Словарь еврейского курса">
 </div>
 
 ## Курсы
