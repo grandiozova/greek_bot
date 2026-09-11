@@ -27,16 +27,16 @@
 ## Скриншоты
 
 **Словарь** — греческий и еврейский курс рядом:
-<p align="center"><img src="docs/screenshots/vocabulary.jpeg" width="100%" alt="Словарь, оба курса"></p>
+<p align="center"><img src="screenshots/vocabulary.jpeg" width="100%" alt="Словарь, оба курса"></p>
 
 **Карточки для запоминания:**
-<p align="center"><img src="docs/screenshots/cards.png" width="100%" alt="Карточки, оба курса"></p>
+<p align="center"><img src="screenshots/cards.png" width="100%" alt="Карточки, оба курса"></p>
 
 **Грамматика в уроках:**
-<p align="center"><img src="docs/screenshots/grammatica.png" width="100%" alt="Грамматика, оба курса"></p>
+<p align="center"><img src="screenshots/grammatica.png" width="100%" alt="Грамматика, оба курса"></p>
 
 **Темы оформления:**
-<p align="center"><img src="docs/screenshots/themes.png" width="100%" alt="Тёмная, светлая и сепия темы"></p>
+<p align="center"><img src="screenshots/themes.png" width="100%" alt="Тёмная, светлая и сепия темы"></p>
 
 ## Возможности
 
