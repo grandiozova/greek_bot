@@ -26,7 +26,6 @@ function normalizeTranslationData() {
     }
 }
 
-// Здесь НЕТ вызова normalizeCaseNames (пока)
 normalizeTranslationData();
 // initCourse — до loadStats и renderMainMenu: они уже читают ключи и уроки
 // выбранного курса.
@@ -43,7 +42,10 @@ syncCourseControls();
 // Перекрытие с выбором курса — последним, поверх готового приложения.
 initStartScreen();
 
-// Тень на app bar при скролле – используем scrollFrame из shell.js
+// Тень на app bar при скролле; обновление — не чаще раза за кадр.
+// Объявление держим здесь, рядом с единственным читателем: когда оно жило в
+// другом файле и потерялось при чистке, каждый scroll бросал ReferenceError.
+let scrollFrame = null;
 window.addEventListener('scroll', function () {
     if (scrollFrame) return;
     scrollFrame = requestAnimationFrame(function () {

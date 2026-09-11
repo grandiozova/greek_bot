@@ -35,7 +35,7 @@ breaking something you did not look at.
 1. **Find the section of this file that covers your task and read it.** The task table
    under "Project layout" names the file; the sections below it name the traps. Most
    bugs this repo has had were an invariant written down here and not read.
-2. **Run `npm test` first** (186 tests, ~20 s). A failure afterwards is then known to be
+2. **Run `npm test` first** (197 tests, ~20 s). A failure afterwards is then known to be
    yours. If the baseline is already red, say so before you start.
 3. **Read the code directly.** There are about thirty source files and every function is
    global, so Grep for the name and Read the file. `reference/` is the large part — enter
@@ -202,7 +202,7 @@ The app is already a full M3 implementation. Extend it; do not reintroduce ad-ho
 4. **Spacing on a 4dp grid**, shape from the shape scale, motion from the motion tokens. No arbitrary `border-radius: 7px` or `transition: 0.15s ease`.
 5. **Touch targets ≥ 48×48dp**, even when the visual element is smaller.
 6. **State layers on everything interactive** — hover 8%, focus 10%, pressed 10%, via the `::before` overlay pattern used throughout, plus ripple (`RIPPLE_TARGETS`).
-7. **Respect `prefers-reduced-motion`.** The global reduce block exists; do not add animations that bypass it.
+7. **Respect `prefers-reduced-motion`.** The global reduce block exists; do not add animations that bypass it. It cannot reach script-driven scrolling: `behavior: 'smooth'` passed to `scrollTo()` overrides any CSS. So every scroll from JS takes its behaviour from `scrollBehavior()` (or `scrollPageTop()`) in `js/ui.js`; never write `'smooth'` literally. `shell.test.js` checks both settings.
 
 ### Token vocabulary
 
@@ -354,6 +354,18 @@ own answer handler. A new kind is an entry in that table, not a branch.
   and `translate_russian_to_greek` (a word bank). Their markup differs between the drill
   screen and the test screen (different element ids, different handlers), so there is no
   shared code to extract; they are declared `custom: true` and drawn by the caller.
+- **A typed Russian answer is checked with `keywordsMatch()` (`js/core.js`), never by a
+  raw substring.** Keywords are written like dictionary entries — «почему?», «(домашнее)
+  животное», «локоть (мера длины)» — and nobody types the brackets or the question mark.
+  Both sides are reduced to bare words: parenthetical glosses dropped, punctuation and
+  case ignored, ё = е. The data is not rewritten; only the comparison is. This applies to
+  the Russian answer only; the studied-language text is never folded.
+- **Extra chips in the sentence drills are words, not dictionary entries.** They come from
+  the lesson's vocabulary through `headwordChip()` / `glossChips()` (`js/translation.js`),
+  which keep the headword without its gender endings or labels («ἀγαθός, ή, όν» → ἀγαθός,
+  «ἔρχομαι (dep.)» → ἔρχομαι) and each gloss separately without its brackets. Taken raw,
+  they put «-ее)» and «(с Acc.)» into the word bank and made the wrong chips obvious.
+  Parentheses attached to a word are movable ν (λύουσι(ν)) and are kept.
 - **Options are either a fixed array or derived from the question.** Fixed sets — «Немое»
   / «Произносимое» шва and the like — live in the table so the author does not retype
   them per question; the question's `correct` must then match one of them exactly, which

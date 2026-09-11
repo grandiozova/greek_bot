@@ -192,7 +192,7 @@ function startCourse(id) {
 // Кнопка «Сменить курс» в настройках.
 function openCoursePicker() {
     showStartScreen();
-    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+    scrollPageTop();
 }
 
 // ------------------------------------------------------------ настройки: вид

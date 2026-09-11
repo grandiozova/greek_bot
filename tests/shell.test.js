@@ -177,6 +177,47 @@ test('отложенный переход гасится при уходе с э
     app.close();
 });
 
+// Прокрутки из JS, которые просят behavior явно: CSS-блок reduced-motion
+// над ними не властен, поэтому каждая обязана спросить систему сама.
+function recordScrolls(app) {
+    const calls = [];
+    const record = (target) => function (opts) { calls.push({ target, behavior: opts && opts.behavior }); };
+    app.window.scrollTo = record('window');
+    app.window.HTMLElement.prototype.scrollTo = record('element');
+    return calls;
+}
+
+function scrollAround(app) {
+    const w = app.window;
+    w.openLesson(4);               // showSection → прокрутка страницы
+    w.switchLessonPart('material'); // вкладка → прокрутка панели вкладок
+    w.goBack();                    // раздел → меню урока
+    w.openCoursePicker();          // стартовый экран
+}
+
+test('при «меньше движения» прокрутка из скрипта не плавная', () => {
+    const app = loadApp({ reducedMotion: true });
+    const calls = recordScrolls(app);
+    scrollAround(app);
+
+    assert.ok(calls.some(c => c.target === 'window'), 'страница ни разу не прокручивалась — тест ничего не проверил');
+    assert.ok(calls.some(c => c.target === 'element'), 'панель вкладок ни разу не прокручивалась');
+    const smooth = calls.filter(c => c.behavior === 'smooth');
+    assert.deepStrictEqual(smooth.map(c => c.target), [], 'плавная прокрутка при prefers-reduced-motion');
+    assert.deepStrictEqual(app.errors, []);
+    app.close();
+});
+
+test('без «меньше движения» прокрутка из скрипта плавная', () => {
+    const app = loadApp();
+    const calls = recordScrolls(app);
+    scrollAround(app);
+    assert.ok(calls.length > 0);
+    assert.ok(calls.every(c => c.behavior === 'smooth'), 'прокрутка потеряла плавность: ' +
+        calls.map(c => c.target + ':' + c.behavior).join(', '));
+    app.close();
+});
+
 test('FAB на главном экране открывает последний урок', () => {
     const app = loadApp({ storage: { greek_last_lesson: '6' } });
     app.window.goToMain();

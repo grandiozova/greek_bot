@@ -30,6 +30,29 @@ test('boot.js доходит до последней строки', () => {
     app.close();
 });
 
+test('прокрутка страницы не бросает и включает тон app bar', async () => {
+    // Слушатель scroll читал переменную, объявление которой потерялось при
+    // чистке: каждый scroll бросал ReferenceError, и app bar не менялся никогда.
+    // В тестах страницу никто не листал, поэтому набор оставался зелёным.
+    const app = loadApp();
+    const w = app.window;
+    Object.defineProperty(w, 'scrollY', { value: 120, configurable: true });
+    w.dispatchEvent(new w.Event('scroll'));
+    w.dispatchEvent(new w.Event('scroll'));   // второй — в тот же кадр, должен слиться с первым
+    await new Promise(r => setTimeout(r, 60)); // requestAnimationFrame в jsdom — ~16 мс
+
+    assert.deepStrictEqual(app.errors, [], 'ошибки при прокрутке:\n' + app.errors.join('\n---\n'));
+    assert.ok(app.document.getElementById('topAppBar').classList.contains('scrolled'),
+        'app bar не получил .scrolled после прокрутки');
+
+    Object.defineProperty(w, 'scrollY', { value: 0, configurable: true });
+    w.dispatchEvent(new w.Event('scroll'));
+    await new Promise(r => setTimeout(r, 60));
+    assert.ok(!app.document.getElementById('topAppBar').classList.contains('scrolled'),
+        'вернувшись наверх, app bar не снял .scrolled');
+    app.close();
+});
+
 test('главный экран показывает все уроки из данных', () => {
     const app = loadApp();
     const items = app.document.querySelectorAll('#lessonGrid .lesson-item');

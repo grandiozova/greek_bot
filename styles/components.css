@@ -677,6 +677,10 @@
 }
 .word-item .word-row:hover::before { opacity: var(--md-sys-state-hover-opacity); }
 .word-item .word-row:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+.word-item .word-row:focus-visible::before { opacity: var(--md-sys-state-focus-opacity); }
+/* .word-item обрезает всё, что за краем (overflow: hidden), и общее кольцо
+   фокуса с outline-offset: 2px срезалось бы по трём сторонам — рисуем его внутри. */
+.word-item .word-row:focus-visible { outline-offset: -3px; }
 
 .word-item .vocab-chevron {
     margin-left: auto;

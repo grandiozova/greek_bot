@@ -130,3 +130,23 @@ test('самопроверка загрузчика: битый скрипт в�
     assert.ok(app.errors.length > 0, 'загрузчик не заметил синтаксическую ошибку во вклеенном скрипте');
     app.close();
 });
+
+test('картинки README лежат там, куда он ссылается, и не под .gitignore', () => {
+    // Скриншоты дважды пропадали со страницы репозитория: сначала их папка
+    // называлась «screenshots » с пробелом на конце, потом README сослался на
+    // screenshots/, а файлы лежат в docs/screenshots/. Корневой screenshots/
+    // к тому же в .gitignore — положить туда файлы не выйдет.
+    const readme = read('README.md');
+    const srcs = Array.from(readme.matchAll(/<img[^>]+src="([^"]+)"/g)).map(m => m[1])
+        .concat(Array.from(readme.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)).map(m => m[1]))
+        .filter(src => !/^[a-z]+:/i.test(src));
+    assert.ok(srcs.length > 0, 'в README не нашлось ни одной картинки — тест ничего не проверил');
+
+    const missing = srcs.filter(src => !fs.existsSync(repoPath(src)));
+    assert.deepStrictEqual(missing, [], 'README ссылается на отсутствующие файлы: ' + missing.join(', '));
+
+    const ignoredDirs = read('.gitignore').split(/\r?\n/)
+        .map(l => l.trim()).filter(l => /^[^#!*][^*]*\/$/.test(l));
+    const ignored = srcs.filter(src => ignoredDirs.some(dir => src.startsWith(dir)));
+    assert.deepStrictEqual(ignored, [], 'картинки README в папке из .gitignore: ' + ignored.join(', '));
+});

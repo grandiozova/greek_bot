@@ -190,5 +190,8 @@ function toggleDeclension(el) {
     let opening = !details.classList.contains('open');
     details.classList.toggle('open', opening);
     el.classList.toggle('open', opening);   // разворачивает стрелку chevron
-    el.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    // aria-expanded — на строке с role="button", а не на обёртке: состояние
+    // объявляется у того элемента, который им управляет.
+    let row = el.querySelector('.word-row');
+    if (row) row.setAttribute('aria-expanded', opening ? 'true' : 'false');
 }

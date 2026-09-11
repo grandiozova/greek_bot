@@ -51,6 +51,7 @@ function inlineScripts(html, { breakScript = null } = {}) {
  *
  * @param {object}  [opts]
  * @param {boolean} [opts.prefersDark]  что отвечает matchMedia про тёмную тему
+ * @param {boolean} [opts.reducedMotion]  что отвечает matchMedia про prefers-reduced-motion
  * @param {object}  [opts.storage]      начальное содержимое localStorage
  * @param {string}  [opts.breakScript]  подменить файл битым кодом (для самопроверки)
  * @returns {{window, document, errors, get, screen, text, html, msyms, close}}
@@ -74,7 +75,8 @@ function loadApp(opts = {}) {
         beforeParse(w) {
             // jsdom не реализует matchMedia; тема читает его при старте.
             w.matchMedia = q => ({
-                matches: !!opts.prefersDark && /prefers-color-scheme:\s*dark/.test(q),
+                matches: (!!opts.prefersDark && /prefers-color-scheme:\s*dark/.test(q)) ||
+                         (!!opts.reducedMotion && /prefers-reduced-motion:\s*reduce/.test(q)),
                 media: q,
                 addEventListener() {}, removeEventListener() {},
                 addListener() {}, removeListener() {}

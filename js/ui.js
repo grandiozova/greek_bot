@@ -3,10 +3,22 @@
 // ============================================================
 const RIPPLE_TARGETS = '.menu-btn, .md-button, .option-btn, .md-icon-button, .lesson-item, .md-fab, .md-feature-card, .course-card, .tab-bar button, .flashcard-buttons button, .flashcard-flip-btn, .word-bank .chip, .filter-chip, .prayer-word, .clear-btn, .input-group button, .md-nav-item';
 
+// Общий блок prefers-reduced-motion в styles/settings.css гасит анимации и
+// CSS-свойство scroll-behavior, но не прокрутку, которую скрипт явно просит
+// сделать плавной: behavior: 'smooth' в вызове сильнее любого CSS. Поэтому
+// скрипт спрашивает сам — и каждая прокрутка из JS идёт через scrollBehavior().
+function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+function scrollBehavior() { return prefersReducedMotion() ? 'auto' : 'smooth'; }
+function scrollPageTop() {
+    try { window.scrollTo({ top: 0, behavior: scrollBehavior() }); } catch (e) { window.scrollTo(0, 0); }
+}
+
 document.addEventListener('pointerdown', function (e) {
     let host = e.target.closest && e.target.closest(RIPPLE_TARGETS);
     if (!host || host.disabled) return;
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (prefersReducedMotion()) return;
     // у navigation item всплеск живёт внутри «пилюли» индикатора,
     // у filter chip — внутри самой «пилюли», а не в области касания 48dp
     if (host.classList.contains('md-nav-item')) host = host.querySelector('.md-nav-item__indicator') || host;

@@ -96,13 +96,35 @@ test('аккордеон в словаре урока раскрывается �
     const row = app.document.querySelector('#vocabList .word-item.clickable');
     assert.ok(row, 'в уроке 4 нет ни одного слова с формами');
 
+    // Состояние объявляет строка с role="button", а не обёртка
+    const header = row.querySelector('.word-row');
     row.click();
     assert.ok(row.querySelector('.word-details').classList.contains('open'), 'аккордеон не раскрылся');
-    assert.strictEqual(row.getAttribute('aria-expanded'), 'true');
+    assert.strictEqual(header.getAttribute('aria-expanded'), 'true');
 
     row.click();
     assert.ok(!row.querySelector('.word-details').classList.contains('open'), 'аккордеон не закрылся');
-    assert.strictEqual(row.getAttribute('aria-expanded'), 'false');
+    assert.strictEqual(header.getAttribute('aria-expanded'), 'false');
+    app.close();
+});
+
+test('строка слова с формами доступна с клавиатуры', () => {
+    const app = loadApp();
+    app.window.openLesson(4);
+
+    const item = app.document.querySelector('#vocabList .word-item.clickable');
+    const header = item.querySelector('.word-row');
+    assert.strictEqual(header.getAttribute('role'), 'button');
+    assert.strictEqual(header.getAttribute('tabindex'), '0', 'строку нельзя выбрать Tab');
+
+    header.dispatchEvent(new app.window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    assert.ok(item.querySelector('.word-details').classList.contains('open'), 'Enter не раскрыл парадигму');
+    assert.strictEqual(header.getAttribute('aria-expanded'), 'true');
+
+    // Строке без парадигмы раскрывать нечего — и в порядок Tab она не встаёт
+    const plain = app.document.querySelector('#vocabList .word-item:not(.clickable) .word-row');
+    if (plain) assert.strictEqual(plain.getAttribute('tabindex'), null);
+    assert.deepStrictEqual(app.errors, []);
     app.close();
 });
 

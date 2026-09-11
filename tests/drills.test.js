@@ -216,6 +216,109 @@ test('верно собранное предложение засчитывае�
     app.close();
 });
 
+test('лишние фишки в предложениях — отдельные слова, а не словарные статьи', () => {
+    // Лишние фишки берутся из словаря урока. Прямо из статьи они давали
+    // «ἀγαθός, ή, όν» и «ἔρχομαι (dep.)» среди словоформ, а разрезанный по
+    // запятым перевод — «хороший (-ая» и «-ее)».
+    const app = loadApp();
+    const w = app.window;
+    const bad = [];
+    let checked = 0;
+
+    for (const course of app.get('COURSE_ORDER.join(",")').split(',')) {
+        w.applyCourse(course);
+        for (const lesson of w.lessonNumbers()) {
+            const data = w.getLessonData(lesson);
+            for (const dir of ['ru_to_el', 'el_to_ru']) {
+                if (!data.translation || !(data.translation[dir] || []).length) continue;
+                w.openLesson(lesson);
+                w.startLessonDrill('translation', dir);
+                const total = app.get('translationState.total');
+                for (let i = 0; i < total; i++) {
+                    w.eval('translationState.index = ' + i);
+                    w.showTranslation();
+                    const correct = app.get('translationState.questions[' + i + '].correct.join("\\u0001")').split('\u0001');
+                    const extras = [...app.document.querySelectorAll('#transWordBank .chip')].map(c => c.textContent);
+                    for (const word of correct) {
+                        const at = extras.indexOf(word);
+                        if (at === -1) bad.push(`${course} ${lesson} ${dir}: в банке нет правильного «${word}»`);
+                        else extras.splice(at, 1);
+                    }
+                    for (const x of extras) {
+                        checked++;
+                        if (/[\s()+,;]/.test(x) || /^-|-$/.test(x)) bad.push(`${course} ${lesson} ${dir}: «${x}»`);
+                    }
+                    if (new Set(extras).size !== extras.length) bad.push(`${course} ${lesson} ${dir}: повтор среди лишних — ${extras.join(' ')}`);
+                }
+            }
+        }
+    }
+    assert.ok(checked > 100, 'проверено слишком мало лишних фишек: ' + checked);
+    assert.deepStrictEqual(bad.slice(0, 15), [], 'фишки-огрызки словарных статей:\n' + bad.slice(0, 15).join('\n'));
+    assert.deepStrictEqual(app.errors, []);
+    app.close();
+});
+
+test('перевод, набранный как обычно, засчитывается по каждому ключевому слову', () => {
+    // Ключевое слово в данных — словарная статья: «почему?», «(домашнее)
+    // животное», «ещё (ещё раз)». Сравнение шло подстрокой как есть, и такой
+    // вопрос нельзя было решить: нужно было набрать и скобки, и знак вопроса.
+    const app = loadApp();
+    const failed = app.get(`
+        (function () {
+            let hits = [];
+            for (let id in COURSES) {
+                let lessons = COURSES[id].lessons || {};
+                for (let n in lessons) {
+                    let qs = ((lessons[n] || {}).exercises || {}).translate_greek_to_russian || [];
+                    for (let q of qs) {
+                        // как набрал бы человек: без пояснений в скобках, без знаков, с «е» вместо «ё»
+                        let natural = q.keywords.map(k => k.replace(/\\([^)]*\\)/g, ' ')
+                            .replace(/[?!.,;:]/g, '').replace(/ё/g, 'е').trim()).join(' ');
+                        if (!keywordsMatch(natural, q.keywords)) hits.push(id + '/' + n + ': «' + natural + '» при ' + q.keywords.join(' + '));
+                        // и ключ слово в слово, как раньше, — тоже верный ответ
+                        if (!keywordsMatch(q.keywords.join(' '), q.keywords)) hits.push(id + '/' + n + ': ключ как есть');
+                    }
+                }
+            }
+            return hits.join(' | ');
+        })()
+    `);
+    assert.strictEqual(failed, '', 'не засчитан естественный ответ: ' + failed);
+    app.close();
+});
+
+test('упражнение на перевод засчитывает ответ без скобок и знаков ключа', () => {
+    // Сквозь экран: обработчик кнопки «Проверить» идёт через keywordsMatch.
+    const app = loadApp({ storage: { app_default_course: 'hebrew' } });
+    const w = app.window;
+    const found = app.get(`
+        (function () {
+            let lessons = courseLessons();
+            for (let n in lessons) {
+                let qs = ((lessons[n] || {}).exercises || {}).translate_greek_to_russian || [];
+                for (let q of qs) if (/[?()]/.test(q.keywords.join(''))) return n + '|' + q.keywords[0];
+            }
+            return '';
+        })()
+    `);
+    assert.ok(found, 'в еврейском курсе нет ключа со скобками или знаком — проверять нечего');
+    const [lesson, keyword] = found.split('|');
+
+    w.openLesson(Number(lesson));
+    w.startLessonDrill('exercise', 'translate_greek_to_russian');
+    const idx = app.get('exerciseState.questions.findIndex(q => q.keywords[0] === ' + JSON.stringify(keyword) + ')');
+    w.eval('exerciseState.index = ' + idx);
+    w.showExercise();
+    app.document.getElementById('transInput').value = keyword.replace(/\([^)]*\)/g, '').replace(/[?]/g, '').trim();
+    w.checkExerciseTranslation(idx);
+
+    assert.ok(app.document.querySelector('#exerciseQuestion .feedback.ok'),
+        'ответ без скобок и знаков не засчитан для «' + keyword + '»');
+    assert.deepStrictEqual(app.errors, []);
+    app.close();
+});
+
 test('тест не даёт ответить на один вопрос дважды', () => {
     const app = loadApp();
     const w = app.window;

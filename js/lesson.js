@@ -333,10 +333,15 @@ function openLesson(lesson) {
                 div.onclick = function(el) { return function() { toggleDeclension(el); }; }(div);
             }
             let detailsHtml = '';
+            // Строка, которая раскрывает парадигму, — кнопка и для клавиатуры:
+            // role и tabindex, как у строки общего словаря (js/vocab.js). Enter и
+            // пробел доводит до клика слушатель в boot.js (KEY_ACTIVATED).
+            let rowAttrs = '';
             if (item.declension_forms) {
                 detailsHtml = '<div class="word-details"><div class="md-table-scroll">' + generateDeclensionTable(item.declension_forms, item.caseTranslations || null) + '</div></div>';
+                rowAttrs = ' role="button" tabindex="0" aria-expanded="false"';
             }
-            div.innerHTML = '<div class="word-row"><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
+            div.innerHTML = '<div class="word-row"' + rowAttrs + '><strong>' + article + item.greek + '</strong><span>' + item.translation + '</span></div>' + detailsHtml;
             container.appendChild(div);
         });
     }
@@ -360,7 +365,7 @@ function moveTabIndicator() {
     ind.style.transform = 'translateX(' + active.offsetLeft + 'px)';
     // держим активную вкладку в поле зрения (Element.scrollTo есть не везде)
     let left = Math.max(0, active.offsetLeft - (bar.clientWidth - active.offsetWidth) / 2);
-    if (typeof bar.scrollTo === 'function') bar.scrollTo({ left: left, behavior: 'smooth' });
+    if (typeof bar.scrollTo === 'function') bar.scrollTo({ left: left, behavior: scrollBehavior() });
     else bar.scrollLeft = left;
 }
 

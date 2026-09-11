@@ -34,6 +34,57 @@ function checkTranslationBuild() {
     saveStats();
     // Убираем setTimeout
 }
+// ------------------------------------------------------------ лишние фишки
+// Лишние слова берутся из словаря урока, а словарь написан словарными
+// статьями: «ἀγαθός, ή, όν», «ἀκούω + Gen.», «ἔρχομαι (dep.)», «хороший
+// (-ая, -ее)», «через, сквозь (с Gen.); из-за, ради (с Acc.)». Фишка — это одно
+// слово предложения, поэтому из статьи берём только слова: заголовочную форму
+// без окончаний родов и помет, а из перевода — каждое значение отдельно и без
+// пояснений в скобках. Иначе в банке оказываются «-ее)» и «(с Acc.)», а
+// словарная статья среди словоформ выдаёт себя с первого взгляда.
+
+// «ἀγαθός, ή, όν» → ἀγαθός; «ἀκούω + Gen.» → ἀκούω; «γίνομαι (dep.) + Nom.» →
+// γίνομαι. Скобки, приросшие к слову, — это подвижное ν (λύουσι(ν)), а не помета:
+// их не трогаем, отрезаем только помету, отделённую пробелом.
+function headwordChip(headword) {
+    return String(headword || '')
+        .split(',')[0]
+        .replace(/\s+\([^)]*\)/g, '')
+        .replace(/\s+\+.*$/, '')
+        .trim();
+}
+
+// «справедливый, праведный (-ая, -ое)» → справедливый, праведный.
+// Значение из нескольких слов («вместе с», «кто бы ни») фишкой не становится:
+// в банке одиночных слов оно выдало бы себя как лишнее.
+function glossChips(translation) {
+    return String(translation || '')
+        .replace(/\([^)]*\)/g, ' ')
+        .split(/[,;]/)
+        .map(w => w.trim())
+        .filter(w => /^[\p{L}-]+$/u.test(w) && !/^-|-$/.test(w));
+}
+
+function translationExtraWords(lessonData, type, correctWords) {
+    let vocab = (lessonData && lessonData.vocabulary) || [];
+    let pool = type === 'ru_to_el'
+        ? vocab.map(v => headwordChip(v.greek)).filter(w => w && !/\s/.test(w))
+        : [].concat(...vocab.map(v => glossChips(v.translation)));
+    // Лишнее слово не должно совпадать с правильным — ни дословно, ни с точностью
+    // до регистра, знака препинания на конце («Бог» в начале фразы, «человек,»)
+    // и ударения (заголовочное ἀγαθός рядом с ἀγαθὸς из предложения — одно и то
+    // же слово дважды). Ключ только для сравнения: на фишке текст остаётся как есть.
+    let key = w => foldAccents(String(w).toLowerCase().replace(/[.,;:!?·]+$/, ''));
+    let taken = new Set(correctWords.map(key));
+    let out = [];
+    for (let w of pool) {
+        if (taken.has(key(w))) continue;
+        taken.add(key(w));
+        out.push(w);
+    }
+    return out;
+}
+
 function startTranslation(type) {
     let data = getLessonData(currentLesson);
     if (!data || !data.translation || !data.translation[type]) {
@@ -73,30 +124,10 @@ function showTranslation() {
     html += '<div class="question">' +
         (toScript ? q.source : '<span class="script">' + q.source + '</span>') + '</div>';
  
-    // Собираем все слова: правильные + лишние (из словаря урока)
-    let lessonData = getLessonData(currentLesson);
-    let vocabWords = lessonData.vocabulary ? lessonData.vocabulary.map(v => v.greek) : [];
-    let allWords = [];
-    if (s.type === 'ru_to_el') {
-        let correctWords = q.correct;
-        let extras = vocabWords.filter(w => !correctWords.includes(w));
-        let chosenExtras = shuffle(extras).slice(0, 4);
-        allWords = shuffle([...correctWords, ...chosenExtras]);
-    } else {
-        let correctWords = q.correct;
-        let allTranslations = lessonData.vocabulary ? lessonData.vocabulary.map(v => v.translation) : [];
-        let flat = [];
-        allTranslations.forEach(t => {
-            t.split(/[,;]/).forEach(w => {
-                let trimmed = w.trim();
-                if (trimmed) flat.push(trimmed);
-            });
-        });
-        let extras = flat.filter(w => !correctWords.includes(w));
-        let chosenExtras = shuffle(extras).slice(0, 4);
-        allWords = shuffle([...correctWords, ...chosenExtras]);
-    }
- 
+    // Банк слов: правильные слова + до четырёх лишних из словаря урока.
+    let extras = translationExtraWords(getLessonData(currentLesson), s.type, q.correct);
+    let allWords = shuffle([...q.correct, ...shuffle(extras).slice(0, 4)]);
+
     // Каждому чипу — свой индекс. Это важно, если одно и то же слово (например, «καί»)
     // встречается в банке слов несколько раз: индекс однозначно связывает конкретный
     // чип с конкретным токеном в поле сборки, чтобы удаление работало точно.
@@ -175,10 +206,7 @@ function checkExerciseTranslation(index) {
         document.getElementById('exerciseQuestion').innerHTML = '<div class="feedback fail"><span>Что-то пошло не так. Начните упражнение заново.</span></div>';
         return;
     }
-    let ok = true;
-    for (let kw of q.keywords) {
-        if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
-    }
+    let ok = keywordsMatch(ans, q.keywords);
     let container = document.getElementById('exerciseQuestion');
     if (ok) {
         stats.totalCorrect++;

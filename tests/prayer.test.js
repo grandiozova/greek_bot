@@ -120,6 +120,54 @@ test('слова стиха и его разбор не разъезжаются
     app.close();
 });
 
+test('в вариантах и в банке слов молитвы лишнее слово не повторяется', () => {
+    // В молитве слова повторяются (ἡμῶν, καί, σου), и пул без повторов
+    // собирался из текста как есть: одно и то же лишнее слово выпадало дважды.
+    // Случайность прогоняем много раз — единичный прогон ловил бы через раз.
+    const app = loadApp();
+    const w = app.window;
+    w.showPrayer();
+    const bad = [];
+
+    for (let run = 0; run < 60; run++) {
+        w.startPrayerFill();
+        const total = app.get('prayerExerciseState.total');
+        for (let i = 0; i < total; i++) {
+            w.eval('prayerExerciseState.index = ' + i);
+            w.showPrayerExerciseQuestion();
+            const opts = [...app.document.querySelectorAll('#prayerExerciseQuestion .option-btn')].map(b => b.textContent);
+            if (new Set(opts).size !== opts.length) bad.push('пропуск: ' + opts.join(' | '));
+        }
+
+        w.startPrayerTranslate();
+        const qs = app.get('prayerExerciseState.questions.length');
+        for (let i = 0; i < qs; i++) {
+            const pool = app.get(`prayerExerciseState.questions[${i}].pool.join('|')`).split('|');
+            const correct = app.get(`prayerExerciseState.questions[${i}].correct.join('|')`).split('|');
+            for (const word of correct) pool.splice(pool.indexOf(word), 1);
+            if (new Set(pool).size !== pool.length) bad.push('банк: ' + pool.join(' | '));
+        }
+    }
+    assert.deepStrictEqual(bad.slice(0, 5), [], 'повтор лишнего слова:\n' + bad.slice(0, 5).join('\n'));
+    assert.deepStrictEqual(app.errors, []);
+    app.close();
+});
+
+test('слово, дважды стоящее в стихе, получает в банке две фишки', () => {
+    // Обратная сторона той же правки: без повторов — только лишние слова.
+    const app = loadApp();
+    const w = app.window;
+    w.showPrayer();
+    w.startPrayerTranslate();
+    const bad = app.get(`
+        prayerExerciseState.questions.filter(q =>
+            q.correct.some(word => q.pool.filter(x => x === word).length < q.correct.filter(x => x === word).length)
+        ).map(q => q.russian).join(' | ')
+    `);
+    assert.strictEqual(bad, '', 'правильных фишек меньше, чем слов в стихе: ' + bad);
+    app.close();
+});
+
 test('повторный клик по фишке не дублирует слово', () => {
     const app = loadApp();
     app.window.showPrayer();

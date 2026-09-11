@@ -78,12 +78,19 @@ function closeAllAnalysis() {
     });
 }
     
+// Все слова молитвы без повторов. В тексте они повторяются (ἡμῶν — четыре раза,
+// καί — четыре, σου — три), и без этого одно и то же лишнее слово могло
+// попасть в варианты или в банк дважды.
+function prayerWordPool() {
+    return Array.from(new Set(coursePrayer().verses.flatMap(v => v.words.map(w => w.greek))));
+}
+
 function startPrayerFill() {
     let questions = [];
+    const allWords = prayerWordPool();
     coursePrayer().verses.forEach(verse => {
         const wordIndex = Math.floor(Math.random() * verse.words.length);
         const correctWord = verse.words[wordIndex].greek;
-        const allWords = coursePrayer().verses.flatMap(v => v.words.map(w => w.greek));
         const distractors = shuffle(allWords.filter(w => w !== correctWord)).slice(0, 3);
         questions.push({
             verse: verse.greek,
@@ -99,9 +106,11 @@ function startPrayerFill() {
 
 function startPrayerTranslate() {
     let questions = [];
+    const allWords = prayerWordPool();
     coursePrayer().verses.forEach(verse => {
+        // Правильные слова — как в стихе, с повторами: ἡμῶν в одном стихе
+        // бывает дважды, и фишек для него нужно две. Без повторов — только лишние.
         const correctWords = verse.words.map(w => w.greek);
-        const allWords = coursePrayer().verses.flatMap(v => v.words.map(w => w.greek));
         const extras = shuffle(allWords.filter(w => !correctWords.includes(w))).slice(0, 3);
         const pool = shuffle([...correctWords, ...extras]);
         questions.push({

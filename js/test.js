@@ -125,10 +125,7 @@ function testTranslation() {
     let ans = inp.value.trim().toLowerCase();
     let q = window._test_q;
     if (!q) return;
-    let ok = true;
-    for (let kw of q.keywords) {
-        if (ans.indexOf(kw.toLowerCase()) === -1) { ok = false; break; }
-    }
+    let ok = keywordsMatch(ans, q.keywords);
     let container = document.getElementById('testContainer');
     let feedbackClass = ok ? 'ok' : 'fail';
     let feedbackText = ok ? 'Верно!' : 'Неверно. Ключевые слова: ' + q.keywords.join(', ');

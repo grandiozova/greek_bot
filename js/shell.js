@@ -53,7 +53,7 @@ function showSection(id) {
     // Внутренние вкладки урока сбрасываются вместе со всеми .section — восстанавливаем
     if (id === 'lessonSection') restoreLessonPart();
     updateShell();
-    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+    scrollPageTop();
 }
 
 function updateShell() {
@@ -144,7 +144,7 @@ function goBack() {
     // и только с него — к списку уроков.
     if (currentSectionId === 'lessonSection' && currentLessonPart !== 'menu') {
         switchLessonPart('menu');
-        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+        scrollPageTop();
         return;
     }
     let meta = SCREEN_META[currentSectionId];
