@@ -10,8 +10,10 @@
 </p>
 
 <p align="center">
-    <a href="https://grandiozova.github.io/greek_bot/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=dark"><img alt="badge" src="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=light"></picture></a>
+    <a href="https://grandiozova.github.io/anticus/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=dark"><img alt="badge" src="https://shieldcn.dev/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-0842a0.svg?size=lg&amp;logo=lu%3ASparkles&amp;mode=light"></picture></a>
 </p>
+
+## Скриншоты
 
 <div align="center">
   <img src="docs/screenshots/01-start-light.png" width="19%" alt="Выбор курса">
